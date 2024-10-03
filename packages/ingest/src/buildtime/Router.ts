@@ -1,13 +1,13 @@
 import type { URI, BuildOptions } from './types';
 
-import EventRegistry from './EventRegistry';
+import EventEmitter from './EventEmitter';
 import Route from './Route';
 import Manifest from './Manifest';
 
 /**
  * Allows requests to be routed to a callback to be processed
  */
-export default class Router extends EventRegistry {
+export default class Router extends EventEmitter {
   //map of event names to routes 
   public readonly routes = new Map<string, URI>;
 

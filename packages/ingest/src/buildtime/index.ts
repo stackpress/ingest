@@ -4,7 +4,9 @@ import FileLoader from './filesystem/FileLoader';
 import NodeFS from './filesystem/NodeFS';
 
 import TaskSorter from './TaskSorter';
+import TaskQueue from './TaskQueue';
 import EventRegistry from './EventRegistry';
+import EventEmitter from './EventEmitter';
 import Route from './Route';
 import Router from './Router';
 import Builder from '../http/Builder';
@@ -25,7 +27,9 @@ export {
   FileLoader,
   NodeFS,
   TaskSorter,
+  TaskQueue,
   EventRegistry,
+  EventEmitter,
   Route,
   Router,
   Nest,

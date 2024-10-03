@@ -6,7 +6,8 @@
   "scripts": {
     "tsc": "tsc",
     "build": "ts-node src/build.ts",
-    "dev": "ts-node src/server.ts"
+    "dev": "ts-node src/develop.ts",
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@stackpress/ingest": "0.1.8"

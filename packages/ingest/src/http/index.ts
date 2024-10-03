@@ -9,6 +9,7 @@ import FileLoader from '../buildtime/filesystem/FileLoader';
 import Router from '../buildtime/Router';
 
 import Builder from './Builder';
+import Developer from './Developer';
 import Server from './Server';
 
 import Nest from '../payload/Nest';
@@ -27,6 +28,7 @@ import {
 
 export {
   Builder,
+  Developer,
   Server,
   Nest,
   Payload,
@@ -57,10 +59,12 @@ export default function http(options: BuildOptions & BuilderOptions = {}) {
   const endpath = loader.absolute(buildDir);
   const manifest = path.resolve(endpath, manifestName);
   const server = new Server(manifest, loader);
+  const developer = new Developer(router);
 
   return {
     endpath,
     manifest,
+    developer,
     server,
     router,
     builder,
@@ -68,6 +72,7 @@ export default function http(options: BuildOptions & BuilderOptions = {}) {
     context: server.context,
     build: () => builder.build({ ...build, fs, cwd, buildDir, manifestName }),
     create: (options: ServerOptions = {}) => server.create(options),
+    develop: (options: ServerOptions = {}) => developer.create(options),
     on: (path: string, entry: string, priority?: number) => {
       return router.on(path, entry, priority);
     },
