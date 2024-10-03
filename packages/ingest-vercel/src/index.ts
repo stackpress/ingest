@@ -1,11 +1,10 @@
-import type { 
-  BuildOptions, 
-  BuilderOptions 
-} from '@stackpress/ingest/dist/buildtime/types';
+import type { ServerOptions } from 'http';
+import type { BuildtimeOptions } from '@stackpress/ingest/dist/buildtime/types';
 
 import NodeFS from '@stackpress/ingest/dist/buildtime/filesystem/NodeFS';
 import FileLoader from '@stackpress/ingest/dist/buildtime/filesystem/FileLoader';
 import Router from '@stackpress/ingest/dist/buildtime/Router';
+import Developer from '@stackpress/ingest/dist/http/Developer';
 
 import Builder from './Builder';
 import Server from './Server';
@@ -28,6 +27,7 @@ import {
 } from './helpers';
 
 export {
+  Developer,
   Builder,
   Server,
   Nest,
@@ -43,9 +43,10 @@ export {
   response
 }
 
-export default function vercel(options: BuildOptions & BuilderOptions = {}) {
+export default function vercel(options: BuildtimeOptions = {}) {
   const { 
     tsconfig, 
+    router = new Router(),
     fs = new NodeFS(),
     cwd = process.cwd(),
     buildDir = './api', 
@@ -53,19 +54,21 @@ export default function vercel(options: BuildOptions & BuilderOptions = {}) {
   } = options;
   
   const loader = new FileLoader(fs, cwd);
-  const router = new Router();
   const builder = new Builder(router, { tsconfig });
   const server = new Server();
   const endpath = loader.absolute(buildDir);
+  const developer = new Developer(router);
 
   return {
     endpath,
     server,
+    developer,
     router,
     builder,
     loader,
     context: server.context,
     build: () => builder.build({ ...build, fs, cwd, buildDir }),
+    develop: (options: ServerOptions = {}) => developer.create(options),
     on: (path: string, entry: string, priority?: number) => {
       return router.on(path, entry, priority);
     },

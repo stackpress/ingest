@@ -1,4 +1,5 @@
 import type { SourceFile } from 'ts-morph';
+import type Router from './Router';
 
 //--------------------------------------------------------------------//
 // Task Queue Types
@@ -111,4 +112,8 @@ export type BuildOptions = ESBuildOptions & {
 
 export type BuilderOptions = {
   tsconfig?: string
+};
+
+export type BuildtimeOptions = BuildOptions & BuilderOptions & {
+  router?: Router
 };

@@ -1,5 +1,5 @@
 import type { ServerOptions } from 'http';
-import type { BuildOptions, BuilderOptions } from '../buildtime/types';
+import type { BuildtimeOptions } from '../buildtime/types';
 
 export type { IM, SR } from './helpers';
 
@@ -43,9 +43,10 @@ export {
   dispatcher
 }
 
-export default function http(options: BuildOptions & BuilderOptions = {}) {
+export default function http(options: BuildtimeOptions = {}) {
   const { 
     tsconfig, 
+    router = new Router(),
     fs = new NodeFS(),
     cwd = process.cwd(),
     buildDir = './.http', 
@@ -54,7 +55,6 @@ export default function http(options: BuildOptions & BuilderOptions = {}) {
   } = options;
   
   const loader = new FileLoader(fs, cwd);
-  const router = new Router();
   const builder = new Builder(router, { tsconfig });
   const endpath = loader.absolute(buildDir);
   const manifest = path.resolve(endpath, manifestName);
