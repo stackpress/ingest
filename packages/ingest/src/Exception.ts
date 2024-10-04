@@ -1,4 +1,4 @@
-import type { ErrorList } from './runtime/types';
+import type { ErrorList } from './types';
 
 /**
  * Exceptions are used to give more information

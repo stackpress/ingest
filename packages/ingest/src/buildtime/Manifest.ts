@@ -6,30 +6,37 @@ import type {
   ESBuildOptions,
   Transpiler
 } from './types';
+import type EventEmitter from './EventEmitter';
 
 import path from 'path';
 import esbuild from 'esbuild';
-import FileLoader from './filesystem/FileLoader';
-import NodeFS from './filesystem/NodeFS';
+import FileLoader from '../filesystem/FileLoader';
+import NodeFS from '../filesystem/NodeFS';
+import Request from '../payload/Request';
+
+import Event from '../event/Event';
+import Emitter from './Emitter';
+
 import { esIngestPlugin } from './plugins';
-import TaskQueue from './TaskSorter';
 import { serialize } from './helpers';
 
 export default class Manifest extends Set<BuildInfo> {
+  public readonly emitter: EventEmitter;
   //loader
   public readonly loader: FileLoader;
   //build options
   public readonly options: ESBuildOptions;
   //build directory
-  public readonly builddir: string;
+  public readonly buildDir: string;
   //manifest path
   public readonly path: string;
 
   /**
    * Presets and distributes all the options
    */
-  public constructor(options: BuildOptions = {}) {
+  public constructor(emitter: EventEmitter, options: BuildOptions = {}) {
     super();
+    this.emitter = emitter;
     const { 
       fs = new NodeFS(),
       cwd = process.cwd(),
@@ -49,8 +56,8 @@ export default class Manifest extends Set<BuildInfo> {
       write: true,
       ...build
     };
-    this.builddir = this.loader.absolute(buildDir);
-    this.path = path.resolve(this.builddir, manifestName);
+    this.buildDir = this.loader.absolute(buildDir);
+    this.path = path.resolve(this.buildDir, manifestName);
   }
 
   /**
@@ -59,27 +66,35 @@ export default class Manifest extends Set<BuildInfo> {
   public async build(transpile: Transpiler) {
     const vfs = new Map<string, SourceFile>();
     const build = new Set<BuildResult>();
-    for (const { tasks, ...info } of this) {
-      //create a new task queue
-      const queue = new TaskQueue();
-      //add each task (this will sort the entry files by priority)
-      tasks.forEach(task => queue.add(task.entry, task.priority));
-      //extract the entries from the task queue
-      const entries = Array.from(queue.tasks).map(task => task.entry);
+    //this is a mock event needed in order to use the emitter
+    //the emitter is used here for sorting purposes only
+    const event = new Event(this.emitter, new Request(), '.*');
+    for (const { listeners, ...info } of this) {
+      //create a new emitter we will use for just sorting purposes...
+      const emitter = new Emitter();
+      //add each route to the emitter 
+      //(this will sort the entry files by priority)
+      listeners.forEach(
+        listener => emitter.add(event, listener.action, listener.priority)
+      );
+      //extract the actions from the emitter queue
+      const actions = Array.from(emitter.queue).map(
+        listener => listener.action
+      );
       //make an id from the sorted combination of entries
-      const id = serialize(entries.join(','));
+      const id = serialize(actions.join(','));
       //determine the source and destination paths
-      const source = path.join(this.builddir, `${id}.ts`);
-      const destination = path.join(this.builddir, `${id}.js`);
-      //add to the virtual file system
-      vfs.set(source, transpile({...info, entries }));
-      //add to the build results
+      const source = path.join(this.buildDir, `${id}.ts`);
+      const destination = path.join(this.buildDir, `${id}.js`);
+      //add the transpiled source code to the virtual file system
+      vfs.set(source, transpile({...info, actions }));
+      //then pre-add the bundled entry file to the build results
       build.add({ ...info, id, entry: destination });
     }
-    //build all files to disk
+    //build out all the files we collected to disk
     const results = await esbuild.build({  
       ...this.options,
-      outdir: this.builddir,
+      outdir: this.buildDir,
       entryPoints: Array.from(vfs.keys()),
       plugins: [ esIngestPlugin(vfs, this.loader) ]
     });
@@ -93,7 +108,7 @@ export default class Manifest extends Set<BuildInfo> {
   public toArray() {
     return Array.from(this).map(build => ({ 
       ...build, 
-      tasks: Array.from(build.tasks) 
+      tasks: Array.from(build.listeners) 
     }));
   }
 

@@ -1,6 +1,6 @@
 import type { PluginBuild } from 'esbuild';
 import type { SourceFile } from 'ts-morph';
-import type FileLoader from './filesystem/FileLoader';
+import type FileLoader from '../filesystem/FileLoader';
 
 import path from 'path';
 import { toTS } from './helpers';

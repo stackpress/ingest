@@ -1,4 +1,4 @@
-import type { ResponseDispatcher } from '../runtime/types';
+import type { Body, ResponseDispatcher } from './types';
 
 import Payload from './Payload';
 import Nest from './Nest';
@@ -6,14 +6,14 @@ import Nest from './Nest';
 import { WriteSession } from './Session';
 
 export default class Response extends Payload {
+  //session controller
+  public readonly session = new WriteSession();
+  //error controller
+  public readonly errors = new Nest();
   //response status code
   protected _code = 0;
   //response dispatcher
   protected _dispatcher?: ResponseDispatcher;
-  //error controller
-  protected _errors = new Nest();
-  //session controller
-  protected _session = new WriteSession();
   //whether if the response was sent
   protected _sent = false;
   //response status message
@@ -27,26 +27,12 @@ export default class Response extends Payload {
   public get code() {
     return this._code;
   }
-
-  /**
-   * Returns the error controller
-   */
-  public get errors() {
-    return this._errors;
-  }
   
   /**
    * Returns whether if the response was sent
    */
   public get sent() {
     return this._sent;
-  }
-
-  /**
-   * Returns the session controller
-   */
-  public get session() {
-    return this._session;
   }
 
   /**
@@ -61,6 +47,13 @@ export default class Response extends Payload {
    */
   public get total() {
     return this._total;
+  }
+
+  /**
+   * Manually sets the body
+   */
+  public set body(value: Body|null) {
+    this._body = value;
   }
 
   /**
@@ -89,6 +82,13 @@ export default class Response extends Payload {
    */
   public set total(total: number) {
     this._total = total;
+  }
+
+  /**
+   * Manually sets the request body mimetype
+   */
+  public set type(value: string) {
+    this._type = value;
   }
 
   /**

@@ -1,15 +1,14 @@
 import type { ServerOptions } from 'http';
 import type { BuildtimeOptions } from '../buildtime/types';
-
-export type { IM, SR } from './helpers';
+export type { IM, SR } from './types';
 
 import path from 'path';
-import NodeFS from '../buildtime/filesystem/NodeFS';
-import FileLoader from '../buildtime/filesystem/FileLoader';
+import NodeFS from '../filesystem/NodeFS';
+import FileLoader from '../filesystem/FileLoader';
 import Router from '../buildtime/Router';
+import Developer from '../buildtime/Server';
 
 import Builder from './Builder';
-import Developer from './Developer';
 import Server from './Server';
 
 import Nest from '../payload/Nest';
@@ -28,8 +27,8 @@ import {
 
 export {
   Builder,
-  Developer,
   Server,
+  Developer,
   Nest,
   Payload,
   Request,
@@ -69,7 +68,6 @@ export default function http(options: BuildtimeOptions = {}) {
     router,
     builder,
     loader,
-    context: server.context,
     build: () => builder.build({ ...build, fs, cwd, buildDir, manifestName }),
     create: (options: ServerOptions = {}) => server.create(options),
     develop: (options: ServerOptions = {}) => developer.create(options),

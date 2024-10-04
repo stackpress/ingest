@@ -1,22 +1,18 @@
-import type { Task, TaskRunner } from './types';
+import type { StatusCode, EventListener } from './types';
 import type Request from '../payload/Request';
 import type Response from '../payload/Response';
-import type Context from './Context';
-
-import Status from './StatusCode';
+import type Event from './Event';
 
 /**
- * A task queue linearly executes each task
+ * Queues event listeners and runs the specified in order
  */
-export default class TaskQueue {
+export default abstract class Emitter<A> {
   //The in memory task queue. Dont use 
   //Set because we will be sorting constantly
-  public readonly queue: Task[] = [];
-
+  public readonly queue: EventListener<A>[] = [];
   //Used when determining what is the lowest
   //priority when pushing into the queue
   protected _lower: number = 0;
-
   //Used when determining what is the lowest 
   //priority when shifting into the queue
   protected _upper: number = 0;
@@ -31,7 +27,7 @@ export default class TaskQueue {
   /**
    * Adds a task to the queue
    */
-  add(callback: TaskRunner, priority: number = 0) {
+  public add(event: Event<A>, action: A, priority: number = 0) {
     if (priority > this._upper) {
       this._upper = priority;
     } else if (priority < this._lower) {
@@ -39,7 +35,7 @@ export default class TaskQueue {
     }
 
     //fifo by default
-    this.queue.push({ callback, priority });
+    this.queue.push({ event, action, priority });
 
     //then sort by priority
     this.queue.sort((a, b) => {
@@ -52,33 +48,24 @@ export default class TaskQueue {
   /**
    * Adds a task to the bottom of the queue
    */
-  push(callback: TaskRunner) {
-    return this.add(callback, this._lower - 1);
+  public push(event: Event<A>, action: A) {
+    return this.add(event, action, this._lower - 1);
   }
 
   /**
    * Adds a task to the top of the queue
    */
-  shift(callback: TaskRunner) {
-    return this.add(callback, this._upper + 1);
+  public shift(event: Event<A>, action: A) {
+    return this.add(event, action, this._upper + 1);
   }
 
   /**
    * Runs the tasks
    */
-  public async run(req: Request, res: Response, ctx: Context) {
-    if (!this.queue.length) {
-      //report a 404
-      return Status.NOT_FOUND;
-    }
-
-    while (this.queue.length) {
-      const task = (this.queue.shift() as Task);
-      if (await task.callback(req, res, ctx) === false) {
-        return Status.ABORT;
-      }
-    }
-
-    return Status.OK;
-  }
+  public abstract emit(
+    req: Request, 
+    res: Response, 
+    event?: Event<A>,
+    cache?: boolean
+  ): Promise<StatusCode>;
 };

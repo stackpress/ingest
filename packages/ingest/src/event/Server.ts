@@ -1,30 +1,23 @@
-import type { ServerOptions } from 'http';
-import type { IM, SR } from './helpers';
+import type EventEmitter from './EventEmitter';
 
-import http from 'http';
 import Exception from '../Exception';
-import StatusCode from '../runtime/StatusCode';
 import Request from '../payload/Request';
 import Response from '../payload/Response';
-import { loader, dispatcher, imToURL } from './helpers';
-import Router from '../buildtime/Router';
+import StatusCode from './StatusCode';
 
-export default class Developer {
-  //runtime context shareable to all endpoints
-  public readonly context: Router;
-
-  /**
-   * Pass the router to the context
-   */
-  public constructor(router: Router) {
-    this.context = router;
-  }
+export default abstract class Server<A, R, S> {
+  //router to handle the requests
+  public readonly emitter: EventEmitter<A>;
+  //whether to use the require cache
+  //when an entry is loaded
+  public readonly cache: boolean;
 
   /**
-   * Creates an HTTP server with the given options
+   * Sets up the emitter
    */
-  public create(options: ServerOptions = {}) {
-    return http.createServer(options, (im, sr) => this.handle(im, sr));
+  public constructor(emitter: EventEmitter<A>, cache = true) {
+    this.emitter = emitter;
+    this.cache = cache;
   }
 
   /**
@@ -32,7 +25,7 @@ export default class Developer {
    */
   public async dispatch(req: Request, res: Response) {
     //emit a response event
-    const status = await this.context.emit('response', req, res, false);
+    const status = await this.emitter.emit('response', req, res, this.cache);
     //if the status was incomplete (308)
     return status.code !== StatusCode.ABORT.code;
   }
@@ -64,47 +57,13 @@ export default class Developer {
   /**
    * Handles fetch requests
    */
-  public async handle(im: IM, sr: SR) {
-    //initialize the request
-    const { event, req, res } = await this.initialize(im, sr);
-    try { //to load the body
-      await req.load();
-      //then try to emit the event
-      await this.emit(event, req, res);
-    } catch(e) {
-      const error = e as Error;
-      res.code = res.code && res.code !== 200 
-        ? res.code: 500;
-      res.status = res.status && res.status !== 'OK' 
-        ? res.status : error.message;
-      //let middleware contribute after error
-      await this.context.emit('error', req, res, false);
-    }
-    //if the response was not sent by now,
-    if (!res.sent) {
-      //send the response
-      res.dispatch();
-    }
-    return sr;
-  }
-
-  /**
-   * Sets up the request, response and determines the event
-   */
-  public async initialize(im: IM, sr: SR) {
-    const req = new Request();
-    req.loader = loader(im);
-    const res = new Response();
-    res.dispatcher = dispatcher(sr);
-    const event = im.method + ' ' + imToURL(im).pathname;
-    return { event, req, res };
-  }
+  public abstract handle(request: R, response?: S): Promise<S>;
 
   /**
    * 1. Runs the 'request' event and interprets
    */
   public async prepare(req: Request, res: Response) {
-    const status = await this.context.emit('request', req, res, false);
+    const status = await this.emitter.emit('request', req, res, this.cache);
     //if the status was incomplete (308)
     return status.code !== StatusCode.ABORT.code;
   }
@@ -113,7 +72,7 @@ export default class Developer {
    * 2. Runs the route event and interprets
    */
   public async process(event: string, req: Request, res: Response) {
-    const status = await this.context.emit(event, req, res, false);
+    const status = await this.emitter.emit(event, req, res, this.cache);
     //if the status was incomplete (308)
     if (status.code === StatusCode.ABORT.code) {
       //the callback that set that should have already processed

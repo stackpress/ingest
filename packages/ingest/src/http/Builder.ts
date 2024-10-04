@@ -45,7 +45,7 @@ export default class Builder {
     //create a new source file
     const { source } = createSourceFile('entry.ts', this._tsconfig);
     //import task1 from [entry]
-    info.entries.forEach((entry, i) => {
+    info.actions.forEach((entry, i) => {
       source.addImportDeclaration({
         moduleSpecifier: entry,
         defaultImport: `task_${i}`
@@ -65,7 +65,7 @@ export default class Builder {
       }]
     });
     //queue.add(task_0);
-    info.entries.forEach((_, i) => {
+    info.actions.forEach((_, i) => {
       source.addStatements(`queue.add(task_${i});`);
     });
     source.addStatements('exports.queue = queue;');

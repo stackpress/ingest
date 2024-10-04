@@ -1,20 +1,26 @@
-import type { IncomingMessage, ServerResponse } from 'http';
-import type { CookieOptions } from '../runtime/types';
+import type { IM, SR } from './types';
+import type { CookieOptions, LoaderResponse } from '../payload/types';
 
 import cookie from 'cookie';
 import Request from '../payload/Request';
 import Response from '../payload/Response';
 import { 
+  isHash,
   objectFromJson, 
   objectFromQuery, 
   objectFromFormData,
   withUnknownHost
-} from '../runtime/helpers';
+} from '../helpers';
 
 import Exception from '../Exception';
 
-export type IM = IncomingMessage;
-export type SR = ServerResponse<IncomingMessage>;
+export { 
+  isHash,
+  objectFromJson, 
+  objectFromQuery, 
+  objectFromFormData,
+  withUnknownHost
+};
 
 /**
  * Returns the parsed form data from the request body (if any)
@@ -74,24 +80,11 @@ export function imQueryToObject(resource: IM) {
  */
 export function loader(resource: IM, size = 0) {
   return (req: Request) => {
-    return new Promise<void>(resolve => {
+    return new Promise<LoaderResponse|undefined>(resolve => {
       //if the body is cached
       if (req.body !== null) {
-        resolve();
+        resolve(undefined);
       }
-      //set the type
-      req.type = resource.headers['content-type'] || 'text/plain';
-      //set the headers
-      Object.entries(resource.headers)
-        .filter(([key, value]) => typeof value !== 'undefined')
-        .forEach(([key, value]) => {
-          req.headers.set(key, value as string|string[]);
-        });
-      //set session
-      const session = cookie.parse(resource.headers.cookie as string || '');
-      Object.entries(session).forEach(([key, value]) => {
-        req.session.set(key, value);
-      });
 
       //we can only request the body once
       //so we need to cache the results
@@ -103,16 +96,7 @@ export function loader(resource: IM, size = 0) {
         }
       });
       resource.on('end', () => {
-        //set body
-        req.body = body;
-        //set data
-        req.data.set(Object.assign({},
-          imQueryToObject(resource),
-          resource.headers,
-          Object.fromEntries(req.session),
-          formDataToObject(req.type, req.body)
-        ));
-        resolve();
+        resolve({ body, post: formDataToObject(req.type, body) });
       });
     });
   } 
@@ -148,7 +132,7 @@ export function dispatcher(
         }
       }
       //write headers
-      for (const [ name, value ] of res.headers) {
+      for (const [ name, value ] of res.headers.entries()) {
         resource.setHeader(name, value);
       }
       //set content type
@@ -159,20 +143,22 @@ export function dispatcher(
         || res.body instanceof Uint8Array
       ) {
         resource.end(res.body);
-      //if there even is a body
-      } else if (typeof res.body !== 'undefined' && res.body !== null) {
-        resource.end(res.body.toString());
-      //by default we will send a JSON from the data
-      } else {
+      //if body is an object or array
+      } else if (isHash(res.body) || Array.isArray(res.body)) {
         resource.setHeader('Content-Type', 'application/json');
         resource.end(JSON.stringify({
           code: res.code,
           status: res.status,
-          results: res.data.size > 0 ? res.data.get() : undefined,
+          results: res.body,
           errors: res.errors.size > 0 ? res.errors.get() : undefined,
           total: res.total > 0 ? res.total : undefined
         }));
       }
+      //type Body = string | Buffer | Uint8Array 
+      // | Record<string, unknown> | unknown[]
+
+      //we cased for all possible types so it's 
+      //better to not infer the response body
       resolve();
     });
   } 

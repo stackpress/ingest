@@ -1,14 +1,16 @@
-import type { Revision } from '../runtime/types';
+import type { Revision } from './types';
+
+import ReadonlyMap from './readonly/Map';
 
 /**
  * Readonly session controller
  */
-export class ReadSession extends Map<string, string|string[]> {
+export class ReadSession extends ReadonlyMap<string, string|string[]> {
   /**
    * Returns the session data
    */
   public get data() {
-    return Object.fromEntries(this);
+    return Object.fromEntries(this._map);
   }
 }
 
@@ -26,7 +28,7 @@ export class WriteSession extends ReadSession {
     for (const name of this.keys()) {
       this.revisions.set(name, { action: 'remove' });
     }
-    super.clear();
+    this._map.clear();
   }
 
   /**
@@ -34,7 +36,7 @@ export class WriteSession extends ReadSession {
    */
   public delete(name: string) {
     this.revisions.set(name, { action: 'remove' });
-    return super.delete(name);
+    return this._map.delete(name);
   }
 
   /**
@@ -42,6 +44,6 @@ export class WriteSession extends ReadSession {
    */
   public set(name: string, value: string|string[]) {
     this.revisions.set(name, { action: 'set', value });
-    return super.set(name, value);
+    return this._map.set(name, value);
   }
 }

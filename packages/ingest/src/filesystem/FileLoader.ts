@@ -1,4 +1,4 @@
-import type { FileSystem } from '../types';
+import type { FileSystem } from './types';
 
 import path from 'path';
 

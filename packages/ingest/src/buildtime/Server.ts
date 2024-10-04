@@ -1,57 +1,16 @@
 import type { ServerOptions } from 'http';
-import type FileLoader from '../filesystem/FileLoader';
-import type Emitter from '../event/Emitter';
-import type { ActionCallback } from '../event/types';
-import type { BuildResult } from '../buildtime/types';
-import type { IM, SR } from './types';
+import type { ActionFile } from '../event/types';
+import type { IM, SR } from '../http/types';
 
 import http from 'http';
 import cookie from 'cookie';
 import AbstractServer from '../event/Server';
-import EventEmitter from '../runtime/EventEmitter';
 import Request from '../payload/Request';
 import Response from '../payload/Response';
 import { loader, dispatcher, imToURL } from '../http/helpers';
 import { objectFromQuery } from '../helpers';
 
-export default class Server extends AbstractServer<ActionCallback, IM, SR> {
-  /**
-   * Sets up the emitter
-   */
-  public constructor(manifest: string, loader: FileLoader) {
-    super(new EventEmitter());
-    //check if the manifest exists
-    if (!loader.fs.existsSync(manifest)) return;
-    //get the manifest
-    const contents = loader.fs.readFileSync(manifest, 'utf8');
-    //parse the manifest
-    const results = JSON.parse(contents) as BuildResult[];
-    //make sure build is an array
-    if (!Array.isArray(results)) return;
-    //loop through the manifest
-    results.forEach(({ pattern, entry, event }) => {
-      const regex = pattern?.toString() || '';
-      const listener = pattern ? new RegExp(
-        // pattern,
-        regex.substring(
-          regex.indexOf('/') + 1,
-          regex.lastIndexOf('/')
-        ),
-        // flag
-        regex.substring(
-          regex.lastIndexOf('/') + 1
-        )
-      ) : event;
-      //and add the routes
-      this.emitter.on(listener, async (req, res, ctx) => {
-        const { emitter } = await import(entry) as { 
-          emitter: Emitter<ActionCallback> 
-        };
-        await emitter.emit(req, res, ctx);
-      });
-    });
-  }
-
+export default class Server extends AbstractServer<ActionFile, IM, SR> {
   /**
    * Creates an HTTP server with the given options
    */

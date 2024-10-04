@@ -1,16 +1,34 @@
-import type { Body } from '../runtime/types';
+import type { Body, PayloadInitializer } from './types';
 
-import Nest from './Nest';
+import ReadonlyMap from './readonly/Map';
+import { isHash } from '../helpers';
 
 export default class Payload {
-  //request body
-  protected _body?: Body|null;
-  //data controller
-  protected _data = new Nest();
   //head controller
-  protected _headers = new Map<string, string|string[]>();
-  //response mimetype
-  protected _type = 'plain/text';
+  public readonly headers: ReadonlyMap<string, string|string[]>;
+  //payload body
+  protected _body: Body|null;
+  //body mimetype
+  protected _type: string;
+  
+  /**
+   * Sets the initial values of the payload
+   */
+  constructor(init: PayloadInitializer = {}) {
+    this._type = init.type || 'text/plain';
+    this._body = init.body || null;
+    if (init.headers instanceof Map) {
+      this.headers = new ReadonlyMap<string, string|string[]>(
+        Array.from(init.headers.entries())
+      );
+    } else if (isHash(init.headers)) {
+      this.headers = new ReadonlyMap<string, string|string[]>(
+        Object.entries(init.headers as Record<string, string|string[]>)
+      );
+    } else {
+      this.headers = new ReadonlyMap<string, string|string[]>();
+    }
+  }
 
   /**
    * Returns the body
@@ -20,37 +38,9 @@ export default class Payload {
   }
 
   /**
-   * Returns the data controller
-   */
-  public get data() {
-    return this._data;
-  }
-
-  /**
-   * Returns the head controller
-   */
-  public get headers() {
-    return this._headers;
-  }
-
-  /**
    * Returns the request body mimetype
    */
   public get type() {
     return this._type;
-  }
-
-  /**
-   * Manually sets the body
-   */
-  public set body(value: Body|null) {
-    this._body = value;
-  }
-
-  /**
-   * Manually sets the request body mimetype
-   */
-  public set type(value: string) {
-    this._type = value;
   }
 }
