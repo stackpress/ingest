@@ -1,10 +1,10 @@
-import type { Listener, Listenable, Method, Route } from './types';
+import type { Listener, Listenable, Method, RouteInfo } from './types';
 
-import Status from './StatusCode';
+import Status from './Status';
 
 import Request from '../payload/Request';
 import Response from '../payload/Response';
-
+import Route from './Route';
 import Event from './Event';
 import Emitter from './Emitter';
 
@@ -14,14 +14,35 @@ import Emitter from './Emitter';
  * on an action. With events you can add extra functionality
  * right after the event has triggered.
  */
-export default abstract class EventEmitter<A> {
+export default abstract class Router<A> {
   //A route map to task queues
   public readonly listeners = new Map<string, Set<Listener<A>>>();
   //Event regular expression map
   public readonly regexp = new Set<string>();
   //map of event names to routes 
   //^${method}\\s${pattern}/*$ -> { method, path }
-  public readonly routes = new Map<string, Route>;
+  public readonly routes = new Map<string, RouteInfo>;
+
+  /**
+   * Route for any method
+   */
+  public all(path: string, action: A, priority?: number) {
+    return this.route('[A-Z]+', path, action, priority);
+  }
+
+  /**
+   * Route for CONNECT method
+   */
+  public connect(path: string, action: A, priority?: number) {
+    return this.route('CONNECT', path, action, priority);
+  }
+
+  /**
+   * Route for DELETE method
+   */
+  public delete(path: string, action: A, priority?: number) {
+    return this.route('DELETE', path, action, priority);
+  }
 
   /**
    * Calls all the actions of the given 
@@ -62,19 +83,27 @@ export default abstract class EventEmitter<A> {
   public abstract emitter(): Emitter<A>;
 
   /**
+   * Route for GET method
+   */
+  public get(path: string, action: A, priority?: number) {
+    return this.route('GET', path, action, priority);
+  }
+
+  /**
+   * Route for HEAD method
+   */
+  public head(path: string, action: A, priority?: number) {
+    return this.route('HEAD', path, action, priority);
+  }
+
+  /**
    * Returns possible event matches
    */
   public match(trigger: string, req: Request) {
     const matches: Record<string, Event<A>> = {};
     //first do the obvious match
     if (this.listeners.has(trigger)) {
-      matches[trigger] = new Event(this, req, {
-        type: 'event',
-        method: 'ALL',
-        route: trigger,
-        event: trigger,
-        trigger
-      });
+      matches[trigger] = new Event(this, req, { event: trigger, trigger });
     }
 
     //next do the calculated matches
@@ -125,14 +154,21 @@ export default abstract class EventEmitter<A> {
       //registry map. This means the key of the route is always in
       //the regexp registry set
       const route = this.routes.get(pattern);
-      matches[pattern] = new Event(this, req, {
-        type: route ? 'route': 'event',
-        method: route?.method || 'ALL',
-        route: route?.path || pattern,
-        event: pattern,
-        pattern: regexp,
-        trigger
-      });
+      if (route) {
+        matches[pattern] = new Route(this, req, {
+          method: route.method,
+          path: route.path,
+          event: pattern,
+          pattern: regexp,
+          trigger
+        });
+      } else {
+        matches[pattern] = new Event(this, req, {
+          event: pattern,
+          pattern: regexp,
+          trigger
+        });
+      }
     });
 
     return matches;
@@ -168,6 +204,34 @@ export default abstract class EventEmitter<A> {
   }
 
   /**
+   * Route for OPTIONS method
+   */
+  public options(path: string, action: A, priority?: number) {
+    return this.route('OPTIONS', path, action, priority);
+  }
+
+  /**
+   * Route for PATCH method
+   */
+  public patch(path: string, action: A, priority?: number) {
+    return this.route('PATCH', path, action, priority);
+  }
+
+  /**
+   * Route for POST method
+   */
+  public post(path: string, action: A, priority?: number) {
+    return this.route('POST', path, action, priority);
+  }
+
+  /**
+   * Route for PUT method
+   */
+  public put(path: string, action: A, priority?: number) {
+    return this.route('PUT', path, action, priority);
+  }
+
+  /**
    * Returns a route
    */
   public route(
@@ -194,6 +258,13 @@ export default abstract class EventEmitter<A> {
     //add to tasks
     this.on(event, action, priority);
     return this;
+  }
+
+  /**
+   * Route for TRACE method
+   */
+  public trace(path: string, action: A, priority?: number) {
+    return this.route('TRACE', path, action, priority);
   }
 
   /**

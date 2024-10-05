@@ -8,14 +8,16 @@ import type { IM, SR } from './types';
 
 import http from 'http';
 import cookie from 'cookie';
+import Exception from '../Exception';
 import AbstractServer from '../event/Server';
-import EventEmitter from '../runtime/EventEmitter';
+import Status from '../event/Status';
+import EventEmitter from '../runtime/Router';
 import Request from '../payload/Request';
 import Response from '../payload/Response';
 import { loader, dispatcher, imToURL } from '../http/helpers';
 import { objectFromQuery } from '../helpers';
 
-export default class Server extends AbstractServer<ActionCallback, IM, SR> {
+export default class Server extends AbstractServer<ActionCallback, IM, SR, SR> {
   /**
    * Sets up the emitter
    */
@@ -46,7 +48,7 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR> {
       if (type === 'endpoint') {
         //we use the route() instead of the on()
         //this is so we know what to extract from the url
-        return this.emitter.route(method, route, action);
+        return this.router.route(method, route, action);
       }
       //it's an event
       const regex = pattern?.toString() || '';
@@ -62,7 +64,7 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR> {
         )
       ) : event;
       //and add the routes
-      this.emitter.on(listener, action);
+      this.router.on(listener, action);
     });
   }
 
@@ -71,6 +73,40 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR> {
    */
   public create(options: ServerOptions = {}) {
     return http.createServer(options, (im, sr) => this.handle(im, sr));
+  }
+
+  /**
+   * Handles a payload using events
+   */
+  public async emit(event: string, req: Request, res: Response) {
+    const status = await this.router.emit(event, req, res, this.cache);
+    //if the status was incomplete (308)
+    if (status.code === Status.ABORT.code) {
+      //the callback that set that should have already processed
+      //the request and is signaling to no longer continue
+      return false;
+    }
+
+    //if no body and status code
+    //NOTE: it's okay if there is no body as 
+    //      long as there is a status code
+    //ex. like in the case of a redirect
+    if (!res.body && !res.code) {
+      res.code = Status.NOT_FOUND.code;
+      throw Exception
+        .for(Status.NOT_FOUND.message)
+        .withCode(Status.NOT_FOUND.code);
+    }
+
+    //if no status was set
+    if (!res.code || !res.status) {
+      //make it okay
+      res.code = Status.OK.code;
+      res.status = Status.OK.message;
+    }
+
+    //if the status was incomplete (308)
+    return status.code !== Status.ABORT.code;
   }
 
   /**
@@ -90,7 +126,7 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR> {
       res.status = res.status && res.status !== 'OK' 
         ? res.status : error.message;
       //let middleware contribute after error
-      await this.emitter.emit('error', req, res, this.cache);
+      await this.router.emit('error', req, res, this.cache);
     }
     //if the response was not sent by now,
     if (!res.sent) {
@@ -131,5 +167,29 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR> {
     res.dispatcher = dispatcher(sr);
     const event = im.method + ' ' + imToURL(im).pathname;
     return { event, req, res };
+  }
+
+  /**
+   * Runs the route event and interprets
+   */
+  public async process(event: string, req: Request, res: Response) {
+    //try to trigger request pre-processors
+    if (!await this.prepare(req, res)) {
+      //if the request exits, then stop
+      return false;
+    }
+    // from here we can assume that it is okay to
+    // continue with processing the routes
+    if (!await this.emit(event, req, res)) {
+      //if the request exits, then stop
+      return false;
+    }
+    //last call before dispatch
+    if (!await this.dispatch(req, res)) {
+      //if the dispatch exits, then stop
+      return false;
+    }
+    //anything else?
+    return true;
   }
 }

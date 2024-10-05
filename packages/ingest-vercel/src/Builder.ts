@@ -26,7 +26,7 @@ export default class Builder extends HTTPBuilder{
       defaultImport: 'TaskQueue'
     });
     //import task1 from [entry]
-    info.entries.forEach((entry, i) => {
+    info.actions.forEach((entry, i) => {
       source.addImportDeclaration({
         moduleSpecifier: entry,
         defaultImport: `task_${i}`
@@ -41,7 +41,7 @@ export default class Builder extends HTTPBuilder{
       statements: (`
         const server = new Server();
         const queue = new TaskQueue();
-        ${info.entries.map(
+        ${info.actions.map(
           (_, i) => `queue.add(task_${i});`
         ).join('\n')}
         return server.handle(request, queue);

@@ -1,5 +1,5 @@
 import type { SourceFile, ProjectOptions } from 'ts-morph';
-import type EventEmitter from './EventEmitter';
+import type Router from './Router';
 
 import crypto from 'crypto';
 import { Project } from 'ts-morph';
@@ -9,14 +9,8 @@ import Request from '../payload/Request';
 /**
  * Mocks an event
  */
-export function mockEvent(emitter: EventEmitter) {
-  return new Event(emitter, new Request(), {
-    type: 'event',
-    method: 'ALL',
-    route: '.*',
-    event: '.*',
-    trigger: 'any'
-  })
+export function mockEvent(emitter: Router) {
+  return new Event(emitter, new Request(), { event: '.*', trigger: 'any' });
 }
 
 /**

@@ -6,7 +6,7 @@ import type {
   ESBuildOptions,
   Transpiler
 } from './types';
-import type EventEmitter from './EventEmitter';
+import type Router from './Router';
 
 import path from 'path';
 import esbuild from 'esbuild';
@@ -18,7 +18,7 @@ import { esIngestPlugin } from './plugins';
 import { serialize, mockEvent } from './helpers';
 
 export default class Manifest extends Set<BuildInfo> {
-  public readonly emitter: EventEmitter;
+  public readonly emitter: Router;
   //loader
   public readonly loader: FileLoader;
   //build options
@@ -31,7 +31,7 @@ export default class Manifest extends Set<BuildInfo> {
   /**
    * Presets and distributes all the options
    */
-  public constructor(emitter: EventEmitter, options: BuildOptions = {}) {
+  public constructor(emitter: Router, options: BuildOptions = {}) {
     super();
     this.emitter = emitter;
     const { 

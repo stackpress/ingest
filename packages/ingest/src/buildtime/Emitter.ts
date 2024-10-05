@@ -4,7 +4,7 @@ import type Request from '../payload/Request';
 import type Response from '../payload/Response';
 
 import AbstractEmitter from '../event/Emitter';
-import Status from '../event/StatusCode';
+import Status from '../event/Status';
 
 /**
  * Queues event listeners and runs the specified in order

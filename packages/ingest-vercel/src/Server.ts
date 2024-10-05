@@ -1,17 +1,14 @@
-import type { FetchRequest } from './helpers';
-import type TaskQueue from '@stackpress/ingest/dist/runtime/TaskQueue';
+import type { FetchRequest, FetchResponse } from './helpers';
+import type { ActionCallback } from '@stackpress/ingest/dist/event/types';
+import type Emitter from '@stackpress/ingest/dist/runtime/Emitter';
 
-import StatusCode from '@stackpress/ingest/dist/runtime/StatusCode';
-import Context from '@stackpress/ingest/dist/runtime/Context';
+import StatusCode from '@stackpress/ingest/dist/event/StatusCode';
 import Request from '@stackpress/ingest/dist/payload/Request';
 import Response from '@stackpress/ingest/dist/payload/Response';
 import Exception from '@stackpress/ingest/dist/Exception';
 import { loader, response } from './helpers';
 
 export default class Server {
-  //runtime context shareable to all endpoints
-  public readonly context = new Context();
-
   /**
    * 3. Runs the 'response' event and interprets
    */
@@ -26,7 +23,7 @@ export default class Server {
    * Emit a series of events in order to catch and 
    * manipulate the payload in different stages
    */
-  public async emit(queue: TaskQueue, req: Request, res: Response) {
+  public async emit(queue: Emitter, req: Request, res: Response) {
     //try to trigger request pre-processors
     if (!await this.prepare(req, res)) {
       //if the request exits, then stop

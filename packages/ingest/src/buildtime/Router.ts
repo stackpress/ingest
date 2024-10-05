@@ -1,44 +1,22 @@
+import type { ActionFile } from '../event/types';
 import type { BuildOptions } from './types';
-import EventEmitter from './EventEmitter';
+
+import AbstractRouter from '../event/Router';
+import Emitter from './Emitter';
 import Manifest from './Manifest';
 
 /**
- * Allows requests to be routed to a callback to be processed
+ * Allows the ability to listen to events made known by another
+ * piece of functionality. Events are items that transpire based
+ * on an action. With events you can add extra functionality
+ * right after the event has triggered.
  */
-export default class Router extends EventEmitter {
+export default class Router extends AbstractRouter<ActionFile> {
   /**
-   * Route for any method
+   * Returns a new emitter instance
    */
-  public all(path: string, entry: string, priority?: number) {
-    return this.route('[A-Z]+', path, entry, priority);
-  }
-
-  /**
-   * Route for CONNECT method
-   */
-  public connect(path: string, entry: string, priority?: number) {
-    return this.route('CONNECT', path, entry, priority);
-  }
-
-  /**
-   * Route for DELETE method
-   */
-  public delete(path: string, entry: string, priority?: number) {
-    return this.route('DELETE', path, entry, priority);
-  }
-
-  /**
-   * Route for HEAD method
-   */
-  public head(path: string, entry: string, priority?: number) {
-    return this.route('HEAD', path, entry, priority);
-  }
-
-  /**
-   * Route for GET method
-   */
-  public get(path: string, entry: string, priority?: number) {
-    return this.route('GET', path, entry, priority);
+  public emitter() {
+    return new Emitter();
   }
 
   /**
@@ -68,39 +46,4 @@ export default class Router extends EventEmitter {
     });
     return manifest;
   }
-
-  /**
-   * Route for OPTIONS method
-   */
-  public options(path: string, entry: string, priority?: number) {
-    return this.route('OPTIONS', path, entry, priority);
-  }
-
-  /**
-   * Route for PATCH method
-   */
-  public patch(path: string, entry: string, priority?: number) {
-    return this.route('PATCH', path, entry, priority);
-  }
-
-  /**
-   * Route for POST method
-   */
-  public post(path: string, entry: string, priority?: number) {
-    return this.route('POST', path, entry, priority);
-  }
-
-  /**
-   * Route for PUT method
-   */
-  public put(path: string, entry: string, priority?: number) {
-    return this.route('PUT', path, entry, priority);
-  }
-
-  /**
-   * Route for TRACE method
-   */
-  public trace(path: string, entry: string, priority?: number) {
-    return this.route('TRACE', path, entry, priority);
-  }
-}
+};

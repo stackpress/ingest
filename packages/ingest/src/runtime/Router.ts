@@ -1,6 +1,6 @@
 import type { ActionCallback } from '../event/types';
 
-import AbstractEventEmitter from '../event/EventEmitter';
+import AbstractRouter from '../event/Router';
 import Emitter from './Emitter';
 
 /**
@@ -9,7 +9,7 @@ import Emitter from './Emitter';
  * on an action. With events you can add extra functionality
  * right after the event has triggered.
  */
-export default class EventEmitter extends AbstractEventEmitter<ActionCallback> {
+export default class EventEmitter extends AbstractRouter<ActionCallback> {
   /**
    * Returns a new emitter instance
    */
