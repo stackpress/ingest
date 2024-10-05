@@ -1,9 +1,11 @@
 import { task } from '@stackpress/ingest';
 
-export default task(function hello(req, res, ctx) {
+export default task(function hello(req, res) {
   console.log('zoo zoo zoo');
-  const bar = res.data.get('bar');
-  res.data.set({ 'foo': bar });
   res.code = 200;
   res.status = 'OK';
+  if (res.type === 'object') {
+    const body = res.body as Record<string, unknown>;
+    res.body = { ...body, age: 30 };
+  }
 });

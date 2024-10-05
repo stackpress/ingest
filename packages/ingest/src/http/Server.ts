@@ -1,5 +1,6 @@
 import type { ServerOptions } from 'http';
 import type FileLoader from '../filesystem/FileLoader';
+import type Event from '../event/Event';
 import type Emitter from '../event/Emitter';
 import type { ActionCallback } from '../event/types';
 import type { BuildResult } from '../buildtime/types';
@@ -29,7 +30,25 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR> {
     //make sure build is an array
     if (!Array.isArray(results)) return;
     //loop through the manifest
-    results.forEach(({ pattern, entry, event }) => {
+    results.forEach(({ type, event, pattern, method, route, entry }) => {
+      //transform the action file to an action callback
+      const action = async (
+        req: Request, 
+        res: Response, 
+        evt: Event<ActionCallback>
+      ) => {
+        const { emitter } = await import(entry) as { 
+          emitter: Emitter<ActionCallback> 
+        };
+        await emitter.emit(req, res, evt);
+      }
+      //if it's a route
+      if (type === 'endpoint') {
+        //we use the route() instead of the on()
+        //this is so we know what to extract from the url
+        return this.emitter.route(method, route, action);
+      }
+      //it's an event
       const regex = pattern?.toString() || '';
       const listener = pattern ? new RegExp(
         // pattern,
@@ -43,12 +62,7 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR> {
         )
       ) : event;
       //and add the routes
-      this.emitter.on(listener, async (req, res, ctx) => {
-        const { emitter } = await import(entry) as { 
-          emitter: Emitter<ActionCallback> 
-        };
-        await emitter.emit(req, res, ctx);
-      });
+      this.emitter.on(listener, action);
     });
   }
 
@@ -91,7 +105,7 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR> {
    */
   public async initialize(im: IM, sr: SR) {
     //set the type
-    const type = im.headers['content-type'] || 'text/plain';
+    const mimetype = im.headers['content-type'] || 'text/plain';
     //set the headers
     const headers = Object.fromEntries(
       Object.entries(im.headers).filter(
@@ -106,7 +120,7 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR> {
     const query = objectFromQuery(url.searchParams.toString());
 
     const req = new Request({
-      type,
+      mimetype,
       headers,
       url,
       query,

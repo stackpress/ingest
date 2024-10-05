@@ -27,7 +27,6 @@ import ReadonlyNest from '../payload/readonly/Nest';
 import ReadonlyPath from '../payload/readonly/Path';
 import ReadonlySet from '../payload/readonly/Set';
 import Nest from '../payload/Nest';
-import Payload from '../payload/Payload';
 import Request from '../payload/Request';
 import Response from '../payload/Response';
 import { ReadSession, WriteSession } from '../payload/Session';
@@ -71,7 +70,6 @@ export {
   ReadonlyPath,
   ReadonlySet,
   Nest,
-  Payload,
   Request,
   Response,
   ReadSession,

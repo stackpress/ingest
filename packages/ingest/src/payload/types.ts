@@ -34,7 +34,7 @@ export type RequestLoader = (req: Request) => Promise<LoaderResponse|undefined>;
 export type ResponseDispatcher = (res: Response) => Promise<void>;
 
 export type PayloadInitializer = { 
-  type?: string, 
+  mimetype?: string, 
   headers?: Headers,
   body?: Body
 };

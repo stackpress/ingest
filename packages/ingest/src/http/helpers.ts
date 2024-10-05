@@ -136,7 +136,9 @@ export function dispatcher(
         resource.setHeader(name, value);
       }
       //set content type
-      resource.setHeader('Content-Type', res.type);
+      if (res.mimetype) {
+        resource.setHeader('Content-Type', res.mimetype);
+      }
       //if body is a valid response
       if (typeof res.body === 'string' 
         || Buffer.isBuffer(res.body) 

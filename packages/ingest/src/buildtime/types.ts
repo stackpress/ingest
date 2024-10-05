@@ -1,17 +1,7 @@
 import type { SourceFile } from 'ts-morph';
-import type { Listener, ActionFile } from '../event/types';
+import type { Listener, ActionFile, Method } from '../event/types';
 import type { FileSystem } from '../filesystem/types';
 import type Router from './Router';
-
-//--------------------------------------------------------------------//
-// Router Types
-
-export type Method = 'ALL' 
-  | 'CONNECT' | 'DELETE'  | 'GET' 
-  | 'HEAD'    | 'OPTIONS' | 'PATCH' 
-  | 'POST'    | 'PUT'     | 'TRACE';
-
-export type URI = { method: Method, route: string };
 
 //--------------------------------------------------------------------//
 // Build Types

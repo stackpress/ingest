@@ -1,5 +1,4 @@
-import type { Method, URI, BuildOptions } from './types';
-
+import type { BuildOptions } from './types';
 import EventEmitter from './EventEmitter';
 import Manifest from './Manifest';
 
@@ -7,9 +6,6 @@ import Manifest from './Manifest';
  * Allows requests to be routed to a callback to be processed
  */
 export default class Router extends EventEmitter {
-  //map of event names to routes 
-  public readonly routes = new Map<string, URI>;
-
   /**
    * Route for any method
    */
@@ -55,7 +51,7 @@ export default class Router extends EventEmitter {
       //{ method, route }
       const uri = this.routes.get(event);
       const type = uri ? 'endpoint' : 'function';
-      const route = uri ? uri.route : event;
+      const route = uri ? uri.path : event;
       const pattern = this.regexp.has(event) ? new RegExp(
         // pattern,
         event.substring(
@@ -99,38 +95,6 @@ export default class Router extends EventEmitter {
    */
   public put(path: string, entry: string, priority?: number) {
     return this.route('PUT', path, entry, priority);
-  }
-
-  /**
-   * Returns a route
-   */
-  public route(
-    method: Method|'[A-Z]+', 
-    path: string, 
-    entry: string, 
-    priority?: number
-  ) {
-    //convert path to a regex pattern
-    const pattern = path
-      //replace the :variable-_name01
-      .replace(/(\:[a-zA-Z0-9\-_]+)/g, '*')
-      //replace the stars
-      //* -> ([^/]+)
-      //@ts-ignore Property 'replaceAll' does not exist on type 'string'
-      //but it does exist according to MDN...
-      .replaceAll('*', '([^/]+)')
-      //** -> ([^/]+)([^/]+) -> (.*)
-      .replaceAll('([^/]+)([^/]+)', '(.*)');
-
-    //now form the event pattern
-    const event = new RegExp(`^${method}\\s${pattern}/*$`, 'ig');
-    this.routes.set(event.toString(), {
-      method: method === '[A-Z]+' ? 'ALL' : method,
-      route: path
-    });
-    //add to tasks
-    this.on(event, entry, priority);
-    return this;
   }
 
   /**

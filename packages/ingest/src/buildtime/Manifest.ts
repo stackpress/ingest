@@ -12,13 +12,10 @@ import path from 'path';
 import esbuild from 'esbuild';
 import FileLoader from '../filesystem/FileLoader';
 import NodeFS from '../filesystem/NodeFS';
-import Request from '../payload/Request';
-
-import Event from '../event/Event';
 import Emitter from './Emitter';
 
 import { esIngestPlugin } from './plugins';
-import { serialize } from './helpers';
+import { serialize, mockEvent } from './helpers';
 
 export default class Manifest extends Set<BuildInfo> {
   public readonly emitter: EventEmitter;
@@ -68,7 +65,7 @@ export default class Manifest extends Set<BuildInfo> {
     const build = new Set<BuildResult>();
     //this is a mock event needed in order to use the emitter
     //the emitter is used here for sorting purposes only
-    const event = new Event(this.emitter, new Request(), '.*');
+    const event = mockEvent(this.emitter);
     for (const { listeners, ...info } of this) {
       //create a new emitter we will use for just sorting purposes...
       const emitter = new Emitter();

@@ -50,7 +50,7 @@ export default class Server extends AbstractServer<ActionFile, IM, SR> {
    */
   public async initialize(im: IM, sr: SR) {
     //set the type
-    const type = im.headers['content-type'] || 'text/plain';
+    const mimetype = im.headers['content-type'] || 'text/plain';
     //set the headers
     const headers = Object.fromEntries(
       Object.entries(im.headers).filter(
@@ -65,7 +65,7 @@ export default class Server extends AbstractServer<ActionFile, IM, SR> {
     const query = objectFromQuery(url.searchParams.toString());
 
     const req = new Request({
-      type,
+      mimetype,
       headers,
       url,
       query,

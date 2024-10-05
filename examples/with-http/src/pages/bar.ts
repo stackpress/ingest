@@ -1,7 +1,8 @@
 import { task } from '@stackpress/ingest';
 
-export default task(function hello(req, res, ctx) {
+export default task(function bar(req, res, evt) {
   console.log('bar bar bar');
-  const bar = req.data.get('bar') || 'bar--';
-  res.data.set({ bar });
+  res.mimetype = 'text/json';
+  console.log('bar stage', evt.stage)
+  res.body = { id: evt.stage.id, name: 'John Doe' };
 });

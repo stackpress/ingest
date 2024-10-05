@@ -1,5 +1,7 @@
 import type { ActionCallback } from './event/types';
 import type Event from './event/Event';
+import type Request from './payload/Request';
+import type Response from './payload/Response';
 import Nest from './payload/Nest';
 
 /**

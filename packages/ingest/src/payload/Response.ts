@@ -1,15 +1,26 @@
-import type { Body, ResponseDispatcher } from './types';
+import type { 
+  Body, 
+  ResponseDispatcher,
+  PayloadInitializer
+} from './types';
 
-import Payload from './Payload';
+import ReadonlyMap from './readonly/Map';
 import Nest from './Nest';
 
 import { WriteSession } from './Session';
+import { isHash } from '../helpers';
 
-export default class Response extends Payload {
+export default class Response {
+  //head controller
+  public readonly headers: ReadonlyMap<string, string|string[]>;
   //session controller
   public readonly session = new WriteSession();
   //error controller
   public readonly errors = new Nest();
+  //body mimetype
+  protected _mimetype: string;
+  //payload body
+  protected _body: Body|null;
   //response status code
   protected _code = 0;
   //response dispatcher
@@ -20,6 +31,13 @@ export default class Response extends Payload {
   protected _status = '';
   //total count of possible results
   protected _total = 0;
+
+  /**
+   * Returns the body
+   */
+  public get body() {
+    return typeof this._body !== 'undefined' ? this._body : null;
+  }
 
   /**
    * Returns the status code
@@ -47,6 +65,34 @@ export default class Response extends Payload {
    */
   public get total() {
     return this._total;
+  }
+
+  /**
+   * Returns the request body mimetype
+   */
+  public get mimetype() {
+    return this._mimetype;
+  }
+
+  /**
+   * Returns the type of body
+   * string|Buffer|Uint8Array|Record<string, unknown>|Array<unknown>
+   */
+  public get type() {
+    if (this._body instanceof Buffer) {
+      return 'buffer';
+    } else if (this._body instanceof Uint8Array) {
+      return 'uint8array';
+    } else if (isHash(this._body)) {
+      return 'object';
+    } else if (Array.isArray(this._body)) {
+      return 'array';
+    } else if (typeof this._body === 'string') {
+      return 'string';
+    } else if (this._body === null) {
+      return 'null';
+    }
+    return typeof this._body;
   }
 
   /**
@@ -87,8 +133,27 @@ export default class Response extends Payload {
   /**
    * Manually sets the request body mimetype
    */
-  public set type(value: string) {
-    this._type = value;
+  public set mimetype(value: string) {
+    this._mimetype = value;
+  }
+
+  /**
+   * Sets the initial values of the payload
+   */
+  constructor(init: PayloadInitializer = {}) {
+    this._mimetype = init.mimetype || 'text/plain';
+    this._body = init.body || null;
+    if (init.headers instanceof Map) {
+      this.headers = new ReadonlyMap<string, string|string[]>(
+        Array.from(init.headers.entries())
+      );
+    } else if (isHash(init.headers)) {
+      this.headers = new ReadonlyMap<string, string|string[]>(
+        Object.entries(init.headers as Record<string, string|string[]>)
+      );
+    } else {
+      this.headers = new ReadonlyMap<string, string|string[]>();
+    }
   }
 
   /**

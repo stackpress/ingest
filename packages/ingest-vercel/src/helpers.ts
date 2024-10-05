@@ -75,8 +75,6 @@ export function loader(resource: FetchRequest) {
       //set data
       req.data.set(Object.assign({},
         fetchQueryToObject(resource),
-        Object.fromEntries(req.headers.entries()),
-        req.session.data,
         formDataToObject(req.type, req.body)
       ));
 

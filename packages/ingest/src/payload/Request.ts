@@ -1,20 +1,26 @@
-import type { RequestLoader, RequestInitializer } from './types';
+import type { Body, RequestLoader, RequestInitializer } from './types';
 
 import cookie from 'cookie';
 
 import { isHash, objectFromQuery } from '../helpers';
 
-import Payload from './Payload';
+import ReadonlyMap from './readonly/Map';
 import ReadonlyNest from './readonly/Nest';
 import { ReadSession } from './Session';
 
-export default class Request<T = unknown> extends Payload {
+export default class Request<T = unknown> {
+  //head controller
+  public readonly headers: ReadonlyMap<string, string|string[]>;
   //query controller
   public readonly query: ReadonlyNest;
   //session controller
-  public session = new ReadSession();
+  public readonly session = new ReadSession();
   //url controller
   public readonly url = new URL('http://unknownhost/');
+  //payload body
+  protected _body: Body|null;
+  //body mimetype
+  protected _mimetype: string;
   //whether if the body was loaded
   protected _loaded = false;
   //body loader
@@ -25,6 +31,13 @@ export default class Request<T = unknown> extends Payload {
   protected _resource?: unknown;
 
   /**
+   * Returns the body
+   */
+  public get body() {
+    return typeof this._body !== 'undefined' ? this._body : null;
+  }
+
+  /**
    * Returns whether if the body was loaded
    */
   public get loaded() {
@@ -32,10 +45,38 @@ export default class Request<T = unknown> extends Payload {
   }
 
   /**
+   * Returns the request body mimetype
+   */
+  public get mimetype() {
+    return this._mimetype;
+  }
+
+  /**
    * Returns the post
    */
   public get post() {
     return this._post;
+  }
+
+  /**
+   * Returns the type of body
+   * string|Buffer|Uint8Array|Record<string, unknown>|Array<unknown>
+   */
+  public get type() {
+    if (this._body instanceof Buffer) {
+      return 'buffer';
+    } else if (this._body instanceof Uint8Array) {
+      return 'uint8array';
+    } else if (isHash(this._body)) {
+      return 'object';
+    } else if (Array.isArray(this._body)) {
+      return 'array';
+    } else if (typeof this._body === 'string') {
+      return 'string';
+    } else if (this._body === null) {
+      return 'null';
+    }
+    return typeof this._body;
   }
 
   /**
@@ -49,7 +90,19 @@ export default class Request<T = unknown> extends Payload {
    * Sets request defaults
    */
   public constructor(init: RequestInitializer<T> = {}) {
-    super(init);
+    this._mimetype = init.mimetype || 'text/plain';
+    this._body = init.body || null;
+    if (init.headers instanceof Map) {
+      this.headers = new ReadonlyMap<string, string|string[]>(
+        Array.from(init.headers.entries())
+      );
+    } else if (isHash(init.headers)) {
+      this.headers = new ReadonlyMap<string, string|string[]>(
+        Object.entries(init.headers as Record<string, string|string[]>)
+      );
+    } else {
+      this.headers = new ReadonlyMap<string, string|string[]>();
+    }
     if (init.resource) {
       this._resource = init.resource;
     }

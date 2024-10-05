@@ -41,3 +41,24 @@ export type Listener<A> = {
 
 //All things an event emitter can listen to
 export type Listenable = string|RegExp|(string|RegExp)[];
+
+export type EventType = 'event' | 'route';
+
+export type EventInfo = {
+  type: EventType,
+  method: Method,
+  event: string,
+  route: string,
+  trigger: string,
+  pattern?: RegExp
+};
+
+//--------------------------------------------------------------------//
+// Router Types
+
+export type Method = 'ALL' 
+  | 'CONNECT' | 'DELETE'  | 'GET' 
+  | 'HEAD'    | 'OPTIONS' | 'PATCH' 
+  | 'POST'    | 'PUT'     | 'TRACE';
+
+export type Route = { method: Method, path: string };

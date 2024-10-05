@@ -12,7 +12,6 @@ import Builder from './Builder';
 import Server from './Server';
 
 import Nest from '../payload/Nest';
-import Payload from '../payload/Payload';
 import Request from '../payload/Request';
 import Response from '../payload/Response';
 import { ReadSession, WriteSession } from '../payload/Session'; 
@@ -30,7 +29,6 @@ export {
   Server,
   Developer,
   Nest,
-  Payload,
   Request,
   Response,
   ReadSession,

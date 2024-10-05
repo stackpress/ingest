@@ -1,4 +1,4 @@
-import type { Listener, Listenable } from './types';
+import type { Listener, Listenable, Method, Route } from './types';
 
 import Status from './StatusCode';
 
@@ -19,6 +19,42 @@ export default abstract class EventEmitter<A> {
   public readonly listeners = new Map<string, Set<Listener<A>>>();
   //Event regular expression map
   public readonly regexp = new Set<string>();
+  //map of event names to routes 
+  //^${method}\\s${pattern}/*$ -> { method, path }
+  public readonly routes = new Map<string, Route>;
+
+  /**
+   * Calls all the actions of the given 
+   * event passing the given arguments
+   */
+  public async emit(event: string, req: Request, res: Response, cache = true) {
+    const matches = this.match(event, req);
+
+    //if there are no events found
+    if (!Object.keys(matches).length) {
+      //report a 404
+      return Status.NOT_FOUND;
+    }
+
+    const emitter = this.emitter();
+
+    Object.values(matches).forEach(event => {
+      const name = event.pattern?.toString() || event.name;
+      //if no direct observers
+      if (!this.listeners.has(name)) {
+        return;
+      }
+
+      //then loop the observers
+      const listeners = this.listeners.get(name) as Set<Listener<A>>;
+      listeners.forEach(route => {
+        emitter.add(event, route.action, route.priority);
+      });
+    });
+
+    //call the callbacks
+    return await emitter.emit(req, res, undefined, cache);
+  }
 
   /**
    * Returns a new emitter instance
@@ -28,11 +64,17 @@ export default abstract class EventEmitter<A> {
   /**
    * Returns possible event matches
    */
-  public match(event: string, req: Request) {
+  public match(trigger: string, req: Request) {
     const matches: Record<string, Event<A>> = {};
     //first do the obvious match
-    if (this.listeners.has(event)) {
-      matches[event] = new Event(this, req, event);
+    if (this.listeners.has(trigger)) {
+      matches[trigger] = new Event(this, req, {
+        type: 'event',
+        method: 'ALL',
+        route: trigger,
+        event: trigger,
+        trigger
+      });
     }
 
     //next do the calculated matches
@@ -52,7 +94,7 @@ export default abstract class EventEmitter<A> {
       //because String.matchAll only works for global flags ...
       let match, parameters: string[];
       if (regexp.flags.indexOf('g') === -1) {
-        match = event.match(regexp);
+        match = trigger.match(regexp);
         if (!match || !match.length) {
           return;
         }
@@ -63,7 +105,7 @@ export default abstract class EventEmitter<A> {
           parameters.shift();
         }
       } else {
-        match = Array.from(event.matchAll(regexp));
+        match = Array.from(trigger.matchAll(regexp));
         if (!Array.isArray(match[0]) || !match[0].length) {
           return;
         }
@@ -72,7 +114,25 @@ export default abstract class EventEmitter<A> {
         parameters.shift();
       }
 
-      matches[pattern] = new Event(this, req, event, regexp);
+      //okay here's a doozy...
+      //So event is the string that will be used to compare
+      //against the trigger. The trigger is the string provided
+      //when emit() is called. The event can be a name string or 
+      //a string regexp pattern. If it's a regexp pattern, then 
+      //it will be logged in the regexp registry set. All routes
+      //are regexps, but not all regexps are routes. Routes are
+      //defined by the route() method and are stored in the routes
+      //registry map. This means the key of the route is always in
+      //the regexp registry set
+      const route = this.routes.get(pattern);
+      matches[pattern] = new Event(this, req, {
+        type: route ? 'route': 'event',
+        method: route?.method || 'ALL',
+        route: route?.path || pattern,
+        event: pattern,
+        pattern: regexp,
+        trigger
+      });
     });
 
     return matches;
@@ -108,36 +168,32 @@ export default abstract class EventEmitter<A> {
   }
 
   /**
-   * Calls all the actions of the given 
-   * event passing the given arguments
+   * Returns a route
    */
-  public async emit(event: string, req: Request, res: Response, cache = true) {
-    const matches = this.match(event, req);
-
-    //if there are no events found
-    if (!Object.keys(matches).length) {
-      //report a 404
-      return Status.NOT_FOUND;
-    }
-
-    const emitter = this.emitter();
-
-    Object.values(matches).forEach(event => {
-      const name = event.regexp?.toString() || event.name;
-      //if no direct observers
-      if (!this.listeners.has(name)) {
-        return;
-      }
-
-      //then loop the observers
-      const listeners = this.listeners.get(name) as Set<Listener<A>>;
-      listeners.forEach(route => {
-        emitter.add(event, route.action, route.priority);
-      });
+  public route(
+    method: Method|'[A-Z]+', 
+    path: string, 
+    action: A, 
+    priority?: number
+  ) {
+    //convert path to a regex pattern
+    const pattern = path
+      //replace the :variable-_name01
+      .replace(/(\:[a-zA-Z0-9\-_]+)/g, '*')
+      //replace the stars
+      //* -> ([^/]+)
+      .replaceAll('*', '([^/]+)')
+      //** -> ([^/]+)([^/]+) -> (.*)
+      .replaceAll('([^/]+)([^/]+)', '(.*)');
+    //now form the event pattern
+    const event = new RegExp(`^${method}\\s${pattern}/*$`, 'ig');
+    this.routes.set(event.toString(), {
+      method: method === '[A-Z]+' ? 'ALL' : method,
+      path: path
     });
-
-    //call the callbacks
-    return await emitter.emit(req, res, undefined, cache);
+    //add to tasks
+    this.on(event, action, priority);
+    return this;
   }
 
   /**
