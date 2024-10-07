@@ -18,7 +18,7 @@ export default class Response {
   //error controller
   public readonly errors = new Nest();
   //body mimetype
-  protected _mimetype: string;
+  protected _mimetype?: string;
   //payload body
   protected _body: Body|null;
   //response status code
@@ -70,7 +70,7 @@ export default class Response {
   /**
    * Returns the request body mimetype
    */
-  public get mimetype() {
+  public get mimetype(): string|undefined {
     return this._mimetype;
   }
 
@@ -141,7 +141,7 @@ export default class Response {
    * Sets the initial values of the payload
    */
   constructor(init: PayloadInitializer = {}) {
-    this._mimetype = init.mimetype || 'text/plain';
+    this._mimetype = init.mimetype;
     this._body = init.body || null;
     if (init.headers instanceof Map) {
       this.headers = new ReadonlyMap<string, string|string[]>(

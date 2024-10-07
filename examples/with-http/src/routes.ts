@@ -10,4 +10,6 @@ server.put('/user/:id', path.resolve(__dirname, 'user/update'));
 server.delete('/user/:id', path.resolve(__dirname, 'user/remove'));
 server.get('/auth/login', path.resolve(__dirname, 'user/login'));
 
+server.get('/**', path.resolve(__dirname, 'catch/404'));
+
 export default server;
