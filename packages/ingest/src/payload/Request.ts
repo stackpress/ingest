@@ -103,9 +103,6 @@ export default class Request<T = unknown> {
     } else {
       this.headers = new ReadonlyMap<string, string|string[]>();
     }
-    if (init.resource) {
-      this._resource = init.resource;
-    }
 
     if (init.url instanceof URL) {
       this.url = init.url;
@@ -149,6 +146,10 @@ export default class Request<T = unknown> {
       this._post = new ReadonlyNest(init.post);
     } else {
       this._post = new ReadonlyNest();
+    }
+
+    if (init.resource) {
+      this._resource = init.resource;
     }
   }
 

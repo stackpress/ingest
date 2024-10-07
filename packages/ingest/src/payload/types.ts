@@ -33,14 +33,14 @@ export type LoaderResponse = { body?: Body, post?: Post };
 export type RequestLoader = (req: Request) => Promise<LoaderResponse|undefined>;
 export type ResponseDispatcher = (res: Response) => Promise<void>;
 
-export type PayloadInitializer = { 
+export type ResponseInitializer<T = unknown> = { 
+  resource?: T,
   mimetype?: string, 
   headers?: Headers,
   body?: Body
 };
 
-export type RequestInitializer<T = unknown> = PayloadInitializer & {
-  resource?: T,
+export type RequestInitializer<T = unknown> = ResponseInitializer<T> & {
   url?: string|URL,
   query?: Query,
   session?: Session,

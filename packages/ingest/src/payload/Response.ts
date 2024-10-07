@@ -1,7 +1,7 @@
 import type { 
   Body, 
   ResponseDispatcher,
-  PayloadInitializer
+  ResponseInitializer
 } from './types';
 
 import ReadonlyMap from './readonly/Map';
@@ -31,6 +31,8 @@ export default class Response {
   protected _status = '';
   //total count of possible results
   protected _total = 0;
+  //resource
+  protected _resource?: unknown;
 
   /**
    * Returns the body
@@ -140,7 +142,7 @@ export default class Response {
   /**
    * Sets the initial values of the payload
    */
-  constructor(init: PayloadInitializer = {}) {
+  constructor(init: ResponseInitializer = {}) {
     this._mimetype = init.mimetype;
     this._body = init.body || null;
     if (init.headers instanceof Map) {
@@ -153,6 +155,10 @@ export default class Response {
       );
     } else {
       this.headers = new ReadonlyMap<string, string|string[]>();
+    }
+
+    if (init.resource) {
+      this._resource = init.resource;
     }
   }
 

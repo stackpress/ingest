@@ -106,16 +106,18 @@ export default class Server {
     const url = imToURL(im);
     //set query
     const query = objectFromQuery(url.searchParams.toString());
-
+    //make request
     const req = new Request({
       mimetype,
       headers,
       url,
       query,
-      session
+      session,
+      resource: im
     });
     req.loader = loader(im);
-    const res = new Response();
+    //make response
+    const res = new Response({ resource: sr });
     res.dispatcher = dispatcher(sr);
     const event = im.method + ' ' + imToURL(im).pathname;
     return { event, req, res };
