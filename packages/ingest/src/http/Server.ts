@@ -1,85 +1,55 @@
-import type { ServerOptions } from 'http';
-import type FileLoader from '../filesystem/FileLoader';
-import type Event from '../event/Event';
-import type Emitter from '../event/Emitter';
-import type { ActionCallback } from '../event/types';
-import type { BuildResult } from '../buildtime/types';
-import type { IM, SR } from './types';
-
-import http from 'http';
+//modules
 import cookie from 'cookie';
-import Exception from '../Exception';
-import AbstractServer from '../event/Server';
-import Status from '../event/Status';
-import EventEmitter from '../runtime/Router';
+//framework
+import Status from '../framework/Status';
+//payload
 import Request from '../payload/Request';
 import Response from '../payload/Response';
-import { loader, dispatcher, imToURL } from '../http/helpers';
+//runtime
+import Route from '../runtime/Route';
+import Router from '../runtime/Router';
+import Emitter from '../runtime/Emitter';
+//general
 import { objectFromQuery } from '../helpers';
+//http
+import type { IM, SR, ActionSet, HTTPRoute } from './types';
+import { loader, dispatcher, imToURL } from './helpers';
 
-export default class Server extends AbstractServer<ActionCallback, IM, SR, SR> {
+export default class Server {
+  //router to handle the requests
+  public readonly router: Router;
+
   /**
    * Sets up the emitter
    */
-  public constructor(manifest: string, loader: FileLoader) {
-    super(new EventEmitter());
-    //check if the manifest exists
-    if (!loader.fs.existsSync(manifest)) return;
-    //get the manifest
-    const contents = loader.fs.readFileSync(manifest, 'utf8');
-    //parse the manifest
-    const results = JSON.parse(contents) as BuildResult[];
-    //make sure build is an array
-    if (!Array.isArray(results)) return;
-    //loop through the manifest
-    results.forEach(({ type, event, pattern, method, route, entry }) => {
-      //transform the action file to an action callback
-      const action = async (
-        req: Request, 
-        res: Response, 
-        evt: Event<ActionCallback>
-      ) => {
-        const { emitter } = await import(entry) as { 
-          emitter: Emitter<ActionCallback> 
-        };
-        await emitter.emit(req, res, evt);
-      }
-      //if it's a route
-      if (type === 'endpoint') {
-        //we use the route() instead of the on()
-        //this is so we know what to extract from the url
-        return this.router.route(method, route, action);
-      }
-      //it's an event
-      const regex = pattern?.toString() || '';
-      const listener = pattern ? new RegExp(
-        // pattern,
-        regex.substring(
-          regex.indexOf('/') + 1,
-          regex.lastIndexOf('/')
-        ),
-        // flag
-        regex.substring(
-          regex.lastIndexOf('/') + 1
-        )
-      ) : event;
-      //and add the routes
-      this.router.on(listener, action);
-    });
+  public constructor(router?: Router) {
+    this.router = router || new Router();
   }
 
   /**
-   * Creates an HTTP server with the given options
+   * Handles fetch requests
    */
-  public create(options: ServerOptions = {}) {
-    return http.createServer(options, (im, sr) => this.handle(im, sr));
+  public async handle(actions: ActionSet, route: HTTPRoute, im: IM, sr: SR) {
+    //initialize the request
+    const { req, res } = this._makePayload(im, sr);
+    const emitter = this._makeEmitter(actions, route, req);
+    //load the body
+    await req.load();
+    //then try to emit the event
+    await this.process(emitter, req, res);
+    //if the response was not sent by now,
+    if (!res.sent) {
+      //send the response
+      res.dispatch();
+    }
+    return sr;
   }
 
   /**
    * Handles a payload using events
    */
-  public async emit(event: string, req: Request, res: Response) {
-    const status = await this.router.emit(event, req, res, this.cache);
+  public async process(emitter: Emitter, req: Request, res: Response) {
+    const status = await emitter.emit(req, res);
     //if the status was incomplete (308)
     if (status.code === Status.ABORT.code) {
       //the callback that set that should have already processed
@@ -93,9 +63,8 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR, SR> {
     //ex. like in the case of a redirect
     if (!res.body && !res.code) {
       res.code = Status.NOT_FOUND.code;
-      throw Exception
-        .for(Status.NOT_FOUND.message)
-        .withCode(Status.NOT_FOUND.code);
+      res.status = Status.NOT_FOUND.message;
+      res.body = `${Status.NOT_FOUND.code} ${Status.NOT_FOUND.message}`;
     }
 
     //if no status was set
@@ -110,36 +79,27 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR, SR> {
   }
 
   /**
-   * Handles fetch requests
+   * Creates an emitter and populates it with actions
    */
-  public async handle(im: IM, sr: SR) {
-    //initialize the request
-    const { event, req, res } = await this.initialize(im, sr);
-    try { //to load the body
-      await req.load();
-      //then try to emit the event
-      await this.emit(event, req, res);
-    } catch(e) {
-      const error = e as Error;
-      res.code = res.code && res.code !== 200 
-        ? res.code: 500;
-      res.status = res.status && res.status !== 'OK' 
-        ? res.status : error.message;
-      //let middleware contribute after error
-      await this.router.emit('error', req, res, this.cache);
-    }
-    //if the response was not sent by now,
-    if (!res.sent) {
-      //send the response
-      res.dispatch();
-    }
-    return sr;
+  protected _makeEmitter(actions: ActionSet, route: HTTPRoute, req: Request) {
+    const emitter = new Emitter();
+    actions.forEach(action => {
+      emitter.add(new Route(this.router, req, {
+        method: route.method,
+        path: route.path,
+        event: route.name,
+        pattern: route.pattern,
+        trigger: route.trigger
+      }), action);
+    });
+
+    return emitter;
   }
 
   /**
    * Sets up the request, response and determines the event
    */
-  public async initialize(im: IM, sr: SR) {
+  protected _makePayload(im: IM, sr: SR) {
     //set the type
     const mimetype = im.headers['content-type'] || 'text/plain';
     //set the headers
@@ -165,31 +125,6 @@ export default class Server extends AbstractServer<ActionCallback, IM, SR, SR> {
     req.loader = loader(im);
     const res = new Response();
     res.dispatcher = dispatcher(sr);
-    const event = im.method + ' ' + imToURL(im).pathname;
-    return { event, req, res };
-  }
-
-  /**
-   * Runs the route event and interprets
-   */
-  public async process(event: string, req: Request, res: Response) {
-    //try to trigger request pre-processors
-    if (!await this.prepare(req, res)) {
-      //if the request exits, then stop
-      return false;
-    }
-    // from here we can assume that it is okay to
-    // continue with processing the routes
-    if (!await this.emit(event, req, res)) {
-      //if the request exits, then stop
-      return false;
-    }
-    //last call before dispatch
-    if (!await this.dispatch(req, res)) {
-      //if the dispatch exits, then stop
-      return false;
-    }
-    //anything else?
-    return true;
+    return { req, res };
   }
 }

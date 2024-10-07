@@ -1,10 +1,12 @@
+//modules
 import type { SourceFile, ProjectOptions } from 'ts-morph';
-import type Router from './Router';
-
 import crypto from 'crypto';
 import { Project } from 'ts-morph';
-import Event from '../event/Event';
+//payload
 import Request from '../payload/Request';
+//buildtime
+import type Router from './Router';
+import Event from './Event';
 
 /**
  * Mocks an event

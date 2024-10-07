@@ -1,9 +1,10 @@
-import type { IM, SR } from './types';
-import type { CookieOptions, LoaderResponse } from '../payload/types';
-
+//modules
 import cookie from 'cookie';
+//payload
+import type { CookieOptions, LoaderResponse } from '../payload/types';
 import Request from '../payload/Request';
 import Response from '../payload/Response';
+//general
 import { 
   isHash,
   objectFromJson, 
@@ -11,8 +12,9 @@ import {
   objectFromFormData,
   withUnknownHost
 } from '../helpers';
-
 import Exception from '../Exception';
+//runtime
+import type { IM, SR } from './types';
 
 export { 
   isHash,
@@ -30,7 +32,7 @@ export function formDataToObject(type: string, body: string) {
     ? objectFromJson(body)
     : type.endsWith('/x-www-form-urlencoded')
     ? objectFromQuery(body)
-    : type === 'multipart/form-data'
+    : type.startsWith('multipart/form-data')
     ? objectFromFormData(body)
     : {} as Record<string, unknown>;
 };
@@ -91,12 +93,12 @@ export function loader(resource: IM, size = 0) {
       let body = '';
       resource.on('data', chunk => {
         body += chunk;
-        if (body.length > size) {
+        if (size && body.length > size) {
           throw Exception.for('Request exceeds %s', size);
         }
       });
       resource.on('end', () => {
-        resolve({ body, post: formDataToObject(req.type, body) });
+        resolve({ body, post: formDataToObject(req.mimetype, body) });
       });
     });
   } 
@@ -158,7 +160,7 @@ export function dispatcher(
       }
       //type Body = string | Buffer | Uint8Array 
       // | Record<string, unknown> | unknown[]
-
+      
       //we cased for all possible types so it's 
       //better to not infer the response body
       resolve();

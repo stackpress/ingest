@@ -1,5 +1,5 @@
 //event types
-export type * from '../event/types';
+export type * from '../framework/types';
 //filesystem types
 export type * from '../filesystem/types';
 //payload types
@@ -7,12 +7,12 @@ export type * from '../payload/types';
 //buildtime types
 export type * from './types';
 
-//event
-import AbstractEmitter from '../event/Emitter';
-import Event from '../event/Event';
-import AbstractEventEmitter from '../event/Router';
-import AbstractServer from '../event/Server';
-import StatusCode from '../event/Status';
+//framework
+import FrameworkEmitter from '../framework/Emitter';
+import FrameworkEvent from '../framework/Event';
+import FrameworkRoute from '../framework/Route';
+import FrameworkRouter from '../framework/Router';
+import FrameworkStatus from '../framework/Status';
 //filesystem
 import FileLoader from '../filesystem/FileLoader';
 import NodeFS from '../filesystem/NodeFS';
@@ -32,7 +32,6 @@ import Response from '../payload/Response';
 import { ReadSession, WriteSession } from '../payload/Session';
 //buildtime
 import Emitter from './Emitter';
-import EventEmitter from './Router';
 import Manifest from './Manifest';
 import Router from './Router';
 import Server from './Server';
@@ -51,11 +50,11 @@ import {
 
 export {
   //event
-  AbstractEmitter,
-  Event,
-  AbstractEventEmitter,
-  AbstractServer,
-  StatusCode,
+  FrameworkEmitter,
+  FrameworkEvent,
+  FrameworkRoute,
+  FrameworkRouter,
+  FrameworkStatus,
   //filesystem
   FileLoader,
   NodeFS,
@@ -76,7 +75,6 @@ export {
   WriteSession,
   //buildtime
   Emitter,
-  EventEmitter,
   Manifest,
   Router,
   Server,

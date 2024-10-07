@@ -1,5 +1,4 @@
-import type { ActionCallback } from './event/types';
-import type Route from './event/Route';
+import type Route from './runtime/Route';
 import type Request from './payload/Request';
 import type Response from './payload/Response';
 import Nest from './payload/Nest';
@@ -131,7 +130,7 @@ export function withUnknownHost(url: string) {
 export function task(runner: (
   req: Request, 
   res: Response, 
-  ctx: Route<ActionCallback>
+  evt: Route
 ) => void) {
   return runner;
 };

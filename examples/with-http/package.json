@@ -4,8 +4,9 @@
   "description": "A simple boilerplate for using Ingest with native HTTP.",
   "private": true,
   "scripts": {
-    "tsc": "tsc",
-    "build": "ts-node src/build.ts",
+    "build": "yarn build:tsc && yarn build:files",
+    "build:tsc": "tsc",
+    "build:files": "ts-node src/build.ts",
     "dev": "ts-node src/develop.ts",
     "start": "node dist/server.js"
   },

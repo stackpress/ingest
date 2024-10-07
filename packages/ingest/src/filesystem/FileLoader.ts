@@ -1,6 +1,7 @@
-import type { FileSystem } from './types';
-
+//modules
 import path from 'path';
+//filesystem
+import type { FileSystem } from './types';
 
 /**
  * Loader

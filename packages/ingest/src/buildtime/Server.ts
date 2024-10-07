@@ -1,18 +1,35 @@
+//modules
 import type { ServerOptions } from 'http';
-import type { ActionFile } from '../event/types';
-import type { IM, SR } from '../http/types';
-
 import http from 'http';
 import cookie from 'cookie';
-import Exception from '../Exception';
-import AbstractServer from '../event/Server';
-import Status from '../event/Status';
+//framework
+import Status from '../framework/Status';
+//payload
 import Request from '../payload/Request';
 import Response from '../payload/Response';
+//http
+import type { IM, SR } from '../http/types';
 import { loader, dispatcher, imToURL } from '../http/helpers';
+//general
 import { objectFromQuery } from '../helpers';
+//buildtime
+import Router from './Router';
 
-export default class Server extends AbstractServer<ActionFile, IM, SR, SR> {
+export default class Server {
+  //router to handle the requests
+  public readonly router: Router;
+  //whether to use the require cache
+  //when an entry is loaded
+  public readonly cache: boolean;
+
+  /**
+   * Sets up the emitter
+   */
+  public constructor(router: Router, cache = true) {
+    this.router = router;
+    this.cache = cache;
+  }
+
   /**
    * Creates an HTTP server with the given options
    */
@@ -21,9 +38,27 @@ export default class Server extends AbstractServer<ActionFile, IM, SR, SR> {
   }
 
   /**
+   * Handles fetch requests
+   */
+  public async handle(im: IM, sr: SR) {
+    //initialize the request
+    const { event, req, res } = this._makePayload(im, sr);
+    //load the body
+    await req.load();
+    //then try to emit the event
+    await this.process(event, req, res);
+    //if the response was not sent by now,
+    if (!res.sent) {
+      //send the response
+      res.dispatch();
+    }
+    return sr;
+  }
+
+  /**
    * Handles a payload using events
    */
-  public async emit(event: string, req: Request, res: Response) {
+  public async process(event: string, req: Request, res: Response) {
     const status = await this.router.emit(event, req, res, this.cache);
     //if the status was incomplete (308)
     if (status.code === Status.ABORT.code) {
@@ -38,9 +73,8 @@ export default class Server extends AbstractServer<ActionFile, IM, SR, SR> {
     //ex. like in the case of a redirect
     if (!res.body && !res.code) {
       res.code = Status.NOT_FOUND.code;
-      throw Exception
-        .for(Status.NOT_FOUND.message)
-        .withCode(Status.NOT_FOUND.code);
+      res.status = Status.NOT_FOUND.message;
+      res.body = `${Status.NOT_FOUND.code} ${Status.NOT_FOUND.message}`;
     }
 
     //if no status was set
@@ -55,36 +89,9 @@ export default class Server extends AbstractServer<ActionFile, IM, SR, SR> {
   }
 
   /**
-   * Handles fetch requests
-   */
-  public async handle(im: IM, sr: SR) {
-    //initialize the request
-    const { event, req, res } = await this.initialize(im, sr);
-    try { //to load the body
-      await req.load();
-      //then try to emit the event
-      await this.emit(event, req, res);
-    } catch(e) {
-      const error = e as Error;
-      res.code = res.code && res.code !== 200 
-        ? res.code: 500;
-      res.status = res.status && res.status !== 'OK' 
-        ? res.status : error.message;
-      //let middleware contribute after error
-      await this.router.emit('error', req, res, this.cache);
-    }
-    //if the response was not sent by now,
-    if (!res.sent) {
-      //send the response
-      res.dispatch();
-    }
-    return sr;
-  }
-
-  /**
    * Sets up the request, response and determines the event
    */
-  public async initialize(im: IM, sr: SR) {
+  protected _makePayload(im: IM, sr: SR) {
     //set the type
     const mimetype = im.headers['content-type'] || 'text/plain';
     //set the headers
@@ -112,29 +119,5 @@ export default class Server extends AbstractServer<ActionFile, IM, SR, SR> {
     res.dispatcher = dispatcher(sr);
     const event = im.method + ' ' + imToURL(im).pathname;
     return { event, req, res };
-  }
-
-  /**
-   * Runs the route event and interprets
-   */
-  public async process(event: string, req: Request, res: Response) {
-    //try to trigger request pre-processors
-    if (!await this.prepare(req, res)) {
-      //if the request exits, then stop
-      return false;
-    }
-    // from here we can assume that it is okay to
-    // continue with processing the routes
-    if (!await this.emit(event, req, res)) {
-      //if the request exits, then stop
-      return false;
-    }
-    //last call before dispatch
-    if (!await this.dispatch(req, res)) {
-      //if the dispatch exits, then stop
-      return false;
-    }
-    //anything else?
-    return true;
   }
 }

@@ -1,6 +1,7 @@
-import type { FileSystem } from './types';
-
+//modules
 import fs from 'fs';
+//filesystem
+import type { FileSystem } from './types';
 
 export default class NodeFS implements FileSystem {
   protected _fs: typeof fs;

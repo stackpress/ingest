@@ -1,4 +1,7 @@
+//modules
 import type { ProjectOptions } from 'ts-morph';
+import { IndentationText } from 'ts-morph';
+//buildtime
 import type { 
   BuilderOptions,
   BuildOptions,
@@ -6,8 +9,6 @@ import type {
   Transpiler
 } from '../buildtime/types';
 import Router from '../buildtime/Router';
-
-import { IndentationText, VariableDeclarationKind } from 'ts-morph';
 import { createSourceFile } from '../buildtime/helpers';
 
 export default class Builder {
@@ -44,6 +45,29 @@ export default class Builder {
   public transpile(info: TranspileInfo) {
     //create a new source file
     const { source } = createSourceFile('entry.ts', this._tsconfig);
+    //import type { IncomingMessage, ServerResponse } from 'http';
+    source.addImportDeclaration({
+      isTypeOnly: true,
+      moduleSpecifier: 'http',
+      namedImports: [ 'IncomingMessage', 'ServerResponse' ]
+    });
+    //import type { ActionCallback } from '@stackpress/ingest/dist/framework/types'
+    source.addImportDeclaration({
+      isTypeOnly: true,
+      moduleSpecifier: '@stackpress/ingest/dist/framework/types',
+      namedImports: [ 'ActionCallback' ]
+    });
+    //import type Route from '@stackpress/ingest/dist/framework/Route';
+    source.addImportDeclaration({
+      isTypeOnly: true,
+      moduleSpecifier: '@stackpress/ingest/dist/framework/Route',
+      defaultImport: 'Route'
+    });
+    //import Server from '@stackpress/ingest/dist/http/Server';
+    source.addImportDeclaration({
+      moduleSpecifier: '@stackpress/ingest/dist/http/Server',
+      defaultImport: 'Server'
+    });
     //import task1 from [entry]
     info.actions.forEach((entry, i) => {
       source.addImportDeclaration({
@@ -51,24 +75,26 @@ export default class Builder {
         defaultImport: `task_${i}`
       });
     });
-    //import TaskQueue from '@stackpress/ingest/dist/runtime/TaskQueue';
-    source.addImportDeclaration({
-      moduleSpecifier: '@stackpress/ingest/dist/runtime/TaskQueue',
-      defaultImport: 'TaskQueue'
+    const im = 'IncomingMessage';
+    const sr = 'ServerResponse<IncomingMessage>';
+    const action = `ActionCallback<${im}, ${sr}>`;
+    source.addFunction({
+      isDefaultExport: true,
+      name: info.method,
+      parameters: [
+        { name: 'request', type: im },
+        { name: 'response', type: sr },
+        { name: 'route', type: `Route<${action}, ${im}, ${sr}>` }
+      ],
+      statements: (`
+        const server = new Server();
+        const listeners = new Set<ActionPayloadCallback>();
+        ${info.actions.map(
+          (_, i) => `listeners.add(task_${i});`
+        ).join('\n')}
+        return server.handle(listeners, route, request, response);
+      `).trim()
     });
-    //const queue = new TaskQueue();
-    source.addVariableStatement({
-      declarationKind: VariableDeclarationKind.Const,
-      declarations: [{
-        name: 'queue',
-        initializer: 'new TaskQueue()'
-      }]
-    });
-    //queue.add(task_0);
-    info.actions.forEach((_, i) => {
-      source.addStatements(`queue.add(task_${i});`);
-    });
-    source.addStatements('exports.queue = queue;');
     return source;
   }
 

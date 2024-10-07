@@ -65,7 +65,7 @@ export default class FormData {
     if (!boundary) {
       return null;
     }
-    return boundary.slice(0, boundary.length - 1).toString();
+    return boundary.subarray(0, boundary.length - 1).toString();
   }
 
   protected _getLine(buffer: Buffer, i: number) {
@@ -163,7 +163,12 @@ export default class FormData {
     const paths = path.concat(keys);
     //if there is not a filename
     if (!part.form.filename) {
-      const value = part.body.toString();
+      const value = part.body
+        .toString()
+        .replace(/^\r\n/, '')
+        .replace(/\r\n$/, '')
+        .replace(/\r$/, '');
+
       //try parsing JSON
       if (/(^\{.*\}$)|(^\[.*\]$)/.test(value)) {
         try {

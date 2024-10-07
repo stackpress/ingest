@@ -1,20 +1,38 @@
-import type { Listener, Listenable, Method, RouteInfo } from './types';
-
-import Status from './Status';
-
-import Request from '../payload/Request';
-import Response from '../payload/Response';
-import Route from './Route';
+//framework
+import type { 
+  Listener, 
+  Listenable, 
+  Method, 
+  RouteInfo, 
+  EventData, 
+  RouteData
+} from './types';
 import Event from './Event';
 import Emitter from './Emitter';
+import Route from './Route';
+import Status from './Status';
 
 /**
- * Allows the ability to listen to events made known by another
- * piece of functionality. Events are items that transpire based
- * on an action. With events you can add extra functionality
- * right after the event has triggered.
+ * An abstract class, the router combines the functionality of listening,
+ * emitting and routing events. The abstract that needs to be defined is 
+ * the emitter that will be used. The generics needed are the following.
+ * 
+ * - A - Action. Examples of an action could be a callback function or a 
+ *   file location of an action callback.
+ * - R - Request. The request object. Examples of a request could be 
+ *   IncomingMessage, Fetch Request or the built-in `Request` defined
+ *   in the `payload` folder. Though most of the time it should be the 
+ *   built-in `Request` defined in the `payload` folder, we left this 
+ *   generic to allow the `gateway` folder to re-use this class for 
+ *   IncomingMessage.
+ * - S - Response. The response object. Examples of a response could be 
+ *   ServerResponse, Fetch Response or the built-in `Response` defined
+ *   in the `payload` folder. Though most of the time it should be the 
+ *   built-in `Response` defined in the `payload` folder, we left this 
+ *   generic to allow the `gateway` folder to re-use this class for 
+ *   ServerResponse.
  */
-export default abstract class Router<A> {
+export default abstract class Router<A, R, S> {
   //A route map to task queues
   public readonly listeners = new Map<string, Set<Listener<A>>>();
   //Event regular expression map
@@ -48,7 +66,7 @@ export default abstract class Router<A> {
    * Calls all the actions of the given 
    * event passing the given arguments
    */
-  public async emit(event: string, req: Request, res: Response, cache = true) {
+  public async emit(event: string, req: R, res: S, cache = true) {
     const matches = this.match(event, req);
 
     //if there are no events found
@@ -57,7 +75,7 @@ export default abstract class Router<A> {
       return Status.NOT_FOUND;
     }
 
-    const emitter = this.emitter();
+    const emitter = this.makeEmitter();
 
     Object.values(matches).forEach(event => {
       const name = event.pattern?.toString() || event.name;
@@ -78,11 +96,6 @@ export default abstract class Router<A> {
   }
 
   /**
-   * Returns a new emitter instance
-   */
-  public abstract emitter(): Emitter<A>;
-
-  /**
    * Route for GET method
    */
   public get(path: string, action: A, priority?: number) {
@@ -97,13 +110,32 @@ export default abstract class Router<A> {
   }
 
   /**
+   * Returns a new emitter instance
+   */
+  public abstract makeEmitter(): Emitter<A, R, S>;
+
+  /**
+   * Returns a new event instance
+   */
+  public makeEvent(req: R, data: EventData) {
+    return new Event<A, R, S>(this, req, data);
+  };
+
+  /**
+   * Returns a new route instance
+   */
+  public makeRoute(req: R, data: RouteData) {
+    return new Route<A, R, S>(this, req, data);
+  }
+
+  /**
    * Returns possible event matches
    */
-  public match(trigger: string, req: Request) {
-    const matches: Record<string, Event<A>> = {};
+  public match(trigger: string, req: R) {
+    const matches: Record<string, Event<A, R, S>> = {};
     //first do the obvious match
     if (this.listeners.has(trigger)) {
-      matches[trigger] = new Event(this, req, { event: trigger, trigger });
+      matches[trigger] = this.makeEvent(req, { event: trigger, trigger });
     }
 
     //next do the calculated matches
@@ -155,7 +187,7 @@ export default abstract class Router<A> {
       //the regexp registry set
       const route = this.routes.get(pattern);
       if (route) {
-        matches[pattern] = new Route(this, req, {
+        matches[pattern] = this.makeRoute(req, {
           method: route.method,
           path: route.path,
           event: pattern,
@@ -163,7 +195,7 @@ export default abstract class Router<A> {
           trigger
         });
       } else {
-        matches[pattern] = new Event(this, req, {
+        matches[pattern] = this.makeEvent(req, {
           event: pattern,
           pattern: regexp,
           trigger

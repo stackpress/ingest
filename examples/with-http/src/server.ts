@@ -2,5 +2,5 @@ import server from './routes';
 server.create().listen(3000, () => {
   console.log('Server is running on port 3000');
   console.log('------------------------------');
-  console.log(server.server.emitter.listeners);
+  console.log(server.server.router.listeners);
 });

@@ -1,9 +1,15 @@
-import type { ActionFile } from '../event/types';
+//framework
+import type { ActionFile, RouteData } from '../framework/types';
+import EventRouter from '../framework/Router';
+//payload
+import type Request from '../payload/Request';
+import type Response from '../payload/Response';
+//buildtime
 import type { BuildOptions } from './types';
-
-import AbstractRouter from '../event/Router';
 import Emitter from './Emitter';
 import Manifest from './Manifest';
+import Event from './Event';
+import Route from './Route';
 
 /**
  * Allows the ability to listen to events made known by another
@@ -11,12 +17,28 @@ import Manifest from './Manifest';
  * on an action. With events you can add extra functionality
  * right after the event has triggered.
  */
-export default class Router extends AbstractRouter<ActionFile> {
+export default class Router 
+  extends EventRouter<ActionFile, Request, Response> 
+{
   /**
    * Returns a new emitter instance
    */
-  public emitter() {
+  public makeEmitter() {
     return new Emitter();
+  }
+  
+  /**
+   * Returns a new event instance
+   */
+  public makeEvent(req: Request, data: RouteData) {
+    return new Event(this, req, data);
+  }
+  
+  /**
+   * Returns a new route instance
+   */
+  public makeRoute(req: Request, data: RouteData) {
+    return new Route(this, req, data);
   }
 
   /**

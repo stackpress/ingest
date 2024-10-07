@@ -27,7 +27,8 @@ export default class QueryString {
     const separator = '~~' + Math.floor(Math.random() * 10000) + '~~';
     query.split(/\&/gi).forEach((filter: any) => {
       //key eg. foo[bar][][baz]
-      const [key, value] = filter.split('=', 2);
+      let [ key, value ] = filter.split('=', 2);
+      value = decodeURIComponent(value);
       //change path to N notation
       const keys = key
         .replace(/\]\[/g, separator)

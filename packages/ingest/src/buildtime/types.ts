@@ -1,6 +1,10 @@
+//modules
 import type { SourceFile } from 'ts-morph';
-import type { Listener, ActionFile, Method } from '../event/types';
+//framework
+import type { Listener, ActionFile, Method } from '../framework/types';
+//filesystem
 import type { FileSystem } from '../filesystem/types';
+//buildtime
 import type Router from './Router';
 
 //--------------------------------------------------------------------//

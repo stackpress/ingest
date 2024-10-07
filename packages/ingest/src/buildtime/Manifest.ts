@@ -1,4 +1,11 @@
+//modules
 import type { SourceFile } from 'ts-morph';
+import path from 'path';
+import esbuild from 'esbuild';
+//filesystem
+import FileLoader from '../filesystem/FileLoader';
+import NodeFS from '../filesystem/NodeFS';
+//buildtime
 import type { 
   BuildInfo, 
   BuildResult,
@@ -7,13 +14,7 @@ import type {
   Transpiler
 } from './types';
 import type Router from './Router';
-
-import path from 'path';
-import esbuild from 'esbuild';
-import FileLoader from '../filesystem/FileLoader';
-import NodeFS from '../filesystem/NodeFS';
 import Emitter from './Emitter';
-
 import { esIngestPlugin } from './plugins';
 import { serialize, mockEvent } from './helpers';
 
