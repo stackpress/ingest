@@ -5,11 +5,7 @@ export type * from '../filesystem/types';
 //payload types
 export type * from '../payload/types';
 //http types
-export type { 
-  GatewayAction, 
-  GatewayEventListener, 
-  GatewayListener 
-} from './gateway/types';
+export type { GatewayAction, GatewayListener } from './gateway/types';
 export type { IM, SR } from './types';
 
 //modules
@@ -20,8 +16,6 @@ import NodeFS from '../filesystem/NodeFS';
 import FileLoader from '../filesystem/FileLoader';
 //framework
 import FrameworkEmitter from '../framework/Emitter';
-import FrameworkEvent from '../framework/Event';
-import FrameworkRoute from '../framework/Route';
 import FrameworkRouter from '../framework/Router';
 import FrameworkStatus from '../framework/Status';
 //payload
@@ -43,7 +37,6 @@ import type { BuildtimeOptions } from '../buildtime/types';
 import BuildtimeRouter from '../buildtime/Router';
 import BuildtimeServer from '../buildtime/Server';
 //gateway
-import GatewayRoute from './gateway/Route';
 import GatewayRouter from './gateway/Router';
 import GatewayServer from './gateway/Server';
 //http
@@ -79,15 +72,12 @@ export {
   WriteSession,
   //framework
   FrameworkEmitter,
-  FrameworkEvent,
-  FrameworkRoute,
   FrameworkRouter,
   FrameworkStatus,
   //buildtime
   BuildtimeRouter,
   BuildtimeServer,
   //http
-  GatewayRoute,
   GatewayRouter,
   GatewayServer,
   Builder,
@@ -115,7 +105,7 @@ export default function http(options: BuildtimeOptions = {}) {
   const endpath = loader.absolute(buildDir);
   const manifest = path.resolve(endpath, manifestName);
   const server = new GatewayServer(manifest, loader);
-  const developer = new BuildtimeServer(router, false);
+  const developer = new BuildtimeServer(router);
 
   return {
     endpath,

@@ -1,4 +1,3 @@
-import type Route from './runtime/Route';
 import type Request from './payload/Request';
 import type Response from './payload/Response';
 import Nest from './payload/Nest';
@@ -52,6 +51,47 @@ export function objectFromJson(json: string) {
 /**
  * Extracts the route parameters from the URL
  */
+export function eventParams(triggeredEvent: string, pattern: string) {
+  const regexp = new RegExp(
+    // pattern,
+    pattern.substring(
+      pattern.indexOf('/') + 1,
+      pattern.lastIndexOf('/')
+    ),
+    // flag
+    pattern.substring(
+      pattern.lastIndexOf('/') + 1
+    )
+  );
+
+  //because String.matchAll only works for global flags ...
+  let match, parameters: string[];
+  if (regexp.flags.indexOf('g') === -1) {
+    match = triggeredEvent.match(regexp);
+    if (!match || !match.length) {
+      return;
+    }
+
+    parameters = [];
+    if (Array.isArray(match)) {
+      parameters = match.slice();
+      parameters.shift();
+    }
+  } else {
+    match = Array.from(triggeredEvent.matchAll(regexp));
+    if (!Array.isArray(match[0]) || !match[0].length) {
+      return;
+    }
+
+    parameters = match[0].slice();
+    parameters.shift();
+  }
+  return parameters;
+};
+
+/**
+ * Extracts the route parameters from the URL
+ */
 export function routeParams(route: string, pathname: string) {
   const args: string[] = [];
   const params: Record<string, string> = {};
@@ -62,8 +102,6 @@ export function routeParams(route: string, pathname: string) {
     .replace(/(\:[a-zA-Z0-9\-_]+)/g, '*')
     //replace the stars
     //* -> ([^/]+)
-    //@ts-ignore Property 'replaceAll' does not exist on type 'string'
-    //but it does exist according to MDN...
     .replaceAll('*', '([^/]+)')
     //** -> ([^/]+)([^/]+) -> (.*)
     .replaceAll('([^/]+)([^/]+)', '(.*)');
@@ -127,10 +165,6 @@ export function withUnknownHost(url: string) {
 /**
  * Basic task wrapper
  */
-export function task(runner: (
-  req: Request, 
-  res: Response, 
-  evt: Route
-) => void) {
+export function task(runner: (req: Request, res: Response) => void) {
   return runner;
 };

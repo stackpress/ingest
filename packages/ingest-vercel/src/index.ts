@@ -1,16 +1,15 @@
 import type { ServerOptions } from 'http';
 import type { BuildtimeOptions } from '@stackpress/ingest/dist/buildtime/types';
 
-import NodeFS from '@stackpress/ingest/dist/buildtime/filesystem/NodeFS';
-import FileLoader from '@stackpress/ingest/dist/buildtime/filesystem/FileLoader';
+import NodeFS from '@stackpress/ingest/dist/filesystem/NodeFS';
+import FileLoader from '@stackpress/ingest/dist/filesystem/FileLoader';
 import Router from '@stackpress/ingest/dist/buildtime/Router';
-import Developer from '@stackpress/ingest/dist/http/Developer';
+import Developer from '@stackpress/ingest/dist/buildtime/Server';
 
 import Builder from './Builder';
 import Server from './Server';
 
 import Nest from '@stackpress/ingest/dist/payload/Nest';
-import Payload from '@stackpress/ingest/dist/payload/Payload';
 import Request from '@stackpress/ingest/dist/payload/Request';
 import Response from '@stackpress/ingest/dist/payload/Response';
 import { 
@@ -31,7 +30,6 @@ export {
   Builder,
   Server,
   Nest,
-  Payload,
   Request,
   Response,
   ReadSession,
@@ -66,7 +64,6 @@ export default function vercel(options: BuildtimeOptions = {}) {
     router,
     builder,
     loader,
-    context: server.context,
     build: () => builder.build({ ...build, fs, cwd, buildDir }),
     develop: (options: ServerOptions = {}) => developer.create(options),
     on: (path: string, entry: string, priority?: number) => {

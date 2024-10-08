@@ -6,13 +6,12 @@ import Status from '../framework/Status';
 import Request from '../payload/Request';
 import Response from '../payload/Response';
 //runtime
-import Route from '../runtime/Route';
 import Router from '../runtime/Router';
 import Emitter from '../runtime/Emitter';
 //general
 import { objectFromQuery } from '../helpers';
 //http
-import type { IM, SR, ActionSet, HTTPRoute } from './types';
+import type { IM, SR, ActionSet } from './types';
 import { loader, dispatcher, imToURL } from './helpers';
 
 export default class Server {
@@ -29,10 +28,10 @@ export default class Server {
   /**
    * Handles fetch requests
    */
-  public async handle(actions: ActionSet, route: HTTPRoute, im: IM, sr: SR) {
+  public async handle(actions: ActionSet, im: IM, sr: SR) {
     //initialize the request
     const { req, res } = this._makePayload(im, sr);
-    const emitter = this._makeEmitter(actions, route, req);
+    const emitter = this._makeEmitter(actions);
     //load the body
     await req.load();
     //then try to emit the event
@@ -81,16 +80,10 @@ export default class Server {
   /**
    * Creates an emitter and populates it with actions
    */
-  protected _makeEmitter(actions: ActionSet, route: HTTPRoute, req: Request) {
+  protected _makeEmitter(actions: ActionSet) {
     const emitter = new Emitter();
     actions.forEach(action => {
-      emitter.add(new Route(this.router, req, {
-        method: route.method,
-        path: route.path,
-        event: route.name,
-        pattern: route.pattern,
-        trigger: route.trigger
-      }), action);
+      emitter.add(action);
     });
 
     return emitter;

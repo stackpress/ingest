@@ -1,11 +1,13 @@
 {
-  "name": "with-vercel",
+  "name": "ingest-with-vercel",
   "version": "1.0.0",
   "description": "A simple boilerplate for building web components with Temple",
   "private": true,
   "scripts": {
-    "build:ts": "tsc",
-    "build:api": "ts-node src/build.ts"
+    "build2": "yarn build:tsc && yarn build:files",
+    "build:tsc": "tsc",
+    "build:files": "ts-node src/build.ts",
+    "dev": "ts-node src/develop.ts"
   },
   "dependencies": {
     "@stackpress/ingest-vercel": "0.1.8"

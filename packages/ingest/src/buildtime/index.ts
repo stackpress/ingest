@@ -9,8 +9,6 @@ export type * from './types';
 
 //framework
 import FrameworkEmitter from '../framework/Emitter';
-import FrameworkEvent from '../framework/Event';
-import FrameworkRoute from '../framework/Route';
 import FrameworkRouter from '../framework/Router';
 import FrameworkStatus from '../framework/Status';
 //filesystem
@@ -51,8 +49,6 @@ import {
 export {
   //event
   FrameworkEmitter,
-  FrameworkEvent,
-  FrameworkRoute,
   FrameworkRouter,
   FrameworkStatus,
   //filesystem

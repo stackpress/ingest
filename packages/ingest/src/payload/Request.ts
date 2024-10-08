@@ -4,11 +4,14 @@ import cookie from 'cookie';
 
 import { isHash, objectFromQuery } from '../helpers';
 
+import Nest from './Nest';
 import ReadonlyMap from './readonly/Map';
 import ReadonlyNest from './readonly/Nest';
 import { ReadSession } from './Session';
 
 export default class Request<T = unknown> {
+  //query controller
+  public readonly data: Nest;
   //head controller
   public readonly headers: ReadonlyMap<string, string|string[]>;
   //query controller
@@ -110,6 +113,14 @@ export default class Request<T = unknown> {
       this.url = new URL(init.url);
     } else {
       this.url = new URL('http://unknownhost/');
+    }
+
+    if (init.data instanceof Map) {
+      this.data = new Nest(Object.fromEntries(init.data));
+    } else if (isHash(init.data)) {
+      this.data = new Nest(init.data);
+    } else {
+      this.data = new Nest();
     }
 
     if (typeof init.query === 'string') {

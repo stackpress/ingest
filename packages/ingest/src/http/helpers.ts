@@ -107,10 +107,7 @@ export function loader(resource: IM, size = 0) {
 /**
  * Response dispatcher
  */
-export function dispatcher(
-  resource: SR, 
-  options: CookieOptions = {}
-) {
+export function dispatcher(resource: SR, options: CookieOptions = {}) {
   return (res: Response) => {
     return new Promise<void>(resolve => {
       //write cookies

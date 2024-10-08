@@ -1,16 +1,21 @@
-import type { Body, CookieOptions } from '@stackpress/ingest/dist/runtime/types';
+import type { 
+  Body,
+  CookieOptions, 
+  LoaderResponse
+} from '@stackpress/ingest/dist/payload/types';
 
 import cookie from 'cookie';
 import Request from '@stackpress/ingest/dist/payload/Request';
 import Response from '@stackpress/ingest/dist/payload/Response';
 import { 
+  isHash,
   objectFromJson, 
   objectFromQuery, 
   objectFromFormData
-} from '@stackpress/ingest/dist/runtime/helpers';
+} from '@stackpress/ingest/dist/helpers';
+import type { FetchRequest } from './types';
 
-export type FetchRequest = globalThis.Request;
-export type FetchResponse = globalThis.Response;
+
 export const NativeRequest = global.Request;
 export const NativeResponse = global.Response;
 
@@ -46,39 +51,16 @@ export function fetchQueryToObject(resource: FetchRequest) {
  */
 export function loader(resource: FetchRequest) {
   return (req: Request) => {
-    return new Promise<void>(async resolve => {
+    return new Promise<LoaderResponse|undefined>(async resolve => {
       //if the body is cached
       if (req.body !== null) {
-        resolve();
+        resolve(undefined);
       }
 
-      const { headers } = resource;
+      const body = await resource.text();
+      const post = formDataToObject(req.type, body)
 
-      //set the type
-      req.type = headers.get('content-type') || 'text/plain';
-      //set the headers
-      headers.forEach((value, key) => {
-        if (typeof value !== 'undefined') {
-          req.headers.set(key, value);
-        }
-      });
-      //set session
-      const session = cookie.parse(
-        headers.get('cookie') as string || ''
-      );
-      Object.entries(session).forEach(([key, value]) => {
-        req.session.set(key, value);
-      });
-
-      req.body = await resource.text();
-
-      //set data
-      req.data.set(Object.assign({},
-        fetchQueryToObject(resource),
-        formDataToObject(req.type, req.body)
-      ));
-
-      resolve();
+      resolve({ body, post });
     });
   } 
 };
@@ -87,7 +69,7 @@ export function loader(resource: FetchRequest) {
  * Maps out an Ingest Response to a Fetch Response
  */
 export async function response(res: Response, options: CookieOptions = {}) {
-  let type = res.type;
+  let mimetype = res.mimetype;
   let body: Body|null = null;
   //if body is a valid response
   if (typeof res.body === 'string' 
@@ -95,16 +77,13 @@ export async function response(res: Response, options: CookieOptions = {}) {
     || res.body instanceof Uint8Array
   ) {
     body = res.body;
-  //if there even is a body
-  } else if (typeof res.body !== 'undefined' && res.body !== null) {
-    body = res.body.toString();
-  //by default we will send a JSON from the data
-  } else {
-    type = 'application/json';
+  //if body is an object or array
+  } else if (isHash(res.body) || Array.isArray(res.body)) {
+    res.mimetype = 'application/json';
     body = JSON.stringify({
       code: res.code,
       status: res.status,
-      results: res.data.size > 0 ? res.data.get() : undefined,
+      results: res.body,
       errors: res.errors.size > 0 ? res.errors.get() : undefined,
       total: res.total > 0 ? res.total : undefined
     });
@@ -135,13 +114,15 @@ export async function response(res: Response, options: CookieOptions = {}) {
     }
   }
   //write headers
-  for (const [ name, value ] of res.headers) {
+  for (const [ name, value ] of res.headers.entries()) {
     const values = Array.isArray(value) ? value : [ value ];
     for (const value of values) {
       response.headers.set(name, value);
     }
   }
   //set content type
-  response.headers.set('Content-Type', type);
+  if (mimetype) {
+    response.headers.set('Content-Type', mimetype);
+  }
   return response;
 }

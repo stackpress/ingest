@@ -1,6 +1,6 @@
 import { task } from '@stackpress/ingest/dist/helpers';
 
-export default task(function UserRemove(req, res) {
+export default task(function UserDetail(req, res) {
   //get params
   const id = req.query.get('id');
   if (!id) {
@@ -11,7 +11,7 @@ export default task(function UserRemove(req, res) {
   }
   //maybe get from database?
   const results = { 
-    id: 1, 
+    id, 
     name: 'John Doe', 
     age: 21, 
     created: new Date().toISOString() 

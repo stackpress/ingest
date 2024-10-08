@@ -9,8 +9,6 @@ export type * from './types';
 
 //event
 import FrameworkEmitter from './framework/Emitter';
-import FrameworkEvent from './framework/Event';
-import FrameworkRoute from './framework/Route';
 import FrameworkRouter from './framework/Router';
 import FrameworkStatus from './framework/Status';
 //filesystem
@@ -32,7 +30,6 @@ import Response from './payload/Response';
 import { ReadSession, WriteSession } from './payload/Session';
 //runtime
 import Emitter from './runtime/Emitter';
-import Route from './runtime/Route';
 import Router from './runtime/Router';
 //helpers
 import {
@@ -48,8 +45,6 @@ import {
 export {
   //event
   FrameworkEmitter,
-  FrameworkEvent,
-  FrameworkRoute,
   FrameworkRouter,
   FrameworkStatus,
   //filesystem
@@ -72,7 +67,6 @@ export {
   WriteSession,
   //buildtime
   Emitter,
-  Route,
   Router,
   //helpers
   isHash,

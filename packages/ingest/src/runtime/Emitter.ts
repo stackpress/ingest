@@ -1,6 +1,5 @@
 //framework
-import type { EventListener, ActionPayloadCallback } from '../framework/types';
-import type Event from '../framework/Event';
+import type { Listener, ActionPayloadCallback } from '../framework/types';
 import FrameworkEmitter from '../framework/Emitter';
 import Status from '../framework/Status';
 //payload
@@ -10,27 +9,21 @@ import type Response from '../payload/Response';
 /**
  * Queues event listeners and runs the specified in order
  */
-export default class Emitter 
-  extends FrameworkEmitter<ActionPayloadCallback, Request, Response> 
-{
+export default class Emitter extends FrameworkEmitter<ActionPayloadCallback> {
   /**
    * Runs the tasks
    */
-  public async emit(
-    req: Request, 
-    res: Response, 
-    event?: Event<ActionPayloadCallback, Request, Response>
-  ) {
+  public async emit(req: Request, res: Response) {
     if (!this.queue.length) {
       //report a 404
       return Status.NOT_FOUND;
     }
 
     while (this.queue.length) {
-      const { event: ctx, action } = (
-        this.queue.shift() as EventListener<ActionPayloadCallback, Request, Response>
+      const { action } = (
+        this.queue.shift() as Listener<ActionPayloadCallback>
       );
-      if (await action(req, res, event || ctx) === false) {
+      if (await action(req, res) === false) {
         return Status.ABORT;
       }
     }

@@ -1,68 +1,42 @@
-import type { FetchRequest, FetchResponse } from './helpers';
-import type { ActionCallback } from '@stackpress/ingest/dist/event/types';
-import type Emitter from '@stackpress/ingest/dist/runtime/Emitter';
-
-import StatusCode from '@stackpress/ingest/dist/event/StatusCode';
+//modules
+import cookie from 'cookie';
+//framework
+import Status from '@stackpress/ingest/dist/framework/Status';
+//payload
 import Request from '@stackpress/ingest/dist/payload/Request';
 import Response from '@stackpress/ingest/dist/payload/Response';
-import Exception from '@stackpress/ingest/dist/Exception';
+//runtime
+import Emitter from '@stackpress/ingest/dist/runtime/Emitter';
+import Router from '@stackpress/ingest/dist/runtime/Router';
+//general
+import { objectFromQuery } from '@stackpress/ingest/dist/helpers';
+//vercel
+
+import type { FetchRequest, ActionSet } from './types';
 import { loader, response } from './helpers';
 
 export default class Server {
-  /**
-   * 3. Runs the 'response' event and interprets
-   */
-  public async dispatch(req: Request, res: Response) {
-    //emit a response event
-    const status = await this.context.emit('response', req, res);
-    //if the status was incomplete (308)
-    return status.code !== StatusCode.ABORT.code;
-  }
+  //router to handle the requests
+  public readonly router: Router;
 
   /**
-   * Emit a series of events in order to catch and 
-   * manipulate the payload in different stages
+   * Sets up the emitter
    */
-  public async emit(queue: Emitter, req: Request, res: Response) {
-    //try to trigger request pre-processors
-    if (!await this.prepare(req, res)) {
-      //if the request exits, then stop
-      return false;
-    }
-    // from here we can assume that it is okay to
-    // continue with processing the routes
-    if (!await this.process(queue, req, res)) {
-      //if the request exits, then stop
-      return false;
-    }
-    //last call before dispatch
-    if (!await this.dispatch(req, res)) {
-      //if the dispatch exits, then stop
-      return false;
-    }
-    //anything else?
-    return true;
+  public constructor(router?: Router) {
+    this.router = router || new Router();
   }
 
   /**
    * Handles fetch requests
    */
-  public async handle(request: FetchRequest, queue: TaskQueue) {
+  public async handle(actions: ActionSet, request: FetchRequest) {
     //initialize the request
-    const { req, res } = await this.initialize(request);
-    try { //to load the body
-      await req.load();
-      //then try to emit the event
-      await this.emit(queue, req, res);
-    } catch(e) {
-      const error = e as Error;
-      res.code = res.code && res.code !== 200 
-        ? res.code: 500;
-      res.status = res.status && res.status !== 'OK' 
-        ? res.status : error.message;
-      //let middleware contribute after error
-      await this.context.emit('error', req, res);
-    }
+    const { req, res } = this._makePayload(request);
+    const emitter = this._makeEmitter(actions);
+    //load the body
+    await req.load();
+    //then try to emit the event
+    await this.process(emitter, req, res);
     //We would normally dispatch, but we can only create the
     //fetch response when all the data is ready...
     // if (!res.sent) {
@@ -74,32 +48,13 @@ export default class Server {
   }
 
   /**
-   * Sets up the request, response and determines the event
+   * Emit a series of events in order to catch and 
+   * manipulate the payload in different stages
    */
-  public async initialize(request: FetchRequest) {
-    //setup the payload
-    const req = new Request();
-    req.loader = loader(request);
-    const res = new Response();
-    return { req, res };
-  }
-
-  /**
-   * 1. Runs the 'request' event and interprets
-   */
-  public async prepare(req: Request, res: Response) {
-    const status = await this.context.emit('request', req, res);
+  public async process(emitter: Emitter, req: Request, res: Response) {
+    const status = await emitter.emit(req, res);
     //if the status was incomplete (308)
-    return status.code !== StatusCode.ABORT.code;
-  }
-
-  /**
-   * 2. Runs the route event and interprets
-   */
-  public async process(queue: TaskQueue, req: Request, res: Response) {
-    const status = await queue.run(req, res, this.context);
-    //if the status was incomplete (308)
-    if (status.code === StatusCode.ABORT.code) {
+    if (status.code === Status.ABORT.code) {
       //the callback that set that should have already processed
       //the request and is signaling to no longer continue
       return false;
@@ -110,20 +65,67 @@ export default class Server {
     //      long as there is a status code
     //ex. like in the case of a redirect
     if (!res.body && !res.code) {
-      res.code = StatusCode.NOT_FOUND.code;
-      throw Exception
-        .for(StatusCode.NOT_FOUND.message)
-        .withCode(StatusCode.NOT_FOUND.code);
+      res.code = Status.NOT_FOUND.code;
+      res.status = Status.NOT_FOUND.message;
+      res.body = `${Status.NOT_FOUND.code} ${Status.NOT_FOUND.message}`;
     }
 
     //if no status was set
     if (!res.code || !res.status) {
       //make it okay
-      res.code = StatusCode.OK.code;
-      res.status = StatusCode.OK.message;
+      res.code = Status.OK.code;
+      res.status = Status.OK.message;
     }
 
     //if the status was incomplete (308)
-    return status.code !== StatusCode.ABORT.code;
+    return status.code !== Status.ABORT.code;
+  }
+
+  /**
+   * Creates an emitter and populates it with actions
+   */
+  protected _makeEmitter(actions: ActionSet) {
+    const emitter = new Emitter();
+    actions.forEach(action => {
+      emitter.add(action);
+    });
+
+    return emitter;
+  }
+
+  /**
+   * Sets up the request, response and determines the event
+   */
+  protected _makePayload(request: FetchRequest) {
+    //set the type
+    const mimetype = request.headers.get('content-type') || 'text/plain';
+    //set the headers
+    const headers: Record<string, string> = {};
+    request.headers.forEach((value, key) => {
+      if (typeof value !== 'undefined') {
+        headers[key] = value;
+      }
+    });
+    //set session
+    const session = cookie.parse(
+      request.headers.get('cookie') as string || ''
+    );
+    //set url
+    const url = new URL(request.url);
+    //set query
+    const query = objectFromQuery(url.searchParams.toString());
+
+    //setup the payload
+    const req = new Request({
+      mimetype,
+      headers,
+      url,
+      query,
+      session,
+      resource: request
+    });
+    req.loader = loader(request);
+    const res = new Response();
+    return { req, res };
   }
 }

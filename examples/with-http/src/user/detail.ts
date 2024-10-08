@@ -1,8 +1,8 @@
 import { task } from '@stackpress/ingest/dist/helpers';
 
-export default task(function UserDetail(req, res, evt) {
+export default task(function UserDetail(req, res) {
   //get params
-  const id = evt.params.params.id;
+  const id = req.query.get('id');
   if (!id) {
     res.code = 400;
     res.status = 'Bad Request';

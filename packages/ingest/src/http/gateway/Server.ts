@@ -4,12 +4,12 @@ import http from 'http';
 //filesystem
 import type FileLoader from '../../filesystem/FileLoader';
 //framework
+import type { Event } from '../../framework/types';
 import Status from '../../framework/Status';
 //buildtime
 import type { BuildResult } from '../../buildtime/types';
 //gateway
 import type { IM, SR, GatewayAction } from './types';
-import type Route from './Route';
 import Router from './Router';
 import { imToURL } from '../helpers';
 
@@ -35,13 +35,13 @@ export default class Gateway {
     //loop through the manifest
     results.forEach(({ type, event, pattern, method, route, entry }) => {
       //transform the action file to an action callback
-      const action = async (req: IM, res: SR, route: Route) => {
+      const action = async (req: IM, res: SR, event: Event) => {
         //the action here is from the bundled actions that looks like
         //function GET(request: IM, response: IM, route: GatewayRoute)
         const { 'default': action } = await import(entry) as { 
           default: GatewayAction
         };
-        await action(req, res, route);
+        await action(req, res);
       };
       //if it's a route
       if (type === 'endpoint') {

@@ -18,16 +18,12 @@ import Router from './Router';
 export default class Server {
   //router to handle the requests
   public readonly router: Router;
-  //whether to use the require cache
-  //when an entry is loaded
-  public readonly cache: boolean;
 
   /**
    * Sets up the emitter
    */
-  public constructor(router: Router, cache = true) {
+  public constructor(router: Router) {
     this.router = router;
-    this.cache = cache;
   }
 
   /**
@@ -59,7 +55,7 @@ export default class Server {
    * Handles a payload using events
    */
   public async process(event: string, req: Request, res: Response) {
-    const status = await this.router.emit(event, req, res, this.cache);
+    const status = await this.router.emit(event, req, res);
     //if the status was incomplete (308)
     if (status.code === Status.ABORT.code) {
       //the callback that set that should have already processed

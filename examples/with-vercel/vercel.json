@@ -1,9 +1,0 @@
-{
-  "version": 2,
-  "rewrites": [
-    {
-      "source": "/user/:id",
-      "destination": "/api/7685d93174afc2996613"
-    }
-  ]
-}

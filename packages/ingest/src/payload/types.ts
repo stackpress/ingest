@@ -25,6 +25,7 @@ export type Headers = Record<string, string|string[]>
   | Map<string, string|string[]>;
 export type Body = string | Buffer | Uint8Array
   | Record<string, unknown> | Array<unknown>;
+export type Data = Map<string, any> | NestedObject;
 export type Query = string | Map<string, any> | NestedObject;
 export type Session = Record<string, string> | Map<string, string>;
 export type Post = Record<string, unknown> | Map<string, any>;
@@ -41,6 +42,7 @@ export type ResponseInitializer<T = unknown> = {
 };
 
 export type RequestInitializer<T = unknown> = ResponseInitializer<T> & {
+  data?: Data,
   url?: string|URL,
   query?: Query,
   session?: Session,

@@ -55,13 +55,7 @@ export default class Builder {
     source.addImportDeclaration({
       isTypeOnly: true,
       moduleSpecifier: '@stackpress/ingest/dist/framework/types',
-      namedImports: [ 'ActionCallback' ]
-    });
-    //import type Route from '@stackpress/ingest/dist/framework/Route';
-    source.addImportDeclaration({
-      isTypeOnly: true,
-      moduleSpecifier: '@stackpress/ingest/dist/framework/Route',
-      defaultImport: 'Route'
+      namedImports: [ 'Event' ]
     });
     //import Server from '@stackpress/ingest/dist/http/Server';
     source.addImportDeclaration({
@@ -77,14 +71,12 @@ export default class Builder {
     });
     const im = 'IncomingMessage';
     const sr = 'ServerResponse<IncomingMessage>';
-    const action = `ActionCallback<${im}, ${sr}>`;
     source.addFunction({
       isDefaultExport: true,
       name: info.method,
       parameters: [
         { name: 'request', type: im },
-        { name: 'response', type: sr },
-        { name: 'route', type: `Route<${action}, ${im}, ${sr}>` }
+        { name: 'response', type: sr }
       ],
       statements: (`
         const server = new Server();
@@ -92,7 +84,7 @@ export default class Builder {
         ${info.actions.map(
           (_, i) => `listeners.add(task_${i});`
         ).join('\n')}
-        return server.handle(listeners, route, request, response);
+        return server.handle(listeners, request, response);
       `).trim()
     });
     return source;

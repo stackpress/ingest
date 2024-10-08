@@ -16,7 +16,7 @@ import type {
 import type Router from './Router';
 import Emitter from './Emitter';
 import { esIngestPlugin } from './plugins';
-import { serialize, mockEvent } from './helpers';
+import { serialize } from './helpers';
 
 export default class Manifest extends Set<BuildInfo> {
   public readonly emitter: Router;
@@ -64,16 +64,13 @@ export default class Manifest extends Set<BuildInfo> {
   public async build(transpile: Transpiler) {
     const vfs = new Map<string, SourceFile>();
     const build = new Set<BuildResult>();
-    //this is a mock event needed in order to use the emitter
-    //the emitter is used here for sorting purposes only
-    const event = mockEvent(this.emitter);
     for (const { listeners, ...info } of this) {
       //create a new emitter we will use for just sorting purposes...
       const emitter = new Emitter();
       //add each route to the emitter 
       //(this will sort the entry files by priority)
       listeners.forEach(
-        listener => emitter.add(event, listener.action, listener.priority)
+        listener => emitter.add(listener.action, listener.priority)
       );
       //extract the actions from the emitter queue
       const actions = Array.from(emitter.queue).map(

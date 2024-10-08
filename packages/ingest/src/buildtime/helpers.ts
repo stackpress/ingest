@@ -2,18 +2,6 @@
 import type { SourceFile, ProjectOptions } from 'ts-morph';
 import crypto from 'crypto';
 import { Project } from 'ts-morph';
-//payload
-import Request from '../payload/Request';
-//buildtime
-import type Router from './Router';
-import Event from './Event';
-
-/**
- * Mocks an event
- */
-export function mockEvent(emitter: Router) {
-  return new Event(emitter, new Request(), { event: '.*', trigger: 'any' });
-}
 
 /**
  * Converts source file to javascript

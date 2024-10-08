@@ -1,16 +1,14 @@
+//general
+import { eventParams } from '../helpers';
 //framework
 import type { 
   Listener, 
   Listenable, 
   Method, 
-  RouteInfo, 
-  EventData, 
-  RouteData
+  RouteInfo
 } from './types';
-import Event from './Event';
+import type { Event, StatusCode } from './types';
 import Emitter from './Emitter';
-import Route from './Route';
-import Status from './Status';
 
 /**
  * An abstract class, the router combines the functionality of listening,
@@ -66,34 +64,7 @@ export default abstract class Router<A, R, S> {
    * Calls all the actions of the given 
    * event passing the given arguments
    */
-  public async emit(event: string, req: R, res: S, cache = true) {
-    const matches = this.match(event, req);
-
-    //if there are no events found
-    if (!Object.keys(matches).length) {
-      //report a 404
-      return Status.NOT_FOUND;
-    }
-
-    const emitter = this.makeEmitter();
-
-    Object.values(matches).forEach(event => {
-      const name = event.pattern?.toString() || event.name;
-      //if no direct observers
-      if (!this.listeners.has(name)) {
-        return;
-      }
-
-      //then loop the observers
-      const listeners = this.listeners.get(name) as Set<Listener<A>>;
-      listeners.forEach(route => {
-        emitter.add(event, route.action, route.priority);
-      });
-    });
-
-    //call the callbacks
-    return await emitter.emit(req, res, undefined, cache);
-  }
+  public abstract emit(event: string, req: R, res: S): Promise<StatusCode>;
 
   /**
    * Route for GET method
@@ -112,34 +83,20 @@ export default abstract class Router<A, R, S> {
   /**
    * Returns a new emitter instance
    */
-  public abstract makeEmitter(): Emitter<A, R, S>;
-
-  /**
-   * Returns a new event instance
-   */
-  public makeEvent(req: R, data: EventData) {
-    return new Event<A, R, S>(this, req, data);
-  };
-
-  /**
-   * Returns a new route instance
-   */
-  public makeRoute(req: R, data: RouteData) {
-    return new Route<A, R, S>(this, req, data);
-  }
+  public abstract makeEmitter(): Emitter<A>;
 
   /**
    * Returns possible event matches
    */
-  public match(trigger: string, req: R) {
-    const matches: Record<string, Event<A, R, S>> = {};
+  public match(trigger: string) {
+    const matches: Record<string, Event> = {};
     //first do the obvious match
     if (this.listeners.has(trigger)) {
-      matches[trigger] = this.makeEvent(req, { event: trigger, trigger });
+      matches[trigger] = { trigger, pattern: trigger, params: {} };
     }
-
     //next do the calculated matches
     this.regexp.forEach(pattern => {
+      //make regexp so we can compare against the trigger
       const regexp = new RegExp(
         // pattern,
         pattern.substring(
@@ -151,56 +108,23 @@ export default abstract class Router<A, R, S> {
           pattern.lastIndexOf('/') + 1
         )
       );
-
       //because String.matchAll only works for global flags ...
-      let match, parameters: string[];
       if (regexp.flags.indexOf('g') === -1) {
-        match = trigger.match(regexp);
+        const match = trigger.match(regexp);
         if (!match || !match.length) {
           return;
         }
-
-        parameters = [];
-        if (Array.isArray(match)) {
-          parameters = match.slice();
-          parameters.shift();
-        }
       } else {
-        match = Array.from(trigger.matchAll(regexp));
+        const match = Array.from(trigger.matchAll(regexp));
         if (!Array.isArray(match[0]) || !match[0].length) {
           return;
         }
-
-        parameters = match[0].slice();
-        parameters.shift();
       }
-
-      //okay here's a doozy...
-      //So event is the string that will be used to compare
-      //against the trigger. The trigger is the string provided
-      //when emit() is called. The event can be a name string or 
-      //a string regexp pattern. If it's a regexp pattern, then 
-      //it will be logged in the regexp registry set. All routes
-      //are regexps, but not all regexps are routes. Routes are
-      //defined by the route() method and are stored in the routes
-      //registry map. This means the key of the route is always in
-      //the regexp registry set
-      const route = this.routes.get(pattern);
-      if (route) {
-        matches[pattern] = this.makeRoute(req, {
-          method: route.method,
-          path: route.path,
-          event: pattern,
-          pattern: regexp,
-          trigger
-        });
-      } else {
-        matches[pattern] = this.makeEvent(req, {
-          event: pattern,
-          pattern: regexp,
-          trigger
-        });
-      }
+      const params = eventParams(trigger, pattern);
+      const query = Object.assign(
+        {}, params || []
+      ) as unknown as Record<string, unknown> ;
+      matches[pattern] = { trigger, pattern, params: query };
     });
 
     return matches;
