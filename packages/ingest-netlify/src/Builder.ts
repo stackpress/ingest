@@ -3,8 +3,7 @@ import type {
   TranspileInfo, 
   Transpiler 
 } from '@stackpress/ingest/dist/buildtime/types';
-
-import path from 'path';
+import { VariableDeclarationKind } from 'ts-morph';
 import { createSourceFile } from '@stackpress/ingest/dist/buildtime/helpers';
 import HTTPBuilder from '@stackpress/ingest/dist/http/Builder';
 
@@ -39,17 +38,23 @@ export default class Builder extends HTTPBuilder{
         defaultImport: `task_${i}`
       });
     });
-    //this is the interface required by vercel functions...
-    // /resize/100/50 would be rewritten to /api/sharp?width=100&height=50
-    source.addFunction({
+    //export const config = { path: '/user/:id' };
+    source.addVariableStatement({
       isExported: true,
-      //isAsync: true,
+      declarationKind: VariableDeclarationKind.Const,
+      declarations: [{
+        name: 'config',
+        initializer: `{ path: '${info.route}' }`
+      }]
+    });
+    source.addFunction({
+      isDefaultExport: true,
       name: info.method,
       parameters: [{ name: 'request', type: 'Request' }],
       statements: (`
+        if (request.method.toUpperCase() === '${info.method}') return;
         const server = new Server();
         const listeners = new Set<ActionPayloadCallback>();
-        //in vercel, params are converted to query in request
         ${info.actions.map(
           (_, i) => `listeners.add(task_${i});`
         ).join('\n')}
@@ -67,28 +72,6 @@ export default class Builder extends HTTPBuilder{
     const transpiler: Transpiler = entries => {
       return this.transpile(entries);
     }
-    const results = await manifest.build(transpiler);
-    //write the manifest to disk
-    const json = {
-      version: 2,
-      rewrites: Array
-        .from(results.build)
-        .filter(result => result.type === 'endpoint')
-        .map(result => ({ 
-          source: result.route
-            //replace the stars
-            //* -> ([^/]+)
-            .replaceAll('*', '([^/]+)')
-            //** -> ([^/]+)([^/]+) -> (.*)
-            .replaceAll('([^/]+)([^/]+)', '(.*)'),
-          destination: `/api/${result.id}`
-        }))
-    };
-    manifest.loader.fs.writeFileSync(
-      path.join(manifest.loader.cwd, 'vercel.json'), 
-      JSON.stringify(json, null, 2), 
-      'utf-8'
-    );
-    return results;
+    return await manifest.build(transpiler);
   }
 }

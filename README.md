@@ -10,10 +10,10 @@ $ npm install @stackpress/ingest
 
 ## Usage
 
- 1. Create a route file called `/user/detail.ts`
+ 1. Create an entry file called `entry.ts`
 
 ```js
-// /user/detail.ts
+// entry.ts
 import { task } from '@stackpress/ingest/dist/helpers';
 
 export default task(function UserDetail(req, res) {
@@ -36,5 +36,22 @@ export default task(function UserDetail(req, res) {
   //send the response
   res.mimetype = 'text/json';
   res.body = results;
+});
+```
+
+ 2. Create a server file called `server.ts`
+
+```js
+// server.ts
+import path from 'path';
+import http from '@stackpress/ingest/http';
+
+const server = http({ minify: false });
+server.get('/user/:id', path.resolve(__dirname, 'user/detail'));
+
+server.develop().listen(3000, () => {
+  console.log('Server is running on port 3000');
+  console.log('------------------------------');
+  console.log(server.router.listeners);
 });
 ```

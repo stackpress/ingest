@@ -47,7 +47,8 @@ export default function vercel(options: BuildtimeOptions = {}) {
     router = new Router(),
     fs = new NodeFS(),
     cwd = process.cwd(),
-    buildDir = './api', 
+    //default to netlify functions
+    buildDir = './.netlify/functions', 
     ...build 
   } = options;
   

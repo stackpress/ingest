@@ -1,7 +1,7 @@
 {
-  "name": "ingest-with-vercel",
+  "name": "ingest-with-netlify",
   "version": "1.0.0",
-  "description": "A simple boilerplate for using Ingest with Vercel.",
+  "description": "A simple boilerplate for using Ingest with Netlify.",
   "private": true,
   "scripts": {
     "generate": "yarn build:tsc && yarn build:files",
@@ -10,7 +10,7 @@
     "dev": "ts-node src/develop.ts"
   },
   "dependencies": {
-    "@stackpress/ingest-vercel": "0.1.8"
+    "@stackpress/ingest-netlify": "0.1.8"
   },
   "devDependencies": {
     "@types/node": "22.1.0",

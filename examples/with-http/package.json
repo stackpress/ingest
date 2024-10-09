@@ -1,5 +1,5 @@
 {
-  "name": "with-http",
+  "name": "ingest-with-http",
   "version": "1.0.0",
   "description": "A simple boilerplate for using Ingest with native HTTP.",
   "private": true,

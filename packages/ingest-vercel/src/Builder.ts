@@ -49,7 +49,6 @@ export default class Builder extends HTTPBuilder{
       statements: (`
         const server = new Server();
         const listeners = new Set<ActionPayloadCallback>();
-        //in vercel, params are converted to query in request
         ${info.actions.map(
           (_, i) => `listeners.add(task_${i});`
         ).join('\n')}

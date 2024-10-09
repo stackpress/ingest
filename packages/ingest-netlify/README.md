@@ -1,3 +1,3 @@
-# ᗊ Ingest - Vercel
+# ᗊ Ingest - Netlify
 
 Event Driven Serverless Framework
