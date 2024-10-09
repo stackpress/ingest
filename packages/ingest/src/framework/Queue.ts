@@ -8,7 +8,7 @@ import type { Listener } from './types';
  * - A - Action. Examples of an action could be a callback function or a 
  *   file location of an action callback.
  */
-export default class Emitter<A> {
+export default class Queue<A> {
   //The in memory task queue. Dont use 
   //Set because we will be sorting constantly
   public readonly queue: Listener<A>[] = [];

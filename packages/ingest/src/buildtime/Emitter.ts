@@ -1,6 +1,6 @@
 //framework
 import type { Listener, ActionFile } from '../framework/types';
-import FrameworkEmitter from '../framework/Emitter';
+import Queue from '../framework/Queue';
 import Status from '../framework/Status';
 //payload
 import type Request from '../payload/Request';
@@ -48,7 +48,7 @@ import type Response from '../payload/Response';
  * `Status` will be `ABORTED`. If all actions were called and the last 
  * one did not return `false`, then the `Status` will be `OK`.
  */
-export default class Emitter extends FrameworkEmitter<ActionFile> {
+export default class Emitter extends Queue<ActionFile> {
   /**
    * Runs the tasks
    */

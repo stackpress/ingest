@@ -5,8 +5,6 @@ import Status from '../framework/Status';
 //payload
 import type Request from '../payload/Request';
 import type Response from '../payload/Response';
-//general
-import { routeParams } from '../helpers';
 //runtime
 import Emitter from './Emitter';
 
@@ -16,39 +14,38 @@ import Emitter from './Emitter';
  * on an action. With events you can add extra functionality
  * right after the event has triggered.
  */
-export default class Router 
-  extends EventRouter<ActionPayloadCallback, Request, Response> 
+export default class Router<S = unknown, R = unknown> 
+  extends EventRouter<ActionPayloadCallback, Request<S>, Response<R>> 
 {
   /**
    * Calls all the actions of the given 
    * event passing the given arguments
    */
-  public async emit(event: string, req: Request, res: Response) {
-    const matches = this.match(event, req);
+  public async emit(event: string, req: Request<S>, res: Response<R>) {
+    const matches = this.match(event);
 
     //if there are no events found
-    if (!Object.keys(matches).length) {
+    if (matches.size === 0) {
       //report a 404
       return Status.NOT_FOUND;
     }
 
     const emitter = this.makeEmitter();
 
-    Object.values(matches).forEach(event => {
-      const name = event.pattern?.toString() || event.trigger;
+    for (const event of matches) {
       //if no direct observers
-      if (!this.listeners.has(name)) {
-        return;
+      if (!this.listeners.has(event)) {
+        continue;
       }
 
       //then loop the observers
-      const listeners = this.listeners.get(name) as Set<
+      const listeners = this.listeners.get(event) as Set<
         Listener<ActionPayloadCallback>
       >;
       listeners.forEach(route => {
         emitter.add(route.action, route.priority);
       });
-    });
+    }
 
     //call the callbacks
     return await emitter.emit(req, res);
@@ -59,23 +56,5 @@ export default class Router
    */
   public makeEmitter() {
     return new Emitter();
-  }
-
-  /**
-   * Returns possible event matches
-   */
-  public match(trigger: string, req?: Request) {
-    const matches = super.match(trigger);
-    if (req) {
-      for (const event of Object.values(matches)) {
-        const route = this.routes.get(event.pattern);
-        if (route) {
-          const { params, args } = routeParams(route.path, req.url.pathname);
-          matches[event.pattern].params = Object.assign({}, args, params);
-        }
-        req?.data.set(event.params);
-      }
-    }
-    return matches;
   }
 };

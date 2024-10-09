@@ -1,3 +1,4 @@
+import type { Method } from '../framework/types';
 import type Request from './Request';
 import type Response from './Response';
 
@@ -34,6 +35,11 @@ export type LoaderResponse = { body?: Body, post?: Post };
 export type RequestLoader = (req: Request) => Promise<LoaderResponse|undefined>;
 export type ResponseDispatcher = (res: Response) => Promise<void>;
 
+export type ContextInitializer = { 
+  args?: Array<string> | Set<string>,
+  params?: Record<string, string> | Map<string, string>
+};
+
 export type ResponseInitializer<T = unknown> = { 
   resource?: T,
   mimetype?: string, 
@@ -42,6 +48,7 @@ export type ResponseInitializer<T = unknown> = {
 };
 
 export type RequestInitializer<T = unknown> = ResponseInitializer<T> & {
+  method?: Method,
   data?: Data,
   url?: string|URL,
   query?: Query,

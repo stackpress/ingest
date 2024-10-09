@@ -14,12 +14,6 @@ export type StatusCode = {
 //--------------------------------------------------------------------//
 // Event Emitter Types
 
-export type Event = { 
-  trigger: string, 
-  pattern: string, 
-  params: Record<string, unknown> 
-};
-
 export type ActionFile = string;
 export type ActionCallback<R, S> = (
   request: R, 

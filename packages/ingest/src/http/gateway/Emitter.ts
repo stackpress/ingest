@@ -1,5 +1,5 @@
 //framework
-import FrameworkEmitter from '../../framework/Emitter';
+import FrameworkEmitter from '../../framework/Queue';
 import Status from '../../framework/Status';
 //http
 import type { IM, SR, GatewayAction, GatewayListener } from './types';

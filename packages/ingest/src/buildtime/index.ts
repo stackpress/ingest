@@ -8,7 +8,7 @@ export type * from '../payload/types';
 export type * from './types';
 
 //framework
-import FrameworkEmitter from '../framework/Emitter';
+import FrameworkEmitter from '../framework/Queue';
 import FrameworkRouter from '../framework/Router';
 import FrameworkStatus from '../framework/Status';
 //filesystem

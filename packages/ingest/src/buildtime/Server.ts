@@ -54,7 +54,7 @@ export default class Server {
   /**
    * Handles a payload using events
    */
-  public async process(event: string, req: Request, res: Response) {
+  public async process(event: string, req: Request<IM>, res: Response<SR>) {
     const status = await this.router.emit(event, req, res);
     //if the status was incomplete (308)
     if (status.code === Status.ABORT.code) {

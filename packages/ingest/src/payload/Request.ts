@@ -1,10 +1,17 @@
+import type { Method } from '../framework/types';
 import type { Body, RequestLoader, RequestInitializer } from './types';
 
 import cookie from 'cookie';
 
-import { isHash, objectFromQuery } from '../helpers';
+import { 
+  isHash, 
+  objectFromQuery, 
+  eventParams, 
+  routeParams 
+} from '../helpers';
 
 import Nest from './Nest';
+import Context from './Context';
 import ReadonlyMap from './readonly/Map';
 import ReadonlyNest from './readonly/Nest';
 import { ReadSession } from './Session';
@@ -20,6 +27,8 @@ export default class Request<T = unknown> {
   public readonly session = new ReadSession();
   //url controller
   public readonly url = new URL('http://unknownhost/');
+  //request method
+  public readonly method: Method;
   //payload body
   protected _body: Body|null;
   //body mimetype
@@ -31,7 +40,7 @@ export default class Request<T = unknown> {
   //post controller
   protected _post: ReadonlyNest;
   //resource
-  protected _resource?: unknown;
+  protected _resource?: T;
 
   /**
    * Returns the body
@@ -93,6 +102,7 @@ export default class Request<T = unknown> {
    * Sets request defaults
    */
   public constructor(init: RequestInitializer<T> = {}) {
+    this.method = init.method || 'GET';
     this._mimetype = init.mimetype || 'text/plain';
     this._body = init.body || null;
     if (init.headers instanceof Map) {
@@ -162,6 +172,22 @@ export default class Request<T = unknown> {
     if (init.resource) {
       this._resource = init.resource;
     }
+  }
+
+  /**
+   * Returns a new request context with pattern
+   */
+  public ctxFromPattern(pattern: string|RegExp) {
+    const args = eventParams(pattern.toString(), this.url.pathname);
+    return new Context(this, { args });
+  }
+
+  /**
+   * Returns a new request context with route
+   */
+  public ctxFromRoute(route: string) {
+    const { args, params } = routeParams(route, this.url.pathname);
+    return new Context(this, { args, params });
   }
 
   /**

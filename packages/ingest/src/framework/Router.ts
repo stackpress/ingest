@@ -1,5 +1,3 @@
-//general
-import { eventParams } from '../helpers';
 //framework
 import type { 
   Listener, 
@@ -7,8 +5,8 @@ import type {
   Method, 
   RouteInfo
 } from './types';
-import type { Event, StatusCode } from './types';
-import Emitter from './Emitter';
+import type { StatusCode } from './types';
+import Queue from './Queue';
 
 /**
  * An abstract class, the router combines the functionality of listening,
@@ -83,16 +81,16 @@ export default abstract class Router<A, R, S> {
   /**
    * Returns a new emitter instance
    */
-  public abstract makeEmitter(): Emitter<A>;
+  public abstract makeEmitter(): Queue<A>;
 
   /**
    * Returns possible event matches
    */
   public match(trigger: string) {
-    const matches: Record<string, Event> = {};
+    const matches = new Set<string>();
     //first do the obvious match
     if (this.listeners.has(trigger)) {
-      matches[trigger] = { trigger, pattern: trigger, params: {} };
+      matches.add(trigger);
     }
     //next do the calculated matches
     this.regexp.forEach(pattern => {
@@ -120,11 +118,7 @@ export default abstract class Router<A, R, S> {
           return;
         }
       }
-      const params = eventParams(trigger, pattern);
-      const query = Object.assign(
-        {}, params || []
-      ) as unknown as Record<string, unknown> ;
-      matches[pattern] = { trigger, pattern, params: query };
+      matches.add(pattern);
     });
 
     return matches;

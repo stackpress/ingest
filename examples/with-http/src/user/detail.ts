@@ -2,7 +2,8 @@ import { task } from '@stackpress/ingest/dist/helpers';
 
 export default task(function UserDetail(req, res) {
   //get params
-  const id = req.query.get('id');
+  const ctx = req.ctxFromRoute('/user/:id');
+  const id = parseInt(ctx.params.get('id') || '');
   if (!id) {
     res.code = 400;
     res.status = 'Bad Request';
@@ -11,7 +12,7 @@ export default task(function UserDetail(req, res) {
   }
   //maybe get from database?
   const results = { 
-    id: 1, 
+    id: id, 
     name: 'John Doe', 
     age: 21, 
     created: new Date().toISOString() 

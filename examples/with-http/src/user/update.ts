@@ -2,7 +2,8 @@ import { task } from '@stackpress/ingest/dist/helpers';
 
 export default task(function UserUpdate(req, res) {
   //get params
-  const id = req.query.get('id');
+  const ctx = req.ctxFromRoute('/user/:id');
+  const id = parseInt(ctx.params.get('id') || '');
   if (!id) {
     res.code = 400;
     res.status = 'Bad Request';

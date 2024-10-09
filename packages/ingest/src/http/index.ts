@@ -15,7 +15,7 @@ import path from 'path';
 import NodeFS from '../filesystem/NodeFS';
 import FileLoader from '../filesystem/FileLoader';
 //framework
-import FrameworkEmitter from '../framework/Emitter';
+import FrameworkEmitter from '../framework/Queue';
 import FrameworkRouter from '../framework/Router';
 import FrameworkStatus from '../framework/Status';
 //payload

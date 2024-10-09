@@ -10,7 +10,7 @@ import Nest from './Nest';
 import { WriteSession } from './Session';
 import { isHash } from '../helpers';
 
-export default class Response {
+export default class Response<T = unknown> {
   //head controller
   public readonly headers: ReadonlyMap<string, string|string[]>;
   //session controller
@@ -32,7 +32,7 @@ export default class Response {
   //total count of possible results
   protected _total = 0;
   //resource
-  protected _resource?: unknown;
+  protected _resource?: T;
 
   /**
    * Returns the body
@@ -142,7 +142,7 @@ export default class Response {
   /**
    * Sets the initial values of the payload
    */
-  constructor(init: ResponseInitializer = {}) {
+  constructor(init: ResponseInitializer<T> = {}) {
     this._mimetype = init.mimetype;
     this._body = init.body || null;
     if (init.headers instanceof Map) {

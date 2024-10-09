@@ -51,7 +51,7 @@ export function objectFromJson(json: string) {
 /**
  * Extracts the route parameters from the URL
  */
-export function eventParams(triggeredEvent: string, pattern: string) {
+export function eventParams(pattern: string, event: string) {
   const regexp = new RegExp(
     // pattern,
     pattern.substring(
@@ -67,7 +67,7 @@ export function eventParams(triggeredEvent: string, pattern: string) {
   //because String.matchAll only works for global flags ...
   let match, parameters: string[];
   if (regexp.flags.indexOf('g') === -1) {
-    match = triggeredEvent.match(regexp);
+    match = event.match(regexp);
     if (!match || !match.length) {
       return;
     }
@@ -78,7 +78,7 @@ export function eventParams(triggeredEvent: string, pattern: string) {
       parameters.shift();
     }
   } else {
-    match = Array.from(triggeredEvent.matchAll(regexp));
+    match = Array.from(event.matchAll(regexp));
     if (!Array.isArray(match[0]) || !match[0].length) {
       return;
     }

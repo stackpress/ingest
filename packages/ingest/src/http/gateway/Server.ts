@@ -4,7 +4,6 @@ import http from 'http';
 //filesystem
 import type FileLoader from '../../filesystem/FileLoader';
 //framework
-import type { Event } from '../../framework/types';
 import Status from '../../framework/Status';
 //buildtime
 import type { BuildResult } from '../../buildtime/types';
@@ -35,7 +34,7 @@ export default class Gateway {
     //loop through the manifest
     results.forEach(({ type, event, pattern, method, route, entry }) => {
       //transform the action file to an action callback
-      const action = async (req: IM, res: SR, event: Event) => {
+      const action = async (req: IM, res: SR) => {
         //the action here is from the bundled actions that looks like
         //function GET(request: IM, response: IM, route: GatewayRoute)
         const { 'default': action } = await import(entry) as { 
