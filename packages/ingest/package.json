@@ -1,6 +1,6 @@
 {
   "name": "@stackpress/ingest",
-  "version": "0.1.8",
+  "version": "0.1.0",
   "license": "Apache-2.0",
   "description": "An event driven serverless framework",
   "author": "Chris <chris@stackpress.io>",
