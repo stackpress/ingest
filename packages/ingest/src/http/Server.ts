@@ -102,7 +102,9 @@ export default class Server {
       )
     ) as Record<string, string|string[]>;
     //set session
-    const session = cookie.parse(im.headers.cookie as string || '');
+    const session = cookie.parse(
+      im.headers.cookie as string || ''
+    ) as Record<string, string>;
     //set url
     const url = imToURL(im);
     //set query

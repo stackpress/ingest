@@ -155,7 +155,11 @@ export default class Request<T = unknown> {
       );
     } else if (this.headers.has('cookie')) {
       this.session = new ReadSession(
-        Object.entries(cookie.parse(this.headers.get('cookie') as string))
+        Object.entries(
+          cookie.parse(this.headers.get('cookie') as string)
+        ).filter(
+          ([ key, value ]) => typeof value !== 'undefined'
+        ) as [string, string][]
       );
     } else {
       this.session = new ReadSession();
