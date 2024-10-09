@@ -131,6 +131,7 @@ dist
 archives
 .http
 .vercel
+.netlify
 examples/with-vercel/api
 examples/with-vercel/vercel.json
 .DS_Store
