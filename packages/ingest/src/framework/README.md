@@ -11,7 +11,7 @@ all the functionality available in this library. It has 5 main patterns.
  3. **Status** - The emitter returns a `StatusCode`. These codes are 
     useful to find out what happened after the `emit()` was called. 
 
-## 2. Router
+## 1. Router
 
 ```js
 abstract class Router<A, R, S>
@@ -41,7 +41,7 @@ The abstract that needs to be defined is the emitter that will be used.
 public abstract makeEmitter(): Emitter<A>;
 ```
 
-## 3. Emitter
+## 2. Emitter
 
 ```js
 abstract class Emitter<A>
@@ -53,7 +53,7 @@ The generics needed are the following.
  - A - Action. Examples of an action could be a callback function or a 
    file location of an action callback.
 
-## 4. Status
+## 3. Status
 
 Status Codes as return states by the `Emitter`. These codes are useful 
 to find out what happened after an `Emitter.emit()` was called. For 
