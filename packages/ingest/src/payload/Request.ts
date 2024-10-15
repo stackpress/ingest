@@ -71,6 +71,13 @@ export default class Request<T = unknown> {
   }
 
   /**
+   * Returns the original resource
+   */
+  public get resource() {
+    return this._resource;
+  }
+
+  /**
    * Returns the type of body
    * string|Buffer|Uint8Array|Record<string, unknown>|Array<unknown>
    */

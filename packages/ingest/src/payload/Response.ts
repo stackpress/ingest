@@ -46,6 +46,13 @@ export default class Response<T = unknown> {
   public get code() {
     return this._code;
   }
+
+  /**
+   * Returns the original resource
+   */
+  public get resource() {
+    return this._resource;
+  }
   
   /**
    * Returns whether if the response was sent
