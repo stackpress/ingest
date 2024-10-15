@@ -4,8 +4,6 @@ export type * from './framework/types';
 export type * from './filesystem/types';
 //payload types
 export type * from './payload/types';
-//buildtime types
-export type * from './types';
 
 //event
 import FrameworkEmitter from './framework/Queue';

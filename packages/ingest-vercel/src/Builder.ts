@@ -42,7 +42,8 @@ export default class Builder extends HTTPBuilder{
     //this is the interface required by vercel functions...
     // /resize/100/50 would be rewritten to /api/sharp?width=100&height=50
     source.addFunction({
-      isExported: true,
+      isDefaultExport: info.method === 'ALL',
+      isExported: info.method !== 'ALL',
       //isAsync: true,
       name: info.method,
       parameters: [{ name: 'request', type: 'Request' }],

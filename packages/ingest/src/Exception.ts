@@ -1,5 +1,3 @@
-import type { ErrorList } from './types';
-
 /**
  * Exceptions are used to give more information
  * of an error that has occured
@@ -8,7 +6,7 @@ export default class Exception extends Error {
   /**
    * General use expressive reasons
    */
-  static for(message: string, ...values: unknown[]) {
+  public static for(message: string, ...values: unknown[]) {
     values.forEach(function(value) {
       message = message.replace('%s', String(value));
     });
@@ -19,7 +17,7 @@ export default class Exception extends Error {
   /**
    * Expressive error report
    */
-  static forErrorsFound(errors: ErrorList) {
+  public static forErrorsFound(errors: Record<string, string|string[]>) {
     const exception = new this('Invalid Parameters');
     exception.errors = errors;
     return exception;
@@ -28,7 +26,7 @@ export default class Exception extends Error {
   /**
    * Requires that the condition is true
    */
-  static require(
+  public static require(
     condition: boolean, 
     message: string, 
     ...values: any[]
@@ -50,7 +48,7 @@ export default class Exception extends Error {
   /**
    * Itemized errors
    */
-  public errors: ErrorList = {};
+  public errors: Record<string, string|string[]> = {};
 
   /**
    * Starting index
@@ -65,7 +63,7 @@ export default class Exception extends Error {
   /**
    * An exception should provide a message and a name
    */
-  constructor(message: string, code = 500) {
+  public constructor(message: string, code = 500) {
     super();
     this.message = message;
     this.name = this.constructor.name;
@@ -73,31 +71,53 @@ export default class Exception extends Error {
   }
 
   /**
+   * Converts error to JSON
+   */
+  public toJSON() {
+    return JSON.stringify(this.toResponse(), null, 2);
+  }
+
+  /**
+   * Converts error to Response object
+   */
+  public toResponse() {
+    const json: {
+      code: number;
+      status: string;
+      errors?: Record<string, string|string[]>;
+    } = {
+      code: this.code,
+      status: this.message
+    };
+    if (this.errors) {
+      json.errors = this.errors;
+    }
+    return json;
+  }
+
+  /**
    * Expressive way to set an error code
    */
-  withCode(code: number) {
+  public withCode(code: number) {
     this.code = code;
+    return this;
+  }
+  
+  /**
+   * Adds error list
+   */
+  public withErrors(errors: Record<string, string|string[]>) {
+    this.errors = errors;
     return this;
   }
 
   /**
    * Expressive way to set syntax position
    */
-  withPosition(start: number, end: number) {
+  public withPosition(start: number, end: number) {
     this.start = start;
     this.end = end;
     return this;
-  }
-
-  /**
-   * Converts error to JSON
-   */
-  toJSON(): Record<string, any> {
-    return {
-      error: true,
-      code: this.code,
-      message: this.message
-    };
   }
 }
 

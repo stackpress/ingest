@@ -4,7 +4,6 @@ import type {
   ResponseInitializer
 } from './types';
 
-import ReadonlyMap from './readonly/Map';
 import Nest from './Nest';
 
 import { WriteSession } from './Session';
@@ -12,7 +11,7 @@ import { isHash } from '../helpers';
 
 export default class Response<T = unknown> {
   //head controller
-  public readonly headers: ReadonlyMap<string, string|string[]>;
+  public readonly headers: Map<string, string|string[]>;
   //session controller
   public readonly session = new WriteSession();
   //error controller
@@ -146,15 +145,15 @@ export default class Response<T = unknown> {
     this._mimetype = init.mimetype;
     this._body = init.body || null;
     if (init.headers instanceof Map) {
-      this.headers = new ReadonlyMap<string, string|string[]>(
+      this.headers = new Map<string, string|string[]>(
         Array.from(init.headers.entries())
       );
     } else if (isHash(init.headers)) {
-      this.headers = new ReadonlyMap<string, string|string[]>(
+      this.headers = new Map<string, string|string[]>(
         Object.entries(init.headers as Record<string, string|string[]>)
       );
     } else {
-      this.headers = new ReadonlyMap<string, string|string[]>();
+      this.headers = new Map<string, string|string[]>();
     }
 
     if (init.resource) {
