@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn run build:ingest && yarn run build:http",
+    "build": "yarn run build:ingest && yarn run build:vercel && yarn run build:netlify",
     "build:ingest": "yarn --cwd packages/ingest build",
     "build:vercel": "yarn --cwd packages/ingest-vercel build",
     "build:netlify": "yarn --cwd packages/ingest-netlify build",
