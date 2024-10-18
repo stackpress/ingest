@@ -1,6 +1,7 @@
 //modules
 import cookie from 'cookie';
 //framework
+import type { Method } from '@stackpress/ingest/dist/framework/types';
 import Status from '@stackpress/ingest/dist/framework/Status';
 //payload
 import Request from '@stackpress/ingest/dist/payload/Request';
@@ -97,6 +98,8 @@ export default class Server {
    * Sets up the request, response and determines the event
    */
   protected _makePayload(request: FetchRequest) {
+    //set method
+    const method = (request.method?.toUpperCase() || 'GET') as Method;
     //set the type
     const mimetype = request.headers.get('content-type') || 'text/plain';
     //set the headers
@@ -117,6 +120,7 @@ export default class Server {
 
     //setup the payload
     const req = new Request({
+      method,
       mimetype,
       headers,
       url,

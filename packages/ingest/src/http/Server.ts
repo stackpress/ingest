@@ -1,6 +1,7 @@
 //modules
 import cookie from 'cookie';
 //framework
+import type { Method } from '../framework/types';
 import Status from '../framework/Status';
 //payload
 import Request from '../payload/Request';
@@ -93,6 +94,8 @@ export default class Server {
    * Sets up the request, response and determines the event
    */
   protected _makePayload(im: IM, sr: SR) {
+    //set method
+    const method = (im.method?.toUpperCase() || 'GET') as Method;
     //set the type
     const mimetype = im.headers['content-type'] || 'text/plain';
     //set the headers
@@ -111,6 +114,7 @@ export default class Server {
     const query = objectFromQuery(url.searchParams.toString());
     //make request
     const req = new Request({
+      method,
       mimetype,
       headers,
       url,
