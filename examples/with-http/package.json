@@ -11,7 +11,7 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
-    "@stackpress/ingest": "0.1.5"
+    "@stackpress/ingest": "0.1.6"
   },
   "devDependencies": {
     "@types/node": "22.1.0",
