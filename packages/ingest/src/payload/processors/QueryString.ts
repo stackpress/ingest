@@ -30,7 +30,7 @@ export default class QueryString {
       let [ key, value ] = filter.split('=', 2);
       value = decodeURIComponent(value);
       //change path to N notation
-      const keys = key
+      const keys = decodeURIComponent(key)
         .replace(/\]\[/g, separator)
         .replace('[', separator)
         .replace(/\[/g, '')
