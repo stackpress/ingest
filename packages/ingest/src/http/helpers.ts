@@ -110,6 +110,9 @@ export function loader(resource: IM, size = 0) {
 export function dispatcher(resource: SR, options: CookieOptions = {}) {
   return (res: Response) => {
     return new Promise<void>(resolve => {
+      //set code and status
+      resource.statusCode = res.code;
+      resource.statusMessage = res.status;
       //write cookies
       for (const [name, entry] of res.session.revisions.entries()) {
         if (entry.action === 'remove') {
