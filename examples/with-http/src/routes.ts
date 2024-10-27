@@ -3,6 +3,7 @@ import http from '@stackpress/ingest/http';
 
 const server = http({ minify: false });
 
+server.get('/auth', path.resolve(__dirname, 'user/index'));
 server.get('/user', path.resolve(__dirname, 'user/search'));
 server.post('/user', path.resolve(__dirname, 'user/create'));
 server.get('/user/:id', path.resolve(__dirname, 'user/detail'));

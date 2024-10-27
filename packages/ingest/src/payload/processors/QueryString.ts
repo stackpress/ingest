@@ -28,6 +28,7 @@ export default class QueryString {
     query.split(/\&/gi).forEach((filter: any) => {
       //key eg. foo[bar][][baz]
       let [ key, value ] = filter.split('=', 2);
+      value = value.replace(/\+/g, ' ');
       value = decodeURIComponent(value);
       //change path to N notation
       const keys = decodeURIComponent(key)
