@@ -155,7 +155,16 @@ export function dispatcher(resource: SR, options: CookieOptions = {}) {
           status: res.status,
           results: res.body,
           errors: res.errors.size > 0 ? res.errors.get() : undefined,
-          total: res.total > 0 ? res.total : undefined
+          total: res.total > 0 ? res.total : undefined,
+          stack: res.stack ? res.stack : undefined
+        }));
+      } else if (res.code && res.status) {
+        resource.setHeader('Content-Type', 'application/json');
+        resource.end(JSON.stringify({
+          code: res.code,
+          status: res.status,
+          errors: res.errors.size > 0 ? res.errors.get() : undefined,
+          stack: res.stack ? res.stack : undefined
         }));
       }
       //type Body = string | Buffer | Uint8Array 

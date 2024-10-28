@@ -1,3 +1,5 @@
+import type { Trace } from '@stackpress/types/dist/types';
+
 import type { 
   Body, 
   ResponseDispatcher,
@@ -26,6 +28,8 @@ export default class Response<T = unknown> {
   protected _dispatcher?: ResponseDispatcher;
   //whether if the response was sent
   protected _sent = false;
+  //stack trace
+  protected _stack?: Trace[];
   //response status message
   protected _status = '';
   //total count of possible results
@@ -59,6 +63,13 @@ export default class Response<T = unknown> {
    */
   public get sent() {
     return this._sent;
+  }
+
+  /**
+   * Returns a stack trace if error
+   */
+  public get stack(): Trace[]|undefined {
+    return this._stack;
   }
 
   /**
@@ -122,6 +133,13 @@ export default class Response<T = unknown> {
    */
   public set dispatcher(dispatcher: ResponseDispatcher) {
     this._dispatcher = dispatcher;
+  }
+
+  /**
+   * Sets a stack trace
+   */
+  public set stack(stack: Trace[]) {
+    this._stack = stack;
   }
 
   /**

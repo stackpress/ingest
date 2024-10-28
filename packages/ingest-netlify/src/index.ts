@@ -9,7 +9,6 @@ import Developer from '@stackpress/ingest/dist/buildtime/Server';
 import Builder from './Builder';
 import Server from './Server';
 
-import Nest from '@stackpress/ingest/dist/payload/Nest';
 import Request from '@stackpress/ingest/dist/payload/Request';
 import Response from '@stackpress/ingest/dist/payload/Response';
 import { 
@@ -29,7 +28,6 @@ export {
   Developer,
   Builder,
   Server,
-  Nest,
   Request,
   Response,
   ReadSession,

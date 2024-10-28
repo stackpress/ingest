@@ -87,6 +87,14 @@ export async function response(res: Response, options: CookieOptions = {}) {
       errors: res.errors.size > 0 ? res.errors.get() : undefined,
       total: res.total > 0 ? res.total : undefined
     });
+  } else if (res.code && res.status) {
+    res.mimetype = 'application/json';
+    body = JSON.stringify({
+      code: res.code,
+      status: res.status,
+      errors: res.errors.size > 0 ? res.errors.get() : undefined,
+      stack: res.stack ? res.stack : undefined
+    });
   }
   //create response
   const response = new NativeResponse(body, {
