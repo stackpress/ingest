@@ -1,6 +1,6 @@
 import type { Revision } from './types';
 
-import ReadonlyMap from './readonly/Map';
+import ReadonlyMap from '@stackpress/types/dist/readonly/Map';
 
 /**
  * Readonly session controller

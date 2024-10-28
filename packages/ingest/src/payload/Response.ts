@@ -4,7 +4,7 @@ import type {
   ResponseInitializer
 } from './types';
 
-import Nest from './Nest';
+import Nest from '@stackpress/types/dist/Nest';
 
 import { WriteSession } from './Session';
 import { isHash } from '../helpers';

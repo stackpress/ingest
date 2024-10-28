@@ -1,23 +1,7 @@
+import type { NestedObject } from '@stackpress/types/dist/types';
 import type { Method } from '../framework/types';
 import type Request from './Request';
 import type Response from './Response';
-
-//--------------------------------------------------------------------//
-// Nest Types
-
-export interface NestedObject<T = unknown> {
-  [key: Key]: T|NestedObject<T>;
-};
-
-export type Scalar = string|number|boolean|null;
-export type Hash = NestedObject<Scalar>;
-export type ScalarInput = Scalar|Scalar[]|Hash;
-export type Key = string|number;
-export type FileMeta = {
-  data: Buffer|string;
-  name: string;
-  type: string;
-}
 
 //--------------------------------------------------------------------//
 // Payload Types

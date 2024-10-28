@@ -24,6 +24,7 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@stackpress/types": "0.1.2",
     "cookie": "0.7.0"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 import type Request from './payload/Request';
 import type Response from './payload/Response';
-import Nest from './payload/Nest';
+import Nest from '@stackpress/types/dist/Nest';
 
 /**
  * Returns true if the value is a native JS object

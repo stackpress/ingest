@@ -2,6 +2,9 @@ import type { Method } from '../framework/types';
 import type { Body, RequestLoader, RequestInitializer } from './types';
 
 import cookie from 'cookie';
+import Nest from '@stackpress/types/dist/Nest';
+import ReadonlyMap from '@stackpress/types/dist/readonly/Map';
+import ReadonlyNest from '@stackpress/types/dist/readonly/Nest';
 
 import { 
   isHash, 
@@ -9,11 +12,7 @@ import {
   eventParams, 
   routeParams 
 } from '../helpers';
-
-import Nest from './Nest';
 import Context from './Context';
-import ReadonlyMap from './readonly/Map';
-import ReadonlyNest from './readonly/Nest';
 import { ReadSession } from './Session';
 
 export default class Request<T = unknown> {
