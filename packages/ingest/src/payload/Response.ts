@@ -199,6 +199,14 @@ export default class Response<T = unknown> {
       await this._dispatcher(this);
     }
     //flag as sent
+    this.stop();
+    return this;
+  }
+
+  /**
+   * Prevents the response from being sent
+   */
+  public stop() {
     this._sent = true;
     return this;
   }

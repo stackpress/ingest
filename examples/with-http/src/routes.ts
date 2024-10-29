@@ -11,6 +11,7 @@ server.put('/user/:id', path.resolve(__dirname, 'user/update'));
 server.delete('/user/:id', path.resolve(__dirname, 'user/remove'));
 server.get('/auth/error', path.resolve(__dirname, 'user/error'));
 server.get('/auth/login', path.resolve(__dirname, 'user/login'));
+server.get('/icon.png', path.resolve(__dirname, 'user/icon'));
 
 server.get('/**', path.resolve(__dirname, 'catch/404'));
 
