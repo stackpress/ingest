@@ -1,6 +1,6 @@
 {
   "name": "@stackpress/ingest-vercel",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "license": "Apache-2.0",
   "description": "Using Ingest to generate Vercel functions.",
   "author": "Chris <chris@stackpress.io>",
@@ -20,7 +20,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@stackpress/ingest": "0.1.10",
+    "@stackpress/ingest": "0.1.11",
     "cookie": "0.7.0"
   },
   "devDependencies": {
