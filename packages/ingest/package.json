@@ -1,6 +1,6 @@
 {
   "name": "@stackpress/ingest",
-  "version": "0.1.12",
+  "version": "0.1.14",
   "license": "Apache-2.0",
   "description": "An event driven serverless framework",
   "author": "Chris <chris@stackpress.io>",
@@ -24,7 +24,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@stackpress/types": "0.1.4",
+    "@stackpress/types": "0.1.5",
     "cookie": "0.7.0"
   },
   "devDependencies": {

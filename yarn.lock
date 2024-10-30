@@ -168,10 +168,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@stackpress/types@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@stackpress/types/-/types-0.1.4.tgz#f391171ed2377bf9ad06895158df67a2a64ece9a"
-  integrity sha512-0tyTDqvPFnE7HackC4kshNxLsc4JRAiZy8BdI/oan8AzWTFYWvl2Yh5GFDGDffWs/pmPuQjdIOuBf6TLpalhGQ==
+"@stackpress/types@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@stackpress/types/-/types-0.1.5.tgz#f7519af754bd1f3a48150dd1cef421bdbe9db096"
+  integrity sha512-+7wzGqkhZo6Nh8wSkVNuqnDSicD4lJoXVYRMIZxgkcndFqdLxeVfySETBaoP0h7m+AO6IZFD7zVBcp14rgINlg==
 
 "@ts-morph/common@~0.24.0":
   version "0.24.0"
