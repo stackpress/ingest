@@ -51,11 +51,11 @@ export default class Builder {
       moduleSpecifier: 'http',
       namedImports: [ 'IncomingMessage', 'ServerResponse' ]
     });
-    //import type { ActionCallback } from '@stackpress/ingest/dist/framework/types'
+    //import type { HTTPAction } from '@stackpress/ingest/dist/http/types'
     source.addImportDeclaration({
       isTypeOnly: true,
       moduleSpecifier: '@stackpress/ingest/dist/framework/types',
-      namedImports: [ 'Event' ]
+      namedImports: [ 'HTTPAction' ]
     });
     //import Server from '@stackpress/ingest/dist/http/Server';
     source.addImportDeclaration({
@@ -80,11 +80,11 @@ export default class Builder {
       ],
       statements: (`
         const server = new Server();
-        const listeners = new Set<ActionPayloadCallback>();
+        const actions = new Set<HTTPAction>();
         ${info.actions.map(
-          (_, i) => `listeners.add(task_${i});`
+          (_, i) => `actions.add(task_${i});`
         ).join('\n')}
-        return server.handle(listeners, request, response);
+        return server.handle(actions, request, response);
       `).trim()
     });
     return source;

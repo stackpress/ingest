@@ -8,6 +8,8 @@ export default task(function UserCreate(req, res) {
   //maybe insert into database?
   const results = { ...form, id: ++id, created: new Date().toISOString() };
   //send the response
+  res.code = 200;
+  res.status = 'OK';
   res.mimetype = 'text/json';
   res.body = results;
 });

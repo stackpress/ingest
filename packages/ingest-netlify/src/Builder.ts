@@ -14,21 +14,15 @@ export default class Builder extends HTTPBuilder{
   public transpile(info: TranspileInfo) {
     //create a new source file
     const { source } = createSourceFile('entry.ts', this._tsconfig);
-    //import type { ActionCallback } from '@stackpress/ingest/dist/framework/types'
+    //import type { FetchAction } from '@stackpress/ingest-netlify/dist/types'
     source.addImportDeclaration({
       isTypeOnly: true,
-      moduleSpecifier: '@stackpress/ingest/dist/framework/types',
-      namedImports: [ 'ActionCallback' ]
+      moduleSpecifier: '@stackpress/ingest-netlify/dist/types',
+      namedImports: [ 'FetchAction' ]
     });
-    //import type Route from '@stackpress/ingest/dist/framework/Route';
+    //import Server from '@stackpress/ingest-netlify/dist/Server';
     source.addImportDeclaration({
-      isTypeOnly: true,
-      moduleSpecifier: '@stackpress/ingest/dist/framework/Route',
-      defaultImport: 'Route'
-    });
-    //import Server from '@stackpress/ingest-vercel/dist/Server';
-    source.addImportDeclaration({
-      moduleSpecifier: '@stackpress/ingest-vercel/dist/Server',
+      moduleSpecifier: '@stackpress/ingest-netlify/dist/Server',
       defaultImport: 'Server'
     });
     //import task1 from [entry]
@@ -52,13 +46,13 @@ export default class Builder extends HTTPBuilder{
       name: info.method,
       parameters: [{ name: 'request', type: 'Request' }],
       statements: (`
-        if (request.method.toUpperCase() === '${info.method}') return;
+        if (request.method.toUpperCase() !== '${info.method}') return;
         const server = new Server();
-        const listeners = new Set<ActionPayloadCallback>();
+        const actions = new Set<FetchAction>();
         ${info.actions.map(
-          (_, i) => `listeners.add(task_${i});`
+          (_, i) => `actions.add(task_${i});`
         ).join('\n')}
-        return server.handle(listeners, request);
+        return server.handle(actions, request);
       `).trim()
     });
     return source;

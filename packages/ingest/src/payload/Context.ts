@@ -1,4 +1,4 @@
-import type { Method } from '../framework/types';
+import type { Method } from '@stackpress/types/dist/types';
 import type { ContextInitializer } from './types';
 import type Request from './Request';
 

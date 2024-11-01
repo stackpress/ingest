@@ -15,17 +15,11 @@ export default class Builder extends HTTPBuilder{
   public transpile(info: TranspileInfo) {
     //create a new source file
     const { source } = createSourceFile('entry.ts', this._tsconfig);
-    //import type { ActionCallback } from '@stackpress/ingest/dist/framework/types'
+    //import type { FetchAction } from '@stackpress/ingest-vercel/dist/types'
     source.addImportDeclaration({
       isTypeOnly: true,
-      moduleSpecifier: '@stackpress/ingest/dist/framework/types',
-      namedImports: [ 'ActionCallback' ]
-    });
-    //import type Route from '@stackpress/ingest/dist/framework/Route';
-    source.addImportDeclaration({
-      isTypeOnly: true,
-      moduleSpecifier: '@stackpress/ingest/dist/framework/Route',
-      defaultImport: 'Route'
+      moduleSpecifier: '@stackpress/ingest-vercel/dist/types',
+      namedImports: [ 'FetchAction' ]
     });
     //import Server from '@stackpress/ingest-vercel/dist/Server';
     source.addImportDeclaration({
@@ -49,11 +43,11 @@ export default class Builder extends HTTPBuilder{
       parameters: [{ name: 'request', type: 'Request' }],
       statements: (`
         const server = new Server();
-        const listeners = new Set<ActionPayloadCallback>();
+        const actions = new Set<FetchAction>();
         ${info.actions.map(
-          (_, i) => `listeners.add(task_${i});`
+          (_, i) => `actions.add(task_${i});`
         ).join('\n')}
-        return server.handle(listeners, request);
+        return server.handle(actions, request);
       `).trim()
     });
     return source;

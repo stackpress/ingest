@@ -19,6 +19,8 @@ export default task(function UserSearch(req, res) {
     }
   ];
   //send the response
+  res.code = 200;
+  res.status = 'OK';
   res.mimetype = 'text/json';
   res.body = results;
   res.total = 100;

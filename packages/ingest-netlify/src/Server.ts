@@ -1,19 +1,16 @@
 //modules
+import type { Method } from '@stackpress/types/dist/types';
 import cookie from 'cookie';
-//framework
-import type { Method } from '@stackpress/ingest/dist/framework/types';
-import Status from '@stackpress/ingest/dist/framework/Status';
+import StatusCode from '@stackpress/types/dist/StatusCode';
 //payload
 import Request from '@stackpress/ingest/dist/payload/Request';
 import Response from '@stackpress/ingest/dist/payload/Response';
-//runtime
-import Emitter from '@stackpress/ingest/dist/runtime/Emitter';
-import Router from '@stackpress/ingest/dist/runtime/Router';
 //general
 import { objectFromQuery } from '@stackpress/ingest/dist/helpers';
-//vercel
-
-import type { FetchRequest, ActionSet } from './types';
+//netlify
+import type { FetchRequest, FetchAction } from './types';
+import Queue from './Queue';
+import Router from './Router';
 import { loader, response } from './helpers';
 
 export default class Server {
@@ -30,14 +27,14 @@ export default class Server {
   /**
    * Handles fetch requests
    */
-  public async handle(actions: ActionSet, request: FetchRequest) {
+  public async handle(actions: Set<FetchAction>, request: FetchRequest) {
     //initialize the request
     const { req, res } = this._makePayload(request);
-    const emitter = this._makeEmitter(actions);
+    const queue = this._makeQueue(actions);
     //load the body
     await req.load();
     //then try to emit the event
-    await this.process(emitter, req, res);
+    await this.process(queue, req, res);
     //We would normally dispatch, but we can only create the
     //fetch response when all the data is ready...
     // if (!res.sent) {
@@ -52,10 +49,14 @@ export default class Server {
    * Emit a series of events in order to catch and 
    * manipulate the payload in different stages
    */
-  public async process(emitter: Emitter, req: Request, res: Response) {
-    const status = await emitter.emit(req, res);
+  public async process(
+    queue: Queue, 
+    req: Request<FetchRequest>, 
+    res: Response<undefined>
+  ) {
+    const status = await queue.run(req, res);
     //if the status was incomplete (308)
-    if (status.code === Status.ABORT.code) {
+    if (status.code === StatusCode.ABORT.code) {
       //the callback that set that should have already processed
       //the request and is signaling to no longer continue
       return false;
@@ -66,32 +67,29 @@ export default class Server {
     //      long as there is a status code
     //ex. like in the case of a redirect
     if (!res.body && !res.code) {
-      res.code = Status.NOT_FOUND.code;
-      res.status = Status.NOT_FOUND.message;
-      res.body = `${Status.NOT_FOUND.code} ${Status.NOT_FOUND.message}`;
+      res.code = StatusCode.NOT_FOUND.code;
+      res.status = StatusCode.NOT_FOUND.message;
+      res.body = `${StatusCode.NOT_FOUND.code} ${StatusCode.NOT_FOUND.message}`;
     }
 
     //if no status was set
     if (!res.code || !res.status) {
       //make it okay
-      res.code = Status.OK.code;
-      res.status = Status.OK.message;
+      res.code = StatusCode.OK.code;
+      res.status = StatusCode.OK.message;
     }
 
     //if the status was incomplete (308)
-    return status.code !== Status.ABORT.code;
+    return status.code !== StatusCode.ABORT.code;
   }
 
   /**
-   * Creates an emitter and populates it with actions
+   * Creates a queue and populates it with actions
    */
-  protected _makeEmitter(actions: ActionSet) {
-    const emitter = new Emitter();
-    actions.forEach(action => {
-      emitter.add(action);
-    });
-
-    return emitter;
+  protected _makeQueue(actions: Set<FetchAction>) {
+    const queue = new Queue();
+    actions.forEach(action => queue.add(action));
+    return queue;
   }
 
   /**
@@ -129,7 +127,7 @@ export default class Server {
       resource: request
     });
     req.loader = loader(request);
-    const res = new Response();
+    const res = new Response<undefined>();
     return { req, res };
   }
 }

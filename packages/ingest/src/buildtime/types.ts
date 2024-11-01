@@ -1,14 +1,22 @@
 //modules
 import type { SourceFile } from 'ts-morph';
-//framework
-import type { Listener, ActionFile, Method } from '../framework/types';
+import type { Method } from '@stackpress/types/dist/types';
 //filesystem
 import type { FileSystem } from '../filesystem/types';
+//payload
+import type Request from '../payload/Request';
+import type Response from '../payload/Response';
+//common
+import type { IM, SR } from '../http/types';
 //buildtime
 import type Router from './Router';
 
 //--------------------------------------------------------------------//
 // Build Types
+
+export type BuildPayload = [ Request<IM>, Response<SR> ];
+export type BuildMap = Record<string, BuildPayload>;
+export type BuildTask = { entry: string, priority: number };
 
 export type BuildType = 'function' | 'endpoint';
 
@@ -18,7 +26,7 @@ export type BuildInfo = {
   event: string,
   route: string,
   pattern?: RegExp,
-  listeners: Set<Listener<ActionFile>>
+  tasks: Set<BuildTask>
 };
 
 export type BuildResult = {

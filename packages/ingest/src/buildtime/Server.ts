@@ -1,10 +1,9 @@
 //modules
 import type { ServerOptions } from 'http';
+import type { Method } from '@stackpress/types/dist/types';
 import http from 'http';
 import cookie from 'cookie';
-//framework
-import type { Method } from '../framework/types';
-import Status from '../framework/Status';
+import StatusCode from '@stackpress/types/dist/StatusCode';
 //payload
 import Request from '../payload/Request';
 import Response from '../payload/Response';
@@ -58,7 +57,7 @@ export default class Server {
   public async process(event: string, req: Request<IM>, res: Response<SR>) {
     const status = await this.router.emit(event, req, res);
     //if the status was incomplete (308)
-    if (status.code === Status.ABORT.code) {
+    if (status.code === StatusCode.ABORT.code) {
       //the callback that set that should have already processed
       //the request and is signaling to no longer continue
       return false;
@@ -69,20 +68,20 @@ export default class Server {
     //      long as there is a status code
     //ex. like in the case of a redirect
     if (!res.body && !res.code) {
-      res.code = Status.NOT_FOUND.code;
-      res.status = Status.NOT_FOUND.message;
-      res.body = `${Status.NOT_FOUND.code} ${Status.NOT_FOUND.message}`;
+      res.code = StatusCode.NOT_FOUND.code;
+      res.status = StatusCode.NOT_FOUND.message;
+      res.body = `${StatusCode.NOT_FOUND.code} ${StatusCode.NOT_FOUND.message}`;
     }
 
     //if no status was set
     if (!res.code || !res.status) {
       //make it okay
-      res.code = Status.OK.code;
-      res.status = Status.OK.message;
+      res.code = StatusCode.OK.code;
+      res.status = StatusCode.OK.message;
     }
 
     //if the status was incomplete (308)
-    return status.code !== Status.ABORT.code;
+    return status.code !== StatusCode.ABORT.code;
   }
 
   /**

@@ -18,6 +18,8 @@ export default task(function UserDetail(req, res) {
     created: new Date().toISOString() 
   };
   //send the response
+  res.code = 200;
+  res.status = 'OK';
   res.mimetype = 'text/json';
   res.body = results;
 });

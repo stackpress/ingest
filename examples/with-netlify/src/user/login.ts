@@ -21,6 +21,8 @@ const template = `
 
 export default task(function UserLogin(req, res) {
   //send the response
+  res.code = 200;
+  res.status = 'OK';
   res.mimetype = 'text/html';
   res.body = template.trim();
 });

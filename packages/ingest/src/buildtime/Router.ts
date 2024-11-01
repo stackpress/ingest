@@ -1,61 +1,53 @@
-//framework
-import type { Listener, ActionFile } from '../framework/types';
-import EventRouter from '../framework/Router';
-import Status from '../framework/Status';
-//payload
-import type Request from '../payload/Request';
-import type Response from '../payload/Response';
-//http
-import type { IM, SR } from '../http/types';
-//buildtime
+import type { Method, Route } from '@stackpress/types/dist/types';
 import type { BuildOptions } from './types';
+
 import Emitter from './Emitter';
 import Manifest from './Manifest';
 
 /**
- * Allows the ability to listen to events made known by another
- * piece of functionality. Events are items that transpire based
- * on an action. With events you can add extra functionality
- * right after the event has triggered.
+ * Event driven routing system. Allows the ability to listen to 
+ * events made known by another piece of functionality. Events are 
+ * items that transpire based on an action. With events you can add 
+ * extra functionality right after the event has triggered.
  */
-export default class Router 
-  extends EventRouter<ActionFile, Request<IM>, Response<SR>> 
-{
+export default class Router extends Emitter {
+  //map of event names to routes 
+  //^${method}\\s${pattern}/*$ -> { method, path }
+  public readonly routes = new Map<string, Route>;
+
   /**
-   * Calls all the actions of the given 
-   * event passing the given arguments
+   * Route for any method
    */
-  public async emit(event: string, req: Request<IM>, res: Response<SR>) {
-    const matches = this.match(event);
-    //if there are no events found
-    if (matches.size === 0) {
-      //report a 404
-      return Status.NOT_FOUND;
-    }
-
-    const emitter = this.makeEmitter();
-
-    for (const event of matches) {
-      //if no direct observers
-      if (!this.listeners.has(event)) {
-        continue;
-      }
-      //then loop the observers
-      const listeners = this.listeners.get(event) as Set<Listener<ActionFile>>;
-      listeners.forEach(route => {
-        emitter.add(route.action, route.priority);
-      });
-    }
-
-    //call the callbacks
-    return await emitter.emit(req, res);
+  public all(path: string, action: string, priority?: number) {
+    return this.route('[A-Z]+', path, action, priority);
   }
 
   /**
-   * Returns a new emitter instance
+   * Route for CONNECT method
    */
-  public makeEmitter() {
-    return new Emitter();
+  public connect(path: string, action: string, priority?: number) {
+    return this.route('CONNECT', path, action, priority);
+  }
+
+  /**
+   * Route for DELETE method
+   */
+  public delete(path: string, action: string, priority?: number) {
+    return this.route('DELETE', path, action, priority);
+  }
+
+  /**
+   * Route for GET method
+   */
+  public get(path: string, action: string, priority?: number) {
+    return this.route('GET', path, action, priority);
+  }
+
+  /**
+   * Route for HEAD method
+   */
+  public head(path: string, action: string, priority?: number) {
+    return this.route('HEAD', path, action, priority);
   }
 
   /**
@@ -64,12 +56,12 @@ export default class Router
    */
   public manifest(options: BuildOptions = {}) {
     const manifest = new Manifest(this, options);
-    this.listeners.forEach((listeners, event) => {
+    this.listeners.forEach((tasks, event) => {
       //{ method, route }
       const uri = this.routes.get(event);
       const type = uri ? 'endpoint' : 'function';
       const route = uri ? uri.path : event;
-      const pattern = this.regexp.has(event) ? new RegExp(
+      const pattern = this.emitter.regexp.has(event) ? new RegExp(
         // pattern,
         event.substring(
           event.indexOf('/') + 1,
@@ -81,8 +73,72 @@ export default class Router
         )
       ): undefined;
       const method = uri ? uri.method : 'ALL';
-      manifest.add({ type, event, route, pattern, method, listeners });
+      manifest.add({ type, event, route, pattern, method, tasks });
     });
     return manifest;
+  }
+
+  /**
+   * Route for OPTIONS method
+   */
+  public options(path: string, action: string, priority?: number) {
+    return this.route('OPTIONS', path, action, priority);
+  }
+
+  /**
+   * Route for PATCH method
+   */
+  public patch(path: string, action: string, priority?: number) {
+    return this.route('PATCH', path, action, priority);
+  }
+
+  /**
+   * Route for POST method
+   */
+  public post(path: string, action: string, priority?: number) {
+    return this.route('POST', path, action, priority);
+  }
+
+  /**
+   * Route for PUT method
+   */
+  public put(path: string, action: string, priority?: number) {
+    return this.route('PUT', path, action, priority);
+  }
+
+  /**
+   * Returns a route
+   */
+  public route(
+    method: Method|'[A-Z]+', 
+    path: string, 
+    action: string, 
+    priority?: number
+  ) {
+    //convert path to a regex pattern
+    const pattern = path
+      //replace the :variable-_name01
+      .replace(/(\:[a-zA-Z0-9\-_]+)/g, '*')
+      //replace the stars
+      //* -> ([^/]+)
+      .replaceAll('*', '([^/]+)')
+      //** -> ([^/]+)([^/]+) -> (.*)
+      .replaceAll('([^/]+)([^/]+)', '(.*)');
+    //now form the event pattern
+    const event = new RegExp(`^${method}\\s${pattern}/*$`, 'ig');
+    this.routes.set(event.toString(), {
+      method: method === '[A-Z]+' ? 'ALL' : method,
+      path: path
+    });
+    //add to tasks
+    this.on(event, action, priority);
+    return this;
+  }
+
+  /**
+   * Route for TRACE method
+   */
+  public trace(path: string, action: string, priority?: number) {
+    return this.route('TRACE', path, action, priority);
   }
 };

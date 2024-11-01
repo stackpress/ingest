@@ -1,4 +1,4 @@
-import type { Method } from '../framework/types';
+import type { Method } from '@stackpress/types/dist/types';
 import type { Body, RequestLoader, RequestInitializer } from './types';
 
 import cookie from 'cookie';

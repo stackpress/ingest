@@ -1,77 +1,42 @@
-//framework
-import type { Listener, ActionFile } from '../framework/types';
-import Queue from '../framework/Queue';
-import Status from '../framework/Status';
-//payload
-import type Request from '../payload/Request';
-import type Response from '../payload/Response';
+import type { BuildPayload, BuildMap, BuildTask } from './types';
+
+import EventEmitter from '@stackpress/types/dist/EventEmitter';
 
 /**
- * An abstract class, Emitter adds sorts actions in a queue. You need to 
- * define how it emits. The generics needed are the following.
- * 
- * - A - Action. Examples of an action could be a callback function or a 
- *   file location of an action callback.
- * - R - Request. The request object. Examples of a request could be 
- *   IncomingMessage, Fetch Request or the built-in `Request` defined
- *   in the `payload` folder. Though most of the time it should be the 
- *   built-in `Request` defined in the `payload` folder, we left this 
- *   generic to allow the `gateway` folder to re-use this class for 
- *   IncomingMessage.
- * - S - Response. The response object. Examples of a response could be 
- *   ServerResponse, Fetch Response or the built-in `Response` defined
- *   in the `payload` folder. Though most of the time it should be the 
- *   built-in `Response` defined in the `payload` folder, we left this 
- *   generic to allow the `gateway` folder to re-use this class for 
- *   ServerResponse.
- * 
- * The abstract function that needs to be defined looks like the following.
- * 
- * ```js
- * public abstract emit(
- *   req: R, 
- *   res: S, 
- *   event?: Event<A, R, S>,
- *   cache?: boolean
- * ): Promise<StatusCode>;
- * ```
- * 
- * The `buildtime` defines `emit()` to import an action file defined in 
- * the file router and calls it. The `runtime` uses `emit()` to simply 
- * call the action callback. The `gateway` uses `emit()` also to call 
- * the action callback, but passes IM, SR to the action.
- * 
- * `emit()` returns a `StatusCode` these codes are useful to find out 
- * what happened after the `emit()` was called. For example if there are 
- * no actions, the `Status` will be `NOT_FOUND`. If any of the actions 
- * returns `false`, then the next actions won't be called and the 
- * `Status` will be `ABORTED`. If all actions were called and the last 
- * one did not return `false`, then the `Status` will be `OK`.
+ * A rendition of an event emitter that uses 
+ * entry files instead of action callbacks.
  */
-export default class Emitter extends Queue<ActionFile> {
+export default class Emitter {
+  public readonly emitter = new EventEmitter<BuildMap>();
+  //A route map to task queues
+  public readonly listeners = new Map<string, Set<BuildTask>>();
+
   /**
-   * Runs the tasks
+   * Calls all the callbacks of the given event passing the given arguments
    */
-  public async emit(req: Request, res: Response) {
-    if (!this.queue.length) {
-      //report a 404
-      return Status.NOT_FOUND;
-    }
+  public emit(event: string, req: BuildPayload[0], res: BuildPayload[1]) {
+    return this.emitter.emit(event, req, res);
+  }
 
-    while (this.queue.length) {
-      const { action } = (
-        this.queue.shift() as Listener<ActionFile>
-      );
-      const entry = await import(action);
-      const run = entry.default;
+  /**
+   * Adds a callback to the given event listener
+   */
+  public on(event: string|RegExp, entry: string, priority = 0) {
+    //convert the event to a string
+    const pattern = event.toString();
+    //if the listener group does not exist, create it
+    if (!this.listeners.has(pattern)) {
+      this.listeners.set(pattern, new Set());
+    }
+    //add the listener to the group
+    this.listeners.get(pattern)?.add({ entry, priority });
+    //add the event to the emitter
+    this.emitter.on(event, async (req, res) => {
+      const imports = await import(entry);
+      const action = imports.default;
       //delete it from the require cache so it can be processed again
-      delete require.cache[require.resolve(action)];
-
-      if (typeof run === 'function' && await run(req, res) === false) {
-        return Status.ABORT;
-      }
-    }
-
-    return Status.OK;
+      delete require.cache[require.resolve(entry)];
+      return await action(req, res);
+    }, priority);
   }
 };

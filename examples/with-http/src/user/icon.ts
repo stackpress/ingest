@@ -7,7 +7,7 @@ import path from 'path';
 
 export default async function Assets(req: Request<IM>, res: Response<SR>) {
   if (res.code || res.status || res.body) return; 
-  const file = path.resolve(__dirname, '../../logo-icon.png'); 
+  const file = path.resolve(process.cwd(), 'logo-icon.png'); 
   if (fs.existsSync(file)) {
     res.stop();
     const response = res.resource as SR;

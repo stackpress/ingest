@@ -2,6 +2,7 @@
 import type { SourceFile } from 'ts-morph';
 import path from 'path';
 import esbuild from 'esbuild';
+import ItemQueue from '@stackpress/types/dist/ItemQueue';
 //filesystem
 import FileLoader from '../filesystem/FileLoader';
 import NodeFS from '../filesystem/NodeFS';
@@ -14,7 +15,6 @@ import type {
   Transpiler
 } from './types';
 import type Router from './Router';
-import Emitter from './Emitter';
 import { esIngestPlugin } from './plugins';
 import { serialize } from './helpers';
 
@@ -64,18 +64,16 @@ export default class Manifest extends Set<BuildInfo> {
   public async build(transpile: Transpiler) {
     const vfs = new Map<string, SourceFile>();
     const build = new Set<BuildResult>();
-    for (const { listeners, ...info } of this) {
-      //create a new emitter we will use for just sorting purposes...
-      const emitter = new Emitter();
+    for (const { tasks, ...info } of this) {
+      //create a new queue. We will use for just sorting purposes...
+      const entries = new ItemQueue<string>();
       //add each route to the emitter 
       //(this will sort the entry files by priority)
-      listeners.forEach(
-        listener => emitter.add(listener.action, listener.priority)
+      tasks.forEach(
+        task => entries.add(task.entry, task.priority)
       );
       //extract the actions from the emitter queue
-      const actions = Array.from(emitter.queue).map(
-        listener => listener.action
-      );
+      const actions = Array.from(entries.queue).map(task => task.item);
       //make an id from the sorted combination of entries
       const id = serialize(actions.join(','));
       //determine the source and destination paths
@@ -103,7 +101,7 @@ export default class Manifest extends Set<BuildInfo> {
   public toArray() {
     return Array.from(this).map(build => ({ 
       ...build, 
-      tasks: Array.from(build.listeners) 
+      tasks: Array.from(build.tasks) 
     }));
   }
 

@@ -1,18 +1,16 @@
+import type { Method } from '@stackpress/types/dist/types';
+import StatusCode from '@stackpress/types/dist/StatusCode';
 //modules
 import cookie from 'cookie';
-//framework
-import type { Method } from '../framework/types';
-import Status from '../framework/Status';
 //payload
 import Request from '../payload/Request';
 import Response from '../payload/Response';
-//runtime
-import Router from '../runtime/Router';
-import Emitter from '../runtime/Emitter';
 //general
 import { objectFromQuery } from '../helpers';
 //http
-import type { IM, SR, ActionSet } from './types';
+import type { IM, SR, HTTPAction } from './types';
+import Queue from './Queue';
+import Router from './Router';
 import { loader, dispatcher, imToURL } from './helpers';
 
 export default class Server {
@@ -29,14 +27,14 @@ export default class Server {
   /**
    * Handles fetch requests
    */
-  public async handle(actions: ActionSet, im: IM, sr: SR) {
+  public async handle(actions: Set<HTTPAction>, im: IM, sr: SR) {
     //initialize the request
     const { req, res } = this._makePayload(im, sr);
-    const emitter = this._makeEmitter(actions);
+    const queue = this._makeQueue(actions);
     //load the body
     await req.load();
     //then try to emit the event
-    await this.process(emitter, req, res);
+    await this.process(queue, req, res);
     //if the response was not sent by now,
     if (!res.sent) {
       //send the response
@@ -48,10 +46,10 @@ export default class Server {
   /**
    * Handles a payload using events
    */
-  public async process(emitter: Emitter, req: Request, res: Response) {
-    const status = await emitter.emit(req, res);
+  public async process(queue: Queue, req: Request<IM>, res: Response<SR>) {
+    const status = await queue.run(req, res);
     //if the status was incomplete (308)
-    if (status.code === Status.ABORT.code) {
+    if (status.code === StatusCode.ABORT.code) {
       //the callback that set that should have already processed
       //the request and is signaling to no longer continue
       return false;
@@ -62,30 +60,28 @@ export default class Server {
     //      long as there is a status code
     //ex. like in the case of a redirect
     if (!res.body && !res.code) {
-      res.code = Status.NOT_FOUND.code;
-      res.status = Status.NOT_FOUND.message;
-      res.body = `${Status.NOT_FOUND.code} ${Status.NOT_FOUND.message}`;
+      res.code = StatusCode.NOT_FOUND.code;
+      res.status = StatusCode.NOT_FOUND.message;
+      res.body = `${StatusCode.NOT_FOUND.code} ${StatusCode.NOT_FOUND.message}`;
     }
 
     //if no status was set
     if (!res.code || !res.status) {
       //make it okay
-      res.code = Status.OK.code;
-      res.status = Status.OK.message;
+      res.code = StatusCode.OK.code;
+      res.status = StatusCode.OK.message;
     }
 
     //if the status was incomplete (308)
-    return status.code !== Status.ABORT.code;
+    return status.code !== StatusCode.ABORT.code;
   }
 
   /**
-   * Creates an emitter and populates it with actions
+   * Creates a queue and populates it with actions
    */
-  protected _makeEmitter(actions: ActionSet) {
-    const emitter = new Emitter();
-    actions.forEach(action => {
-      emitter.add(action);
-    });
+  protected _makeQueue(actions: Set<HTTPAction>) {
+    const emitter = new Queue();
+    actions.forEach(action => emitter.add(action));
 
     return emitter;
   }
@@ -113,7 +109,7 @@ export default class Server {
     //set query
     const query = objectFromQuery(url.searchParams.toString());
     //make request
-    const req = new Request({
+    const req = new Request<IM>({
       method,
       mimetype,
       headers,
@@ -124,7 +120,7 @@ export default class Server {
     });
     req.loader = loader(im);
     //make response
-    const res = new Response({ resource: sr });
+    const res = new Response<SR>({ resource: sr });
     res.dispatcher = dispatcher(sr);
     return { req, res };
   }

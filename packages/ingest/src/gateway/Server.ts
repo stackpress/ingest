@@ -1,16 +1,15 @@
+import StatusCode from '@stackpress/types/dist/StatusCode';
 //modules
 import type { ServerOptions } from 'http';
 import http from 'http';
 //filesystem
-import type FileLoader from '../../filesystem/FileLoader';
-//framework
-import Status from '../../framework/Status';
+import type FileLoader from '../filesystem/FileLoader';
 //buildtime
-import type { BuildResult } from '../../buildtime/types';
+import type { BuildResult } from '../buildtime/types';
 //gateway
-import type { IM, SR, GatewayAction } from './types';
+import type { GatewayAction } from './types';
 import Router from './Router';
-import { imToURL } from '../helpers';
+import { imToURL } from '../http/helpers';
 
 /**
  * Server per endpoint
@@ -34,7 +33,7 @@ export default class Gateway {
     //loop through the manifest
     results.forEach(({ type, event, pattern, method, route, entry }) => {
       //transform the action file to an action callback
-      const action = async (req: IM, res: SR) => {
+      const action: GatewayAction = async (req, res) => {
         //the action here is from the bundled actions that looks like
         //function GET(request: IM, response: IM, route: GatewayRoute)
         const { 'default': action } = await import(entry) as { 
@@ -75,10 +74,10 @@ export default class Gateway {
       await this.router.emit(event, im, sr);
 
       if (!sr.headersSent) {
-        sr.statusCode = Status.NOT_FOUND.code;
-        sr.statusMessage = Status.NOT_FOUND.message;
+        sr.statusCode = StatusCode.NOT_FOUND.code;
+        sr.statusMessage = StatusCode.NOT_FOUND.message;
         sr.setHeader('Content-Type', 'text/plain');
-        sr.end(`${Status.NOT_FOUND.code} ${Status.NOT_FOUND.message}`);
+        sr.end(`${StatusCode.NOT_FOUND.code} ${StatusCode.NOT_FOUND.message}`);
       }
     });
   }

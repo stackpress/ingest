@@ -1,5 +1,4 @@
-import type { NestedObject } from '@stackpress/types/dist/types';
-import type { Method } from '../framework/types';
+import type { Method, NestedObject } from '@stackpress/types/dist/types';
 import type Request from './Request';
 import type Response from './Response';
 
