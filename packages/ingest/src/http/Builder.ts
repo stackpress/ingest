@@ -105,8 +105,7 @@ export default class Builder {
     });
     manifest.loader.fs.writeFileSync(
       manifest.path, 
-      JSON.stringify(json, null, 2), 
-      'utf-8'
+      JSON.stringify(json, null, 2)
     );
 
     return results;

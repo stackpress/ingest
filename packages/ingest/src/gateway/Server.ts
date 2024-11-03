@@ -1,9 +1,8 @@
-import StatusCode from '@stackpress/types/dist/StatusCode';
 //modules
 import type { ServerOptions } from 'http';
+import type FileLoader from '@stackpress/types/dist/filesystem/FileLoader';
 import http from 'http';
-//filesystem
-import type FileLoader from '../filesystem/FileLoader';
+import StatusCode from '@stackpress/types/dist/StatusCode';
 //buildtime
 import type { BuildResult } from '../buildtime/types';
 //gateway

@@ -1,8 +1,6 @@
 //modules
-import type { ServerOptions } from 'http';
-//filesystem
-import NodeFS from '@stackpress/ingest/dist/filesystem/NodeFS';
-import FileLoader from '@stackpress/ingest/dist/filesystem/FileLoader';
+import NodeFS from '@stackpress/types/dist/filesystem/NodeFS';
+import FileLoader from '@stackpress/types/dist/filesystem/FileLoader';
 //payload
 import Request from '@stackpress/ingest/dist/payload/Request';
 import Response from '@stackpress/ingest/dist/payload/Response';
@@ -12,8 +10,10 @@ import {
 } from '@stackpress/ingest/dist/payload/Session'; 
 //buildtime
 import type { BuildtimeOptions } from '@stackpress/ingest/dist/buildtime/types';
-import BuildtimeRouter from '@stackpress/ingest/dist/buildtime/Router';
-import BuildtimeServer from '@stackpress/ingest/dist/buildtime/Server';
+import buildtime, { 
+  Router as BuildtimeRouter, 
+  Server as BuildtimeServer 
+} from '@stackpress/ingest/dist/buildtime';
 //netlify
 import Builder from './Builder';
 import Queue from './Queue';
@@ -52,63 +52,26 @@ export {
 };
 
 export default function netlify(options: BuildtimeOptions = {}) {
-  const { 
-    tsconfig, 
-    router = new BuildtimeRouter(),
-    fs = new NodeFS(),
-    cwd = process.cwd(),
-    //default to netlify functions
-    buildDir = './.netlify/functions', 
-    ...build 
-  } = options;
-  
-  const loader = new FileLoader(fs, cwd);
-  const builder = new Builder(router, { tsconfig });
-  const server = new Server();
-  const endpath = loader.absolute(buildDir);
-  const developer = new BuildtimeServer(router);
+  options.buildDir = options.buildDir ||'./.netlify/functions';
+  const build = buildtime(options);
 
+  const { 
+    buildDir,
+    loader, 
+    router, 
+    create,
+    server: developer
+  } = build;
+  const { fs, cwd } = loader;
+  const builder = new Builder(router, { tsconfig: options.tsconfig });
+  const server = new Server();
+  
   return {
-    endpath,
-    server,
+    ...build,
     developer,
-    router,
     builder,
-    loader,
+    server,
     build: () => builder.build({ ...build, fs, cwd, buildDir }),
-    develop: (options: ServerOptions = {}) => developer.create(options),
-    on: (path: string, entry: string, priority?: number) => {
-      return router.on(path, entry, priority);
-    },
-    all: (path: string, entry: string, priority?: number) => {
-      return router.all(path, entry, priority);
-    },
-    connect: (path: string, entry: string, priority?: number) => {
-      return router.connect(path, entry, priority);
-    },
-    delete: (path: string, entry: string, priority?: number) => {
-      return router.delete(path, entry, priority);
-    },
-    get: (path: string, entry: string, priority?: number) => {
-      return router.get(path, entry, priority);
-    },
-    head: (path: string, entry: string, priority?: number) => {
-      return router.head(path, entry, priority);
-    },
-    options: (path: string, entry: string, priority?: number) => {
-      return router.options(path, entry, priority);
-    },
-    patch: (path: string, entry: string, priority?: number) => {
-      return router.patch(path, entry, priority);
-    },
-    post: (path: string, entry: string, priority?: number) => {
-      return router.post(path, entry, priority);
-    },
-    put: (path: string, entry: string, priority?: number) => {
-      return router.put(path, entry, priority);
-    },
-    trace: (path: string, entry: string, priority?: number) => {
-      return router.trace(path, entry, priority);
-    }
+    develop: create
   }
 }

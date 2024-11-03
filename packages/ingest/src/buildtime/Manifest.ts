@@ -3,9 +3,8 @@ import type { SourceFile } from 'ts-morph';
 import path from 'path';
 import esbuild from 'esbuild';
 import ItemQueue from '@stackpress/types/dist/ItemQueue';
-//filesystem
-import FileLoader from '../filesystem/FileLoader';
-import NodeFS from '../filesystem/NodeFS';
+import FileLoader from '@stackpress/types/dist/filesystem/FileLoader';
+import NodeFS from '@stackpress/types/dist/filesystem/NodeFS';
 //buildtime
 import type { 
   BuildInfo, 

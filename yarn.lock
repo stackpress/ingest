@@ -301,10 +301,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@stackpress/types@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@stackpress/types/-/types-0.1.12.tgz#97da38f45dd703a769fece4f7ad68882968ce978"
-  integrity sha512-+1fql5SjJQwqu9ttScDI0otdDvmKP6QrbMDCL9YaVhHMarYijnHEUzLN889GNI+GbV1rYHwwou3O91scLF+8Zw==
+"@stackpress/types@0.1.15":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@stackpress/types/-/types-0.1.15.tgz#8144fb884f0d912928c24147fff7ba5d07d23341"
+  integrity sha512-FOifrMTlsQm736TxCaagymA9RWAsfUwRTcU8Apsmw/GeTD3E/ZfIW0YptMYblqy9rBXU+fuI1lLcPQqT94eB/A==
   dependencies:
     "@inquirer/prompts" "7.0.1"
 

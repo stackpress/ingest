@@ -1,8 +1,7 @@
 //modules
 import type { SourceFile } from 'ts-morph';
 import type { Method } from '@stackpress/types/dist/types';
-//filesystem
-import type { FileSystem } from '../filesystem/types';
+import type FileSystem from '@stackpress/types/dist/filesystem/FileSystem';
 //payload
 import type Request from '../payload/Request';
 import type Response from '../payload/Response';

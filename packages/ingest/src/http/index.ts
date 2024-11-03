@@ -1,5 +1,3 @@
-//filesystem types
-export type * from '../filesystem/types';
 //payload types
 export type * from '../payload/types';
 //http types
@@ -8,18 +6,16 @@ export type * from './types';
 
 //modules
 import type { ServerOptions } from 'http';
-import path from 'path';
-//filesystem
-import NodeFS from '../filesystem/NodeFS';
-import FileLoader from '../filesystem/FileLoader';
 //payload
 import Request from '../payload/Request';
 import Response from '../payload/Response';
 import { ReadSession, WriteSession } from '../payload/Session';
 //buildtime
 import type { BuildtimeOptions } from '../buildtime/types';
-import BuildtimeRouter from '../buildtime/Router';
-import BuildtimeServer from '../buildtime/Server';
+import buildtime, { 
+  Router as BuildtimeRouter, 
+  Server as BuildtimeServer 
+} from '../buildtime';
 //gateway
 import GatewayRouter from '../gateway/Router';
 import GatewayServer from '../gateway/Server';
@@ -38,9 +34,6 @@ import {
 
 
 export {
-  //filesystem
-  NodeFS,
-  FileLoader,
   //payload
   Request,
   Response,
@@ -65,66 +58,30 @@ export {
 }
 
 export default function http(options: BuildtimeOptions = {}) {
+  options.buildDir = options.buildDir || './.http';
+  const build = buildtime(options);
+
   const { 
-    tsconfig, 
-    router = new BuildtimeRouter(),
-    fs = new NodeFS(),
-    cwd = process.cwd(),
-    buildDir = './.http', 
-    manifestName = 'manifest.json',
-    ...build 
-  } = options;
-  
-  const loader = new FileLoader(fs, cwd);
-  const builder = new Builder(router, { tsconfig });
-  const endpath = loader.absolute(buildDir);
-  const manifest = path.resolve(endpath, manifestName);
+    buildDir,
+    manifestName, 
+    loader, 
+    router, 
+    manifest,
+    create,
+    server: developer
+  } = build;
+  const { fs, cwd } = loader;
+
+  const builder = new Builder(router, { tsconfig: options.tsconfig });
   const server = new GatewayServer(manifest, loader);
-  const developer = new BuildtimeServer(router);
 
   return {
-    endpath,
-    manifest,
+    ...build,
     developer,
-    server,
-    router,
     builder,
-    loader,
-    build: () => builder.build({ ...build, fs, cwd, buildDir, manifestName }),
+    server,
+    build: () => builder.build({ ...options, fs, cwd, buildDir, manifestName }),
     create: (options: ServerOptions = {}) => server.create(options),
-    develop: (options: ServerOptions = {}) => developer.create(options),
-    on: (path: string, entry: string, priority?: number) => {
-      return router.on(path, entry, priority);
-    },
-    all: (path: string, entry: string, priority?: number) => {
-      return router.all(path, entry, priority);
-    },
-    connect: (path: string, entry: string, priority?: number) => {
-      return router.connect(path, entry, priority);
-    },
-    delete: (path: string, entry: string, priority?: number) => {
-      return router.delete(path, entry, priority);
-    },
-    get: (path: string, entry: string, priority?: number) => {
-      return router.get(path, entry, priority);
-    },
-    head: (path: string, entry: string, priority?: number) => {
-      return router.head(path, entry, priority);
-    },
-    options: (path: string, entry: string, priority?: number) => {
-      return router.options(path, entry, priority);
-    },
-    patch: (path: string, entry: string, priority?: number) => {
-      return router.patch(path, entry, priority);
-    },
-    post: (path: string, entry: string, priority?: number) => {
-      return router.post(path, entry, priority);
-    },
-    put: (path: string, entry: string, priority?: number) => {
-      return router.put(path, entry, priority);
-    },
-    trace: (path: string, entry: string, priority?: number) => {
-      return router.trace(path, entry, priority);
-    }
+    develop: create
   };
-}
+};

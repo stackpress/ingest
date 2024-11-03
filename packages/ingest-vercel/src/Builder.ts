@@ -80,8 +80,7 @@ export default class Builder extends HTTPBuilder{
     };
     manifest.loader.fs.writeFileSync(
       path.join(manifest.loader.cwd, 'vercel.json'), 
-      JSON.stringify(json, null, 2), 
-      'utf-8'
+      JSON.stringify(json, null, 2)
     );
     return results;
   }
