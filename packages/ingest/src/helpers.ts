@@ -18,9 +18,9 @@ export function objectFromQuery(query: string) {
   if (query) {
     const nest = new Nest();
     nest.withQuery.set(query);
-    return nest.get() as Record<string, unknown>;
+    return nest.get();
   }
-  return {} as Record<string, unknown>;
+  return {};
 };
 
 /**
@@ -31,9 +31,9 @@ export function objectFromFormData(data: string) {
   if (data) {
     const nest = new Nest();
     nest.withFormData.set(data);
-    return nest.get() as Record<string, unknown>;
+    return nest.get();
   }
-  return {} as Record<string, unknown>;
+  return {};
 };
 
 /**
