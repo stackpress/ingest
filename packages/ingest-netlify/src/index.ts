@@ -1,6 +1,3 @@
-//modules
-import NodeFS from '@stackpress/types/dist/filesystem/NodeFS';
-import FileLoader from '@stackpress/types/dist/filesystem/FileLoader';
 //payload
 import Request from '@stackpress/ingest/dist/payload/Request';
 import Response from '@stackpress/ingest/dist/payload/Response';
@@ -28,9 +25,6 @@ import {
 } from './helpers';
 
 export {
-  //filesystem
-  NodeFS,
-  FileLoader,
   //payload
   Request,
   Response,
