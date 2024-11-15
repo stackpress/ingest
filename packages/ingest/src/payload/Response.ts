@@ -1,5 +1,5 @@
 import type { Trace } from '@stackpress/types/dist/types';
-
+import type { NestedObject } from '@stackpress/types/dist/types';
 import type { 
   Body, 
   ResponseDispatcher,
@@ -211,6 +211,41 @@ export default class Response<T = unknown> {
     this.status = status;
     this.headers.set('Location', url);
     return this;
+  }
+
+  /**
+   * Sets the body with checks 
+   */
+  public setBody(type: string, body: Body, code = 200, status = 'OK') {
+    this._code = code;
+    this._status = status;
+    this._mimetype = type;
+    this._body = body;
+    return this;
+  }
+
+  /**
+   * Sets the body as HTML with checks 
+   */
+  public setHTML(body: string, code = 200, status = 'OK') {
+    return this.setBody('text/html', body, code, status);
+  }
+
+  /**
+   * Sets the body as JSON with checks 
+   */
+  public setJSON(body: string|NestedObject, code = 200, status = 'OK') {
+    if (typeof body !== 'string') {
+      body = JSON.stringify(body, null, 2);
+    }
+    return this.setBody('text/json', body, code, status);
+  }
+
+  /**
+   * Sets the body as XML with checks 
+   */
+  public setXML(body: string, code = 200, status = 'OK') {
+    return this.setBody('text/xml', body, code, status);
   }
 
   /**
