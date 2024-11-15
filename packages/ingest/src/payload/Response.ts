@@ -204,6 +204,16 @@ export default class Response<T = unknown> {
   }
 
   /**
+   * Redirect
+   */
+  public redirect(url: string, code = 302, status = 'Found') {
+    this.code = code;
+    this.status = status;
+    this.headers.set('Location', url);
+    return this;
+  }
+
+  /**
    * Prevents the response from being sent
    */
   public stop() {
