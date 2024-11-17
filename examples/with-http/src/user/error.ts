@@ -5,8 +5,10 @@ export default task(function UserError(req, res) {
     throw Exception.for('Not implemented');
   } catch (e) {
     const error = e as Exception;
-    res.code = error.code;
-    res.status = error.message;
-    res.stack = error.trace();
+    res.setError({ 
+      code: error.code, 
+      error: error.message,
+      stack: error.trace()
+    });
   }
 });

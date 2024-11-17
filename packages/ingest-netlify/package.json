@@ -1,6 +1,6 @@
 {
   "name": "@stackpress/ingest-netlify",
-  "version": "0.1.23",
+  "version": "0.1.25",
   "license": "Apache-2.0",
   "description": "Using Ingest to generate Netlify functions.",
   "author": "Chris <chris@stackpress.io>",
@@ -20,8 +20,8 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@stackpress/ingest": "0.1.23",
-    "@stackpress/types": "0.1.23",
+    "@stackpress/ingest": "0.1.25",
+    "@stackpress/types": "0.1.25",
     "cookie": "0.7.0"
   },
   "devDependencies": {

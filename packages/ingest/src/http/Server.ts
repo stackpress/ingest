@@ -48,7 +48,7 @@ export default class Server {
    */
   public async process(queue: Queue, req: Request<IM>, res: Response<SR>) {
     const status = await queue.run(req, res);
-    //if the status was incomplete (308)
+    //if the status was incomplete (309)
     if (status.code === StatusCode.ABORT.code) {
       //the callback that set that should have already processed
       //the request and is signaling to no longer continue
@@ -60,19 +60,18 @@ export default class Server {
     //      long as there is a status code
     //ex. like in the case of a redirect
     if (!res.body && !res.code) {
-      res.code = StatusCode.NOT_FOUND.code;
-      res.status = StatusCode.NOT_FOUND.message;
-      res.body = `${StatusCode.NOT_FOUND.code} ${StatusCode.NOT_FOUND.message}`;
+      const { code, status } = StatusCode.NOT_FOUND;
+      res.code = code;
+      res.body = `${code} ${status}`;
     }
 
     //if no status was set
     if (!res.code || !res.status) {
       //make it okay
-      res.code = StatusCode.OK.code;
-      res.status = StatusCode.OK.message;
+      res.status = StatusCode.OK;
     }
 
-    //if the status was incomplete (308)
+    //if the status was incomplete (309)
     return status.code !== StatusCode.ABORT.code;
   }
 

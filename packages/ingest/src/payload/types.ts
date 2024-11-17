@@ -1,4 +1,8 @@
-import type { Method, NestedObject } from '@stackpress/types/dist/types';
+import type { 
+  Method, 
+  NestedObject, 
+  Trace 
+} from '@stackpress/types/dist/types';
 import type Request from './Request';
 import type Response from './Response';
 
@@ -38,6 +42,14 @@ export type RequestInitializer<T = unknown> = ResponseInitializer<T> & {
   session?: Session,
   post?: Post
 };
+
+export type ResponseErrorOptions = {
+  error: string, 
+  errors?: NestedObject<string|string[]>, 
+  stack?: Trace[],
+  code?: number, 
+  status?: string
+}
 
 //--------------------------------------------------------------------//
 // Session Types

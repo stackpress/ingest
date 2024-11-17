@@ -78,7 +78,7 @@ export default class Request<T = unknown> {
 
   /**
    * Returns the type of body
-   * string|Buffer|Uint8Array|Record<string, unknown>|Array<unknown>
+   * ie. string|Buffer|Uint8Array|Record<string, unknown>|Array<unknown>
    */
   public get type() {
     if (this._body instanceof Buffer) {
@@ -145,6 +145,8 @@ export default class Request<T = unknown> {
       this.query = new ReadonlyNest(Object.fromEntries(init.query));
     } else if (isHash(init.query)) {
       this.query = new ReadonlyNest(init.query);
+    } else if (this.url.search) {
+      this.query = new ReadonlyNest(objectFromQuery(this.url.search));
     } else {
       this.query = new ReadonlyNest(
         Object.fromEntries(this.url.searchParams.entries())
@@ -186,6 +188,8 @@ export default class Request<T = unknown> {
 
   /**
    * Returns a new request context with pattern
+   * ie. req.ctxFromPattern(/foo/)
+   * ie. req.ctxFromPattern('/foo/')
    */
   public ctxFromPattern(pattern: string|RegExp) {
     const args = eventParams(pattern.toString(), this.url.pathname);
@@ -194,6 +198,7 @@ export default class Request<T = unknown> {
 
   /**
    * Returns a new request context with route
+   * ie. req.ctxFromRoute('/foo/:bar')
    */
   public ctxFromRoute(route: string) {
     const { args, params } = routeParams(route, this.url.pathname);

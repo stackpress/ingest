@@ -73,10 +73,11 @@ export default class Gateway {
       await this.router.emit(event, im, sr);
 
       if (!sr.headersSent) {
-        sr.statusCode = StatusCode.NOT_FOUND.code;
-        sr.statusMessage = StatusCode.NOT_FOUND.message;
+        const { code, status } = StatusCode.NOT_FOUND;
+        sr.statusCode = code;
+        sr.statusMessage = status;
         sr.setHeader('Content-Type', 'text/plain');
-        sr.end(`${StatusCode.NOT_FOUND.code} ${StatusCode.NOT_FOUND.message}`);
+        sr.end(`${code} ${status}`);
       }
     });
   }

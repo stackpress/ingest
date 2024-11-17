@@ -84,6 +84,7 @@ export async function response(res: Response, options: CookieOptions = {}) {
       code: res.code,
       status: res.status,
       results: res.body,
+      error: res.error,
       errors: res.errors.size > 0 ? res.errors.get() : undefined,
       total: res.total > 0 ? res.total : undefined
     });
@@ -92,6 +93,7 @@ export async function response(res: Response, options: CookieOptions = {}) {
     body = JSON.stringify({
       code: res.code,
       status: res.status,
+      error: res.error,
       errors: res.errors.size > 0 ? res.errors.get() : undefined,
       stack: res.stack ? res.stack : undefined
     });

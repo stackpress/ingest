@@ -93,9 +93,10 @@ export function loader(resource: IM, size = 0) {
       let body = '';
       resource.on('data', chunk => {
         body += chunk;
-        if (size && body.length > size) {
-          throw Exception.for('Request exceeds %s', size);
-        }
+        Exception.require(
+          !size || body.length <= size, 
+          `Request exceeds ${size}`
+        );
       });
       resource.on('end', () => {
         resolve({ body, post: formDataToObject(req.mimetype, body) });
@@ -154,6 +155,7 @@ export function dispatcher(resource: SR, options: CookieOptions = {}) {
           code: res.code,
           status: res.status,
           results: res.body,
+          error: res.error,
           errors: res.errors.size > 0 ? res.errors.get() : undefined,
           total: res.total > 0 ? res.total : undefined,
           stack: res.stack ? res.stack : undefined
@@ -163,6 +165,7 @@ export function dispatcher(resource: SR, options: CookieOptions = {}) {
         resource.end(JSON.stringify({
           code: res.code,
           status: res.status,
+          error: res.error,
           errors: res.errors.size > 0 ? res.errors.get() : undefined,
           stack: res.stack ? res.stack : undefined
         }));

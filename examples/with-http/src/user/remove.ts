@@ -5,10 +5,7 @@ export default task(function UserRemove(req, res) {
   const ctx = req.ctxFromRoute('/user/:id');
   const id = parseInt(ctx.params.get('id') || '');
   if (!id) {
-    res.code = 400;
-    res.status = 'Bad Request';
-    res.body = { error: 'ID is required' };
-    return;
+    return res.setError('ID is required');
   }
   //maybe get from database?
   const results = { 
@@ -18,8 +15,5 @@ export default task(function UserRemove(req, res) {
     created: new Date().toISOString() 
   };
   //send the response
-  res.code = 200;
-  res.status = 'OK';
-  res.mimetype = 'text/json';
-  res.body = results;
+  res.setJSON(results);
 });
