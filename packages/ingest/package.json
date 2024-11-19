@@ -1,6 +1,6 @@
 {
   "name": "@stackpress/ingest",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "license": "Apache-2.0",
   "description": "An event driven serverless framework",
   "author": "Chris <chris@stackpress.io>",
@@ -25,8 +25,9 @@
     "test": "nyc ts-mocha tests/*.test.ts"
   },
   "dependencies": {
-    "@stackpress/types": "0.1.25",
-    "cookie": "0.7.0"
+    "@stackpress/types": "0.1.26",
+    "cookie": "0.7.0",
+    "esbuild": "0.24.0"
   },
   "devDependencies": {
     "@types/chai": "4.3.5",
@@ -34,7 +35,6 @@
     "@types/expect": "24.3.0",
     "@types/mocha": "10.0.1",
     "@types/node": "22.7.4",
-    "esbuild": "0.24.0",
     "chai": "4.3.7",
     "mocha": "10.2.0",
     "nyc": "15.1.0",

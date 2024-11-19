@@ -108,7 +108,10 @@ export function loader(resource: IM, size = 0) {
 /**
  * Response dispatcher
  */
-export function dispatcher(resource: SR, options: CookieOptions = {}) {
+export function dispatcher(
+  resource: SR, 
+  options: CookieOptions = { path: '/' }
+) {
   return (res: Response) => {
     return new Promise<void>(resolve => {
       //set code and status
