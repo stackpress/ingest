@@ -3,6 +3,7 @@ import type { Method } from '@stackpress/types/dist/types';
 import cookie from 'cookie';
 import StatusCode from '@stackpress/types/dist/StatusCode';
 //payload
+import type { CookieOptions } from '@stackpress/ingest/dist/payload/types';
 import Request from '@stackpress/ingest/dist/payload/Request';
 import Response from '@stackpress/ingest/dist/payload/Response';
 //general
@@ -16,12 +17,15 @@ import { loader, response } from './helpers';
 export default class Server {
   //router to handle the requests
   public readonly router: Router;
+  //cookie options
+  protected _options: CookieOptions;
 
   /**
    * Sets up the emitter
    */
-  public constructor(router?: Router) {
+  public constructor(router?: Router, options: CookieOptions = { path: '/' }) {
     this.router = router || new Router();
+    this._options = options;
   }
 
   /**
@@ -42,7 +46,7 @@ export default class Server {
     //   res.dispatch();
     // }
     //just map the ingets response to a fetch response
-    return response(res);
+    return response(res, this._options);
   }
 
   /**

@@ -65,7 +65,7 @@ export default function netlify(options: BuildtimeOptions = {}) {
     developer,
     builder,
     server,
-    build: () => builder.build({ ...build, fs, cwd, buildDir }),
+    build: () => builder.build({ ...options, fs, cwd, buildDir }),
     develop: create
   }
 }

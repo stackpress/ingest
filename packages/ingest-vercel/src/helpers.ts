@@ -68,7 +68,10 @@ export function loader(resource: FetchRequest) {
 /**
  * Maps out an Ingest Response to a Fetch Response
  */
-export async function response(res: Response, options: CookieOptions = {}) {
+export async function response(
+  res: Response, 
+  options: CookieOptions = { path: '/' }
+) {
   let mimetype = res.mimetype;
   let body: Body|null = null;
   //if body is a valid response
