@@ -1,5 +1,4 @@
-import type Request from './payload/Request';
-import type Response from './payload/Response';
+//stackpress
 import Nest from '@stackpress/types/dist/Nest';
 
 /**
@@ -7,6 +6,19 @@ import Nest from '@stackpress/types/dist/Nest';
  */
 export function isHash(value: unknown) {
   return typeof value === 'object' && value?.constructor.name === 'Object';
+};
+
+/**
+ * Returns the parsed form data from the request body (if any)
+ */
+export function formDataToObject(type: string, body: string) {
+  return type.endsWith('/json') 
+    ? objectFromJson(body)
+    : type.endsWith('/x-www-form-urlencoded')
+    ? objectFromQuery(body)
+    : type.startsWith('multipart/form-data')
+    ? objectFromFormData(body)
+    : {} as Record<string, unknown>;
 };
 
 /**
@@ -160,11 +172,4 @@ export function withUnknownHost(url: string) {
   }
 
   return `http://unknownhost${url}`;
-};
-
-/**
- * Basic task wrapper
- */
-export function task(runner: (req: Request, res: Response) => void) {
-  return runner;
 };

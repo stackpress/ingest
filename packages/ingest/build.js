@@ -1,1 +1,1 @@
-module.exports = { ...require('./dist/buildtime') }
+module.exports = require('./dist/buildtime')

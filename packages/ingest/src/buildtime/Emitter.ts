@@ -1,6 +1,7 @@
-import type { BuildPayload, BuildMap, BuildTask } from './types';
-
+//stackpress
 import EventEmitter from '@stackpress/types/dist/EventEmitter';
+//local
+import type { BuildPayload, BuildMap, BuildTask } from './types';
 
 /**
  * A rendition of an event emitter that uses 

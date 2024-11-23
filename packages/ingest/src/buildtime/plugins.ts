@@ -1,9 +1,10 @@
 //modules
 import type { PluginBuild } from 'esbuild';
-import type { SourceFile } from 'ts-morph';
-import type FileLoader from '@stackpress/types/dist/filesystem/FileLoader';
 import path from 'path';
-//buildtime
+//stackpress
+import type FileLoader from '@stackpress/types/dist/filesystem/FileLoader';
+//local
+import type { SourceFile } from './types';
 import { toTS } from './helpers';
 
 export function esIngestPlugin(

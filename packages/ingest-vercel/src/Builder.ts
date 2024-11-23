@@ -1,20 +1,50 @@
-import type { 
-  BuildOptions, 
+import type {
+  BuilderOptions, 
+  ProjectOptions,
   TranspileInfo, 
   Transpiler 
 } from '@stackpress/ingest/dist/buildtime/types';
 
 import path from 'path';
-import { createSourceFile } from '@stackpress/ingest/dist/buildtime/helpers';
-import HTTPBuilder from '@stackpress/ingest/dist/http/Builder';
+import Builder from '@stackpress/ingest/dist/buildtime/Builder';
+import { 
+  IndentationText,
+  createSourceFile
+} from '@stackpress/ingest/dist/buildtime/helpers';
 
-export default class Builder extends HTTPBuilder{
+export default class VercelBuilder extends Builder {
+  //ts-morph options
+  public readonly tsconfig: ProjectOptions;
+
+  /**
+   * Sets up the builder
+   */
+  public constructor(options: BuilderOptions = {}) {
+    options.buildDir = options.buildDir || './.netlify/functions';
+    super(options);
+    this.tsconfig = {
+      tsConfigFilePath: options.tsconfig,
+      skipAddingFilesFromTsConfig: true,
+      compilerOptions: {
+        // Generates corresponding '.d.ts' file.
+        declaration: true, 
+        // Generates a sourcemap for each corresponding '.d.ts' file.
+        declarationMap: true, 
+        // Generates corresponding '.map' file.
+        sourceMap: true
+      },
+      manipulationSettings: {
+        indentationText: IndentationText.TwoSpaces
+      }
+    };
+  }
+
   /**
    * Creates an entry file
    */
   public transpile(info: TranspileInfo) {
     //create a new source file
-    const { source } = createSourceFile('entry.ts', this._tsconfig);
+    const { source } = createSourceFile('entry.ts', this.tsconfig);
     //import type { FetchAction } from '@stackpress/ingest-vercel/dist/types'
     source.addImportDeclaration({
       isTypeOnly: true,
@@ -56,12 +86,11 @@ export default class Builder extends HTTPBuilder{
   /**
    * Builds the final entry files
    */
-  public async build(options: BuildOptions = {}) {
-    const manifest = this._router.manifest(options);
+  public async build() {
     const transpiler: Transpiler = entries => {
       return this.transpile(entries);
     }
-    const results = await manifest.build(transpiler);
+    const results = await super.build(transpiler);
     //write the manifest to disk
     const json = {
       version: 2,
@@ -78,8 +107,8 @@ export default class Builder extends HTTPBuilder{
           destination: `/api/${result.id}`
         }))
     };
-    manifest.loader.fs.writeFileSync(
-      path.join(manifest.loader.cwd, 'vercel.json'), 
+    this.loader.fs.writeFileSync(
+      path.join(this.loader.cwd, 'vercel.json'), 
       JSON.stringify(json, null, 2)
     );
     return results;

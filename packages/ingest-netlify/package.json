@@ -22,13 +22,10 @@
   "dependencies": {
     "@stackpress/ingest": "0.1.26",
     "@stackpress/types": "0.1.26",
-    "cookie": "0.7.0"
+    "cookie": "1.0.2"
   },
   "devDependencies": {
-    "@types/cookie": "0.6.0",
     "@types/node": "22.7.4",
-    "esbuild": "0.24.0",
-    "ts-morph": "23.0.0",
     "ts-node": "10.9.2",
     "typescript": "5.6.2"
   }

@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import Response from '../src/payload/Response';
+import Response from '../src/Response';
 
 describe('Response Tests', () => {
   it('Should be empty', () => {

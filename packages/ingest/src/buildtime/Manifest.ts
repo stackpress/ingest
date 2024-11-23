@@ -1,15 +1,16 @@
 //modules
-import type { SourceFile } from 'ts-morph';
 import path from 'path';
 import esbuild from 'esbuild';
+//stackpress
 import ItemQueue from '@stackpress/types/dist/ItemQueue';
 import FileLoader from '@stackpress/types/dist/filesystem/FileLoader';
 import NodeFS from '@stackpress/types/dist/filesystem/NodeFS';
-//buildtime
+//local
 import type { 
+  SourceFile,
   BuildInfo, 
   BuildResult,
-  BuildOptions, 
+  ManifestOptions, 
   ESBuildOptions,
   Transpiler
 } from './types';
@@ -31,7 +32,7 @@ export default class Manifest extends Set<BuildInfo> {
   /**
    * Presets and distributes all the options
    */
-  public constructor(emitter: Router, options: BuildOptions = {}) {
+  public constructor(emitter: Router, options: ManifestOptions = {}) {
     super();
     this.emitter = emitter;
     const { 

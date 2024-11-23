@@ -1,8 +1,11 @@
-import type Request from '@stackpress/ingest/dist/payload/Request';
-import type Response from '@stackpress/ingest/dist/payload/Response';
+//common
+import type { FetchRequest } from '../../types';
+//local
+import type Request from '../../Request';
+import type Response from '../../Response';
 
-export type FetchRequest = globalThis.Request;
-export type FetchResponse = globalThis.Response;
+//--------------------------------------------------------------------//
+// Fetch Types
 
 export type FetchPayload = [ Request<FetchRequest>, Response<undefined> ];
 export type FetchMap = Record<string, FetchPayload>;

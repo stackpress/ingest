@@ -1,19 +1,50 @@
-import type { 
-  BuildOptions, 
+import type {
+  BuilderOptions, 
+  ProjectOptions,
   TranspileInfo, 
   Transpiler 
 } from '@stackpress/ingest/dist/buildtime/types';
-import { VariableDeclarationKind } from 'ts-morph';
-import { createSourceFile } from '@stackpress/ingest/dist/buildtime/helpers';
-import HTTPBuilder from '@stackpress/ingest/dist/http/Builder';
 
-export default class Builder extends HTTPBuilder{
+import Builder from '@stackpress/ingest/dist/buildtime/Builder';
+import { 
+  IndentationText,
+  createSourceFile, 
+  VariableDeclarationKind 
+} from '@stackpress/ingest/dist/buildtime/helpers';
+
+export default class NetlifyBuilder extends Builder {
+  //ts-morph options
+  public readonly tsconfig: ProjectOptions;
+
+  /**
+   * Sets up the builder
+   */
+  public constructor(options: BuilderOptions = {}) {
+    options.buildDir = options.buildDir || './.netlify/functions';
+    super(options);
+    this.tsconfig = {
+      tsConfigFilePath: options.tsconfig,
+      skipAddingFilesFromTsConfig: true,
+      compilerOptions: {
+        // Generates corresponding '.d.ts' file.
+        declaration: true, 
+        // Generates a sourcemap for each corresponding '.d.ts' file.
+        declarationMap: true, 
+        // Generates corresponding '.map' file.
+        sourceMap: true
+      },
+      manipulationSettings: {
+        indentationText: IndentationText.TwoSpaces
+      }
+    };
+  }
+
   /**
    * Creates an entry file
    */
   public transpile(info: TranspileInfo) {
     //create a new source file
-    const { source } = createSourceFile('entry.ts', this._tsconfig);
+    const { source } = createSourceFile('entry.ts', this.tsconfig);
     //import type { FetchAction } from '@stackpress/ingest-netlify/dist/types'
     source.addImportDeclaration({
       isTypeOnly: true,
@@ -61,11 +92,10 @@ export default class Builder extends HTTPBuilder{
   /**
    * Builds the final entry files
    */
-  public async build(options: BuildOptions = {}) {
-    const manifest = this._router.manifest(options);
+  public async build() {
     const transpiler: Transpiler = entries => {
       return this.transpile(entries);
     }
-    return await manifest.build(transpiler);
+    return await super.build(transpiler);
   }
 }

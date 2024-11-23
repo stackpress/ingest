@@ -1,6 +1,7 @@
+//stackpress
 import type { Method, Route } from '@stackpress/types/dist/types';
-import type { BuildOptions } from './types';
-
+//local
+import type { ManifestOptions } from './types';
 import Emitter from './Emitter';
 import Manifest from './Manifest';
 
@@ -54,7 +55,7 @@ export default class Router extends Emitter {
    * Generates a manifest of all the 
    * entry points and its meta data
    */
-  public manifest(options: BuildOptions = {}) {
+  public manifest(options: ManifestOptions = {}) {
     const manifest = new Manifest(this, options);
     this.listeners.forEach((tasks, event) => {
       //{ method, route }

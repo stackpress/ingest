@@ -1,10 +1,22 @@
-import type { 
-  Method, 
-  NestedObject, 
-  Trace 
-} from '@stackpress/types/dist/types';
+//modules
+import type { IncomingMessage, ServerResponse } from 'http';
+//stackpress
+import type { Method, NestedObject, Trace } from '@stackpress/types/dist/types';
+//local
 import type Request from './Request';
 import type Response from './Response';
+
+//--------------------------------------------------------------------//
+// HTTP Types
+
+export type IM = IncomingMessage;
+export type SR = ServerResponse<IncomingMessage>;
+
+//--------------------------------------------------------------------//
+// Fetch Types
+
+export type FetchRequest = globalThis.Request;
+export type FetchResponse = globalThis.Response;
 
 //--------------------------------------------------------------------//
 // Payload Types

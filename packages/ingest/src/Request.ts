@@ -11,7 +11,7 @@ import {
   objectFromQuery, 
   eventParams, 
   routeParams 
-} from '../helpers';
+} from './helpers';
 import Context from './Context';
 import { ReadSession } from './Session';
 

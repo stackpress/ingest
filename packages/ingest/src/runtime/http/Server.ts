@@ -1,52 +1,45 @@
 //modules
-import type { ServerOptions } from 'http';
-import http from 'http';
 import cookie from 'cookie';
 //stackpress
 import type { Method } from '@stackpress/types/dist/types';
 import StatusCode from '@stackpress/types/dist/StatusCode';
 //common
-import type { IM, SR, CookieOptions, LoaderResponse } from '../types';
-import Exception from '../Exception';
-import Request from '../Request';
-import Response from '../Response';
-import { 
-  isHash,
-  formDataToObject,
-  objectFromQuery
-} from '../helpers';
+import type { IM, SR, CookieOptions, LoaderResponse } from '../../types';
+import Request from '../../Request';
+import Response from '../../Response';
+import Exception from '../../Exception';
+import { isHash, formDataToObject, objectFromQuery } from '../../helpers';
 //local
+import type { HTTPAction } from './types';
+import Queue from './Queue';
 import Router from './Router';
 import { imToURL } from './helpers';
 
 export default class Server {
   //router to handle the requests
   public readonly router: Router;
+  //cookie options
+  protected _options: CookieOptions;
 
   /**
    * Sets up the emitter
    */
-  public constructor(router: Router) {
-    this.router = router;
-  }
-
-  /**
-   * Creates an HTTP server with the given options
-   */
-  public create(options: ServerOptions = {}) {
-    return http.createServer(options, (im, sr) => this.handle(im, sr));
+  public constructor(router?: Router, options: CookieOptions = { path: '/' }) {
+    this.router = router || new Router();
+    this._options = options;
   }
 
   /**
    * Handles fetch requests
    */
-  public async handle(im: IM, sr: SR) {
+  public async handle(actions: Set<HTTPAction>, im: IM, sr: SR) {
     //initialize the request
-    const { event, req, res } = this._makePayload(im, sr);
+    const { req, res } = this._makePayload(im, sr);
+    const queue = this._makeQueue(actions);
     //load the body
     await req.load();
     //then try to emit the event
-    await this.process(event, req, res);
+    await this.process(queue, req, res);
     //if the response was not sent by now,
     if (!res.sent) {
       //send the response
@@ -58,8 +51,8 @@ export default class Server {
   /**
    * Handles a payload using events
    */
-  public async process(event: string, req: Request<IM>, res: Response<SR>) {
-    const status = await this.router.emit(event, req, res);
+  public async process(queue: Queue, req: Request<IM>, res: Response<SR>) {
+    const status = await queue.run(req, res);
     //if the status was incomplete (309)
     if (status.code === StatusCode.ABORT.code) {
       //the callback that set that should have already processed
@@ -87,41 +80,14 @@ export default class Server {
     return status.code !== StatusCode.ABORT.code;
   }
 
-  protected async load(im: IM, sr: SR) {
-    //set method
-    const method = (im.method?.toUpperCase() || 'GET') as Method;
-    //set the type
-    const mimetype = im.headers['content-type'] || 'text/plain';
-    //set the headers
-    const headers = Object.fromEntries(
-      Object.entries(im.headers).filter(
-        ([key, value]) => typeof value !== 'undefined'
-      )
-    ) as Record<string, string|string[]>;
-    //set session
-    const session = cookie.parse(
-      im.headers.cookie as string || ''
-    ) as Record<string, string>;
-    //set url
-    const url = imToURL(im);
-    //set query
-    const query = objectFromQuery(url.searchParams.toString());
-    //make request
-    const req = new Request({
-      method,
-      mimetype,
-      headers,
-      url,
-      query,
-      session,
-      resource: im
-    });
-    req.loader = loader(im);
-    //make response
-    const res = new Response({ resource: sr });
-    res.dispatcher = dispatcher(sr);
-    const event = im.method + ' ' + imToURL(im).pathname;
-    return { event, req, res };
+  /**
+   * Creates a queue and populates it with actions
+   */
+  protected _makeQueue(actions: Set<HTTPAction>) {
+    const emitter = new Queue();
+    actions.forEach(action => emitter.add(action));
+
+    return emitter;
   }
 
   /**
@@ -147,7 +113,7 @@ export default class Server {
     //set query
     const query = objectFromQuery(url.searchParams.toString());
     //make request
-    const req = new Request({
+    const req = new Request<IM>({
       method,
       mimetype,
       headers,
@@ -158,10 +124,9 @@ export default class Server {
     });
     req.loader = loader(im);
     //make response
-    const res = new Response({ resource: sr });
-    res.dispatcher = dispatcher(sr);
-    const event = im.method + ' ' + imToURL(im).pathname;
-    return { event, req, res };
+    const res = new Response<SR>({ resource: sr });
+    res.dispatcher = dispatcher(sr, this._options);
+    return { req, res };
   }
 }
 

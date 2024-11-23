@@ -7,7 +7,7 @@ import ReadonlyMap from '@stackpress/types/dist/readonly/Map';
 import ReadonlySet from '@stackpress/types/dist/readonly/Set';
 import ReadonlyNest from '@stackpress/types/dist/readonly/Nest';
 import { ReadSession } from './Session';
-import { isHash } from '../helpers';
+import { isHash } from './helpers';
 
 export default class RequestContext {
   //request

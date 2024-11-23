@@ -12,6 +12,8 @@
   "files": [
     "build.js",
     "build.d.ts",
+    "fetch.js",
+    "fetch.d.ts",
     "http.js",
     "http.d.ts",
     "index.js",
@@ -26,12 +28,11 @@
   },
   "dependencies": {
     "@stackpress/types": "0.1.26",
-    "cookie": "0.7.0",
+    "cookie": "1.0.2",
     "esbuild": "0.24.0"
   },
   "devDependencies": {
     "@types/chai": "4.3.5",
-    "@types/cookie": "0.6.0",
     "@types/expect": "24.3.0",
     "@types/mocha": "10.0.1",
     "@types/node": "22.7.4",

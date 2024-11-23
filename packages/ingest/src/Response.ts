@@ -14,7 +14,7 @@ import Nest from '@stackpress/types/dist/Nest';
 import { status } from '@stackpress/types/dist/StatusCode';
 
 import { WriteSession } from './Session';
-import { isHash } from '../helpers';
+import { isHash } from './helpers';
 
 export default class Response<T = unknown> {
   //head controller
