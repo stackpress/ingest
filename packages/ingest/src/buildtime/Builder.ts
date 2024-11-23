@@ -33,7 +33,7 @@ export default class Builder {
       cwd = process.cwd(),
       buildDir = './build', 
       manifestName = 'manifest.json',
-      cookie = {},
+      cookie = { path: '/' },
       ...config
     } = options;
 
