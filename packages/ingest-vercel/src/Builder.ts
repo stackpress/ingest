@@ -20,7 +20,7 @@ export default class VercelBuilder extends Builder {
    * Sets up the builder
    */
   public constructor(options: BuilderOptions = {}) {
-    options.buildDir = options.buildDir || './.netlify/functions';
+    options.buildDir = options.buildDir || './api';
     super(options);
     this.tsconfig = {
       tsConfigFilePath: options.tsconfig,
@@ -45,15 +45,15 @@ export default class VercelBuilder extends Builder {
   public transpile(info: TranspileInfo) {
     //create a new source file
     const { source } = createSourceFile('entry.ts', this.tsconfig);
-    //import type { FetchAction } from '@stackpress/ingest-vercel/dist/types'
+    //import type { FetchAction } from '@stackpress/ingest/dist/runtime/fetch/types'
     source.addImportDeclaration({
       isTypeOnly: true,
-      moduleSpecifier: '@stackpress/ingest-vercel/dist/types',
+      moduleSpecifier: '@stackpress/ingest/dist/runtime/fetch/types',
       namedImports: [ 'FetchAction' ]
     });
-    //import Server from '@stackpress/ingest-vercel/dist/Server';
+    //import Server from '@stackpress/ingest/dist/runtime/fetch/Server';
     source.addImportDeclaration({
-      moduleSpecifier: '@stackpress/ingest-vercel/dist/Server',
+      moduleSpecifier: '@stackpress/ingest/dist/runtime/fetch/Server',
       defaultImport: 'Server'
     });
     //import task1 from [entry]

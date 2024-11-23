@@ -45,15 +45,15 @@ export default class NetlifyBuilder extends Builder {
   public transpile(info: TranspileInfo) {
     //create a new source file
     const { source } = createSourceFile('entry.ts', this.tsconfig);
-    //import type { FetchAction } from '@stackpress/ingest-netlify/dist/types'
+    //import type { FetchAction } from '@stackpress/ingest/dist/runtime/fetch/types'
     source.addImportDeclaration({
       isTypeOnly: true,
-      moduleSpecifier: '@stackpress/ingest-netlify/dist/types',
+      moduleSpecifier: '@stackpress/ingest/dist/runtime/fetch/types',
       namedImports: [ 'FetchAction' ]
     });
-    //import Server from '@stackpress/ingest-netlify/dist/Server';
+    //import Server from '@stackpress/ingest/dist/runtime/fetch/Server';
     source.addImportDeclaration({
-      moduleSpecifier: '@stackpress/ingest-netlify/dist/Server',
+      moduleSpecifier: '@stackpress/ingest/dist/runtime/fetch/Server',
       defaultImport: 'Server'
     });
     //import task1 from [entry]

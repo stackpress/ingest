@@ -1,3 +1,5 @@
+//modules
+import * as cookie from 'cookie';
 //common
 import Context from '../../Context';
 import Exception from '../../Exception';
@@ -16,6 +18,7 @@ export * from '../../helpers';
 export * from './helpers';
 
 export { 
+  cookie,
   Context,
   Exception,
   Request,

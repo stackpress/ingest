@@ -1,3 +1,6 @@
+//modules
+import * as cookie from 'cookie';
+import esbuild from 'esbuild';
 //common
 import Context from '../Context';
 import Exception from '../Exception';
@@ -19,6 +22,8 @@ export * from './helpers';
 export * from './plugins';
 
 export {
+  cookie,
+  esbuild,
   Context,
   Exception,
   Request,

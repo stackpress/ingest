@@ -7,7 +7,7 @@
     "generate": "yarn build:tsc && yarn build:files",
     "build:tsc": "tsc",
     "build:files": "ts-node src/build.ts",
-    "dev": "ts-node src/develop.ts"
+    "dev": "ts-node src/server.ts"
   },
   "dependencies": {
     "@stackpress/ingest-netlify": "0.1.26"

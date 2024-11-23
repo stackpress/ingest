@@ -1,3 +1,6 @@
+//modules
+import * as cookie from 'cookie';
+//local
 import Context from './Context';
 import Exception from './Exception';
 import Request from './Request';
@@ -8,6 +11,7 @@ export type * from './types';
 export * from './helpers';
 
 export {
+  cookie,
   Context,
   Exception,
   Request,

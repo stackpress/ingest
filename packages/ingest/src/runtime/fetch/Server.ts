@@ -1,6 +1,6 @@
 //modules
 import type { Method } from '@stackpress/types/dist/types';
-import cookie from 'cookie';
+import * as cookie from 'cookie';
 import StatusCode from '@stackpress/types/dist/StatusCode';
 //common
 import type { 

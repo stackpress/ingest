@@ -9,16 +9,10 @@
     "build:ingest": "yarn --cwd packages/ingest build",
     "build:vercel": "yarn --cwd packages/ingest-vercel build",
     "build:netlify": "yarn --cwd packages/ingest-netlify build",
-    "ex:http:build": "yarn --cwd examples/with-http build",
-    "ex:http:dev": "yarn --cwd examples/with-http dev",
-    "ex:http:start": "yarn --cwd examples/with-http start",
-    "ex:vercel:build": "yarn --cwd examples/with-vercel generate",
-    "ex:vercel:dev": "yarn --cwd examples/with-vercel dev",
-    "ex:netlify:build": "yarn --cwd examples/with-netlify generate",
-    "ex:netlify:dev": "yarn --cwd examples/with-netlify dev",
+    "vercel:build": "yarn --cwd examples/with-vercel generate",
+    "vercel:dev": "yarn --cwd examples/with-vercel dev",
+    "netlify:build": "yarn --cwd examples/with-netlify generate",
+    "netlify:dev": "yarn --cwd examples/with-netlify dev",
     "test": "yarn --cwd packages/ingest test"
-  },
-  "devDependencies": {
-    "npm-run-all": "4.1.5"
   }
 }

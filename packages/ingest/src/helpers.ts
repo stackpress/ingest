@@ -5,7 +5,7 @@ import Nest from '@stackpress/types/dist/Nest';
  * Returns true if the value is a native JS object
  */
 export function isHash(value: unknown) {
-  return typeof value === 'object' && value?.constructor.name === 'Object';
+  return typeof value === 'object' && value?.constructor?.name === 'Object';
 };
 
 /**

@@ -1,5 +1,5 @@
 //modules
-import cookie from 'cookie';
+import * as cookie from 'cookie';
 //stackpress
 import type { Method } from '@stackpress/types/dist/types';
 import StatusCode from '@stackpress/types/dist/StatusCode';
