@@ -4,7 +4,7 @@ import type { SourceFile, ProjectOptions } from 'ts-morph';
 import type { Method } from '@stackpress/types/dist/types';
 import type FileSystem from '@stackpress/types/dist/filesystem/FileSystem';
 //common
-import type { IM, SR } from '../types';
+import type { IM, SR, CookieOptions } from '../types';
 import type Request from '../Request';
 import type Response from '../Response';
 //local
@@ -76,5 +76,6 @@ export type ManifestOptions = ESBuildOptions & {
 
 export type BuilderOptions = ManifestOptions & {
   router?: Router,
-  tsconfig?: string
+  tsconfig?: string,
+  cookie?: CookieOptions
 };

@@ -22,12 +22,15 @@ import { imToURL } from './helpers';
 export default class Server {
   //router to handle the requests
   public readonly router: Router;
+  //cookie options
+  public readonly options: CookieOptions;
 
   /**
    * Sets up the emitter
    */
-  public constructor(router: Router) {
+  public constructor(router: Router, options: CookieOptions = { path: '/' }) {
     this.router = router;
+    this.options = Object.freeze(options);
   }
 
   /**
@@ -119,7 +122,7 @@ export default class Server {
     req.loader = loader(im);
     //make response
     const res = new Response({ resource: sr });
-    res.dispatcher = dispatcher(sr);
+    res.dispatcher = dispatcher(sr, this.options);
     const event = im.method + ' ' + imToURL(im).pathname;
     return { event, req, res };
   }

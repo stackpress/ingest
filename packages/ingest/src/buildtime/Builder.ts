@@ -33,6 +33,7 @@ export default class Builder {
       cwd = process.cwd(),
       buildDir = './build', 
       manifestName = 'manifest.json',
+      cookie = {},
       ...config
     } = options;
 
@@ -45,7 +46,7 @@ export default class Builder {
     });
 
     this.router = router;
-    this.server = new Server(router);
+    this.server = new Server(router, cookie);
     this.loader = new FileLoader(fs, cwd);
     this.buildPath = this.loader.absolute(buildDir);
     this.manifestPath = path.resolve(this.buildPath, manifestName);

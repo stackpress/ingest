@@ -45,6 +45,8 @@ export default class VercelBuilder extends Builder {
   public transpile(info: TranspileInfo) {
     //create a new source file
     const { source } = createSourceFile('entry.ts', this.tsconfig);
+    //get options
+    const options = JSON.stringify(this.server.options || {});
     //import type { FetchAction } from '@stackpress/ingest/dist/runtime/fetch/types'
     source.addImportDeclaration({
       isTypeOnly: true,
@@ -72,7 +74,7 @@ export default class VercelBuilder extends Builder {
       name: info.method,
       parameters: [{ name: 'request', type: 'Request' }],
       statements: (`
-        const server = new Server();
+        const server = new Server(undefined, ${options});
         const actions = new Set<FetchAction>();
         ${info.actions.map(
           (_, i) => `actions.add(task_${i});`
