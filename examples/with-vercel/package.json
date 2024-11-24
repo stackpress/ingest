@@ -10,7 +10,7 @@
     "dev": "ts-node src/server.ts"
   },
   "dependencies": {
-    "@stackpress/ingest-vercel": "0.2.3"
+    "@stackpress/ingest-vercel": "0.2.5"
   },
   "devDependencies": {
     "@types/node": "22.9.3",
