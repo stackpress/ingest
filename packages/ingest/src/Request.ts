@@ -188,19 +188,19 @@ export default class Request<T = unknown> {
 
   /**
    * Returns a new request context with pattern
-   * ie. req.ctxFromPattern(/foo/)
-   * ie. req.ctxFromPattern('/foo/')
+   * ie. req.fromPattern(/foo/)
+   * ie. req.fromPattern('/foo/')
    */
-  public ctxFromPattern(pattern: string|RegExp) {
+  public fromPattern(pattern: string|RegExp) {
     const args = eventParams(pattern.toString(), this.url.pathname);
     return new Context(this, { args });
   }
 
   /**
    * Returns a new request context with route
-   * ie. req.ctxFromRoute('/foo/:bar')
+   * ie. req.fromRoute('/foo/:bar')
    */
-  public ctxFromRoute(route: string) {
+  public fromRoute(route: string) {
     const { args, params } = routeParams(route, this.url.pathname);
     return new Context(this, { args, params });
   }

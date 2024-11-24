@@ -19,14 +19,14 @@ export default class Server {
   //router to handle the requests
   public readonly router: Router;
   //cookie options
-  protected _options: CookieOptions;
+  public readonly options: CookieOptions;
 
   /**
    * Sets up the emitter
    */
   public constructor(router?: Router, options: CookieOptions = { path: '/' }) {
     this.router = router || new Router();
-    this._options = options;
+    this.options = Object.freeze(options);
   }
 
   /**
@@ -34,8 +34,9 @@ export default class Server {
    */
   public async handle(actions: Set<HTTPAction>, im: IM, sr: SR) {
     //initialize the request
-    const { req, res } = this._makePayload(im, sr);
-    const queue = this._makeQueue(actions);
+    const req = this.request(im);
+    const res = this.response(sr);
+    const queue = this.queue(actions);
     //load the body
     await req.load();
     //then try to emit the event
@@ -81,19 +82,18 @@ export default class Server {
   }
 
   /**
-   * Creates a queue and populates it with actions
+   * Sets up the queue
    */
-  protected _makeQueue(actions: Set<HTTPAction>) {
+  public queue(actions: Set<HTTPAction>) {
     const emitter = new Queue();
     actions.forEach(action => emitter.add(action));
-
     return emitter;
   }
 
   /**
-   * Sets up the request, response and determines the event
+   * Sets up the request
    */
-  protected _makePayload(im: IM, sr: SR) {
+  public request(im: IM) {
     //set method
     const method = (im.method?.toUpperCase() || 'GET') as Method;
     //set the type
@@ -123,10 +123,16 @@ export default class Server {
       resource: im
     });
     req.loader = loader(im);
-    //make response
+    return req;
+  }
+
+  /**
+   * Sets up the response
+   */
+  public response(sr: SR) {
     const res = new Response<SR>({ resource: sr });
-    res.dispatcher = dispatcher(sr, this._options);
-    return { req, res };
+    res.dispatcher = dispatcher(sr, this.options);
+    return res;
   }
 }
 

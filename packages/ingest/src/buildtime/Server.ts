@@ -45,7 +45,9 @@ export default class Server {
    */
   public async handle(im: IM, sr: SR) {
     //initialize the request
-    const { event, req, res } = this._makePayload(im, sr);
+    const event = im.method + ' ' + imToURL(im).pathname;
+    const req = this.request(im);
+    const res = this.response(sr);
     //load the body
     await req.load();
     //then try to emit the event
@@ -90,7 +92,10 @@ export default class Server {
     return status.code !== StatusCode.ABORT.code;
   }
 
-  protected async load(im: IM, sr: SR) {
+  /**
+   * Sets up the request
+   */
+  public request(im: IM) {
     //set method
     const method = (im.method?.toUpperCase() || 'GET') as Method;
     //set the type
@@ -120,51 +125,16 @@ export default class Server {
       resource: im
     });
     req.loader = loader(im);
-    //make response
-    const res = new Response({ resource: sr });
-    res.dispatcher = dispatcher(sr, this.options);
-    const event = im.method + ' ' + imToURL(im).pathname;
-    return { event, req, res };
+    return req;
   }
 
   /**
-   * Sets up the request, response and determines the event
+   * Sets up the response
    */
-  protected _makePayload(im: IM, sr: SR) {
-    //set method
-    const method = (im.method?.toUpperCase() || 'GET') as Method;
-    //set the type
-    const mimetype = im.headers['content-type'] || 'text/plain';
-    //set the headers
-    const headers = Object.fromEntries(
-      Object.entries(im.headers).filter(
-        ([key, value]) => typeof value !== 'undefined'
-      )
-    ) as Record<string, string|string[]>;
-    //set session
-    const session = cookie.parse(
-      im.headers.cookie as string || ''
-    ) as Record<string, string>;
-    //set url
-    const url = imToURL(im);
-    //set query
-    const query = objectFromQuery(url.searchParams.toString());
-    //make request
-    const req = new Request({
-      method,
-      mimetype,
-      headers,
-      url,
-      query,
-      session,
-      resource: im
-    });
-    req.loader = loader(im);
-    //make response
+  public response(sr: SR) {
     const res = new Response({ resource: sr });
-    res.dispatcher = dispatcher(sr);
-    const event = im.method + ' ' + imToURL(im).pathname;
-    return { event, req, res };
+    res.dispatcher = dispatcher(sr, this.options);
+    return res;
   }
 }
 

@@ -22,14 +22,14 @@ export default class Server {
   //router to handle the requests
   public readonly router: Router;
   //cookie options
-  protected _options: CookieOptions;
+  public readonly options: CookieOptions;
 
   /**
    * Sets up the emitter
    */
   public constructor(router?: Router, options: CookieOptions = { path: '/' }) {
     this.router = router || new Router();
-    this._options = options;
+    this.options = Object.freeze(options);
   }
 
   /**
@@ -37,8 +37,9 @@ export default class Server {
    */
   public async handle(actions: Set<FetchAction>, request: FetchRequest) {
     //initialize the request
-    const { req, res } = this._makePayload(request);
-    const queue = this._makeQueue(actions);
+    const req = this.request(request);
+    const res = this.response();
+    const queue = this.queue(actions);
     //load the body
     await req.load();
     //then try to emit the event
@@ -50,7 +51,7 @@ export default class Server {
     //   res.dispatch();
     // }
     //just map the ingets response to a fetch response
-    return response(res, this._options);
+    return response(res, this.options);
   }
 
   /**
@@ -93,16 +94,16 @@ export default class Server {
   /**
    * Creates an emitter and populates it with actions
    */
-  protected _makeQueue(actions: Set<FetchAction>) {
+  public queue(actions: Set<FetchAction>) {
     const queue = new Queue();
     actions.forEach(action => queue.add(action));
     return queue;
   }
 
   /**
-   * Sets up the request, response and determines the event
+   * Sets up the request
    */
-  protected _makePayload(request: FetchRequest) {
+  public request(request: FetchRequest) {
     //set method
     const method = (request.method?.toUpperCase() || 'GET') as Method;
     //set the type
@@ -134,8 +135,14 @@ export default class Server {
       resource: request
     });
     req.loader = loader(request);
-    const res = new Response<undefined>();
-    return { req, res };
+    return req;
+  }
+
+  /**
+   * Sets up the response
+   */
+  public response() {
+    return new Response<undefined>();;
   }
 }
 
