@@ -10,11 +10,11 @@
     "dev": "ts-node src/server.ts"
   },
   "dependencies": {
-    "@stackpress/ingest-netlify": "0.1.26"
+    "@stackpress/ingest-netlify": "0.2.3"
   },
   "devDependencies": {
-    "@types/node": "22.1.0",
+    "@types/node": "22.9.3",
     "ts-node": "10.9.2",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   }
 }
