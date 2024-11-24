@@ -15,8 +15,8 @@ export type { SourceFile, ProjectOptions };
 //--------------------------------------------------------------------//
 // Build Types
 
-export type BuildPayload = [ Request<IM>, Response<SR> ];
-export type BuildMap = Record<string, BuildPayload>;
+export type BuildArgs<C = unknown> = [ Request<IM, C>, Response<SR> ];
+export type BuildMap<C = unknown> = Record<string, BuildArgs<C>>;
 export type BuildTask = { entry: string, priority: number };
 
 export type BuildType = 'function' | 'endpoint';
@@ -74,8 +74,10 @@ export type ManifestOptions = ESBuildOptions & {
   manifestName?: string
 };
 
-export type BuilderOptions = ManifestOptions & {
-  router?: Router,
-  tsconfig?: string,
-  cookie?: CookieOptions
+export type BuilderOptions<C = unknown> = ManifestOptions & {
+  client?: C,
+  clientPath?: string,
+  cookie?: CookieOptions,
+  router?: Router<C>,
+  tsconfig?: string
 };

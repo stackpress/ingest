@@ -7,6 +7,6 @@ export * from '@stackpress/ingest/dist/buildtime';
 
 export { NetlifyBuilder };
 
-export default function netlify(options: BuilderOptions = {}) {
-  return new NetlifyBuilder(options);
+export default function netlify<C = unknown>(options: BuilderOptions<C> = {}) {
+  return new NetlifyBuilder<C>(options);
 }

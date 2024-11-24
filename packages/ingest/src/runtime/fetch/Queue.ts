@@ -1,6 +1,6 @@
 //stackpress
 import TaskQueue from '@stackpress/types/dist/TaskQueue';
 //local
-import type { FetchPayload } from './types';
+import type { FetchArgs } from './types';
 
-export default class Queue extends TaskQueue<FetchPayload> {}
+export default class Queue<C = unknown> extends TaskQueue<FetchArgs<C>> {}

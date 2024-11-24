@@ -9,9 +9,9 @@ import ReadonlyNest from '@stackpress/types/dist/readonly/Nest';
 import { ReadSession } from './Session';
 import { isHash } from './helpers';
 
-export default class RequestContext {
+export default class RequestContext<R = unknown, C = undefined> {
   //request
-  public readonly request: Request;
+  public readonly request: Request<R, C>;
   //context args
   public readonly args: ReadonlySet<string>;
   //context params
@@ -69,7 +69,7 @@ export default class RequestContext {
   /**
    * Sets the request and the context initializer
    */
-  constructor(request: Request, init: ContextInitializer = {}) {
+  constructor(request: Request<R, C>, init: ContextInitializer = {}) {
     this.request = request;
     this.method = request.method;
     this.data = request.data;

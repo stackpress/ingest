@@ -1,12 +1,18 @@
 //modules
-import type { ServerOptions } from 'http';
+import type { ServerOptions as HTTPOptions } from 'http';
 import http from 'http';
 import * as cookie from 'cookie';
 //stackpress
 import type { Method } from '@stackpress/types/dist/types';
 import StatusCode from '@stackpress/types/dist/StatusCode';
 //common
-import type { IM, SR, CookieOptions, LoaderResponse } from '../types';
+import type { 
+  IM, 
+  SR, 
+  ServerOptions, 
+  CookieOptions, 
+  LoaderResponse 
+} from '../types';
 import Exception from '../Exception';
 import Request from '../Request';
 import Response from '../Response';
@@ -19,24 +25,37 @@ import {
 import Router from './Router';
 import { imToURL } from './helpers';
 
-export default class Server {
+export default class Server<C = unknown> {
   //router to handle the requests
-  public readonly router: Router;
+  public readonly router: Router<C>;
   //cookie options
-  public readonly options: CookieOptions;
+  public readonly cookie: CookieOptions;
+  //request size
+  public readonly size: number;
+  //any client interface
+  protected _client?: C;
+
+  /**
+   * Returns the client interface
+   */
+  public get client() {
+    return this._client as C;
+  }
 
   /**
    * Sets up the emitter
    */
-  public constructor(router: Router, options: CookieOptions = { path: '/' }) {
+  public constructor(router: Router<C>, options: ServerOptions<C> = {}) {
     this.router = router;
-    this.options = Object.freeze(options);
+    this.cookie = Object.freeze(options.cookie || { path: '/' });
+    this.size = options.size || 0;
+    this._client = options.client;
   }
 
   /**
    * Creates an HTTP server with the given options
    */
-  public create(options: ServerOptions = {}) {
+  public create(options: HTTPOptions = {}) {
     return http.createServer(options, (im, sr) => this.handle(im, sr));
   }
 
@@ -63,7 +82,7 @@ export default class Server {
   /**
    * Handles a payload using events
    */
-  public async process(event: string, req: Request<IM>, res: Response<SR>) {
+  public async process(event: string, req: Request<IM, C>, res: Response<SR>) {
     const status = await this.router.emit(event, req, res);
     //if the status was incomplete (309)
     if (status.code === StatusCode.ABORT.code) {
@@ -115,16 +134,17 @@ export default class Server {
     //set query
     const query = objectFromQuery(url.searchParams.toString());
     //make request
-    const req = new Request({
+    const req = new Request<IM, C>({
       method,
       mimetype,
       headers,
       url,
       query,
       session,
-      resource: im
+      resource: im,
+      client: this.client
     });
-    req.loader = loader(im);
+    req.loader = loader<C>(im, this.size);
     return req;
   }
 
@@ -133,7 +153,7 @@ export default class Server {
    */
   public response(sr: SR) {
     const res = new Response({ resource: sr });
-    res.dispatcher = dispatcher(sr, this.options);
+    res.dispatcher = dispatcher(sr, this.cookie);
     return res;
   }
 }
@@ -141,8 +161,8 @@ export default class Server {
 /**
  * Request body loader
  */
-export function loader(resource: IM, size = 0) {
-  return (req: Request) => {
+export function loader<C = unknown>(resource: IM, size = 0) {
+  return (req: Request<IM, C>) => {
     return new Promise<LoaderResponse|undefined>(resolve => {
       //if the body is cached
       if (req.body !== null) {

@@ -12,14 +12,14 @@ import {
   VariableDeclarationKind 
 } from '@stackpress/ingest/dist/buildtime/helpers';
 
-export default class NetlifyBuilder extends Builder {
+export default class NetlifyBuilder<C = unknown> extends Builder<C> {
   //ts-morph options
   public readonly tsconfig: ProjectOptions;
 
   /**
    * Sets up the builder
    */
-  public constructor(options: BuilderOptions = {}) {
+  public constructor(options: BuilderOptions<C> = {}) {
     options.buildDir = options.buildDir || './.netlify/functions';
     super(options);
     this.tsconfig = {
@@ -45,8 +45,8 @@ export default class NetlifyBuilder extends Builder {
   public transpile(info: TranspileInfo) {
     //create a new source file
     const { source } = createSourceFile('entry.ts', this.tsconfig);
-    //get options
-    const options = JSON.stringify(this.server.options || {});
+    //get cookie options
+    const cookie = JSON.stringify(this.server.cookie || {});
     //import type { FetchAction } from '@stackpress/ingest/dist/runtime/fetch/types'
     source.addImportDeclaration({
       isTypeOnly: true,
@@ -65,6 +65,13 @@ export default class NetlifyBuilder extends Builder {
         defaultImport: `task_${i}`
       });
     });
+    if (this.clientPath) {
+      //import client from [client]
+      source.addImportDeclaration({
+        moduleSpecifier: this.clientPath,
+        defaultImport: 'client'
+      });
+    }
     //export const config = { path: '/user/:id' };
     source.addVariableStatement({
       isExported: true,
@@ -80,7 +87,10 @@ export default class NetlifyBuilder extends Builder {
       parameters: [{ name: 'request', type: 'Request' }],
       statements: (`
         if (request.method.toUpperCase() !== '${info.method}') return;
-        const server = new Server(undefined, ${options});
+        ${this.clientPath 
+          ? `const server = new Server<typeof client>(undefined, { client, cookie: ${cookie} });`
+          : `const server = new Server<undefined>(undefined, { cookie: ${cookie} });`
+        }
         const actions = new Set<FetchAction>();
         ${info.actions.map(
           (_, i) => `actions.add(task_${i});`

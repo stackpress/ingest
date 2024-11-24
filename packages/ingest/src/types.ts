@@ -31,7 +31,9 @@ export type Session = Record<string, string> | Map<string, string>;
 export type Post = Record<string, unknown> | Map<string, any>;
 export type LoaderResponse = { body?: Body, post?: Post };
 
-export type RequestLoader = (req: Request) => Promise<LoaderResponse|undefined>;
+export type RequestLoader<R = unknown, C = unknown> = (
+  req: Request<R, C>
+) => Promise<LoaderResponse|undefined>;
 export type ResponseDispatcher = (res: Response) => Promise<void>;
 
 export type ContextInitializer = { 
@@ -39,20 +41,21 @@ export type ContextInitializer = {
   params?: Record<string, string> | Map<string, string>
 };
 
-export type ResponseInitializer<T = unknown> = { 
-  resource?: T,
-  mimetype?: string, 
+export type ResponseInitializer<R = unknown> = { 
+  body?: Body,
   headers?: Headers,
-  body?: Body
+  mimetype?: string, 
+  resource?: R
 };
 
-export type RequestInitializer<T = unknown> = ResponseInitializer<T> & {
-  method?: Method,
+export type RequestInitializer<R = unknown, C = unknown> = ResponseInitializer<R> & {
+  client?: C,
   data?: Data,
-  url?: string|URL,
+  method?: Method,
   query?: Query,
+  post?: Post,
   session?: Session,
-  post?: Post
+  url?: string|URL
 };
 
 export type ResponseErrorOptions = {
@@ -81,4 +84,13 @@ export type CookieOptions = {
   priority?: 'low'|'medium'|'high';
   sameSite?: boolean|'lax'|'strict'|'none';
   secure?: boolean;
+};
+
+//--------------------------------------------------------------------//
+// Server Types
+
+export type ServerOptions<C = unknown> = {
+  client?: C,
+  cookie?: CookieOptions,
+  size?: number
 };

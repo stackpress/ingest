@@ -1,21 +1,25 @@
 //stackpress
 import EventEmitter from '@stackpress/types/dist/EventEmitter';
+//common
+import type { IM, SR } from '../types';
+import type Request from '../Request';
+import type Response from '../Response';
 //local
-import type { BuildPayload, BuildMap, BuildTask } from './types';
+import type { BuildMap, BuildTask } from './types';
 
 /**
  * A rendition of an event emitter that uses 
  * entry files instead of action callbacks.
  */
-export default class Emitter {
-  public readonly emitter = new EventEmitter<BuildMap>();
+export default class Emitter<C = unknown> {
+  public readonly emitter = new EventEmitter<BuildMap<C>>();
   //A route map to task queues
   public readonly listeners = new Map<string, Set<BuildTask>>();
 
   /**
    * Calls all the callbacks of the given event passing the given arguments
    */
-  public emit(event: string, req: BuildPayload[0], res: BuildPayload[1]) {
+  public emit(event: string, req: Request<IM, C>, res: Response<SR>) {
     return this.emitter.emit(event, req, res);
   }
 

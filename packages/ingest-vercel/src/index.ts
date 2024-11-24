@@ -7,6 +7,6 @@ export * from '@stackpress/ingest/dist/buildtime';
 
 export { VercelBuilder };
 
-export default function netlify(options: BuilderOptions = {}) {
-  return new VercelBuilder(options);
+export default function vercel<C = unknown>(options: BuilderOptions<C> = {}) {
+  return new VercelBuilder<C>(options);
 }

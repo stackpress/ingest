@@ -1,15 +1,13 @@
 //common
 import type { FetchRequest } from '../../types';
-//local
 import type Request from '../../Request';
 import type Response from '../../Response';
 
 //--------------------------------------------------------------------//
 // Fetch Types
 
-export type FetchPayload = [ Request<FetchRequest>, Response<undefined> ];
-export type FetchMap = Record<string, FetchPayload>;
-export type FetchAction = (
-  req: FetchPayload[0], 
-  res: FetchPayload[1]
+export type FetchArgs<C = unknown> = [ Request<FetchRequest, C>, Response<undefined> ];
+export type FetchAction<C = unknown> = (
+  req: Request<FetchRequest, C>, 
+  res: Response<undefined>
 ) => void | boolean | Promise<void|boolean>;

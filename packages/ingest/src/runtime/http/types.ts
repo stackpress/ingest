@@ -6,9 +6,8 @@ import type Response from '../../Response';
 //--------------------------------------------------------------------//
 // HTTP Types
 
-export type HTTPPayload = [ Request<IM>, Response<SR> ];
-export type HTTPMap = Record<string, HTTPPayload>;
-export type HTTPAction = (
-  req: HTTPPayload[0], 
-  res: HTTPPayload[1]
+export type HTTPArgs<C = unknown> = [ Request<IM, C>, Response<SR> ];
+export type HTTPAction<C = unknown> = (
+  req: Request<IM, C>, 
+  res: Response<SR>
 ) => void | boolean | Promise<void|boolean>;

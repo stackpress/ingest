@@ -16,7 +16,7 @@ import { status } from '@stackpress/types/dist/StatusCode';
 import { WriteSession } from './Session';
 import { isHash } from './helpers';
 
-export default class Response<T = unknown> {
+export default class Response<R = unknown> {
   //head controller
   public readonly headers: Map<string, string|string[]>;
   //session controller
@@ -41,8 +41,8 @@ export default class Response<T = unknown> {
   protected _status = '';
   //total count of possible results
   protected _total = 0;
-  //resource
-  protected _resource?: T;
+  //original response resource
+  protected _resource?: R;
 
   /**
    * Returns the body
@@ -189,7 +189,7 @@ export default class Response<T = unknown> {
   /**
    * Sets the initial values of the payload
    */
-  constructor(init: ResponseInitializer<T> = {}) {
+  constructor(init: ResponseInitializer<R> = {}) {
     this._mimetype = init.mimetype;
     this._body = init.body || null;
     if (init.headers instanceof Map) {
