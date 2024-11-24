@@ -21,30 +21,27 @@ import Queue from './Queue';
 import Router from './Router';
 import { imToURL } from './helpers';
 
-export default class Server<C = unknown> {
+export default class Server {
   //router to handle the requests
-  public readonly router: Router<C>;
+  public readonly router: Router;
   //cookie options
   public readonly cookie: CookieOptions;
   //request size
   public readonly size: number;
-  //any client interface
-  protected _client?: C;
 
   /**
    * Sets up the emitter
    */
-  public constructor(router?: Router<C>, options: ServerOptions<C> = {}) {
-    this.router = router || new Router<C>();
+  public constructor(router?: Router, options: ServerOptions = {}) {
+    this.router = router || new Router();
     this.cookie = Object.freeze(options.cookie || { path: '/' });
     this.size = options.size || 0;
-    this._client = options.client;
   }
 
   /**
    * Handles fetch requests
    */
-  public async handle(actions: Set<HTTPAction<C>>, im: IM, sr: SR) {
+  public async handle(actions: Set<HTTPAction>, im: IM, sr: SR) {
     //initialize the request
     const req = this.request(im);
     const res = this.response(sr);
@@ -64,11 +61,7 @@ export default class Server<C = unknown> {
   /**
    * Handles a payload using events
    */
-  public async process(
-    queue: Queue<C>, 
-    req: Request<IM, C>, 
-    res: Response<SR>
-  ) {
+  public async process(queue: Queue, req: Request<IM>, res: Response<SR>) {
     const status = await queue.run(req, res);
     //if the status was incomplete (309)
     if (status.code === StatusCode.ABORT.code) {
@@ -100,8 +93,8 @@ export default class Server<C = unknown> {
   /**
    * Sets up the queue
    */
-  public queue(actions: Set<HTTPAction<C>>) {
-    const emitter = new Queue<C>();
+  public queue(actions: Set<HTTPAction>) {
+    const emitter = new Queue();
     actions.forEach(action => emitter.add(action));
     return emitter;
   }
@@ -129,17 +122,16 @@ export default class Server<C = unknown> {
     //set query
     const query = objectFromQuery(url.searchParams.toString());
     //make request
-    const req = new Request<IM, C>({
+    const req = new Request<IM>({
       method,
       mimetype,
       headers,
       url,
       query,
       session,
-      resource: im,
-      client: this._client
+      resource: im
     });
-    req.loader = loader<C>(im);
+    req.loader = loader(im);
     return req;
   }
 
@@ -156,8 +148,8 @@ export default class Server<C = unknown> {
 /**
  * Request body loader
  */
-export function loader<C = unknown>(resource: IM, size = 0) {
-  return (req: Request<IM, C>) => {
+export function loader(resource: IM, size = 0) {
+  return (req: Request<IM>) => {
     return new Promise<LoaderResponse|undefined>(resolve => {
       //if the body is cached
       if (req.body !== null) {

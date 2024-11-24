@@ -11,15 +11,15 @@ import type { BuildMap, BuildTask } from './types';
  * A rendition of an event emitter that uses 
  * entry files instead of action callbacks.
  */
-export default class Emitter<C = unknown> {
-  public readonly emitter = new EventEmitter<BuildMap<C>>();
+export default class Emitter {
+  public readonly emitter = new EventEmitter<BuildMap>();
   //A route map to task queues
   public readonly listeners = new Map<string, Set<BuildTask>>();
 
   /**
    * Calls all the callbacks of the given event passing the given arguments
    */
-  public emit(event: string, req: Request<IM, C>, res: Response<SR>) {
+  public emit(event: string, req: Request<IM>, res: Response<SR>) {
     return this.emitter.emit(event, req, res);
   }
 

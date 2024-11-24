@@ -12,14 +12,14 @@ import {
   VariableDeclarationKind 
 } from '@stackpress/ingest/dist/buildtime/helpers';
 
-export default class NetlifyBuilder<C = unknown> extends Builder<C> {
+export default class NetlifyBuilder extends Builder {
   //ts-morph options
   public readonly tsconfig: ProjectOptions;
 
   /**
    * Sets up the builder
    */
-  public constructor(options: BuilderOptions<C> = {}) {
+  public constructor(options: BuilderOptions = {}) {
     options.buildDir = options.buildDir || './.netlify/functions';
     super(options);
     this.tsconfig = {
@@ -65,13 +65,6 @@ export default class NetlifyBuilder<C = unknown> extends Builder<C> {
         defaultImport: `task_${i}`
       });
     });
-    if (this.clientPath) {
-      //import client from [client]
-      source.addImportDeclaration({
-        moduleSpecifier: this.clientPath,
-        defaultImport: 'client'
-      });
-    }
     //export const config = { path: '/user/:id' };
     source.addVariableStatement({
       isExported: true,
@@ -87,10 +80,7 @@ export default class NetlifyBuilder<C = unknown> extends Builder<C> {
       parameters: [{ name: 'request', type: 'Request' }],
       statements: (`
         if (request.method.toUpperCase() !== '${info.method}') return;
-        ${this.clientPath 
-          ? `const server = new Server<typeof client>(undefined, { client, cookie: ${cookie} });`
-          : `const server = new Server<undefined>(undefined, { cookie: ${cookie} });`
-        }
+        const server = new Server<undefined>(undefined, { cookie: ${cookie} });
         const actions = new Set<FetchAction>();
         ${info.actions.map(
           (_, i) => `actions.add(task_${i});`

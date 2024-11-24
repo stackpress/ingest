@@ -19,37 +19,27 @@ import Queue from './Queue';
 import Router from './Router';
 import { NativeResponse } from './helpers';
 
-export default class Server<C = unknown> {
+export default class Server {
   //router to handle the requests
-  public readonly router: Router<C>;
+  public readonly router: Router;
   //cookie options
   public readonly cookie: CookieOptions;
   //request size
   public readonly size: number;
-  //any client interface
-  protected _client?: C;
-
-  /**
-   * Returns the client interface
-   */
-  public get client() {
-    return this._client as C;
-  }
 
   /**
    * Sets up the emitter
    */
-  public constructor(router?: Router<C>, options: ServerOptions<C> = {}) {
-    this.router = router || new Router<C>();
+  public constructor(router?: Router, options: ServerOptions = {}) {
+    this.router = router || new Router();
     this.cookie = Object.freeze(options.cookie || { path: '/' });
     this.size = options.size || 0;
-    this._client = options.client;
   }
 
   /**
    * Handles fetch requests
    */
-  public async handle(actions: Set<FetchAction<C>>, request: FetchRequest) {
+  public async handle(actions: Set<FetchAction>, request: FetchRequest) {
     //initialize the request
     const req = this.request(request);
     const res = this.response();
@@ -73,8 +63,8 @@ export default class Server<C = unknown> {
    * manipulate the payload in different stages
    */
   public async process(
-    queue: Queue<C>, 
-    req: Request<FetchRequest, C>, 
+    queue: Queue, 
+    req: Request<FetchRequest>, 
     res: Response<undefined>
   ) {
     const status = await queue.run(req, res);
@@ -108,8 +98,8 @@ export default class Server<C = unknown> {
   /**
    * Creates an emitter and populates it with actions
    */
-  public queue(actions: Set<FetchAction<C>>) {
-    const queue = new Queue<C>();
+  public queue(actions: Set<FetchAction>) {
+    const queue = new Queue();
     actions.forEach(action => queue.add(action));
     return queue;
   }
@@ -139,17 +129,16 @@ export default class Server<C = unknown> {
     const query = objectFromQuery(url.searchParams.toString());
 
     //setup the payload
-    const req = new Request<FetchRequest, C>({
+    const req = new Request<FetchRequest>({
       method,
       mimetype,
       headers,
       url,
       query,
       session,
-      resource: request,
-      client: this._client
+      resource: request
     });
-    req.loader = loader<C>(request);
+    req.loader = loader(request);
     return req;
   }
 
@@ -164,8 +153,8 @@ export default class Server<C = unknown> {
 /**
  * Request body loader
  */
-export function loader<C = unknown>(resource: FetchRequest) {
-  return (req: Request<FetchRequest, C>) => {
+export function loader(resource: FetchRequest) {
+  return (req: Request<FetchRequest>) => {
     return new Promise<LoaderResponse|undefined>(async resolve => {
       //if the body is cached
       if (req.body !== null) {

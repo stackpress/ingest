@@ -11,7 +11,7 @@ import Manifest from './Manifest';
  * items that transpire based on an action. With events you can add 
  * extra functionality right after the event has triggered.
  */
-export default class Router<C = unknown> extends Emitter<C> {
+export default class Router extends Emitter {
   //map of event names to routes 
   //^${method}\\s${pattern}/*$ -> { method, path }
   public readonly routes = new Map<string, Route>;
@@ -56,7 +56,7 @@ export default class Router<C = unknown> extends Emitter<C> {
    * entry points and its meta data
    */
   public manifest(options: ManifestOptions = {}) {
-    const manifest = new Manifest<C>(this, options);
+    const manifest = new Manifest(this, options);
     this.listeners.forEach((tasks, event) => {
       //{ method, route }
       const uri = this.routes.get(event);

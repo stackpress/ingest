@@ -18,8 +18,8 @@ import type Router from './Router';
 import { esIngestPlugin } from './plugins';
 import { serialize } from './helpers';
 
-export default class Manifest<C = unknown> extends Set<BuildInfo> {
-  public readonly emitter: Router<C>;
+export default class Manifest extends Set<BuildInfo> {
+  public readonly emitter: Router;
   //loader
   public readonly loader: FileLoader;
   //build options
@@ -32,7 +32,7 @@ export default class Manifest<C = unknown> extends Set<BuildInfo> {
   /**
    * Presets and distributes all the options
    */
-  public constructor(emitter: Router<C>, options: ManifestOptions = {}) {
+  public constructor(emitter: Router, options: ManifestOptions = {}) {
     super();
     this.emitter = emitter;
     const { 

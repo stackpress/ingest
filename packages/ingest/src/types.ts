@@ -31,8 +31,8 @@ export type Session = Record<string, string> | Map<string, string>;
 export type Post = Record<string, unknown> | Map<string, any>;
 export type LoaderResponse = { body?: Body, post?: Post };
 
-export type RequestLoader<R = unknown, C = unknown> = (
-  req: Request<R, C>
+export type RequestLoader<R = unknown> = (
+  req: Request<R>
 ) => Promise<LoaderResponse|undefined>;
 export type ResponseDispatcher = (res: Response) => Promise<void>;
 
@@ -48,8 +48,7 @@ export type ResponseInitializer<R = unknown> = {
   resource?: R
 };
 
-export type RequestInitializer<R = unknown, C = unknown> = ResponseInitializer<R> & {
-  client?: C,
+export type RequestInitializer<R = unknown> = ResponseInitializer<R> & {
   data?: Data,
   method?: Method,
   query?: Query,
@@ -89,8 +88,7 @@ export type CookieOptions = {
 //--------------------------------------------------------------------//
 // Server Types
 
-export type ServerOptions<C = unknown> = {
-  client?: C,
+export type ServerOptions = {
   cookie?: CookieOptions,
   size?: number
 };

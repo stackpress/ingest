@@ -3,4 +3,4 @@ import TaskQueue from '@stackpress/types/dist/TaskQueue';
 //local
 import type { FetchArgs } from './types';
 
-export default class Queue<C = unknown> extends TaskQueue<FetchArgs<C>> {}
+export default class Queue extends TaskQueue<FetchArgs> {}

@@ -12,14 +12,14 @@ import {
   createSourceFile
 } from '@stackpress/ingest/dist/buildtime/helpers';
 
-export default class VercelBuilder<C = unknown> extends Builder<C> {
+export default class VercelBuilder extends Builder {
   //ts-morph options
   public readonly tsconfig: ProjectOptions;
 
   /**
    * Sets up the builder
    */
-  public constructor(options: BuilderOptions<C> = {}) {
+  public constructor(options: BuilderOptions = {}) {
     options.buildDir = options.buildDir || './api';
     super(options);
     this.tsconfig = {
@@ -65,13 +65,6 @@ export default class VercelBuilder<C = unknown> extends Builder<C> {
         defaultImport: `task_${i}`
       });
     });
-    if (this.clientPath) {
-      //import client from [client]
-      source.addImportDeclaration({
-        moduleSpecifier: this.clientPath,
-        defaultImport: 'client'
-      });
-    }
     //this is the interface required by vercel functions...
     // /resize/100/50 would be rewritten to /api/sharp?width=100&height=50
     source.addFunction({
@@ -81,10 +74,7 @@ export default class VercelBuilder<C = unknown> extends Builder<C> {
       name: info.method,
       parameters: [{ name: 'request', type: 'Request' }],
       statements: (`
-        ${this.clientPath 
-          ? `const server = new Server<typeof client>(undefined, { client, cookie: ${cookie} });`
-          : `const server = new Server<undefined>(undefined, { cookie: ${cookie} });`
-        }
+        const server = new Server<undefined>(undefined, { cookie: ${cookie} });
         const actions = new Set<FetchAction>();
         ${info.actions.map(
           (_, i) => `actions.add(task_${i});`

@@ -25,31 +25,21 @@ import {
 import Router from './Router';
 import { imToURL } from './helpers';
 
-export default class Server<C = unknown> {
+export default class Server {
   //router to handle the requests
-  public readonly router: Router<C>;
+  public readonly router: Router;
   //cookie options
   public readonly cookie: CookieOptions;
   //request size
   public readonly size: number;
-  //any client interface
-  protected _client?: C;
-
-  /**
-   * Returns the client interface
-   */
-  public get client() {
-    return this._client as C;
-  }
 
   /**
    * Sets up the emitter
    */
-  public constructor(router: Router<C>, options: ServerOptions<C> = {}) {
+  public constructor(router: Router, options: ServerOptions = {}) {
     this.router = router;
     this.cookie = Object.freeze(options.cookie || { path: '/' });
     this.size = options.size || 0;
-    this._client = options.client;
   }
 
   /**
@@ -82,7 +72,7 @@ export default class Server<C = unknown> {
   /**
    * Handles a payload using events
    */
-  public async process(event: string, req: Request<IM, C>, res: Response<SR>) {
+  public async process(event: string, req: Request<IM>, res: Response<SR>) {
     const status = await this.router.emit(event, req, res);
     //if the status was incomplete (309)
     if (status.code === StatusCode.ABORT.code) {
@@ -134,17 +124,16 @@ export default class Server<C = unknown> {
     //set query
     const query = objectFromQuery(url.searchParams.toString());
     //make request
-    const req = new Request<IM, C>({
+    const req = new Request<IM>({
       method,
       mimetype,
       headers,
       url,
       query,
       session,
-      resource: im,
-      client: this.client
+      resource: im
     });
-    req.loader = loader<C>(im, this.size);
+    req.loader = loader(im, this.size);
     return req;
   }
 
@@ -161,8 +150,8 @@ export default class Server<C = unknown> {
 /**
  * Request body loader
  */
-export function loader<C = unknown>(resource: IM, size = 0) {
-  return (req: Request<IM, C>) => {
+export function loader(resource: IM, size = 0) {
+  return (req: Request<IM>) => {
     return new Promise<LoaderResponse|undefined>(resolve => {
       //if the body is cached
       if (req.body !== null) {

@@ -1,15 +1,7 @@
 import path from 'path';
 import vercel from '@stackpress/ingest-vercel';
-import client from './client';
 
-const server = vercel<{ foo: string }>({ 
-  minify: false, 
-  client,
-  clientPath: path.relative(
-    path.resolve(__dirname, '../api'), 
-    path.resolve(__dirname, '../dist/client')
-  ),
-});
+const server = vercel({ minify: false });
 
 server.get('/user', path.resolve(__dirname, 'routes/user/search'));
 server.post('/user', path.resolve(__dirname, 'routes/user/create'));

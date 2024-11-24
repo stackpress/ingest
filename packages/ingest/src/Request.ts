@@ -15,7 +15,7 @@ import {
 import Context from './Context';
 import { ReadSession } from './Session';
 
-export default class Request<R = unknown, C = unknown> {
+export default class Request<R = unknown> {
   //data controller
   public readonly data: Nest;
   //head controller
@@ -30,14 +30,12 @@ export default class Request<R = unknown, C = unknown> {
   public readonly method: Method;
   //payload body
   protected _body: Body|null;
-  //any client interface
-  protected _client?: C;
   //body mimetype
   protected _mimetype: string;
   //whether if the body was loaded
   protected _loaded = false;
   //body loader
-  protected _loader?: RequestLoader<R, C>;
+  protected _loader?: RequestLoader<R>;
   //post controller
   protected _post: ReadonlyNest;
   //original request resource
@@ -48,13 +46,6 @@ export default class Request<R = unknown, C = unknown> {
    */
   public get body() {
     return typeof this._body !== 'undefined' ? this._body : null;
-  }
-
-  /**
-   * Returns the client interface
-   */
-  public get client() {
-    return this._client as C;
   }
 
   /**
@@ -109,17 +100,16 @@ export default class Request<R = unknown, C = unknown> {
   /**
    * Sets Loader
    */
-  public set loader(loader: RequestLoader<R, C>) {
+  public set loader(loader: RequestLoader<R>) {
     this._loader = loader;
   }
 
   /**
    * Sets request defaults
    */
-  public constructor(init: RequestInitializer<R, C> = {}) {
+  public constructor(init: RequestInitializer<R> = {}) {
     this.method = init.method || 'GET';
     this._body = init.body || null;
-    this._client = init.client;
     this._mimetype = init.mimetype || 'text/plain';
     if (init.headers instanceof Map) {
       this.headers = new ReadonlyMap<string, string|string[]>(
@@ -203,7 +193,7 @@ export default class Request<R = unknown, C = unknown> {
    */
   public fromPattern(pattern: string|RegExp) {
     const args = eventParams(pattern.toString(), this.url.pathname);
-    return new Context<R, C>(this, { args });
+    return new Context<R>(this, { args });
   }
 
   /**
@@ -212,7 +202,7 @@ export default class Request<R = unknown, C = unknown> {
    */
   public fromRoute(route: string) {
     const { args, params } = routeParams(route, this.url.pathname);
-    return new Context<R, C>(this, { args, params });
+    return new Context<R>(this, { args, params });
   }
 
   /**

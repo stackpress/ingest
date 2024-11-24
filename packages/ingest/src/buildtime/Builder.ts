@@ -9,35 +9,31 @@ import type { ManifestOptions, BuilderOptions, Transpiler } from './types';
 import Router from './Router';
 import Server from './Server';
 
-export default class Builder<C = unknown> {
+export default class Builder {
   //path to build directory
   public readonly buildPath: string;
-  //path to client
-  public readonly clientPath?: string;
   //path to manifest file
   public readonly manifestPath: string;
   //file loader
   public readonly loader: FileLoader;
   //local server
-  public readonly server: Server<C>;
+  public readonly server: Server;
   //build router
-  public readonly router: Router<C>;
+  public readonly router: Router;
   //builder config
   public readonly config: ManifestOptions;
 
   /**
    * Sets up the builder
    */
-  public constructor(options: BuilderOptions<C> = {}) {
+  public constructor(options: BuilderOptions = {}) {
     const { 
-      router = new Router<C>(),
+      router = new Router(),
       fs = new NodeFS(),
       cwd = process.cwd(),
       buildDir = './build', 
       manifestName = 'manifest.json',
       cookie = { path: '/' },
-      clientPath,
-      client,
       ...config
     } = options;
 
@@ -50,10 +46,9 @@ export default class Builder<C = unknown> {
     });
 
     this.router = router;
-    this.server = new Server<C>(router, { client, cookie });
+    this.server = new Server(router, { cookie });
     this.loader = new FileLoader(fs, cwd);
     this.buildPath = this.loader.absolute(buildDir);
-    this.clientPath = clientPath;
     this.manifestPath = path.resolve(this.buildPath, manifestName);
   }
 

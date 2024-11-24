@@ -6,8 +6,8 @@ import type Response from '../../Response';
 //--------------------------------------------------------------------//
 // Fetch Types
 
-export type FetchArgs<C = unknown> = [ Request<FetchRequest, C>, Response<undefined> ];
-export type FetchAction<C = unknown> = (
-  req: Request<FetchRequest, C>, 
+export type FetchArgs = [ Request<FetchRequest>, Response<undefined> ];
+export type FetchAction = (
+  req: Request<FetchRequest>, 
   res: Response<undefined>
 ) => void | boolean | Promise<void|boolean>;
