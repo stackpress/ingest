@@ -1,13 +1,13 @@
 //common
 import type { IM, SR } from '../../types';
-import type Request from '../../Request';
+import type Context from '../../Context';
 import type Response from '../../Response';
 
 //--------------------------------------------------------------------//
 // HTTP Types
 
-export type HTTPArgs = [ Request<IM>, Response<SR> ];
+export type HTTPArgs = [ Context<IM>, Response<SR> ];
 export type HTTPAction = (
-  req: Request<IM>, 
+  req: Context<IM>, 
   res: Response<SR>
 ) => void | boolean | Promise<void|boolean>;

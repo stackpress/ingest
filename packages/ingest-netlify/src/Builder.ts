@@ -85,7 +85,7 @@ export default class NetlifyBuilder extends Builder {
         ${info.actions.map(
           (_, i) => `actions.add(task_${i});`
         ).join('\n')}
-        return server.handle(actions, request);
+        return server.handle('${info.route}', actions, request);
       `).trim()
     });
     return source;

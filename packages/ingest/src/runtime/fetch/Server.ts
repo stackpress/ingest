@@ -10,6 +10,7 @@ import type {
   LoaderResponse, 
   FetchRequest 
 } from '../../types';
+import type Context from '../../Context';
 import Request from '../../Request';
 import Response from '../../Response';
 import { isHash, formDataToObject, objectFromQuery } from '../../helpers';
@@ -39,15 +40,21 @@ export default class Server {
   /**
    * Handles fetch requests
    */
-  public async handle(actions: Set<FetchAction>, request: FetchRequest) {
+  public async handle(
+    route: string, 
+    actions: Set<FetchAction>, 
+    request: FetchRequest
+  ) {
     //initialize the request
     const req = this.request(request);
     const res = this.response();
     const queue = this.queue(actions);
     //load the body
     await req.load();
+    //get the context from the route
+    const ctx = req.fromRoute(route);
     //then try to emit the event
-    await this.process(queue, req, res);
+    await this.process(queue, ctx, res);
     //We would normally dispatch, but we can only create the
     //fetch response when all the data is ready...
     // if (!res.sent) {
@@ -64,10 +71,10 @@ export default class Server {
    */
   public async process(
     queue: Queue, 
-    req: Request<FetchRequest>, 
+    ctx: Context<FetchRequest>, 
     res: Response<undefined>
   ) {
-    const status = await queue.run(req, res);
+    const status = await queue.run(ctx, res);
     //if the status was incomplete (309)
     if (status.code === StatusCode.ABORT.code) {
       //the callback that set that should have already processed

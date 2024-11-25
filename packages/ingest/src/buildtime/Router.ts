@@ -19,36 +19,36 @@ export default class Router extends Emitter {
   /**
    * Route for any method
    */
-  public all(path: string, action: string, priority?: number) {
-    return this.route('[A-Z]+', path, action, priority);
+  public all(path: string, entry: string, priority?: number) {
+    return this.route('[A-Z]+', path, entry, priority);
   }
 
   /**
    * Route for CONNECT method
    */
-  public connect(path: string, action: string, priority?: number) {
-    return this.route('CONNECT', path, action, priority);
+  public connect(path: string, entry: string, priority?: number) {
+    return this.route('CONNECT', path, entry, priority);
   }
 
   /**
    * Route for DELETE method
    */
-  public delete(path: string, action: string, priority?: number) {
-    return this.route('DELETE', path, action, priority);
+  public delete(path: string, entry: string, priority?: number) {
+    return this.route('DELETE', path, entry, priority);
   }
 
   /**
    * Route for GET method
    */
-  public get(path: string, action: string, priority?: number) {
-    return this.route('GET', path, action, priority);
+  public get(path: string, entry: string, priority?: number) {
+    return this.route('GET', path, entry, priority);
   }
 
   /**
    * Route for HEAD method
    */
-  public head(path: string, action: string, priority?: number) {
-    return this.route('HEAD', path, action, priority);
+  public head(path: string, entry: string, priority?: number) {
+    return this.route('HEAD', path, entry, priority);
   }
 
   /**
@@ -82,29 +82,29 @@ export default class Router extends Emitter {
   /**
    * Route for OPTIONS method
    */
-  public options(path: string, action: string, priority?: number) {
-    return this.route('OPTIONS', path, action, priority);
+  public options(path: string, entry: string, priority?: number) {
+    return this.route('OPTIONS', path, entry, priority);
   }
 
   /**
    * Route for PATCH method
    */
-  public patch(path: string, action: string, priority?: number) {
-    return this.route('PATCH', path, action, priority);
+  public patch(path: string, entry: string, priority?: number) {
+    return this.route('PATCH', path, entry, priority);
   }
 
   /**
    * Route for POST method
    */
-  public post(path: string, action: string, priority?: number) {
-    return this.route('POST', path, action, priority);
+  public post(path: string, entry: string, priority?: number) {
+    return this.route('POST', path, entry, priority);
   }
 
   /**
    * Route for PUT method
    */
-  public put(path: string, action: string, priority?: number) {
-    return this.route('PUT', path, action, priority);
+  public put(path: string, entry: string, priority?: number) {
+    return this.route('PUT', path, entry, priority);
   }
 
   /**
@@ -113,8 +113,8 @@ export default class Router extends Emitter {
   public route(
     method: Method|'[A-Z]+', 
     path: string, 
-    action: string, 
-    priority?: number
+    entry: string, 
+    priority = 0
   ) {
     //convert path to a regex pattern
     const pattern = path
@@ -131,8 +131,24 @@ export default class Router extends Emitter {
       method: method === '[A-Z]+' ? 'ALL' : method,
       path: path
     });
-    //add to tasks
-    this.on(event, action, priority);
+    //if the listener group does not exist, create it
+    if (!this.listeners.has(pattern)) {
+      this.listeners.set(pattern, new Set());
+    }
+    //add the listener to the group
+    this.listeners.get(pattern)?.add({ entry, priority });
+    //add the event to the emitter
+    this.emitter.on(event, async (req, res) => {
+      const imports = await import(entry);
+      const action = imports.default;
+      //delete it from the require cache so it can be processed again
+      delete require.cache[require.resolve(entry)];
+      //get context
+      const context = req.fromRoute(path);
+      //now call the action
+      return await action(context, res);
+    }, priority);
+
     return this;
   }
 

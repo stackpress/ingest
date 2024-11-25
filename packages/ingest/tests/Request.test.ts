@@ -47,7 +47,7 @@ describe('Response Tests', () => {
     expect(request.headers.size).to.equal(1);
     expect(request.session.size).to.equal(1);
 
-    expect(request.data.size).to.equal(1);
+    expect(request.data.size).to.equal(2);
     expect(request.query.size).to.equal(1);
     expect(request.post.size).to.equal(1);
 

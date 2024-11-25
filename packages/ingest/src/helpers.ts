@@ -27,6 +27,9 @@ export function formDataToObject(type: string, body: string) {
  * body application/x-www-form-urlencoded
  */
 export function objectFromQuery(query: string) {
+  if (query.startsWith('?')) {
+    query = query.substring(1);
+  }
   if (query) {
     const nest = new Nest();
     nest.withQuery.set(query);

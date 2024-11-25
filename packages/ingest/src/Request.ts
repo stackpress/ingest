@@ -17,7 +17,7 @@ import { ReadSession } from './Session';
 
 export default class Request<R = unknown> {
   //data controller
-  public readonly data: Nest;
+  public readonly data = new Nest();
   //head controller
   public readonly headers: ReadonlyMap<string, string|string[]>;
   //query controller
@@ -131,14 +131,6 @@ export default class Request<R = unknown> {
       this.url = new URL('http://unknownhost/');
     }
 
-    if (init.data instanceof Map) {
-      this.data = new Nest(Object.fromEntries(init.data));
-    } else if (isHash(init.data)) {
-      this.data = new Nest(init.data);
-    } else {
-      this.data = new Nest();
-    }
-
     if (typeof init.query === 'string') {
       this.query = new ReadonlyNest(objectFromQuery(init.query));
     } else if (init.query instanceof Map) {
@@ -179,6 +171,18 @@ export default class Request<R = unknown> {
       this._post = new ReadonlyNest(init.post);
     } else {
       this._post = new ReadonlyNest();
+    }
+
+    if (this.query.size) {
+      this.data.set(this.query.get());
+    }
+    if (this._post.size) {
+      this.data.set(this._post.get());
+    }
+    if (init.data instanceof Map) {
+      this.data.set(Object.fromEntries(init.data));
+    } else if (isHash(init.data)) {
+      this.data.set(init.data);
     }
 
     if (init.resource) {

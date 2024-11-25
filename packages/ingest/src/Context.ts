@@ -93,5 +93,9 @@ export default class RequestContext<R = unknown> {
     } else {
       this.params = new ReadonlyMap();
     }
+    this.params.forEach((value, key) => {
+      //only add if it doesn't exist
+      !this.data.has(key) && this.data.set(key, value);
+    });
   }
 }

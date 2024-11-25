@@ -1,6 +1,6 @@
-import { Request, Response, Exception } from '@stackpress/ingest';
+import { Context, Response, Exception } from '@stackpress/ingest';
 
-export default function ErrorResponse(req: Request, res: Response) {
+export default function ErrorResponse(req: Context, res: Response) {
   try {
     throw Exception.for('Not implemented');
   } catch (e) {

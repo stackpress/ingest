@@ -11,6 +11,7 @@ import type {
   CookieOptions, 
   LoaderResponse 
 } from '../../types';
+import type Context from '../../Context';
 import Request from '../../Request';
 import Response from '../../Response';
 import Exception from '../../Exception';
@@ -41,15 +42,22 @@ export default class Server {
   /**
    * Handles fetch requests
    */
-  public async handle(actions: Set<HTTPAction>, im: IM, sr: SR) {
+  public async handle(
+    route: string, 
+    actions: Set<HTTPAction>, 
+    im: IM, 
+    sr: SR
+  ) {
     //initialize the request
     const req = this.request(im);
     const res = this.response(sr);
     const queue = this.queue(actions);
     //load the body
     await req.load();
+    //get the context from the route
+    const ctx = req.fromRoute(route);
     //then try to emit the event
-    await this.process(queue, req, res);
+    await this.process(queue, ctx, res);
     //if the response was not sent by now,
     if (!res.sent) {
       //send the response
@@ -61,8 +69,8 @@ export default class Server {
   /**
    * Handles a payload using events
    */
-  public async process(queue: Queue, req: Request<IM>, res: Response<SR>) {
-    const status = await queue.run(req, res);
+  public async process(queue: Queue, ctx: Context<IM>, res: Response<SR>) {
+    const status = await queue.run(ctx, res);
     //if the status was incomplete (309)
     if (status.code === StatusCode.ABORT.code) {
       //the callback that set that should have already processed

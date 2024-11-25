@@ -1,6 +1,6 @@
 {
   "name": "@stackpress/ingest",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "license": "Apache-2.0",
   "description": "An event driven serverless framework",
   "author": "Chris <chris@stackpress.io>",
@@ -27,7 +27,7 @@
     "test": "nyc ts-mocha tests/*.test.ts"
   },
   "dependencies": {
-    "@stackpress/types": "0.2.6",
+    "@stackpress/types": "0.2.7",
     "cookie": "1.0.2",
     "esbuild": "0.24.0",
     "ts-morph": "24.0.0"

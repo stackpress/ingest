@@ -1,9 +1,8 @@
-import { Request, Response } from '@stackpress/ingest';
+import { Context, Response } from '@stackpress/ingest';
 
-export default function UserDetail(req: Request, res: Response) {
+export default function UserDetail(req: Context, res: Response) {
   //get params
-  const ctx = req.fromRoute('/user/:id');
-  const id = parseInt(ctx.params.get('id') || '');
+  const id = parseInt(req.data.get('id') || '');
   if (!id) {
     return res.setError('ID is required');
   }
