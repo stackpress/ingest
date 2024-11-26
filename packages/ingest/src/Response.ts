@@ -1,28 +1,32 @@
 import type { 
   Status, 
   Trace, 
-  NestedObject
+  NestedObject,
+  CallableMap, 
+  CallableNest
 } from '@stackpress/types/dist/types';
 import type { 
   Body, 
+  CallableSession,
   ResponseDispatcher,
   ResponseInitializer,
   ResponseErrorOptions
 } from './types';
 
-import Nest from '@stackpress/types/dist/Nest';
+import { nest } from '@stackpress/types/dist/Nest';
+import { map } from '@stackpress/types/dist/helpers';
 import { status } from '@stackpress/types/dist/StatusCode';
 
-import { WriteSession } from './Session';
+import { session } from './Session';
 import { isHash } from './helpers';
 
 export default class Response<R = unknown> {
   //head controller
-  public readonly headers: Map<string, string|string[]>;
+  public readonly headers: CallableMap<string, string|string[]>;
   //session controller
-  public readonly session = new WriteSession();
+  public readonly session: CallableSession;
   //error controller
-  public readonly errors = new Nest<NestedObject<string|string[]>>();
+  public readonly errors: CallableNest<NestedObject<string|string[]>>;
   //payload body
   protected _body: Body|null;
   //response status code
@@ -192,17 +196,15 @@ export default class Response<R = unknown> {
   constructor(init: ResponseInitializer<R> = {}) {
     this._mimetype = init.mimetype;
     this._body = init.body || null;
-    if (init.headers instanceof Map) {
-      this.headers = new Map<string, string|string[]>(
-        Array.from(init.headers.entries())
-      );
-    } else if (isHash(init.headers)) {
-      this.headers = new Map<string, string|string[]>(
-        Object.entries(init.headers as Record<string, string|string[]>)
-      );
-    } else {
-      this.headers = new Map<string, string|string[]>();
-    }
+    this.errors = nest();
+    this.session = session();
+    this.headers = map<string, string | string[]>(
+      init.headers instanceof Map
+        ? Array.from(init.headers.entries())
+        : isHash(init.headers)
+        ? Object.entries(init.headers as Record<string, string|string[]>)
+        : undefined
+    );
 
     if (init.resource) {
       this._resource = init.resource;

@@ -5,6 +5,7 @@ import type { Method, NestedObject, Trace } from '@stackpress/types/dist/types';
 //local
 import type Request from './Request';
 import type Response from './Response';
+import type { WriteSession } from './Session';
 
 //--------------------------------------------------------------------//
 // HTTP Types
@@ -30,6 +31,10 @@ export type Query = string | Map<string, any> | NestedObject;
 export type Session = Record<string, string> | Map<string, string>;
 export type Post = Record<string, unknown> | Map<string, any>;
 export type LoaderResponse = { body?: Body, post?: Post };
+
+export type CallableSession = (
+  (name: string) => string|string[]|undefined
+) & WriteSession;
 
 export type RequestLoader<R = unknown> = (
   req: Request<R>

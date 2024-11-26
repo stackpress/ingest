@@ -1,4 +1,4 @@
-import type { Revision } from './types';
+import type { Revision, CallableSession } from './types';
 
 import ReadonlyMap from '@stackpress/types/dist/readonly/Map';
 
@@ -46,4 +46,32 @@ export class WriteSession extends ReadSession {
     this.revisions.set(name, { action: 'set', value });
     return this._map.set(name, value);
   }
+}
+
+/**
+ * Callable Session
+ */
+export function session(data?: [string, string|string[]][]): CallableSession {
+  const store = new WriteSession(data);
+  const callable = Object.assign(
+    (name: string) => store.get(name),
+    {
+      clear: () => store.clear(),
+      delete: (name: string) => store.delete(name),
+      entries: () => store.entries(),
+      forEach: (
+        callback: (value: string|string[], key: string, map: Map<string, string|string[]>) => void
+      ) => store.forEach(callback),
+      get: (name: string) => store.get(name),
+      has: (name: string) => store.has(name),
+      keys: () => store.keys(),
+      set: (name: string, value: string|string[]) => store.set(name, value),
+      values: () => store.values()
+    } as WriteSession
+  );
+  //magic size/data property
+  Object.defineProperty(callable, 'size', { get: () => store.size });
+  Object.defineProperty(callable, 'data', { get: () => store.data });
+  Object.defineProperty(callable, 'revisions', { get: () => store.revisions });
+  return callable;
 }

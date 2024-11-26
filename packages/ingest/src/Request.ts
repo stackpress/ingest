@@ -1,29 +1,36 @@
+import type { CallableMap, CallableNest } from '@stackpress/types/dist/types';
 import type { Method } from '@stackpress/types/dist/types';
-import type { Body, RequestLoader, RequestInitializer } from './types';
+import type { 
+  Body,
+  CallableSession,
+  RequestLoader, 
+  RequestInitializer 
+} from './types';
 
 import cookie from 'cookie';
-import Nest from '@stackpress/types/dist/Nest';
-import ReadonlyMap from '@stackpress/types/dist/readonly/Map';
-import ReadonlyNest from '@stackpress/types/dist/readonly/Nest';
+import { nest } from '@stackpress/types/dist/Nest';
+import { map } from '@stackpress/types/dist/helpers';
 
 import { 
   isHash, 
   objectFromQuery, 
   eventParams, 
-  routeParams 
+  routeParams
 } from './helpers';
 import Context from './Context';
-import { ReadSession } from './Session';
+import { session } from './Session';
 
 export default class Request<R = unknown> {
   //data controller
-  public readonly data = new Nest();
+  public readonly data: CallableNest;
   //head controller
-  public readonly headers: ReadonlyMap<string, string|string[]>;
+  public readonly headers: CallableMap<string, string|string[]>;
   //query controller
-  public readonly query: ReadonlyNest;
+  public readonly query: CallableNest;
+  //post controller
+  public readonly post: CallableNest;
   //session controller
-  public readonly session = new ReadSession();
+  public readonly session: CallableSession;
   //url controller
   public readonly url = new URL('http://unknownhost/');
   //request method
@@ -36,8 +43,6 @@ export default class Request<R = unknown> {
   protected _loaded = false;
   //body loader
   protected _loader?: RequestLoader<R>;
-  //post controller
-  protected _post: ReadonlyNest;
   //original request resource
   protected _resource?: R;
 
@@ -60,13 +65,6 @@ export default class Request<R = unknown> {
    */
   public get mimetype() {
     return this._mimetype;
-  }
-
-  /**
-   * Returns the post
-   */
-  public get post() {
-    return this._post;
   }
 
   /**
@@ -108,76 +106,58 @@ export default class Request<R = unknown> {
    * Sets request defaults
    */
   public constructor(init: RequestInitializer<R> = {}) {
-    this.method = init.method || 'GET';
-    this._body = init.body || null;
-    this._mimetype = init.mimetype || 'text/plain';
-    if (init.headers instanceof Map) {
-      this.headers = new ReadonlyMap<string, string|string[]>(
-        Array.from(init.headers.entries())
-      );
-    } else if (isHash(init.headers)) {
-      this.headers = new ReadonlyMap<string, string|string[]>(
-        Object.entries(init.headers as Record<string, string|string[]>)
-      );
-    } else {
-      this.headers = new ReadonlyMap<string, string|string[]>();
-    }
-
-    if (init.url instanceof URL) {
-      this.url = init.url;
-    } else if (typeof init.url === 'string') {
-      this.url = new URL(init.url);
-    } else {
-      this.url = new URL('http://unknownhost/');
-    }
-
-    if (typeof init.query === 'string') {
-      this.query = new ReadonlyNest(objectFromQuery(init.query));
-    } else if (init.query instanceof Map) {
-      this.query = new ReadonlyNest(Object.fromEntries(init.query));
-    } else if (isHash(init.query)) {
-      this.query = new ReadonlyNest(init.query);
-    } else if (this.url.search) {
-      this.query = new ReadonlyNest(objectFromQuery(this.url.search));
-    } else {
-      this.query = new ReadonlyNest(
-        Object.fromEntries(this.url.searchParams.entries())
-      );
-    }
-
-    if (init.session instanceof Map) {
-      this.session = new ReadSession(
-        Array.from(init.session.entries())
-      );
-    } else if (isHash(init.session)) {
-      this.session = new ReadSession(
-        Object.entries(init.session as Record<string, string|string[]>)
-      );
-    } else if (this.headers.has('cookie')) {
-      this.session = new ReadSession(
-        Object.entries(
+    this.data = nest();
+    this.url = init.url instanceof URL ? init.url
+      : typeof init.url === 'string' ? new URL(init.url)
+      : new URL('http://unknownhost/');
+    this.headers = map(
+      init.headers instanceof Map
+        ? Array.from(init.headers.entries())
+        : isHash(init.headers)
+        ? Object.entries(init.headers as Record<string, string|string[]>)
+        : undefined
+    );
+    this.session = session(
+      init.session instanceof Map
+        ? Array.from(init.session.entries())
+        : isHash(init.session)
+        ? Object.entries(init.session as Record<string, string|string[]>)
+        : this.headers.has('cookie')
+        ? Object.entries(
           cookie.parse(this.headers.get('cookie') as string)
         ).filter(
           ([ key, value ]) => typeof value !== 'undefined'
         ) as [string, string][]
-      );
-    } else {
-      this.session = new ReadSession();
-    }
+        : undefined
+    );
+    this.query = nest(
+      typeof init.query === 'string'
+        ? objectFromQuery(init.query)
+        : init.query instanceof Map
+        ? Object.fromEntries(init.query)
+        : isHash(init.query)
+        ? init.query
+        : this.url.search
+        ? objectFromQuery(this.url.search)
+        : Object.fromEntries(this.url.searchParams.entries())
+    );
+    this.post = nest(
+      init.post instanceof Map
+        ? Object.fromEntries(init.post)
+        : isHash(init.post)
+        ? init.post
+        : undefined
+    );
 
-    if (init.post instanceof Map) {
-      this._post = new ReadonlyNest(Object.fromEntries(init.post));
-    } else if (isHash(init.post)) {
-      this._post = new ReadonlyNest(init.post);
-    } else {
-      this._post = new ReadonlyNest();
-    }
-
+    this.method = init.method || 'GET';
+    this._body = init.body || null;
+    this._mimetype = init.mimetype || 'text/plain';
+    
     if (this.query.size) {
       this.data.set(this.query.get());
     }
-    if (this._post.size) {
-      this.data.set(this._post.get());
+    if (this.post.size) {
+      this.data.set(this.post.get());
     }
     if (init.data instanceof Map) {
       this.data.set(Object.fromEntries(init.data));
@@ -225,11 +205,12 @@ export default class Request<R = unknown> {
           this._body = data.body;
         }
         if (data.post instanceof Map) {
-          this._post = new ReadonlyNest(
-            Object.fromEntries(Object.entries(data.post))
-          );
+          const post = Object.fromEntries(Object.entries(data.post));
+          this.post.set(post);
+          this.data.set(post);
         } else if (isHash(data.post)) {
-          this._post = new ReadonlyNest(data.post);
+          this.post.set(data.post);
+          this.data.set(data.post);
         }
       }
     }

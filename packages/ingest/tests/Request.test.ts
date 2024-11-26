@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { expect } from 'chai';
 import Request from '../src/Request';
 
-describe('Response Tests', () => {
+describe('Request Tests', () => {
   it('Should be empty', () => {
     const request = new Request();
     expect(request.loaded).to.be.false;
@@ -52,5 +52,12 @@ describe('Response Tests', () => {
     expect(request.post.size).to.equal(1);
 
     expect(request.resource).to.be.undefined;
+
+    expect(request.data('foo')).to.equal('bar');
+    expect(request.data.get('foo')).to.equal('bar');
+    expect(request.query('bar')).to.equal('zoo');
+    expect(request.query.get('bar')).to.equal('zoo');
+    expect(request.post('foo')).to.equal('bar');
+    expect(request.post.get('foo')).to.equal('bar');
   });
 });

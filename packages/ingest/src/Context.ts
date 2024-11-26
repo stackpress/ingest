@@ -1,32 +1,33 @@
-import type { Method } from '@stackpress/types/dist/types';
-import type { ContextInitializer } from './types';
+import type { 
+  Method, 
+  CallableMap, 
+  CallableNest,
+  CallableSet
+} from '@stackpress/types/dist/types';
+import type { ContextInitializer, CallableSession } from './types';
 import type Request from './Request';
 
-import Nest from '@stackpress/types/dist/Nest';
-import ReadonlyMap from '@stackpress/types/dist/readonly/Map';
-import ReadonlySet from '@stackpress/types/dist/readonly/Set';
-import ReadonlyNest from '@stackpress/types/dist/readonly/Nest';
-import { ReadSession } from './Session';
+import { map, set } from '@stackpress/types/dist/helpers';
 import { isHash } from './helpers';
 
 export default class RequestContext<R = unknown> {
   //request
   public readonly request: Request<R>;
   //context args
-  public readonly args: ReadonlySet<string>;
+  public readonly args: CallableSet<string>;
   //context params
-  public readonly params: ReadonlyMap<string, string>;
+  public readonly params: CallableMap<string, string>;
   //These link to request properties
   //query controller
-  public readonly data: Nest;
+  public readonly data: CallableNest;
   //request method
   public readonly method: Method;
   //head controller
-  public readonly headers: ReadonlyMap<string, string|string[]>;
+  public readonly headers: CallableMap<string, string|string[]>;
   //query controller
-  public readonly query: ReadonlyNest;
+  public readonly query: CallableNest;
   //session controller
-  public readonly session = new ReadSession();
+  public readonly session: CallableSession;
   //url controller
   public readonly url = new URL('http://unknownhost/');
 
@@ -71,6 +72,7 @@ export default class RequestContext<R = unknown> {
    */
   constructor(request: Request<R>, init: ContextInitializer = {}) {
     this.request = request;
+    //pass by reference
     this.method = request.method;
     this.data = request.data;
     this.headers = request.headers;
@@ -78,21 +80,21 @@ export default class RequestContext<R = unknown> {
     this.session = request.session;
     this.url = request.url;
 
-    if (init.args instanceof Set) {
-      this.args = new ReadonlySet(Array.from(init.args.values()));
-    } else if (Array.isArray(init.args)) {
-      this.args = new ReadonlySet(init.args);
-    } else {
-      this.args = new ReadonlySet();
-    }
-    if (init.params instanceof Map) {
-      this.params = new ReadonlyMap(Array.from(init.params.entries()));
-    } else if (isHash(init.params)) {
-      const params = init.params as Record<string, string>;
-      this.params = new ReadonlyMap(Object.entries(params));
-    } else {
-      this.params = new ReadonlyMap();
-    }
+    this.args = set(
+      init.args instanceof Set
+        ? Array.from(init.args.values())
+        : Array.isArray(init.args)
+        ? init.args
+        : undefined
+    );
+    this.params = map<string, string>(
+      init.params instanceof Map
+        ? Array.from(init.params.entries())
+        : isHash(init.params)
+        ? Object.entries(init.params as Record<string, string>)
+        : undefined
+    );
+    
     this.params.forEach((value, key) => {
       //only add if it doesn't exist
       !this.data.has(key) && this.data.set(key, value);

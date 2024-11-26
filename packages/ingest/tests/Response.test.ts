@@ -49,6 +49,8 @@ describe('Response Tests', () => {
     expect(response.error).to.equal('Something bad happened');
     expect(response.stack[0].method).to.equal('GET');
     expect(response.errors.size).to.equal(1);
+    expect(response.errors('foo')).to.equal('bar');
+    expect(response.errors.get('foo')).to.equal('bar');
   });
 
   it('Should setup basic error', () => {
