@@ -7,7 +7,7 @@ import type {
   RequestInitializer 
 } from './types';
 
-import cookie from 'cookie';
+import * as cookie from 'cookie';
 import { nest } from '@stackpress/types/dist/Nest';
 import { map } from '@stackpress/types/dist/helpers';
 
