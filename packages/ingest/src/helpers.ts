@@ -1,3 +1,5 @@
+//modules
+import { Readable } from 'stream';
 //stackpress
 import Nest from '@stackpress/types/dist/Nest';
 
@@ -176,3 +178,32 @@ export function withUnknownHost(url: string) {
 
   return `http://unknownhost${url}`;
 };
+
+/**
+ * Converts the WebAPI ReadableStream to NodeJS Readable
+ */
+export function readableStreamToReadable(stream: ReadableStream) {
+  const reader = stream.getReader();
+  return new Readable({
+    async read(size) {
+      const { done, value } = await reader.read();
+      if (done) {
+        this.push(null);
+        return;
+      }
+      this.push(value);
+    }
+  });
+}
+
+/**
+ * Converts the NodeJS Readable to a WebAPI ReadableStream
+ */
+export function readableToReadableStream(stream: Readable) {
+  return new ReadableStream({
+    start(controller) {
+      stream.on('data', chunk => controller.enqueue(chunk));
+      stream.on('end', () => controller.close());
+    }
+  });
+}
