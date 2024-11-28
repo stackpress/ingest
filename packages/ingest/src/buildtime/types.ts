@@ -1,22 +1,21 @@
 //modules
 import type { SourceFile, ProjectOptions } from 'ts-morph';
 //stackpress
-import type { Method } from '@stackpress/types/dist/types';
+import type { Method, UnknownNest } from '@stackpress/types/dist/types';
 import type FileSystem from '@stackpress/types/dist/filesystem/FileSystem';
 //common
-import type { IM, SR, CookieOptions } from '../types';
+import type { CookieOptions, PluginLoaderOptions } from '../types';
 import type Request from '../Request';
 import type Response from '../Response';
 //local
 import type Router from './Router';
 
-export type { SourceFile, ProjectOptions };
+export type { SourceFile, ProjectOptions, UnknownNest };
 
 //--------------------------------------------------------------------//
 // Build Types
 
-export type BuildArgs = [ Request<IM>, Response<SR> ];
-export type BuildMap = Record<string, BuildArgs>;
+export type BuildMap = Record<string, [ Request, Response ]>;
 export type BuildTask = { entry: string, priority: number };
 
 export type BuildType = 'function' | 'endpoint';
@@ -39,8 +38,6 @@ export type BuildResult = {
   pattern?: RegExp;
   entry: string
 };
-
-export type BuildManifest = Set<BuildInfo>;
 
 export type TranspileInfo = {
   type: BuildType,
@@ -74,8 +71,11 @@ export type ManifestOptions = ESBuildOptions & {
   manifestName?: string
 };
 
-export type BuilderOptions = ManifestOptions & {
-  cookie?: CookieOptions,
+//--------------------------------------------------------------------//
+// Factory Types
+
+export type FactoryOptions = PluginLoaderOptions & {
   router?: Router,
+  cookie?: CookieOptions,
   tsconfig?: string
-};
+}

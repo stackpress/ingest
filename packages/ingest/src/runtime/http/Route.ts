@@ -1,4 +1,5 @@
 //modules
+import { Readable } from 'stream';
 import * as cookie from 'cookie';
 //stackpress
 import type { Method } from '@stackpress/types/dist/types';
@@ -7,7 +8,7 @@ import StatusCode from '@stackpress/types/dist/StatusCode';
 import type { 
   IM, 
   SR, 
-  ServerOptions,
+  RouteOptions,
   CookieOptions, 
   LoaderResponse 
 } from '../../types';
@@ -15,16 +16,19 @@ import type Context from '../../Context';
 import Request from '../../Request';
 import Response from '../../Response';
 import Exception from '../../Exception';
-import { isHash, formDataToObject, objectFromQuery } from '../../helpers';
+import { 
+  isHash, 
+  formDataToObject, 
+  objectFromQuery,
+  readableStreamToReadable
+} from '../../helpers';
+//runtime
+import type { Action } from '../types';
+import Queue from '../Queue';
 //local
-import type { HTTPAction } from './types';
-import Queue from './Queue';
-import Router from './Router';
 import { imToURL } from './helpers';
 
-export default class Server {
-  //router to handle the requests
-  public readonly router: Router;
+export default class Route {
   //cookie options
   public readonly cookie: CookieOptions;
   //request size
@@ -33,8 +37,7 @@ export default class Server {
   /**
    * Sets up the emitter
    */
-  public constructor(router?: Router, options: ServerOptions = {}) {
-    this.router = router || new Router();
+  public constructor(options: RouteOptions = {}) {
     this.cookie = Object.freeze(options.cookie || { path: '/' });
     this.size = options.size || 0;
   }
@@ -44,7 +47,7 @@ export default class Server {
    */
   public async handle(
     route: string, 
-    actions: Set<HTTPAction>, 
+    actions: Set<Action>, 
     im: IM, 
     sr: SR
   ) {
@@ -69,7 +72,7 @@ export default class Server {
   /**
    * Handles a payload using events
    */
-  public async process(queue: Queue, ctx: Context<IM>, res: Response<SR>) {
+  public async process(queue: Queue, ctx: Context, res: Response) {
     const status = await queue.run(ctx, res);
     //if the status was incomplete (309)
     if (status.code === StatusCode.ABORT.code) {
@@ -101,7 +104,7 @@ export default class Server {
   /**
    * Sets up the queue
    */
-  public queue(actions: Set<HTTPAction>) {
+  public queue(actions: Set<Action>) {
     const emitter = new Queue();
     actions.forEach(action => emitter.add(action));
     return emitter;
@@ -130,7 +133,7 @@ export default class Server {
     //set query
     const query = objectFromQuery(url.searchParams.toString());
     //make request
-    const req = new Request<IM>({
+    const req = new Request({
       method,
       mimetype,
       headers,
@@ -147,7 +150,7 @@ export default class Server {
    * Sets up the response
    */
   public response(sr: SR) {
-    const res = new Response<SR>({ resource: sr });
+    const res = new Response({ resource: sr });
     res.dispatcher = dispatcher(sr, this.cookie);
     return res;
   }
@@ -157,7 +160,7 @@ export default class Server {
  * Request body loader
  */
 export function loader(resource: IM, size = 0) {
-  return (req: Request<IM>) => {
+  return (req: Request) => {
     return new Promise<LoaderResponse|undefined>(resolve => {
       //if the body is cached
       if (req.body !== null) {
@@ -227,6 +230,13 @@ export function dispatcher(
         || res.body instanceof Uint8Array
       ) {
         resource.end(res.body);
+      //if it's a node stream
+      } else if (res.body instanceof Readable) {
+        res.body.pipe(resource);
+      //if it's a web stream
+      } else if (res.body instanceof ReadableStream) {
+        //convert to node stream
+        readableStreamToReadable(res.body).pipe(resource);
       //if body is an object or array
       } else if (isHash(res.body) || Array.isArray(res.body)) {
         resource.setHeader('Content-Type', 'application/json');

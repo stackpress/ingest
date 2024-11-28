@@ -1,28 +1,32 @@
 //modules
-import type { Method } from '@stackpress/types/dist/types';
+import { Readable } from 'stream';
 import * as cookie from 'cookie';
+import type { Method } from '@stackpress/types/dist/types';
 import StatusCode from '@stackpress/types/dist/StatusCode';
 //common
 import type { 
   Body, 
-  ServerOptions,
+  RouteOptions,
   CookieOptions, 
   LoaderResponse, 
   FetchRequest 
 } from '../../types';
 import type Context from '../../Context';
+import type { Action } from '../types';
 import Request from '../../Request';
 import Response from '../../Response';
-import { isHash, formDataToObject, objectFromQuery } from '../../helpers';
+import { 
+  isHash, 
+  formDataToObject, 
+  objectFromQuery,
+  readableToReadableStream
+} from '../../helpers';
+//runtime
+import Queue from '../Queue';
 //local
-import type { FetchAction } from './types';
-import Queue from './Queue';
-import Router from './Router';
 import { NativeResponse } from './helpers';
 
-export default class Server {
-  //router to handle the requests
-  public readonly router: Router;
+export default class Route {
   //cookie options
   public readonly cookie: CookieOptions;
   //request size
@@ -31,8 +35,7 @@ export default class Server {
   /**
    * Sets up the emitter
    */
-  public constructor(router?: Router, options: ServerOptions = {}) {
-    this.router = router || new Router();
+  public constructor(options: RouteOptions = {}) {
     this.cookie = Object.freeze(options.cookie || { path: '/' });
     this.size = options.size || 0;
   }
@@ -42,7 +45,7 @@ export default class Server {
    */
   public async handle(
     route: string, 
-    actions: Set<FetchAction>, 
+    actions: Set<Action>, 
     request: FetchRequest
   ) {
     //initialize the request
@@ -69,11 +72,7 @@ export default class Server {
    * Emit a series of events in order to catch and 
    * manipulate the payload in different stages
    */
-  public async process(
-    queue: Queue, 
-    ctx: Context<FetchRequest>, 
-    res: Response<undefined>
-  ) {
+  public async process(queue: Queue, ctx: Context, res: Response) {
     const status = await queue.run(ctx, res);
     //if the status was incomplete (309)
     if (status.code === StatusCode.ABORT.code) {
@@ -105,7 +104,7 @@ export default class Server {
   /**
    * Creates an emitter and populates it with actions
    */
-  public queue(actions: Set<FetchAction>) {
+  public queue(actions: Set<Action>) {
     const queue = new Queue();
     actions.forEach(action => queue.add(action));
     return queue;
@@ -136,7 +135,7 @@ export default class Server {
     const query = objectFromQuery(url.searchParams.toString());
 
     //setup the payload
-    const req = new Request<FetchRequest>({
+    const req = new Request({
       method,
       mimetype,
       headers,
@@ -153,7 +152,7 @@ export default class Server {
    * Sets up the response
    */
   public response() {
-    return new Response<undefined>();;
+    return new Response();
   }
 }
 
@@ -161,7 +160,7 @@ export default class Server {
  * Request body loader
  */
 export function loader(resource: FetchRequest) {
-  return (req: Request<FetchRequest>) => {
+  return (req: Request) => {
     return new Promise<LoaderResponse|undefined>(async resolve => {
       //if the body is cached
       if (req.body !== null) {
@@ -183,14 +182,24 @@ export async function response(
   res: Response, 
   options: CookieOptions = { path: '/' }
 ) {
+  //fetch type responses dont start with a resource
+  //so if it magically has a resource, then it must 
+  //have been set in a route. So we can just return it.
+  if (res.resource instanceof NativeResponse) {
+    return res.resource;
+  }
   let mimetype = res.mimetype;
   let body: Body|null = null;
   //if body is a valid response
   if (typeof res.body === 'string' 
     || Buffer.isBuffer(res.body) 
     || res.body instanceof Uint8Array
+    || res.body instanceof ReadableStream
   ) {
     body = res.body;
+  //if it's a node stream
+  } else if (res.body instanceof Readable) {
+    body = readableToReadableStream(res.body);
   //if body is an object or array
   } else if (isHash(res.body) || Array.isArray(res.body)) {
     res.mimetype = 'application/json';

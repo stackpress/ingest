@@ -1,29 +1,33 @@
 import type {
-  BuilderOptions, 
+  ManifestOptions,
   ProjectOptions,
+  FactoryOptions,
   TranspileInfo, 
-  Transpiler 
+  Transpiler,
+  UnknownNest
 } from '@stackpress/ingest/dist/buildtime/types';
 
-import path from 'path';
-import Builder from '@stackpress/ingest/dist/buildtime/Builder';
+import Factory from '@stackpress/ingest/dist/buildtime/Factory';
 import { 
   IndentationText,
-  createSourceFile
+  createSourceFile, 
+  VariableDeclarationKind 
 } from '@stackpress/ingest/dist/buildtime/helpers';
 
-export default class VercelBuilder extends Builder {
+export default class NetlifyFactory<
+  C extends UnknownNest = UnknownNest
+> extends Factory<C> {
   //ts-morph options
   public readonly tsconfig: ProjectOptions;
 
   /**
    * Sets up the builder
    */
-  public constructor(options: BuilderOptions = {}) {
-    options.buildDir = options.buildDir || './api';
-    super(options);
+  public constructor(options: FactoryOptions = {}) {
+    const { tsconfig = '../tsconfig.json', ...config } = options;
+    super(config);
     this.tsconfig = {
-      tsConfigFilePath: options.tsconfig,
+      tsConfigFilePath: tsconfig,
       skipAddingFilesFromTsConfig: true,
       compilerOptions: {
         // Generates corresponding '.d.ts' file.
@@ -53,10 +57,10 @@ export default class VercelBuilder extends Builder {
       moduleSpecifier: '@stackpress/ingest/dist/runtime/fetch/types',
       namedImports: [ 'FetchAction' ]
     });
-    //import Server from '@stackpress/ingest/dist/runtime/fetch/Server';
+    //import Route from '@stackpress/ingest/dist/runtime/fetch/Route';
     source.addImportDeclaration({
-      moduleSpecifier: '@stackpress/ingest/dist/runtime/fetch/Server',
-      defaultImport: 'Server'
+      moduleSpecifier: '@stackpress/ingest/dist/runtime/fetch/Route',
+      defaultImport: 'Route'
     });
     //import task1 from [entry]
     info.actions.forEach((entry, i) => {
@@ -65,21 +69,27 @@ export default class VercelBuilder extends Builder {
         defaultImport: `task_${i}`
       });
     });
-    //this is the interface required by vercel functions...
-    // /resize/100/50 would be rewritten to /api/sharp?width=100&height=50
+    //export const config = { path: '/user/:id' };
+    source.addVariableStatement({
+      isExported: true,
+      declarationKind: VariableDeclarationKind.Const,
+      declarations: [{
+        name: 'config',
+        initializer: `{ path: '${info.route}' }`
+      }]
+    });
     source.addFunction({
-      isDefaultExport: info.method === 'ALL',
-      isExported: info.method !== 'ALL',
-      //isAsync: true,
+      isDefaultExport: true,
       name: info.method,
       parameters: [{ name: 'request', type: 'Request' }],
       statements: (`
-        const server = new Server<undefined>(undefined, { cookie: ${cookie} });
+        if (request.method.toUpperCase() !== '${info.method}') return;
+        const route = new Route({ cookie: ${cookie} });
         const actions = new Set<FetchAction>();
         ${info.actions.map(
           (_, i) => `actions.add(task_${i});`
         ).join('\n')}
-        return server.handle('${info.route}', actions, request);
+        return route.handle('${info.route}', actions, request);
       `).trim()
     });
     return source;
@@ -88,31 +98,11 @@ export default class VercelBuilder extends Builder {
   /**
    * Builds the final entry files
    */
-  public async build() {
+  public async build(options: ManifestOptions = {}) {
+    options.buildDir = options.buildDir || './.netlify/functions';
     const transpiler: Transpiler = entries => {
       return this.transpile(entries);
     }
-    const results = await super.build(transpiler);
-    //write the manifest to disk
-    const json = {
-      version: 2,
-      rewrites: Array
-        .from(results.build)
-        .filter(result => result.type === 'endpoint')
-        .map(result => ({ 
-          source: result.route
-            //replace the stars
-            //* -> ([^/]+)
-            .replaceAll('*', '([^/]+)')
-            //** -> ([^/]+)([^/]+) -> (.*)
-            .replaceAll('([^/]+)([^/]+)', '(.*)'),
-          destination: `/api/${result.id}`
-        }))
-    };
-    this.loader.fs.writeFileSync(
-      path.join(this.loader.cwd, 'vercel.json'), 
-      JSON.stringify(json, null, 2)
-    );
-    return results;
+    return await this._build(transpiler, options);
   }
 }

@@ -10,6 +10,7 @@
     "build:vercel": "yarn --cwd packages/ingest-vercel build",
     "build:netlify": "yarn --cwd packages/ingest-netlify build",
     "vercel:build": "yarn --cwd examples/with-vercel generate",
+    "vercel:build:ts": "yarn --cwd examples/with-vercel build:tsc",
     "vercel:dev": "yarn --cwd examples/with-vercel dev",
     "netlify:build": "yarn --cwd examples/with-netlify generate",
     "netlify:dev": "yarn --cwd examples/with-netlify dev",

@@ -1,7 +1,6 @@
 //stackpress
 import EventEmitter from '@stackpress/types/dist/EventEmitter';
 //common
-import type { IM, SR } from '../types';
 import type Request from '../Request';
 import type Response from '../Response';
 //local
@@ -19,7 +18,7 @@ export default class Emitter {
   /**
    * Calls all the callbacks of the given event passing the given arguments
    */
-  public emit(event: string, req: Request<IM>, res: Response<SR>) {
+  public emit(event: string, req: Request, res: Response) {
     return this.emitter.emit(event, req, res);
   }
 

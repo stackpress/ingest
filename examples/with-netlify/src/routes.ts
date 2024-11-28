@@ -1,7 +1,7 @@
 import path from 'path';
 import netlify from '@stackpress/ingest-netlify';
 
-const server = netlify({ minify: false });
+const server = netlify();
 
 server.get('/user', path.resolve(__dirname, 'routes/user/search'));
 server.post('/user', path.resolve(__dirname, 'routes/user/create'));

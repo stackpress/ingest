@@ -1,12 +1,17 @@
 //stackpress
-import type { BuilderOptions } from '@stackpress/ingest/dist/buildtime/types';
+import type { 
+  FactoryOptions, 
+  UnknownNest 
+} from '@stackpress/ingest/dist/buildtime/types';
 //vercel
-import VercelBuilder from './Builder';
+import VercelFactory from './Factory';
 
 export * from '@stackpress/ingest/dist/buildtime';
 
-export { VercelBuilder };
+export { VercelFactory };
 
-export default function vercel(options: BuilderOptions = {}) {
-  return new VercelBuilder(options);
+export default function vercel<
+  C extends UnknownNest = UnknownNest
+>(options: FactoryOptions = {}) {
+  return new VercelFactory<C>(options);
 }

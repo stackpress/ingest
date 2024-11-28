@@ -8,8 +8,8 @@ import Request from '../Request';
 import Response from '../Response';
 import { ReadSession, WriteSession } from '../Session';
 //local
-import Builder from './Builder';
 import Emitter from './Emitter';
+import Factory from './Factory';
 import Manifest from './Manifest';
 import Router from './Router';
 import Server, { loader, dispatcher } from './Server';
@@ -30,8 +30,8 @@ export {
   Response,
   ReadSession,
   WriteSession,
-  Builder,
   Emitter,
+  Factory,
   Manifest,
   Router,
   Server,

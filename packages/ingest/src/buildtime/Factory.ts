@@ -1,62 +1,30 @@
 //modules
 import type { ServerOptions } from 'http';
-import path from 'path';
 //stackpress
-import NodeFS from '@stackpress/types/dist/filesystem/NodeFS';
-import FileLoader from '@stackpress/types/dist/filesystem/FileLoader';
+import type { UnknownNest } from '@stackpress/types';
+//common
+import FactoryBase from '../Factory';
 //local
-import type { ManifestOptions, BuilderOptions, Transpiler } from './types';
+import type { FactoryOptions, Transpiler, ManifestOptions } from './types';
 import Router from './Router';
 import Server from './Server';
 
-export default class Builder {
-  //path to build directory
-  public readonly buildPath: string;
-  //path to manifest file
-  public readonly manifestPath: string;
-  //file loader
-  public readonly loader: FileLoader;
+export default class Factory<C extends UnknownNest = UnknownNest> 
+  extends FactoryBase<C>
+{
   //local server
   public readonly server: Server;
   //build router
   public readonly router: Router;
-  //builder config
-  public readonly config: ManifestOptions;
 
   /**
-   * Sets up the builder
+   * Sets up the plugin loader
    */
-  public constructor(options: BuilderOptions = {}) {
-    const { 
-      router = new Router(),
-      fs = new NodeFS(),
-      cwd = process.cwd(),
-      buildDir = './build', 
-      manifestName = 'manifest.json',
-      cookie = { path: '/' },
-      ...config
-    } = options;
-
-    this.config = Object.freeze({ 
-      ...config, 
-      fs, 
-      cwd, 
-      buildDir, 
-      manifestName 
-    });
-
+  public constructor(options: FactoryOptions = {}) {
+    const { router = new Router(), ...config } = options;
+    super(config);
     this.router = router;
-    this.server = new Server(router, { cookie });
-    this.loader = new FileLoader(fs, cwd);
-    this.buildPath = this.loader.absolute(buildDir);
-    this.manifestPath = path.resolve(this.buildPath, manifestName);
-  }
-
-  /**
-   * Builds the manifest
-   */
-  public async build(transpile: Transpiler) {
-    return await this.router.manifest(this.config).build(transpile);
+    this.server = new Server(router, { cookie: config.cookie });
   }
 
   /**
@@ -64,13 +32,6 @@ export default class Builder {
    */
   public create(options: ServerOptions = {}) {
     return this.server.create(options);
-  }
-
-  /**
-   * Shortcut to router event listener
-   */
-  public on(path: string, entry: string, priority?: number) {
-    return this.router.on(path, entry, priority);
   }
 
   /**
@@ -141,5 +102,12 @@ export default class Builder {
    */
   public trace(path: string, entry: string, priority?: number) {
     return this.router.trace(path, entry, priority);
+  }
+
+  /**
+   * Builds the manifest
+   */
+  protected async _build(transpile: Transpiler, options: ManifestOptions = {}) {
+    return await this.router.manifest(options).build(transpile);
   }
 }
