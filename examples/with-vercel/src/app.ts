@@ -1,6 +1,6 @@
 import path from 'path';
 import vercel from '@stackpress/ingest-vercel';
-import type { Config } from './types';
+import type { Config } from './config';
 
 export default vercel<Config>({
   cookie: { path: '/' },

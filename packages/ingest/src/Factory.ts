@@ -20,6 +20,16 @@ import Response from './Response';
 import { PluginLoader } from './Loader';
 
 export default class Factory<C extends UnknownNest = UnknownNest> {
+  /**
+   * Loads the plugins and returns the factory
+   */
+  public static async bootstrap<
+    C extends UnknownNest = UnknownNest
+  >(options: PluginLoaderOptions = {}) {
+    const factory = new Factory<C>(options);
+    return await factory.bootstrap();
+  }
+
   public readonly config: CallableNest<C>;
   //event emitter
   public readonly emitter: EventEmitter<FactoryEvents>;
@@ -31,7 +41,7 @@ export default class Factory<C extends UnknownNest = UnknownNest> {
   /**
    * Sets up the plugin loader
    */
-  public constructor(options: PluginLoaderOptions) {
+  public constructor(options: PluginLoaderOptions = {}) {
     this.config = nest();
     this.plugins = map();
     this.emitter = new EventEmitter();

@@ -2,9 +2,15 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import type { Readable } from 'stream';
 //stackpress
-import type { Method, Trace, NestedObject } from '@stackpress/types/dist/types';
+import type { 
+  Method, 
+  Trace, 
+  NestedObject, 
+  UnknownNest 
+} from '@stackpress/types/dist/types';
 import type FileSystem from '@stackpress/types/dist/filesystem/FileSystem';
 //local
+import type Factory from './Factory';
 import type Request from './Request';
 import type Response from './Response';
 import type { WriteSession } from './Session';
@@ -131,3 +137,16 @@ export type PluginLoaderOptions = ConfigLoaderOptions & {
 // Factory Types
 
 export type FactoryEvents = Record<string, [ Request, Response ]>;
+
+export type Pluggable<C extends UnknownNest = UnknownNest> = Factory<C> & {
+  all: (path: string, entry: string, priority?: number) => Factory<C>,
+  connect: (path: string, entry: string, priority?: number) => Factory<C>,
+  delete: (path: string, entry: string, priority?: number) => Factory<C>,
+  get: (path: string, entry: string, priority?: number) => Factory<C>,
+  head: (path: string, entry: string, priority?: number) => Factory<C>,
+  options: (path: string, entry: string, priority?: number) => Factory<C>,
+  patch: (path: string, entry: string, priority?: number) => Factory<C>,
+  post: (path: string, entry: string, priority?: number) => Factory<C>,
+  put: (path: string, entry: string, priority?: number) => Factory<C>,
+  trace: (path: string, entry: string, priority?: number) => Factory<C>
+};

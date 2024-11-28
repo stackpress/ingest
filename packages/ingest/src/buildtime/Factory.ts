@@ -12,6 +12,16 @@ import Server from './Server';
 export default class Factory<C extends UnknownNest = UnknownNest> 
   extends FactoryBase<C>
 {
+  /**
+   * Loads the plugins and returns the factory
+   */
+  public static async bootstrap<
+    C extends UnknownNest = UnknownNest
+  >(options: FactoryOptions = {}) {
+    const factory = new Factory<C>(options);
+    return await factory.bootstrap();
+  }
+
   //local server
   public readonly server: Server;
   //build router
@@ -38,70 +48,80 @@ export default class Factory<C extends UnknownNest = UnknownNest>
    * Shortcut to all router
    */
   public all(path: string, entry: string, priority?: number) {
-    return this.router.all(path, entry, priority);
+    this.router.all(path, entry, priority);
+    return this;
   }
 
   /**
    * Shortcut to connect router
    */
   public connect(path: string, entry: string, priority?: number) {
-    return this.router.connect(path, entry, priority);
+    this.router.connect(path, entry, priority);
+    return this;
   }
 
   /**
    * Shortcut to delete router
    */
   public delete(path: string, entry: string, priority?: number) {
-    return this.router.delete(path, entry, priority);
+    this.router.delete(path, entry, priority);
+    return this;
   }
 
   /**
    * Shortcut to get router
    */
   public get(path: string, entry: string, priority?: number) {
-    return this.router.get(path, entry, priority);
+    this.router.get(path, entry, priority);
+    return this;
   }
 
   /**
    * Shortcut to head router
    */
   public head(path: string, entry: string, priority?: number) {
-    return this.router.head(path, entry, priority);
+    this.router.head(path, entry, priority);
+    return this;
   }
 
   /**
    * Shortcut to options router
    */
   public options(path: string, entry: string, priority?: number) {
-    return this.router.options(path, entry, priority);
+    this.router.options(path, entry, priority);
+    return this;
   }
 
   /**
    * Shortcut to patch router
    */
   public patch(path: string, entry: string, priority?: number) {
-    return this.router.patch(path, entry, priority);
+    this.router.patch(path, entry, priority);
+    return this;
   }
 
   /**
    * Shortcut to post router
    */
   public post(path: string, entry: string, priority?: number) {
-    return this.router.post(path, entry, priority);
+    this.router.post(path, entry, priority);
+    return this;
   }
 
   /**
    * Shortcut to put router
    */
   public put(path: string, entry: string, priority?: number) {
-    return this.router.put(path, entry, priority);
+    this.router.put(path, entry, priority);
+    return this;
   }
 
   /**
    * Shortcut to trace router
    */
   public trace(path: string, entry: string, priority?: number) {
-    return this.router.trace(path, entry, priority);
+    this.router.trace(path, entry, priority);
+    return this;
   }
 
   /**

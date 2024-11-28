@@ -1,14 +1,10 @@
 import path from 'path';
-import type { VercelApp } from './types';
+import config, { App } from './config';
 
-export default function plugin(app: VercelApp) {
-  app.config.set({
-    server: {
-      cwd: process.cwd(),
-      mode: process.env.SERVER_ENV || 'development',
-    },
-    cookie: { path: '/' },
-    body: { size: 0 }
+export default function plugin(app: App) {
+  app.config.set(config);
+  app.on('request', _ => {
+    app.register('project', { welcome: 'Hello, World!' });
   });
   app.on('route', _ => {
     const { cwd, mode } = app.config.data.server;
