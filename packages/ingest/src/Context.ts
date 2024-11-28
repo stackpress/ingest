@@ -1,41 +1,37 @@
-import type { 
-  Method, 
-  CallableMap, 
-  CallableNest,
-  CallableSet
-} from '@stackpress/types/dist/types';
-import type { ContextInitializer, CallableSession } from './types';
+import type { CallableMap, CallableSet } from '@stackpress/types/dist/types';
+import type { ContextInitializer } from './types';
 import type Request from './Request';
 
 import { map, set } from '@stackpress/types/dist/helpers';
 import { isHash } from './helpers';
 
-export default class RequestContext<R = unknown> {
+export default class RequestContext {
   //request
-  public readonly request: Request<R>;
+  public readonly request: Request;
   //context args
   public readonly args: CallableSet<string>;
   //context params
   public readonly params: CallableMap<string, string>;
-  //These link to request properties
-  //query controller
-  public readonly data: CallableNest;
-  //request method
-  public readonly method: Method;
-  //head controller
-  public readonly headers: CallableMap<string, string|string[]>;
-  //query controller
-  public readonly query: CallableNest;
-  //session controller
-  public readonly session: CallableSession;
-  //url controller
-  public readonly url = new URL('http://unknownhost/');
 
   /**
    * Returns the body
    */
   public get body() {
     return this.request.body;
+  }
+
+  /**
+   * Returns the request data
+   */
+  public get data() {
+    return this.request.data;
+  }
+
+  /**
+   * Returns the request headers
+   */
+  public get headers() {
+    return this.request.headers;
   }
 
   /**
@@ -46,6 +42,13 @@ export default class RequestContext<R = unknown> {
   }
 
   /**
+   * Returns the request method
+   */
+  public get method() {
+    return this.request.method;
+  }
+
+  /**
    * Returns the request body mimetype
    */
   public get mimetype() {
@@ -53,10 +56,24 @@ export default class RequestContext<R = unknown> {
   }
 
   /**
-   * Returns the post
+   * Returns the request post
    */
   public get post() {
     return this.request.post;
+  }
+
+  /**
+   * Returns the request query
+   */
+  public get query() {
+    return this.request.query;
+  }
+
+  /**
+   * Returns the request session
+   */
+  public get session() {
+    return this.request.session;
   }
 
   /**
@@ -68,18 +85,17 @@ export default class RequestContext<R = unknown> {
   }
 
   /**
+   * Returns the request url
+   */
+  public get url() {
+    return this.request.url;
+  }
+
+  /**
    * Sets the request and the context initializer
    */
-  constructor(request: Request<R>, init: ContextInitializer = {}) {
+  constructor(request: Request, init: ContextInitializer = {}) {
     this.request = request;
-    //pass by reference
-    this.method = request.method;
-    this.data = request.data;
-    this.headers = request.headers;
-    this.query = request.query;
-    this.session = request.session;
-    this.url = request.url;
-
     this.args = set(
       init.args instanceof Set
         ? Array.from(init.args.values())

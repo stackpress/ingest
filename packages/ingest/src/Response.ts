@@ -6,7 +6,9 @@ import type {
   CallableNest
 } from '@stackpress/types/dist/types';
 import type { 
+  SR,
   Body, 
+  FetchResponse,
   CallableSession,
   ResponseDispatcher,
   ResponseInitializer,
@@ -20,7 +22,7 @@ import { status } from '@stackpress/types/dist/StatusCode';
 import { session } from './Session';
 import { isHash } from './helpers';
 
-export default class Response<R = unknown> {
+export default class Response {
   //head controller
   public readonly headers: CallableMap<string, string|string[]>;
   //session controller
@@ -37,6 +39,8 @@ export default class Response<R = unknown> {
   protected _error?: string;
   //body mimetype
   protected _mimetype?: string;
+  //original request resource
+  protected _resource?: SR|FetchResponse;
   //whether if the response was sent
   protected _sent = false;
   //stack trace
@@ -45,8 +49,6 @@ export default class Response<R = unknown> {
   protected _status = '';
   //total count of possible results
   protected _total = 0;
-  //original response resource
-  protected _resource?: R;
 
   /**
    * Returns the body
@@ -67,13 +69,6 @@ export default class Response<R = unknown> {
    */
   public get error(): string|undefined {
     return this._error;
-  }
-
-  /**
-   * Returns the original resource
-   */
-  public get resource() {
-    return this._resource;
   }
   
   /**
@@ -109,6 +104,13 @@ export default class Response<R = unknown> {
    */
   public get mimetype(): string|undefined {
     return this._mimetype;
+  }
+
+  /**
+   * Returns the original resource
+   */
+  public get resource() {
+    return this._resource;
   }
 
   /**
@@ -162,6 +164,13 @@ export default class Response<R = unknown> {
   }
 
   /**
+   * Sets the resource
+   */
+  public set resource(resource: SR|FetchResponse|undefined) {
+    this._resource = resource;
+  }
+
+  /**
    * Sets a stack trace
    */
   public set stack(stack: Trace[]) {
@@ -193,9 +202,10 @@ export default class Response<R = unknown> {
   /**
    * Sets the initial values of the payload
    */
-  constructor(init: ResponseInitializer<R> = {}) {
+  constructor(init: ResponseInitializer = {}) {
     this._mimetype = init.mimetype;
     this._body = init.body || null;
+    this._resource = init.resource;
     this.errors = nest();
     this.session = session();
     this.headers = map<string, string | string[]>(
@@ -205,10 +215,6 @@ export default class Response<R = unknown> {
         ? Object.entries(init.headers as Record<string, string|string[]>)
         : undefined
     );
-
-    if (init.resource) {
-      this._resource = init.resource;
-    }
   }
 
   /**

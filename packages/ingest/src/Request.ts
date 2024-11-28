@@ -1,10 +1,12 @@
 import type { CallableMap, CallableNest } from '@stackpress/types/dist/types';
 import type { Method } from '@stackpress/types/dist/types';
 import type { 
+  IM,
   Body,
   CallableSession,
   RequestLoader, 
-  RequestInitializer 
+  RequestInitializer, 
+  FetchRequest
 } from './types';
 
 import * as cookie from 'cookie';
@@ -20,7 +22,7 @@ import {
 import Context from './Context';
 import { session } from './Session';
 
-export default class Request<R = unknown> {
+export default class Request {
   //data controller
   public readonly data: CallableNest;
   //head controller
@@ -42,9 +44,9 @@ export default class Request<R = unknown> {
   //whether if the body was loaded
   protected _loaded = false;
   //body loader
-  protected _loader?: RequestLoader<R>;
+  protected _loader?: RequestLoader;
   //original request resource
-  protected _resource?: R;
+  protected _resource?: IM|FetchRequest;
 
   /**
    * Returns the body
@@ -98,14 +100,14 @@ export default class Request<R = unknown> {
   /**
    * Sets Loader
    */
-  public set loader(loader: RequestLoader<R>) {
+  public set loader(loader: RequestLoader) {
     this._loader = loader;
   }
 
   /**
    * Sets request defaults
    */
-  public constructor(init: RequestInitializer<R> = {}) {
+  public constructor(init: RequestInitializer = {}) {
     this.data = nest();
     this.url = init.url instanceof URL ? init.url
       : typeof init.url === 'string' ? new URL(init.url)
@@ -152,6 +154,7 @@ export default class Request<R = unknown> {
     this.method = init.method || 'GET';
     this._body = init.body || null;
     this._mimetype = init.mimetype || 'text/plain';
+    this._resource = init.resource;
     
     if (this.query.size) {
       this.data.set(this.query.get());
@@ -164,10 +167,6 @@ export default class Request<R = unknown> {
     } else if (isHash(init.data)) {
       this.data.set(init.data);
     }
-
-    if (init.resource) {
-      this._resource = init.resource;
-    }
   }
 
   /**
@@ -177,7 +176,7 @@ export default class Request<R = unknown> {
    */
   public fromPattern(pattern: string|RegExp) {
     const args = eventParams(pattern.toString(), this.url.pathname);
-    return new Context<R>(this, { args });
+    return new Context(this, { args });
   }
 
   /**
@@ -186,7 +185,7 @@ export default class Request<R = unknown> {
    */
   public fromRoute(route: string) {
     const { args, params } = routeParams(route, this.url.pathname);
-    return new Context<R>(this, { args, params });
+    return new Context(this, { args, params });
   }
 
   /**

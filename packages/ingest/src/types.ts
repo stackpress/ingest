@@ -1,11 +1,19 @@
 //modules
 import type { IncomingMessage, ServerResponse } from 'http';
+import type { Readable } from 'stream';
 //stackpress
-import type { Method, NestedObject, Trace } from '@stackpress/types/dist/types';
+import type { Method, Trace, NestedObject } from '@stackpress/types/dist/types';
+import type FileSystem from '@stackpress/types/dist/filesystem/FileSystem';
 //local
 import type Request from './Request';
 import type Response from './Response';
 import type { WriteSession } from './Session';
+
+//--------------------------------------------------------------------//
+// Generic Types
+
+//a generic class constructor 
+export type Constructor<T> = { new (): T };
 
 //--------------------------------------------------------------------//
 // HTTP Types
@@ -24,7 +32,7 @@ export type FetchResponse = globalThis.Response;
 
 export type Headers = Record<string, string|string[]> 
   | Map<string, string|string[]>;
-export type Body = string | Buffer | Uint8Array
+export type Body = string | Buffer | Uint8Array | Readable | ReadableStream
   | Record<string, unknown> | Array<unknown>;
 export type Data = Map<string, any> | NestedObject;
 export type Query = string | Map<string, any> | NestedObject;
@@ -36,9 +44,7 @@ export type CallableSession = (
   (name: string) => string|string[]|undefined
 ) & WriteSession;
 
-export type RequestLoader<R = unknown> = (
-  req: Request<R>
-) => Promise<LoaderResponse|undefined>;
+export type RequestLoader = (req: Request) => Promise<LoaderResponse|undefined>;
 export type ResponseDispatcher = (res: Response) => Promise<void>;
 
 export type ContextInitializer = { 
@@ -46,20 +52,24 @@ export type ContextInitializer = {
   params?: Record<string, string> | Map<string, string>
 };
 
-export type ResponseInitializer<R = unknown> = { 
+export type ResponseInitializer = { 
   body?: Body,
   headers?: Headers,
-  mimetype?: string, 
-  resource?: R
+  mimetype?: string,
+  resource?: SR|FetchResponse
 };
 
-export type RequestInitializer<R = unknown> = ResponseInitializer<R> & {
+export type RequestInitializer = {
+  body?: Body,
+  headers?: Headers,
+  mimetype?: string,
   data?: Data,
   method?: Method,
   query?: Query,
   post?: Post,
   session?: Session,
-  url?: string|URL
+  url?: string|URL,
+  resource?: IM|FetchRequest
 };
 
 export type ResponseErrorOptions = {
@@ -97,3 +107,27 @@ export type ServerOptions = {
   cookie?: CookieOptions,
   size?: number
 };
+
+export type RouteOptions = {
+  cookie?: CookieOptions,
+  size?: number
+};
+
+//--------------------------------------------------------------------//
+// Loader Types
+
+export type ConfigLoaderOptions = {
+  cwd?: string,
+  fs?: FileSystem,
+  filenames?: string[]
+};
+
+export type PluginLoaderOptions = ConfigLoaderOptions & {
+  modules?: string, 
+  plugins?: string[]
+};
+
+//--------------------------------------------------------------------//
+// Factory Types
+
+export type FactoryEvents = Record<string, [ Request, Response ]>;
