@@ -7,8 +7,11 @@ import {
   objectFromJson,
   eventParams,
   routeParams,
-  withUnknownHost
+  withUnknownHost,
+  readableStreamToReadable,
+  readableToReadableStream
 } from '../src/helpers';
+import { Readable } from 'stream';
 
 describe('helpers', () => {
   describe('isHash', () => {
@@ -132,6 +135,48 @@ describe('helpers', () => {
     it('should add unknown host to URL with protocol', () => {
       const result = withUnknownHost('https://example.com/path');
       expect(result).to.equal('http://unknownhost/https://example.com/path');
+    });
+  });
+
+  describe('readableStreamToReadable', () => {
+    it('should convert ReadableStream to Node.js Readable', async () => {
+      const data = 'Hello, World!';
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode(data));
+          controller.close();
+        }
+      });
+
+      const readable = readableStreamToReadable(stream);
+      expect(readable).to.be.instanceOf(Readable);
+
+      let result = '';
+      for await (const chunk of readable) {
+        result += chunk;
+      }
+      expect(result).to.equal(data);
+    });
+  });
+
+  describe('readableToReadableStream', () => {
+    it('should convert Node.js Readable to ReadableStream', async () => {
+      const data = 'Hello, World!';
+      const buffer = Buffer.from(data);
+      const readable = Readable.from([buffer]);
+
+      const stream = readableToReadableStream(readable);
+      expect(stream).to.be.instanceOf(ReadableStream);
+
+      const reader = stream.getReader();
+      const chunks: Uint8Array[] = [];
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+      }
+      const result = Buffer.concat(chunks).toString();
+      expect(result).to.equal(data);
     });
   });
 });
