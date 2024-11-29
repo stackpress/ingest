@@ -94,6 +94,24 @@ describe('Context Tests', () => {
     // Test with non-array/set arguments
     context = new RequestContext(request, { args: 123 as any });
     expect(context.args.size).to.equal(0);
+
+    // Test with empty Set
+    context = new RequestContext(request, { args: new Set() });
+    expect(context.args.size).to.equal(0);
+
+    // Test with empty Array
+    context = new RequestContext(request, { args: [] });
+    expect(context.args.size).to.equal(0);
+
+    // Test with Set containing non-string values
+    const nonStringSet = new Set([1, 2, 3]);
+    context = new RequestContext(request, { 
+      args: Array.from(nonStringSet).map(String)
+    });
+    expect(context.args.size).to.equal(3);
+    expect(context.args.has('1')).to.be.true;
+    expect(context.args.has('2')).to.be.true;
+    expect(context.args.has('3')).to.be.true;
   });
 
   it('Should initialize with different parameter types', () => {
@@ -131,6 +149,31 @@ describe('Context Tests', () => {
     // Test with non-map/object parameters
     context = new RequestContext(request, { params: 123 as any });
     expect(context.params.size).to.equal(0);
+
+    // Test with empty Map
+    context = new RequestContext(request, { params: new Map() });
+    expect(context.params.size).to.equal(0);
+
+    // Test with empty object
+    context = new RequestContext(request, { params: {} });
+    expect(context.params.size).to.equal(0);
+
+    // Test with Map containing non-string values
+    const nonStringMap = new Map<string, string | number | boolean>([['key1', 1], ['key2', true]]);
+    context = new RequestContext(request, { 
+      params: new Map(Array.from(nonStringMap.entries()).map(([k, v]) => [k, String(v)]))
+    });
+    expect(context.params.size).to.equal(2);
+    expect(context.params('key1')).to.equal('1');
+    expect(context.params('key2')).to.equal('true');
+
+    // Test with object containing non-string values
+    context = new RequestContext(request, { 
+      params: { key1: String(1), key2: String(true) }
+    });
+    expect(context.params.size).to.equal(2);
+    expect(context.params('key1')).to.equal('1');
+    expect(context.params('key2')).to.equal('true');
   });
 
   it('Should handle loaded state correctly', async () => {
@@ -162,7 +205,7 @@ describe('Context Tests', () => {
     });
 
     // Test when param key exists in data (shouldn't override)
-    const context = new RequestContext(request, {
+    let context = new RequestContext(request, {
       params: new Map([
         ['key1', 'param1'],  // exists in data
         ['key3', 'param3']   // doesn't exist in data
@@ -172,5 +215,27 @@ describe('Context Tests', () => {
     expect(context.data('key1')).to.equal('existing1');  // unchanged
     expect(context.data('key2')).to.equal('existing2');  // unchanged
     expect(context.data('key3')).to.equal('param3');     // added
+
+    // Test with empty params (no data sync needed)
+    context = new RequestContext(request, {
+      params: new Map()
+    });
+    expect(context.data('key1')).to.equal('existing1');
+    expect(context.data('key2')).to.equal('existing2');
+
+    // Test with undefined params (no data sync needed)
+    context = new RequestContext(request);
+    expect(context.data('key1')).to.equal('existing1');
+    expect(context.data('key2')).to.equal('existing2');
+
+    // Test with null data in request
+    const emptyRequest = new Request({
+      method: 'GET',
+      url: 'http://localhost/test'
+    });
+    context = new RequestContext(emptyRequest, {
+      params: new Map([['key1', 'value1']])
+    });
+    expect(context.data('key1')).to.equal('value1');
   });
 });
