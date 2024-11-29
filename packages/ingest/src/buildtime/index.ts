@@ -9,7 +9,7 @@ import Response from '../Response';
 import { ReadSession, WriteSession } from '../Session';
 //local
 import Emitter from './Emitter';
-import Factory from './Factory';
+import Builder from './Builder';
 import Manifest from './Manifest';
 import Router from './Router';
 import Server, { loader, dispatcher } from './Server';
@@ -31,7 +31,7 @@ export {
   ReadSession,
   WriteSession,
   Emitter,
-  Factory,
+  Builder,
   Manifest,
   Router,
   Server,

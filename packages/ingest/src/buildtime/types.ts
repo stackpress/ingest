@@ -1,5 +1,6 @@
 //modules
 import type { SourceFile, ProjectOptions } from 'ts-morph';
+import type { PluginBuild, BuildResult as ESBuildResult } from 'esbuild';
 //stackpress
 import type { Method, UnknownNest } from '@stackpress/types/dist/types';
 import type FileSystem from '@stackpress/types/dist/filesystem/FileSystem';
@@ -20,6 +21,7 @@ export type BuildTask = { entry: string, priority: number };
 
 export type BuildType = 'function' | 'endpoint';
 
+//this is the data struct generated in router
 export type BuildInfo = {
   type: BuildType,
   method: Method,
@@ -29,7 +31,8 @@ export type BuildInfo = {
   tasks: Set<BuildTask>
 };
 
-export type BuildResult = {
+// this is the data struct generated in manifest
+export type BuildData = {
   id: string;
   type: BuildType;
   method: Method;
@@ -37,6 +40,26 @@ export type BuildResult = {
   route: string;
   pattern?: RegExp;
   entry: string
+};
+
+export type BuildResult = {
+  build: Set<BuildData>,
+  results: ESBuildResult<{
+    outdir: string;
+    entryPoints: string[];
+    plugins: {
+        name: string;
+        setup: (build: PluginBuild) => void;
+    }[];
+    minify?: boolean;
+    bundle?: boolean;
+    platform?: "node" | "browser";
+    globalName?: string;
+    format?: "iife" | "esm" | "cjs";
+    preserveSymlinks?: boolean;
+    write?: boolean;
+  }>,
+  vfs: Map<string, SourceFile>
 };
 
 export type TranspileInfo = {
@@ -71,10 +94,7 @@ export type ManifestOptions = ESBuildOptions & {
   manifestName?: string
 };
 
-//--------------------------------------------------------------------//
-// Factory Types
-
-export type FactoryOptions = PluginLoaderOptions & {
+export type BuilderOptions = PluginLoaderOptions & {
   router?: Router,
   cookie?: CookieOptions,
   tsconfig?: string

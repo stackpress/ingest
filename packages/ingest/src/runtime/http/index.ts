@@ -9,7 +9,7 @@ import { ReadSession, WriteSession } from '../../Session';
 export type * from '../../types';
 export * from '../../helpers';
 //runtime
-import Factory from '../Factory';
+import Factory, { runtime, bootstrap } from '../Factory';
 import Queue from '../Queue';
 export type * from '../types';
 //local
@@ -28,5 +28,8 @@ export {
   Queue, 
   Route, 
   loader, 
-  dispatcher 
+  dispatcher, 
+  bootstrap
 };
+
+export default runtime;

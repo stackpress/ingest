@@ -3,25 +3,22 @@ import type { ServerOptions } from 'http';
 //stackpress
 import type { UnknownNest } from '@stackpress/types';
 //common
-import FactoryBase from '../Factory';
+import Factory from '../Factory';
 //local
-import type { FactoryOptions, Transpiler, ManifestOptions } from './types';
+import type { 
+  Transpiler, 
+  TranspileInfo,
+  BuilderOptions, 
+  ManifestOptions, 
+  BuildResult,
+  SourceFile 
+} from './types';
 import Router from './Router';
 import Server from './Server';
 
-export default class Factory<C extends UnknownNest = UnknownNest> 
-  extends FactoryBase<C>
+export default abstract class Builder<C extends UnknownNest = UnknownNest> 
+  extends Factory<C>
 {
-  /**
-   * Loads the plugins and returns the factory
-   */
-  public static async bootstrap<
-    C extends UnknownNest = UnknownNest
-  >(options: FactoryOptions = {}) {
-    const factory = new Factory<C>(options);
-    return await factory.bootstrap();
-  }
-
   //local server
   public readonly server: Server;
   //build router
@@ -30,12 +27,17 @@ export default class Factory<C extends UnknownNest = UnknownNest>
   /**
    * Sets up the plugin loader
    */
-  public constructor(options: FactoryOptions = {}) {
+  public constructor(options: BuilderOptions = {}) {
     const { router = new Router(), ...config } = options;
     super(config);
     this.router = router;
     this.server = new Server(router, { cookie: config.cookie });
   }
+
+  /**
+   * Builds the final entry files
+   */
+  public abstract build(options?: ManifestOptions): Promise<BuildResult>;
 
   /**
    * Sets up a local development server
@@ -125,9 +127,17 @@ export default class Factory<C extends UnknownNest = UnknownNest>
   }
 
   /**
+   * Creates an entry file
+   */
+  public abstract transpile(info: TranspileInfo): SourceFile;
+
+  /**
    * Builds the manifest
    */
-  protected async _build(transpile: Transpiler, options: ManifestOptions = {}) {
+  protected async _build(
+    transpile: Transpiler, 
+    options: ManifestOptions = {}
+  ): Promise<BuildResult> {
     return await this.router.manifest(options).build(transpile);
   }
 }

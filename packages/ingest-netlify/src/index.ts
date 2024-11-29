@@ -1,17 +1,23 @@
 //stackpress
 import type { 
-  FactoryOptions, 
+  BuilderOptions, 
   UnknownNest 
 } from '@stackpress/ingest/dist/buildtime/types';
 //netlify
-import NetlifyFactory from './Factory';
+import NetlifyBuilder from './Builder';
 
 export * from '@stackpress/ingest/dist/buildtime';
 
-export { NetlifyFactory };
+export { NetlifyBuilder };
+
+export function bootstrap<
+  C extends UnknownNest = UnknownNest
+>(options: BuilderOptions = {}) {
+  return NetlifyBuilder.bootstrap<C>(options);
+}
 
 export default function netlify<
   C extends UnknownNest = UnknownNest
->(options: FactoryOptions = {}) {
-  return new NetlifyFactory<C>(options);
+>(options: BuilderOptions = {}) {
+  return new NetlifyBuilder<C>(options);
 }

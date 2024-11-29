@@ -1,9 +1,9 @@
-import { Factory, Context, Response } from '@stackpress/ingest';
+import { bootstrap, Context, Response } from '@stackpress/ingest/fetch';
 import type { Config } from './config';
 
 export default async function client(req: Context, res: Response) {
   //bootstrap a new client
-  const client = await Factory.bootstrap<Config>({
+  const client = await bootstrap<Config>({
     plugins: [ process.cwd() ]
   });
   //load the plugin routes

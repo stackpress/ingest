@@ -9,7 +9,7 @@ import NodeFS from '@stackpress/types/dist/filesystem/NodeFS';
 import type { 
   SourceFile,
   BuildInfo, 
-  BuildResult,
+  BuildData,
   ManifestOptions, 
   ESBuildOptions,
   Transpiler
@@ -63,7 +63,7 @@ export default class Manifest extends Set<BuildInfo> {
    */
   public async build(transpile: Transpiler) {
     const vfs = new Map<string, SourceFile>();
-    const build = new Set<BuildResult>();
+    const build = new Set<BuildData>();
     for (const { tasks, ...info } of this) {
       //create a new queue. We will use for just sorting purposes...
       const entries = new ItemQueue<string>();

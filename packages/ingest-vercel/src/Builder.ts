@@ -1,29 +1,39 @@
 import type {
   ManifestOptions,
   ProjectOptions,
-  FactoryOptions,
+  BuilderOptions,
   TranspileInfo, 
   Transpiler,
   UnknownNest
 } from '@stackpress/ingest/dist/buildtime/types';
 
-import Factory from '@stackpress/ingest/dist/buildtime/Factory';
+import path from 'path';
+import Builder from '@stackpress/ingest/dist/buildtime/Builder';
 import { 
   IndentationText,
-  createSourceFile, 
-  VariableDeclarationKind 
+  createSourceFile
 } from '@stackpress/ingest/dist/buildtime/helpers';
 
-export default class NetlifyFactory<
-  C extends UnknownNest = UnknownNest
-> extends Factory<C> {
+export default class VercelBuilder<
+ C extends UnknownNest = UnknownNest
+> extends Builder<C> {
+  /**
+   * Loads the plugins and returns the factory
+   */
+  public static async bootstrap<
+    C extends UnknownNest = UnknownNest
+  >(options: BuilderOptions = {}) {
+    const factory = new VercelBuilder<C>(options);
+    return await factory.bootstrap();
+  }
+
   //ts-morph options
   public readonly tsconfig: ProjectOptions;
 
   /**
    * Sets up the builder
    */
-  public constructor(options: FactoryOptions = {}) {
+  public constructor(options: BuilderOptions = {}) {
     const { tsconfig = '../tsconfig.json', ...config } = options;
     super(config);
     this.tsconfig = {
@@ -69,21 +79,15 @@ export default class NetlifyFactory<
         defaultImport: `task_${i}`
       });
     });
-    //export const config = { path: '/user/:id' };
-    source.addVariableStatement({
-      isExported: true,
-      declarationKind: VariableDeclarationKind.Const,
-      declarations: [{
-        name: 'config',
-        initializer: `{ path: '${info.route}' }`
-      }]
-    });
+    //this is the interface required by vercel functions...
+    // /resize/100/50 would be rewritten to /api/sharp?width=100&height=50
     source.addFunction({
-      isDefaultExport: true,
+      isDefaultExport: info.method === 'ALL',
+      isExported: info.method !== 'ALL',
+      //isAsync: true,
       name: info.method,
       parameters: [{ name: 'request', type: 'Request' }],
       statements: (`
-        if (request.method.toUpperCase() !== '${info.method}') return;
         const route = new Route({ cookie: ${cookie} });
         const actions = new Set<FetchAction>();
         ${info.actions.map(
@@ -99,10 +103,33 @@ export default class NetlifyFactory<
    * Builds the final entry files
    */
   public async build(options: ManifestOptions = {}) {
-    options.buildDir = options.buildDir || './.netlify/functions';
     const transpiler: Transpiler = entries => {
       return this.transpile(entries);
     }
-    return await this._build(transpiler, options);
+    const results = await this._build(transpiler, {
+      buildDir: './api',
+      ...options
+    });
+    //write the manifest to disk
+    const json = {
+      version: 2,
+      rewrites: Array
+        .from(results.build)
+        .filter(result => result.type === 'endpoint')
+        .map(result => ({ 
+          source: result.route
+            //replace the stars
+            //* -> ([^/]+)
+            .replaceAll('*', '([^/]+)')
+            //** -> ([^/]+)([^/]+) -> (.*)
+            .replaceAll('([^/]+)([^/]+)', '(.*)'),
+          destination: `/api/${result.id}`
+        }))
+    };
+    this.loader.fs.writeFileSync(
+      path.join(this.loader.cwd, 'vercel.json'), 
+      JSON.stringify(json, null, 2)
+    );
+    return results;
   }
 }

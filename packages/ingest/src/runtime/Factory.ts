@@ -4,7 +4,19 @@ import type { UnknownNest } from '@stackpress/types';
 import type { PluginLoaderOptions } from '../types';
 import FactoryBase from '../Factory';
 
-export default class Factory<C extends UnknownNest = UnknownNest> 
+export function bootstrap<
+  C extends UnknownNest = UnknownNest
+>(options: PluginLoaderOptions = {}) {
+  return RuntimeFactory.bootstrap<C>(options);
+}
+
+export function runtime<
+  C extends UnknownNest = UnknownNest
+>(options: PluginLoaderOptions = {}) {
+  return new RuntimeFactory<C>(options);
+}
+
+export default class RuntimeFactory<C extends UnknownNest = UnknownNest> 
   extends FactoryBase<C>
 {
   /**
@@ -13,7 +25,7 @@ export default class Factory<C extends UnknownNest = UnknownNest>
   public static async bootstrap<
     C extends UnknownNest = UnknownNest
   >(options: PluginLoaderOptions = {}) {
-    const factory = new Factory<C>(options);
+    const factory = new RuntimeFactory<C>(options);
     return await factory.bootstrap();
   }
 }
