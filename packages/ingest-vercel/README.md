@@ -1,3 +1,3 @@
 # ᗊ Ingest - Vercel
 
-Event Driven Serverless Framework
+An unopinionated, event driven, pluggable, Vercel framework.

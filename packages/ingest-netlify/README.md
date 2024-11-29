@@ -1,3 +1,3 @@
 # ᗊ Ingest - Netlify
 
-Event Driven Serverless Framework
+An unopinionated, event driven, pluggable, Netlify framework.
