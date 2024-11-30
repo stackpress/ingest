@@ -1,6 +1,6 @@
 //stackpress
 import type { 
-  BuilderOptions, 
+  ServerOptions, 
   UnknownNest 
 } from '@stackpress/ingest/dist/buildtime/types';
 //netlify
@@ -12,12 +12,12 @@ export { NetlifyBuilder };
 
 export function bootstrap<
   C extends UnknownNest = UnknownNest
->(options: BuilderOptions = {}) {
+>(options: ServerOptions = {}) {
   return NetlifyBuilder.bootstrap<C>(options);
 }
 
 export default function netlify<
   C extends UnknownNest = UnknownNest
->(options: BuilderOptions = {}) {
+>(options: ServerOptions = {}) {
   return new NetlifyBuilder<C>(options);
 }

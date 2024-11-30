@@ -9,10 +9,14 @@ import Response from '../Response';
 import { ReadSession, WriteSession } from '../Session';
 //local
 import Emitter from './Emitter';
-import Builder from './Builder';
 import Manifest from './Manifest';
 import Router from './Router';
-import Server, { loader, dispatcher } from './Server';
+import Server, { 
+  loader, 
+  dispatcher, 
+  bootstrap, 
+  server 
+} from './Server';
 
 export type * from '../types';
 export type * from './types';
@@ -31,10 +35,11 @@ export {
   ReadSession,
   WriteSession,
   Emitter,
-  Builder,
   Manifest,
   Router,
   Server,
   loader,
-  dispatcher
+  dispatcher,
+  bootstrap, 
+  server
 };

@@ -11,7 +11,7 @@ import type Response from '../Response';
 //local
 import type Router from './Router';
 
-export type { SourceFile, ProjectOptions, UnknownNest };
+export type { SourceFile, ProjectOptions, CookieOptions, UnknownNest };
 
 //--------------------------------------------------------------------//
 // Build Types
@@ -94,8 +94,9 @@ export type ManifestOptions = ESBuildOptions & {
   manifestName?: string
 };
 
-export type BuilderOptions = PluginLoaderOptions & {
+export type ServerOptions = PluginLoaderOptions & {
   router?: Router,
   cookie?: CookieOptions,
+  size?: number,
   tsconfig?: string
 }

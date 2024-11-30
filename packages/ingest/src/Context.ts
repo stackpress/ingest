@@ -5,9 +5,9 @@ import type Request from './Request';
 import { map, set } from '@stackpress/types/dist/helpers';
 import { isHash } from './helpers';
 
-export default class RequestContext {
+export default class RequestContext<C = unknown> {
   //request
-  public readonly request: Request;
+  public readonly request: Request<C>;
   //context args
   public readonly args: CallableSet<string>;
   //context params
@@ -18,6 +18,13 @@ export default class RequestContext {
    */
   public get body() {
     return this.request.body;
+  }
+
+  /**
+   * Returns the context
+   */
+  public get context() {
+    return this.request.context;
   }
 
   /**
@@ -70,6 +77,13 @@ export default class RequestContext {
   }
 
   /**
+   * Returns the resource
+   */
+  public get resource() {
+    return this.request.resource;
+  }
+
+  /**
    * Returns the request session
    */
   public get session() {
@@ -94,7 +108,7 @@ export default class RequestContext {
   /**
    * Sets the request and the context initializer
    */
-  constructor(request: Request, init: ContextInitializer = {}) {
+  constructor(request: Request<C>, init: ContextInitializer = {}) {
     this.request = request;
     this.args = set(
       init.args instanceof Set

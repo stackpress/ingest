@@ -23,9 +23,9 @@ export default class Factory<C extends UnknownNest = UnknownNest> {
   /**
    * Loads the plugins and returns the factory
    */
-  public static async bootstrap<
-    C extends UnknownNest = UnknownNest
-  >(options: PluginLoaderOptions = {}) {
+  public static async bootstrap<C extends UnknownNest = UnknownNest>(
+    options: PluginLoaderOptions = {}
+  ) {
     const factory = new Factory<C>(options);
     return await factory.bootstrap();
   }
@@ -103,8 +103,9 @@ export default class Factory<C extends UnknownNest = UnknownNest> {
   /**
    * Creates a new request
    */
-  public request(init?: RequestInitializer) {
-    return new Request(init);
+  public request(init: RequestInitializer<Factory<C>> = {}) {
+    init.context = this;
+    return new Request<Factory<C>>(init);
   }
 
   /**
@@ -113,4 +114,4 @@ export default class Factory<C extends UnknownNest = UnknownNest> {
   public response(init?: ResponseInitializer) {
     return new Response(init);
   }
-}
+};

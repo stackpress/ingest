@@ -2,17 +2,18 @@
 import { Readable } from 'stream';
 import * as cookie from 'cookie';
 //stackpress
-import type { Method } from '@stackpress/types/dist/types';
-import StatusCode from '@stackpress/types/dist/StatusCode';
+import type { Method, UnknownNest } from '@stackpress/types/dist/types';
 //common
 import type { 
   IM, 
   SR, 
   RouteOptions,
   CookieOptions, 
-  LoaderResponse 
+  LoaderResponse,
+  IMRequestInitializer,
+  SRResponseInitializer
 } from '../../types';
-import type Context from '../../Context';
+import Factory from '../../Factory';
 import Request from '../../Request';
 import Response from '../../Response';
 import Exception from '../../Exception';
@@ -22,45 +23,71 @@ import {
   objectFromQuery,
   readableStreamToReadable
 } from '../../helpers';
-//runtime
-import type { Action } from '../types';
-import Queue from '../Queue';
 //local
+import type { RouteAction } from './types';
+import Queue from './Queue';
+import Plugin from './Plugin';
 import { imToURL } from './helpers';
 
-export default class Route {
+export default class Route<C extends UnknownNest = UnknownNest> 
+  extends Factory<C>
+{
+  /**
+   * Loads the plugins and returns the factory
+   */
+  public static async bootstrap<C extends UnknownNest = UnknownNest>(
+    options: RouteOptions = {}
+  ) {
+    const factory = new Route<C>(options);
+    return await factory.bootstrap();
+  }
+
+  //body size
+  protected _size: number;
   //cookie options
-  public readonly cookie: CookieOptions;
-  //request size
-  public readonly size: number;
+  protected _cookie: CookieOptions;
 
   /**
-   * Sets up the emitter
+   * Sets up the route
    */
   public constructor(options: RouteOptions = {}) {
-    this.cookie = Object.freeze(options.cookie || { path: '/' });
-    this.size = options.size || 0;
+    const { 
+      size = 0,
+      cookie = { path: '/' }, 
+      ...config 
+    } = options;
+    super({ key: 'client', ...config });
+    this._size = size;
+    this._cookie = cookie;
   }
 
   /**
-   * Handles fetch requests
+   * Handles entry file requests
+   * 
+   * NOTE: groupings are by exact event name/pattern match
+   * it doesn't take into consideration an event trigger
+   * can match multiple patterns. For example the following 
+   * wont be grouped together.
+   * 
+   * ie. GET /user/:id and GET /user/search
    */
   public async handle(
     route: string, 
-    actions: Set<Action>, 
+    actions: Set<RouteAction>, 
     im: IM, 
     sr: SR
   ) {
     //initialize the request
-    const req = this.request(im);
-    const res = this.response(sr);
+    const req = this.request({ resource: im });
+    const res = this.response({ resource: sr });
     const queue = this.queue(actions);
+    const ctx = req.fromRoute(route);
     //load the body
     await req.load();
-    //get the context from the route
-    const ctx = req.fromRoute(route);
-    //then try to emit the event
-    await this.process(queue, ctx, res);
+    //bootstrap the plugins
+    await this.bootstrap();
+    //hook the plugins
+    await Plugin.hook<C>(this, queue, ctx, res);
     //if the response was not sent by now,
     if (!res.sent) {
       //send the response
@@ -70,41 +97,9 @@ export default class Route {
   }
 
   /**
-   * Handles a payload using events
-   */
-  public async process(queue: Queue, ctx: Context, res: Response) {
-    const status = await queue.run(ctx, res);
-    //if the status was incomplete (309)
-    if (status.code === StatusCode.ABORT.code) {
-      //the callback that set that should have already processed
-      //the request and is signaling to no longer continue
-      return false;
-    }
-
-    //if no body and status code
-    //NOTE: it's okay if there is no body as 
-    //      long as there is a status code
-    //ex. like in the case of a redirect
-    if (!res.body && !res.code) {
-      const { code, status } = StatusCode.NOT_FOUND;
-      res.code = code;
-      res.body = `${code} ${status}`;
-    }
-
-    //if no status was set
-    if (!res.code || !res.status) {
-      //make it okay
-      res.status = StatusCode.OK;
-    }
-
-    //if the status was incomplete (309)
-    return status.code !== StatusCode.ABORT.code;
-  }
-
-  /**
    * Sets up the queue
    */
-  public queue(actions: Set<Action>) {
+  public queue(actions: Set<RouteAction>) {
     const emitter = new Queue();
     actions.forEach(action => emitter.add(action));
     return emitter;
@@ -113,45 +108,54 @@ export default class Route {
   /**
    * Sets up the request
    */
-  public request(im: IM) {
+  public request(init?: IMRequestInitializer<Route<C>>) {
+    if (!init) {
+      return new Request<Route<C>>({ context: this });
+    }
+    const im = init.resource;
+    //set context
+    init.context = this;
     //set method
-    const method = (im.method?.toUpperCase() || 'GET') as Method;
+    init.method = init.method 
+      || (im.method?.toUpperCase() || 'GET') as Method;
     //set the type
-    const mimetype = im.headers['content-type'] || 'text/plain';
+    init.mimetype = init.mimetype 
+      || im.headers['content-type'] 
+      || 'text/plain';
     //set the headers
-    const headers = Object.fromEntries(
+    init.headers = init.headers || Object.fromEntries(
       Object.entries(im.headers).filter(
         ([key, value]) => typeof value !== 'undefined'
       )
     ) as Record<string, string|string[]>;
     //set session
-    const session = cookie.parse(
+    init.session = init.session || cookie.parse(
       im.headers.cookie as string || ''
     ) as Record<string, string>;
     //set url
     const url = imToURL(im);
+    init.url = init.url || url;
     //set query
-    const query = objectFromQuery(url.searchParams.toString());
+    init.query = init.query 
+      || objectFromQuery(url.searchParams.toString());
     //make request
-    const req = new Request({
-      method,
-      mimetype,
-      headers,
-      url,
-      query,
-      session,
-      resource: im
-    });
-    req.loader = loader(im);
+    const req = new Request<Route<C>>(init);
+    const size = this.config<number>('server', 'bodySize') || this._size;
+    req.loader = loader(im, size);
     return req;
   }
 
   /**
    * Sets up the response
    */
-  public response(sr: SR) {
-    const res = new Response({ resource: sr });
-    res.dispatcher = dispatcher(sr, this.cookie);
+  public response(init?: SRResponseInitializer) {
+    if (!init) {
+      return new Response();
+    }
+    const sr = init.resource;
+    const res = new Response(init);
+    const cookie = this.config<CookieOptions>('cookie') || this._cookie;
+    res.dispatcher = dispatcher(sr, cookie);
     return res;
   }
 }
@@ -268,3 +272,15 @@ export function dispatcher(
     });
   } 
 };
+
+export function bootstrap<C extends UnknownNest = UnknownNest>(
+  options: RouteOptions = {}
+) {
+  return Route.bootstrap<C>(options);
+}
+
+export function route<C extends UnknownNest = UnknownNest>(
+  options: RouteOptions = {}
+) {
+  return new Route<C>(options);
+}

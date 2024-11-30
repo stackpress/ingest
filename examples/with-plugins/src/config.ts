@@ -1,7 +1,7 @@
-import type { CookieOptions, Pluggable } from '@stackpress/ingest';
+import type { CookieOptions } from '@stackpress/ingest';
 
-const environment = process.env.SERVER_ENV || 'development';
-const config: Config = {
+export const environment = process.env.SERVER_ENV || 'development';
+export const config: Config = {
   server: {
     cwd: process.cwd(),
     mode: environment,
@@ -22,7 +22,3 @@ export type Config = {
     size: number
   }
 };
-
-export type App = Pluggable<Config>;
-
-export default config;

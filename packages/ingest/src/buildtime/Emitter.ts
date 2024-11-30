@@ -34,6 +34,13 @@ export default class Emitter {
     }
     //add the listener to the group
     this.listeners.get(pattern)?.add({ entry, priority });
+
+    //----------------------------------------------//
+    // NOTE: The following event only triggers when
+    // manually emitting the event. Server doesn't
+    // use this...
+    //----------------------------------------------//
+
     //add the event to the emitter
     this.emitter.on(event, async (req, res) => {
       const imports = await import(entry);
@@ -42,5 +49,6 @@ export default class Emitter {
       delete require.cache[require.resolve(entry)];
       return await action(req, res);
     }, priority);
+    return this;
   }
 };

@@ -1,5 +1,6 @@
 //stackpress
 import type { Method, Route } from '@stackpress/types/dist/types';
+import ItemQueue from '@stackpress/types/dist/ItemQueue';
 //local
 import type { ManifestOptions } from './types';
 import Emitter from './Emitter';
@@ -38,6 +39,40 @@ export default class Router extends Emitter {
   }
 
   /**
+   * Returns a sorted list of entries given the route
+   */
+  public entries(method: string, path: string) {
+    const entries = new Map<string, Set<string>>();
+    //form the triggered event name
+    const event = method + ' ' + path;
+    //get the actions that match the triggered event name
+    //{ event, pattern, parameters }
+    const matches = this.emitter.match(event);
+    //loop through the matches
+    for (const match of matches.values()) {
+      //get listeners for the event
+      const listeners = this.listeners.get(match.pattern);
+      //skip if no listeners
+      if (!listeners) continue;
+      const route = this.routes.get(match.pattern);
+      //skip if not a route or methods don't match
+      if (!route || route.method !== method) continue;
+      //make a queue
+      //create a new queue. We will use for just sorting purposes...
+      const sorter = new ItemQueue<string>();
+      //loop the listeners
+      listeners.forEach(
+        //add entry to the queue (auto sort)
+        listener => sorter.add(listener.entry, listener.priority)
+      );
+      //add to entries
+      const set = new Set<string>(sorter.queue.map(({ item }) => item));
+      entries.set(route.path, set);
+    }
+    return entries;
+  }
+
+  /**
    * Route for GET method
    */
   public get(path: string, entry: string, priority?: number) {
@@ -57,6 +92,11 @@ export default class Router extends Emitter {
    */
   public manifest(options: ManifestOptions = {}) {
     const manifest = new Manifest(this, options);
+    //NOTE: groupings are by exact event name/pattern match
+    //it doesn't take into consideration an event trigger
+    //can match multiple patterns. For example the following
+    //wont be grouped together...
+    //ie. GET /user/:id and GET /user/search
     this.listeners.forEach((tasks, event) => {
       //{ method, route }
       const uri = this.routes.get(event);
@@ -131,12 +171,26 @@ export default class Router extends Emitter {
       method: method === '[A-Z]+' ? 'ALL' : method,
       path: path
     });
+
+    //----------------------------------------------//
+    // NOTE: The following bypasses the emitter's 
+    // `on` method in order to pass the context 
+    // (instead of the request) to the action
+    //----------------------------------------------//
+
     //if the listener group does not exist, create it
-    if (!this.listeners.has(pattern)) {
-      this.listeners.set(pattern, new Set());
+    if (!this.listeners.has(event.toString())) {
+      this.listeners.set(event.toString(), new Set());
     }
     //add the listener to the group
-    this.listeners.get(pattern)?.add({ entry, priority });
+    this.listeners.get(event.toString())?.add({ entry, priority });
+
+    //----------------------------------------------//
+    // NOTE: The following event only triggers when
+    // manually emitting the event. Server doesn't
+    // use this...
+    //----------------------------------------------//
+
     //add the event to the emitter
     this.emitter.on(event, async (req, res) => {
       const imports = await import(entry);

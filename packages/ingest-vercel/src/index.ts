@@ -1,6 +1,6 @@
 //stackpress
 import type { 
-  BuilderOptions, 
+  ServerOptions, 
   UnknownNest 
 } from '@stackpress/ingest/dist/buildtime/types';
 //vercel
@@ -12,12 +12,12 @@ export { VercelBuilder };
 
 export function bootstrap<
   C extends UnknownNest = UnknownNest
->(options: BuilderOptions = {}) {
+>(options: ServerOptions = {}) {
   return VercelBuilder.bootstrap<C>(options);
 }
 
 export default function vercel<
   C extends UnknownNest = UnknownNest
->(options: BuilderOptions = {}) {
+>(options: ServerOptions = {}) {
   return new VercelBuilder<C>(options);
 }

@@ -8,12 +8,17 @@ import Response from '../../Response';
 import { ReadSession, WriteSession } from '../../Session';
 export type * from '../../types';
 export * from '../../helpers';
-//runtime
-import Factory, { runtime, bootstrap } from '../Factory';
-import Queue from '../Queue';
-export type * from '../types';
 //local
-import Route, { loader, dispatcher } from './Route';
+import Route, { 
+  loader,
+  dispatcher,
+  route,
+  bootstrap 
+} from './Route';
+import Queue from './Queue';
+import Plugin from './Plugin';
+
+export type * from './types';
 export * from './helpers';
 
 export { 
@@ -24,12 +29,11 @@ export {
   Response,
   ReadSession,
   WriteSession,
-  Factory,
   Queue, 
+  Plugin,
   Route, 
   loader, 
   dispatcher, 
+  route,
   bootstrap
 };
-
-export default runtime;

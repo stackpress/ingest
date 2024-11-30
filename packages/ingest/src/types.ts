@@ -5,11 +5,11 @@ import type { Readable } from 'stream';
 import type { 
   Method, 
   Trace, 
-  NestedObject, 
-  UnknownNest 
+  NestedObject
 } from '@stackpress/types/dist/types';
 import type FileSystem from '@stackpress/types/dist/filesystem/FileSystem';
 //local
+import type Context from './Context';
 import type Factory from './Factory';
 import type Request from './Request';
 import type Response from './Response';
@@ -35,6 +35,10 @@ export type FetchResponse = globalThis.Response;
 
 //--------------------------------------------------------------------//
 // Payload Types
+
+export type FactoryContext = Context<Factory>;
+export type Req = Context<Factory>;
+export type Res = Response;
 
 export type Headers = Record<string, string|string[]> 
   | Map<string, string|string[]>;
@@ -64,9 +68,9 @@ export type ResponseInitializer = {
   mimetype?: string,
   resource?: SR|FetchResponse
 };
-
-export type RequestInitializer = {
+export type RequestInitializer<C = unknown> = {
   body?: Body,
+  context?: C,
   headers?: Headers,
   mimetype?: string,
   data?: Data,
@@ -76,6 +80,18 @@ export type RequestInitializer = {
   session?: Session,
   url?: string|URL,
   resource?: IM|FetchRequest
+};
+export type IMRequestInitializer<C = unknown> = RequestInitializer<C> & {
+  resource: IM
+};
+export type SRResponseInitializer = ResponseInitializer & {
+  resource: SR
+};
+export type FetchRequestInitializer<C = unknown> = RequestInitializer<C> & {
+  resource: FetchRequest
+};
+export type FetchResponseInitializer = ResponseInitializer & {
+  resource: FetchResponse
 };
 
 export type ResponseErrorOptions = {
@@ -107,19 +123,6 @@ export type CookieOptions = {
 };
 
 //--------------------------------------------------------------------//
-// Server Types
-
-export type ServerOptions = {
-  cookie?: CookieOptions,
-  size?: number
-};
-
-export type RouteOptions = {
-  cookie?: CookieOptions,
-  size?: number
-};
-
-//--------------------------------------------------------------------//
 // Loader Types
 
 export type ConfigLoaderOptions = {
@@ -129,24 +132,17 @@ export type ConfigLoaderOptions = {
 };
 
 export type PluginLoaderOptions = ConfigLoaderOptions & {
+  key?: string,
   modules?: string, 
   plugins?: string[]
 };
+
+export type RouteOptions = PluginLoaderOptions & {
+  cookie?: CookieOptions,
+  size?: number
+}
 
 //--------------------------------------------------------------------//
 // Factory Types
 
 export type FactoryEvents = Record<string, [ Request, Response ]>;
-
-export type Pluggable<C extends UnknownNest = UnknownNest> = Factory<C> & {
-  all: (path: string, entry: string, priority?: number) => Factory<C>,
-  connect: (path: string, entry: string, priority?: number) => Factory<C>,
-  delete: (path: string, entry: string, priority?: number) => Factory<C>,
-  get: (path: string, entry: string, priority?: number) => Factory<C>,
-  head: (path: string, entry: string, priority?: number) => Factory<C>,
-  options: (path: string, entry: string, priority?: number) => Factory<C>,
-  patch: (path: string, entry: string, priority?: number) => Factory<C>,
-  post: (path: string, entry: string, priority?: number) => Factory<C>,
-  put: (path: string, entry: string, priority?: number) => Factory<C>,
-  trace: (path: string, entry: string, priority?: number) => Factory<C>
-};

@@ -14,6 +14,8 @@
     "vercel:dev": "yarn --cwd examples/with-vercel dev",
     "netlify:build": "yarn --cwd examples/with-netlify generate",
     "netlify:dev": "yarn --cwd examples/with-netlify dev",
+    "plugins:build": "yarn --cwd examples/with-plugins build",
+    "plugins:dev": "yarn --cwd examples/with-plugins dev",
     "test": "yarn --cwd packages/ingest test"
   }
 }

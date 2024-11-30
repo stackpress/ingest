@@ -1,18 +1,19 @@
 //modules
 import { Readable } from 'stream';
 import * as cookie from 'cookie';
-import type { Method } from '@stackpress/types/dist/types';
-import StatusCode from '@stackpress/types/dist/StatusCode';
+//stackpress
+import type { Method, UnknownNest } from '@stackpress/types/dist/types';
 //common
 import type { 
   Body, 
   RouteOptions,
   CookieOptions, 
   LoaderResponse, 
-  FetchRequest 
+  FetchRequest,
+  ResponseInitializer,
+  FetchRequestInitializer
 } from '../../types';
-import type Context from '../../Context';
-import type { Action } from '../types';
+import Factory from '../../Factory';
 import Request from '../../Request';
 import Response from '../../Response';
 import { 
@@ -21,43 +22,70 @@ import {
   objectFromQuery,
   readableToReadableStream
 } from '../../helpers';
-//runtime
-import Queue from '../Queue';
 //local
+import type { RouteAction } from './types';
+import Queue from './Queue';
+import Plugin from './Plugin';
 import { NativeResponse } from './helpers';
 
-export default class Route {
+export default class Route<C extends UnknownNest = UnknownNest> 
+  extends Factory<C>
+{
+  /**
+   * Loads the plugins and returns the factory
+   */
+  public static async bootstrap<C extends UnknownNest = UnknownNest>(
+    options: RouteOptions = {}
+  ) {
+    const factory = new Route<C>(options);
+    return await factory.bootstrap();
+  }
+
+  //body size
+  protected _size: number;
   //cookie options
-  public readonly cookie: CookieOptions;
-  //request size
-  public readonly size: number;
+  protected _cookie: CookieOptions;
 
   /**
-   * Sets up the emitter
+   * Sets up the route
    */
   public constructor(options: RouteOptions = {}) {
-    this.cookie = Object.freeze(options.cookie || { path: '/' });
-    this.size = options.size || 0;
+    const { 
+      size = 0,
+      cookie = { path: '/' }, 
+      ...config 
+    } = options;
+    super({ key: 'client', ...config });
+    this._size = size;
+    this._cookie = cookie;
   }
 
   /**
-   * Handles fetch requests
+   * Handles entry file requests
+   * 
+   * NOTE: groupings are by exact event name/pattern match
+   * it doesn't take into consideration an event trigger
+   * can match multiple patterns. For example the following 
+   * wont be grouped together.
+   * 
+   * ie. GET /user/:id and GET /user/search
    */
   public async handle(
     route: string, 
-    actions: Set<Action>, 
+    actions: Set<RouteAction>, 
     request: FetchRequest
   ) {
     //initialize the request
-    const req = this.request(request);
+    const req = this.request({ resource: request });
     const res = this.response();
     const queue = this.queue(actions);
+    const ctx = req.fromRoute(route);
     //load the body
     await req.load();
-    //get the context from the route
-    const ctx = req.fromRoute(route);
-    //then try to emit the event
-    await this.process(queue, ctx, res);
+    //bootstrap the plugins
+    await this.bootstrap();
+    //hook the plugins
+    await Plugin.hook<C>(this, queue, ctx, res);
     //We would normally dispatch, but we can only create the
     //fetch response when all the data is ready...
     // if (!res.sent) {
@@ -65,46 +93,14 @@ export default class Route {
     //   res.dispatch();
     // }
     //just map the ingets response to a fetch response
-    return response(res, this.cookie);
-  }
-
-  /**
-   * Emit a series of events in order to catch and 
-   * manipulate the payload in different stages
-   */
-  public async process(queue: Queue, ctx: Context, res: Response) {
-    const status = await queue.run(ctx, res);
-    //if the status was incomplete (309)
-    if (status.code === StatusCode.ABORT.code) {
-      //the callback that set that should have already processed
-      //the request and is signaling to no longer continue
-      return false;
-    }
-
-    //if no body and status code
-    //NOTE: it's okay if there is no body as 
-    //      long as there is a status code
-    //ex. like in the case of a redirect
-    if (!res.body && !res.code) {
-      const { code, status } = StatusCode.NOT_FOUND;
-      res.code = code;
-      res.body = `${code} ${status}`;
-    }
-
-    //if no status was set
-    if (!res.code || !res.status) {
-      //make it okay
-      res.status = StatusCode.OK;
-    }
-
-    //if the status was incomplete (309)
-    return status.code !== StatusCode.ABORT.code;
+    const cookie = this.config<CookieOptions>('cookie') || this._cookie;
+    return response(res, cookie);
   }
 
   /**
    * Creates an emitter and populates it with actions
    */
-  public queue(actions: Set<Action>) {
+  public queue(actions: Set<RouteAction>) {
     const queue = new Queue();
     actions.forEach(action => queue.add(action));
     return queue;
@@ -113,11 +109,17 @@ export default class Route {
   /**
    * Sets up the request
    */
-  public request(request: FetchRequest) {
+  public request(init?: FetchRequestInitializer<Route<C>>) {
+    if (!init) {
+      return new Request<Route<C>>({ context: this });
+    }
+    const request = init.resource;
+    //set context
+    init.context = this;
     //set method
-    const method = (request.method?.toUpperCase() || 'GET') as Method;
+    init.method = (request.method?.toUpperCase() || 'GET') as Method;
     //set the type
-    const mimetype = request.headers.get('content-type') || 'text/plain';
+    init.mimetype = request.headers.get('content-type') || 'text/plain';
     //set the headers
     const headers: Record<string, string> = {};
     request.headers.forEach((value, key) => {
@@ -125,25 +127,19 @@ export default class Route {
         headers[key] = value;
       }
     });
+    init.headers = init.headers || headers;
     //set session
-    const session = cookie.parse(
+    init.session = init.session || cookie.parse(
       request.headers.get('cookie') as string || ''
     ) as Record<string, string>;
     //set url
     const url = new URL(request.url);
+    init.url = init.url || url;
     //set query
-    const query = objectFromQuery(url.searchParams.toString());
-
+    init.query = init.query 
+      || objectFromQuery(url.searchParams.toString());
     //setup the payload
-    const req = new Request({
-      method,
-      mimetype,
-      headers,
-      url,
-      query,
-      session,
-      resource: request
-    });
+    const req = new Request<Route<C>>(init);
     req.loader = loader(request);
     return req;
   }
@@ -151,22 +147,22 @@ export default class Route {
   /**
    * Sets up the response
    */
-  public response() {
-    return new Response();
+  public response(init?: ResponseInitializer) {
+    return new Response(init);
   }
 }
 
 /**
  * Request body loader
  */
-export function loader(resource: FetchRequest) {
+export function loader(resource: FetchRequest, size = 0) {
   return (req: Request) => {
     return new Promise<LoaderResponse|undefined>(async resolve => {
       //if the body is cached
       if (req.body !== null) {
         resolve(undefined);
       }
-
+      //TODO: limit the size of the body
       const body = await resource.text();
       const post = formDataToObject(req.type, body)
 
@@ -258,4 +254,16 @@ export async function response(
     response.headers.set('Content-Type', mimetype);
   }
   return response;
-}
+};
+
+export function bootstrap<C extends UnknownNest = UnknownNest>(
+  options: RouteOptions = {}
+) {
+  return Route.bootstrap<C>(options);
+};
+
+export function route<C extends UnknownNest = UnknownNest>(
+  options: RouteOptions = {}
+) {
+  return new Route<C>(options);
+};

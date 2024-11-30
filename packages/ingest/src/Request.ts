@@ -22,7 +22,7 @@ import {
 import Context from './Context';
 import { session } from './Session';
 
-export default class Request {
+export default class Request<C = unknown> {
   //data controller
   public readonly data: CallableNest;
   //head controller
@@ -39,6 +39,8 @@ export default class Request {
   public readonly method: Method;
   //payload body
   protected _body: Body|null;
+  //the server or route
+  protected _context?: C;
   //body mimetype
   protected _mimetype: string;
   //whether if the body was loaded
@@ -53,6 +55,13 @@ export default class Request {
    */
   public get body() {
     return typeof this._body !== 'undefined' ? this._body : null;
+  }
+
+  /**
+   * Returns the context
+   */
+  public get context() {
+    return this._context as C;
   }
 
   /**
@@ -107,7 +116,7 @@ export default class Request {
   /**
    * Sets request defaults
    */
-  public constructor(init: RequestInitializer = {}) {
+  public constructor(init: RequestInitializer<C> = {}) {
     this.data = nest();
     this.url = init.url instanceof URL ? init.url
       : typeof init.url === 'string' ? new URL(init.url)
@@ -153,6 +162,7 @@ export default class Request {
 
     this.method = init.method || 'GET';
     this._body = init.body || null;
+    this._context = init.context;
     this._mimetype = init.mimetype || 'text/plain';
     this._resource = init.resource;
     
@@ -176,7 +186,7 @@ export default class Request {
    */
   public fromPattern(pattern: string|RegExp) {
     const args = eventParams(pattern.toString(), this.url.pathname);
-    return new Context(this, { args });
+    return new Context<C>(this, { args });
   }
 
   /**
@@ -185,7 +195,7 @@ export default class Request {
    */
   public fromRoute(route: string) {
     const { args, params } = routeParams(route, this.url.pathname);
-    return new Context(this, { args, params });
+    return new Context<C>(this, { args, params });
   }
 
   /**

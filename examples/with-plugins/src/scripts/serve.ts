@@ -1,15 +1,15 @@
-import app from '../app';
+import server from '../server';
 
 async function main() {
   //load the plugins
-  await app.bootstrap();
+  await server.bootstrap();
   //load the plugin routes
-  await app.emit('route', app.request(), app.response());
+  await server.emit('route', server.request(), server.response());
   //start the server
-  app.create().listen(3000, () => {
+  server.create().listen(3000, () => {
     console.log('Server is running on port 3000');
     console.log('------------------------------');
-    console.log(app.router.listeners);
+    console.log(server.router.listeners);
   });
 }
 

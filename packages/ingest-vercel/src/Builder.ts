@@ -1,14 +1,14 @@
 import type {
   ManifestOptions,
-  ProjectOptions,
-  BuilderOptions,
+  CookieOptions,
+  ServerOptions,
   TranspileInfo, 
   Transpiler,
   UnknownNest
 } from '@stackpress/ingest/dist/buildtime/types';
 
 import path from 'path';
-import Builder from '@stackpress/ingest/dist/buildtime/Builder';
+import Server from '@stackpress/ingest/dist/buildtime/Server';
 import { 
   IndentationText,
   createSourceFile
@@ -16,27 +16,25 @@ import {
 
 export default class VercelBuilder<
  C extends UnknownNest = UnknownNest
-> extends Builder<C> {
+> extends Server<C> {
   /**
    * Loads the plugins and returns the factory
    */
   public static async bootstrap<
     C extends UnknownNest = UnknownNest
-  >(options: BuilderOptions = {}) {
+  >(options: ServerOptions = {}) {
     const factory = new VercelBuilder<C>(options);
     return await factory.bootstrap();
   }
 
-  //ts-morph options
-  public readonly tsconfig: ProjectOptions;
-
   /**
-   * Sets up the builder
+   * Creates an entry file
    */
-  public constructor(options: BuilderOptions = {}) {
-    const { tsconfig = '../tsconfig.json', ...config } = options;
-    super(config);
-    this.tsconfig = {
+  public transpile(info: TranspileInfo) {
+    const tsconfig = this.config<string>('server', 'tsconfig') 
+      || path.join(this.loader.cwd, 'tsconfig.json');
+    //create a new source file
+    const { source } = createSourceFile('entry.ts', {
       tsConfigFilePath: tsconfig,
       skipAddingFilesFromTsConfig: true,
       compilerOptions: {
@@ -50,22 +48,16 @@ export default class VercelBuilder<
       manipulationSettings: {
         indentationText: IndentationText.TwoSpaces
       }
-    };
-  }
-
-  /**
-   * Creates an entry file
-   */
-  public transpile(info: TranspileInfo) {
-    //create a new source file
-    const { source } = createSourceFile('entry.ts', this.tsconfig);
+    });
     //get cookie options
-    const cookie = JSON.stringify(this.server.cookie || {});
-    //import type { FetchAction } from '@stackpress/ingest/dist/runtime/fetch/types'
+    const cookie = JSON.stringify(
+      this.config<CookieOptions>('cookie') || { path: '/' }
+    );
+    //import type { RouteAction } from '@stackpress/ingest/dist/runtime/fetch/types'
     source.addImportDeclaration({
       isTypeOnly: true,
       moduleSpecifier: '@stackpress/ingest/dist/runtime/fetch/types',
-      namedImports: [ 'FetchAction' ]
+      namedImports: [ 'RouteAction' ]
     });
     //import Route from '@stackpress/ingest/dist/runtime/fetch/Route';
     source.addImportDeclaration({
@@ -89,7 +81,7 @@ export default class VercelBuilder<
       parameters: [{ name: 'request', type: 'Request' }],
       statements: (`
         const route = new Route({ cookie: ${cookie} });
-        const actions = new Set<FetchAction>();
+        const actions = new Set<RouteAction>();
         ${info.actions.map(
           (_, i) => `actions.add(task_${i});`
         ).join('\n')}
@@ -106,10 +98,11 @@ export default class VercelBuilder<
     const transpiler: Transpiler = entries => {
       return this.transpile(entries);
     }
-    const results = await this._build(transpiler, {
+    const manifest = this.router.manifest({
       buildDir: './api',
       ...options
     });
+    const results = await manifest.build(transpiler);
     //write the manifest to disk
     const json = {
       version: 2,

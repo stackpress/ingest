@@ -2,6 +2,8 @@
 import { Readable } from 'stream';
 //stackpress
 import Nest from '@stackpress/types/dist/Nest';
+//local
+import { Req, Res } from './types';
 
 /**
  * Returns true if the value is a native JS object
@@ -207,3 +209,31 @@ export function readableToReadableStream(stream: Readable) {
     }
   });
 }
+
+/**
+ * Basic task wrapper
+ */
+export function route(
+  action: (req: Req, res: Res) => Promise<void|false>,
+  pluggable = true
+) {
+  //if not pluggable
+  if (!pluggable) return action;
+  //add pluggable steps
+  return async (req: Req, res: Res) => {
+    //bootstrap the context
+    const context = await req.context.bootstrap();
+    //call pre-event request
+    const pre = await context.emit('request', req.request, res);
+    //stop if aborted
+    if (pre.code === 309) return false;
+    //call the action
+    const cur = await action(req, res);
+    //stop if aborted
+    if (cur === false) return false;
+    //call post-event response
+    const pos = await context.emit('response', req.request, res);
+    //stop if aborted
+    if (pos.code === 309) return false;
+  };
+};
