@@ -1,50 +1,66 @@
+//stackpress
 import type { 
-  Task, 
   CallableMap, 
   CallableNest, 
   UnknownNest 
 } from '@stackpress/types';
-import type { 
-  RequestInitializer,
-  ResponseInitializer,
-  PluginLoaderOptions,
-  FactoryEvents
-} from './types';
-
-import EventEmitter from '@stackpress/types/dist/EventEmitter';
 import { nest } from '@stackpress/types/dist/Nest';
 import { map } from '@stackpress/types/dist/helpers';
-
+//local
+import type { 
+  PluginLoaderOptions,
+  RequestInitializer,
+  ResponseInitializer,
+  ServerHandler
+} from './types';
+import Router from './Router';
 import Request from './Request';
 import Response from './Response';
 import { PluginLoader } from './Loader';
 
-export default class Factory<C extends UnknownNest = UnknownNest> {
-  /**
-   * Loads the plugins and returns the factory
-   */
-  public static async bootstrap<C extends UnknownNest = UnknownNest>(
-    options: PluginLoaderOptions = {}
-  ) {
-    const factory = new Factory<C>(options);
-    return await factory.bootstrap();
-  }
-
+/**
+ * Generic server class
+ * 
+ * - extends router
+ * - extends event emitter
+ * - has an arbitrary config map <C>
+ * - has a plugin manager
+ * - generic request<R> and response<S> wrappers
+ * - plug in http or fetch server with handler()
+ */
+export default class Server<
+  //configuration map
+  C extends UnknownNest = UnknownNest, 
+  //request resource
+  R = unknown, 
+  //response resource
+  S = unknown
+> 
+  extends Router<R, S, Server<C, R, S>>
+{
+  //arbitrary config map
   public readonly config: CallableNest<C>;
-  //event emitter
-  public readonly emitter: EventEmitter<FactoryEvents>;
   //plugin loader
   public readonly loader: PluginLoader;
   //list of plugin configurations
   public readonly plugins: CallableMap;
+  //handler
+  protected _handler: ServerHandler<C, R, S> = (_, __, res) => res;
+
+  /**
+   * Sets the request handler
+   */
+  public set handler(callback: ServerHandler<C, R, S>) {
+    this._handler = callback;
+  }
 
   /**
    * Sets up the plugin loader
    */
   public constructor(options: PluginLoaderOptions = {}) {
+    super();
     this.config = nest();
     this.plugins = map();
-    this.emitter = new EventEmitter();
     this.loader = new PluginLoader(options);
   }
 
@@ -67,22 +83,11 @@ export default class Factory<C extends UnknownNest = UnknownNest> {
   }
 
   /**
-   * Emits an event
+   * Handles a request
    */
-  public async emit(event: string, request: Request, response: Response) {
-    return await this.emitter.emit(event, request, response);
-  }
-
-  /**
-   * Adds an event listener
-   */
-  public on(
-    event: string | RegExp, 
-    action: Task<[Request, Response]>, 
-    priority?: number
-  ) {
-    this.emitter.on(event, action, priority);
-    return this;
+  public async handle(request: R, response: S) {
+    //handle the request
+    return await this._handler(this, request, response);
   }
 
   /**
@@ -103,15 +108,15 @@ export default class Factory<C extends UnknownNest = UnknownNest> {
   /**
    * Creates a new request
    */
-  public request(init: RequestInitializer<Factory<C>> = {}) {
+  public request(init: Partial<RequestInitializer<R, Server<C, R, S>>> = {}) {
     init.context = this;
-    return new Request<Factory<C>>(init);
+    return new Request<R, Server<C, R, S>>(init);
   }
 
   /**
    * Creates a new response
    */
-  public response(init?: ResponseInitializer) {
-    return new Response(init);
+  public response(init: Partial<ResponseInitializer<S>> = {}) {
+    return new Response<S>(init);
   }
-};
+}

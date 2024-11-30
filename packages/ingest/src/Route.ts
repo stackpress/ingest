@@ -1,59 +1,64 @@
 //stackpress
 import type { UnknownNest } from '@stackpress/types/dist/types';
 import StatusCode from '@stackpress/types/dist/StatusCode';
-//common
-import type Response from '../../Response';
-import Exception from '../../Exception';
 //local
-import type { RouteContext, RouteRequest } from './types';
-import type Route from './Route';
-import type Queue from './Queue';
+import type Server from './Server';
+import type Request from './Request';
+import type Response from './Response';
+import Exception from './Exception';
 
-export default class Plugin<C extends UnknownNest = UnknownNest> {
+/**
+ * Plugable route handler
+ * 
+ * - before (request) hook
+ * - after (response) hook
+ * - properly formats the response
+ */
+export default class Route<
+  //configuration map
+  C extends UnknownNest = UnknownNest, 
+  //request resource
+  R = unknown, 
+  //response resource
+  S = unknown
+> {
   /**
    * Hooks in plugins to the request lifecycle
    */
-  public static async hook<C extends UnknownNest = UnknownNest>(
-    route: Route<C>, 
-    queue: Queue<C>, 
-    context: RouteContext<C>, 
-    response: Response
+  public static async emit<
+    C extends UnknownNest = UnknownNest, 
+    R = unknown, 
+    S = unknown
+  >(
+    event: string,
+    request: Request<R, Server<C, R, S>>,
+    response: Response<S>
   ) {
-    const plugin = new Plugin(route, queue, context, response);
-    return plugin.hook();
+    const route = new Route(event, request, response);
+    return route.emit();
   }
-  
-  //queue of route tasks entry files
-  public readonly queue: Queue<C>;
-  //route request context
-  public readonly context: RouteContext<C>;
-  //route request
-  public readonly request: RouteRequest<C>;
-  //route response
-  public readonly response: Response;
-  //route instance
-  public readonly route: Route<C>;
+
+  public readonly event: string;
+  public readonly request: Request<R, Server<C, R, S>>;
+  public readonly response: Response<S>;
 
   /**
    * Gets everything needed from route.handle()
    */
   constructor(
-    route: Route<C>,
-    queue: Queue<C>, 
-    context: RouteContext<C>, 
-    response: Response
+    event: string,
+    request: Request<R, Server<C, R, S>>,
+    response: Response<S>
   ) {
-    this.route = route;
-    this.queue = queue;
-    this.context = context;
-    this.request = context.request;
+    this.event = event;
+    this.request = request;
     this.response = response;
   }
 
   /**
    * Hooks in plugins to the request lifecycle
    */
-  public async hook() {
+  public async emit() {
     //try to trigger request pre-processors
     if (!await this.prepare()) {
       //if the request exits, then stop
@@ -80,7 +85,7 @@ export default class Plugin<C extends UnknownNest = UnknownNest> {
     //default status
     let status = StatusCode.OK;
     try { //to allow plugins to handle the request
-      status = await this.route.emit(
+      status = await this.request.context.emit(
         'request', 
         this.request, 
         this.response
@@ -94,7 +99,7 @@ export default class Plugin<C extends UnknownNest = UnknownNest> {
       //set the exception as the error
       this.response.setError(exception);
       //allow plugins to handle the error
-      status = await this.route.emit(
+      status = await this.request.context.emit(
         'error', 
         this.request, 
         this.response
@@ -110,9 +115,10 @@ export default class Plugin<C extends UnknownNest = UnknownNest> {
   public async process() {
     //default status
     let status = StatusCode.OK;
-    try { //to run the task queue
-      status = await this.queue.run(
-        this.context, 
+    try { //to emit the route
+      await this.request.context.emit(
+        this.event, 
+        this.request, 
         this.response
       );
     } catch(error) {
@@ -124,7 +130,7 @@ export default class Plugin<C extends UnknownNest = UnknownNest> {
       //set the exception as the error
       this.response.setError(exception);
       //allow plugins to handle the error
-      status = await this.route.emit(
+      status = await this.request.context.emit(
         'error', 
         this.request, 
         this.response
@@ -149,7 +155,7 @@ export default class Plugin<C extends UnknownNest = UnknownNest> {
       //set the exception as the error
       this.response.setError(exception);
       //allow plugins to handle the not found
-      status = await this.route.emit(
+      status = await this.request.context.emit(
         'error', 
         this.request, 
         this.response
@@ -171,7 +177,7 @@ export default class Plugin<C extends UnknownNest = UnknownNest> {
     //default status
     let status = StatusCode.OK;
     try { //to allow plugins to handle the response
-      status = await this.route.emit(
+      status = await this.request.context.emit(
         'response', 
         this.request, 
         this.response
@@ -185,7 +191,7 @@ export default class Plugin<C extends UnknownNest = UnknownNest> {
       //set the exception as the error
       this.response.setError(exception);
       //allow plugins to handle the error
-      status = await this.route.emit(
+      status = await this.request.context.emit(
         'error', 
         this.request, 
         this.response

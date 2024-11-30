@@ -1,8 +1,10 @@
-import type { ConfigLoaderOptions, PluginLoaderOptions } from './types';
-
+//modules
 import path from 'path';
+//stackpress
 import NodeFS from '@stackpress/types/dist/filesystem/NodeFS';
 import FileLoader from '@stackpress/types/dist/filesystem/FileLoader';
+//local
+import type { ConfigLoaderOptions, PluginLoaderOptions } from './types';
 import Exception from './Exception';
 
 export class ConfigLoader extends FileLoader {
