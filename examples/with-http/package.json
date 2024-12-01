@@ -1,14 +1,11 @@
 {
-  "name": "ingest-with-plugins",
+  "name": "ingest-with-http",
   "version": "1.0.0",
-  "description": "A simple boilerplate for using Ingest with plugins.",
+  "description": "A simple boilerplate for using Ingest with HTTP.",
   "private": true,
-  "plugins": [
-     "./dist/plugin"
-  ],
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node src/scripts/serve.ts"
+    "dev": "ts-node src/server.ts"
   },
   "dependencies": {
     "@stackpress/ingest": "0.2.14"

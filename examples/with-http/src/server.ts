@@ -1,5 +1,5 @@
 //ingest
-import { server } from '@stackpress/ingest/fetch';
+import { server } from '@stackpress/ingest/http';
 //routes
 import hooks from './routes/hooks';
 import pages from './routes/pages';

@@ -1,4 +1,4 @@
-import { Context, Response } from '@stackpress/ingest';
+import { router } from '@stackpress/ingest/http';
 
 const template = `
 <!DOCTYPE html>
@@ -19,7 +19,21 @@ const template = `
 </html>
 `;
 
-export default function Login(req: Context, res: Response) {
+const route = router();
+
+/**
+ * Home page
+ */
+route.get('/', function HomePage(req, res) { 
+  res.setHTML('Hello, World');
+});
+
+/**
+ * Login page
+ */
+route.get('/login', function Login(req, res) {
   //send the response
   res.setHTML(template.trim());
-};
+});
+
+export default route;
