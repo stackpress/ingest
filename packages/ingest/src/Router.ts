@@ -1,6 +1,4 @@
 //stackpress
-import { RouterMap } from '@stackpress/types/dist/types';
-import EventEmitter from '@stackpress/types/dist/EventEmitter';
 import RouterBase from '@stackpress/types/dist/Router';
 //local
 import type { 
@@ -54,76 +52,46 @@ export default class Router<
             ...match, 
             ...task, 
             keys: {},
-            //args: [ req, res ], 
-            //action: task.item 
+            args: [ req, res ], 
+            action: task.item 
           };
+          //ADDING THIS CONDITIONAL
+          //if the route is found
           if (route) {
+            //extract the params from the route
             const context = routeParams(route.path, req.url.pathname);
+            //set the event keys
             this._event.keys = context.params;
+            //add the params to the request data
             req.data.set(context.params);
+            //are there any args?
             if (context.args.length) {
+              //update the event parameters
               this._event.parameters = context.args;
+              //also add the args to the request data
               req.data.set(context.args);
             }
           }
           //before hook
-          // if (typeof this._before === 'function' 
-          //   && await this._before(this._event) === false
-          // ) {
-          //   return false;
-          // }
+          if (typeof this._before === 'function' 
+            && await this._before(this._event) === false
+          ) {
+            return false;
+          }
           //if the method returns false
           if (await task.item(req, res) === false) {
             return false;
           }
           //after hook
-          // if (typeof this._after === 'function' 
-          //   && await this._after(this._event) === false
-          // ) {
-          //   return false;
-          // }
+          if (typeof this._after === 'function' 
+            && await this._after(this._event) === false
+          ) {
+            return false;
+          }
         }, task.priority);
       });
     }
 
     return queue;
-  }
-
-  /**
-   * Allows events from other emitters to apply here
-   * TODO: remove this method on next @stackpress/types version
-   */
-  use(emitter: EventEmitter<RouterMap<Request<R, C>, Response<S>>>) {
-    //check if the emitter is a router
-    const router = emitter instanceof Router;
-    //first concat their regexp with this one
-    emitter.regexp.forEach(pattern => this.regexp.add(pattern));
-    //next this listen to what they were listening to
-    //event listeners = event -> Set
-    //loop through the listeners of the emitter
-    for (const event in emitter.listeners) {
-      //get the observers
-      const tasks = emitter.listeners[event];
-      //if no direct observers (shouldn't happen)
-      if (typeof tasks === 'undefined') {
-        //skip
-        continue;
-      }
-      //if the emitter is a router
-      if (router) {
-        //get the route from the emitter
-        const route = emitter.routes.get(event);
-        //set the route
-        if (typeof route !== 'undefined') {
-          this.routes.set(event, route);
-        }
-      }
-      //then loop the tasks
-      for (const { item, priority } of tasks) {
-        //listen to each task one by one
-        this.on(event, item, priority);
-      }
-    }
-    return this;
   }
 }
