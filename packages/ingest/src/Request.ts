@@ -12,8 +12,8 @@ import type {
   RequestLoader,
   RequestInitializer
 } from './types';
-import { isHash, objectFromQuery } from './helpers';
 import { session } from './Session';
+import { isHash, objectFromQuery } from './helpers';
 
 /**
  * Generic request wrapper that works with

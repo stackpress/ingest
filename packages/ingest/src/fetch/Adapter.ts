@@ -1,5 +1,5 @@
 //modules
-import { Readable } from 'stream';
+import { Readable } from 'node:stream';
 import * as cookie from 'cookie';
 //stackpress
 import type { Method, UnknownNest } from '@stackpress/types/dist/types';

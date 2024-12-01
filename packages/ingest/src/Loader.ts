@@ -1,5 +1,5 @@
 //modules
-import path from 'path';
+import path from 'node:path';
 //stackpress
 import NodeFS from '@stackpress/types/dist/filesystem/NodeFS';
 import FileLoader from '@stackpress/types/dist/filesystem/FileLoader';

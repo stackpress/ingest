@@ -1,5 +1,5 @@
 //modules
-import { createServer } from 'http';
+import { createServer } from 'node:http';
 //stackpress
 import type { UnknownNest } from '@stackpress/types/dist/types';
 //common

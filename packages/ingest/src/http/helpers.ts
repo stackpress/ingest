@@ -1,5 +1,5 @@
 //modules
-import { Readable } from 'stream';
+import { Readable } from 'node:stream';
 //common
 import type { IM } from '../types';
 import { objectFromQuery, withUnknownHost } from '../helpers';

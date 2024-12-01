@@ -4,8 +4,8 @@ import type {
   ServerResponse, 
   ServerOptions as NodeServerOptions,
   Server as NodeServer
-} from 'http';
-import type { Readable } from 'stream';
+} from 'node:http';
+import type { Readable } from 'node:stream';
 //stackpress
 import type { 
   Event,
