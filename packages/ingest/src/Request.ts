@@ -10,7 +10,6 @@ import type {
   Body,
   CallableSession,
   RequestLoader,
-  RequestInterface, 
   RequestInitializer
 } from './types';
 import { isHash, objectFromQuery } from './helpers';
@@ -24,9 +23,7 @@ import { session } from './Session';
  * - access to original request resource
  * - attach a context (like a server/app class)
  */
-export default class Request<R = unknown, C = unknown> 
-  implements RequestInterface<R, C> 
-{
+export default class Request<R = unknown, C = unknown> {
   //data controller
   public readonly data: CallableNest;
   //head controller
@@ -50,7 +47,7 @@ export default class Request<R = unknown, C = unknown>
   //whether if the body was loaded
   protected _loaded = false;
   //body loader
-  protected _loader?: RequestLoader;
+  protected _loader?: RequestLoader<R, C>;
   //original request resource
   protected _resource?: R;
 
@@ -113,7 +110,7 @@ export default class Request<R = unknown, C = unknown>
   /**
    * Sets Loader
    */
-  public set loader(loader: RequestLoader) {
+  public set loader(loader: RequestLoader<R, C>) {
     this._loader = loader;
   }
 

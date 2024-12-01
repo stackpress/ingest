@@ -1,1 +1,1 @@
-module.exports = require('./dist/runtime/http')
+module.exports = require('./dist/http')

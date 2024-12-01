@@ -1,22 +1,35 @@
 //modules
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { 
+  IncomingMessage, 
+  ServerResponse, 
+  ServerOptions as NodeServerOptions,
+  Server as NodeServer
+} from 'http';
 import type { Readable } from 'stream';
 //stackpress
 import type { 
   Event,
   Method, 
   Trace,
-  CallableMap,
-  CallableNest, 
   NestedObject,
   UnknownNest
 } from '@stackpress/types/dist/types';
 import type FileSystem from '@stackpress/types/dist/filesystem/FileSystem';
 //local
-import type Server from './Server';
 import type Request from './Request';
 import type Response from './Response';
+import type Router from './Router';
+import type Server from './Server';
 import type { WriteSession } from './Session';
+
+//--------------------------------------------------------------------//
+// Node Types
+
+export { NodeServer, NodeServerOptions };
+
+export type NodeRequest = globalThis.Request;
+export type NodeResponse = globalThis.Response;
+export type NodeOptResponse = NodeResponse|undefined;
 
 //--------------------------------------------------------------------//
 // Payload Types
@@ -28,20 +41,6 @@ export type Body = string | Buffer | Uint8Array | Readable | ReadableStream
 // Response Types
 
 export type ResponseDispatcher<S = unknown> = (res: Response<S>) => Promise<S>;
-
-export interface ResponseInterface<S = unknown> {
-  body: Body|null;
-  code: number;
-  dispatcher?: ResponseDispatcher<S>;
-  error?: string;
-  headers: CallableMap<string, string|string[]>;
-  mimetype?: string;
-  resource?: S;
-  sent: boolean;
-  stack?: Trace[];
-  status: string;
-  total: number;
-};
 
 export type ResponseInitializer<S = unknown> = { 
   body?: Body,
@@ -68,25 +67,13 @@ export type Query = string | Map<string, any> | NestedObject;
 export type Session = Record<string, string> | Map<string, string>;
 export type Post = Record<string, unknown> | Map<string, any>;
 export type LoaderResults = { body?: Body, post?: Post };
-export type RequestLoader = (req: Request) => Promise<LoaderResults|undefined>;
+export type RequestLoader<R = unknown, C = unknown> = (
+  req: Request<R, C>
+) => Promise<LoaderResults|undefined>;
 
 export type CallableSession = (
   (name: string) => string|string[]|undefined
 ) & WriteSession;
-
-export interface RequestInterface<R = unknown, C = unknown> {
-  body: Body|null;
-  context?: C;
-  data: CallableNest;
-  headers: CallableMap<string, string|string[]>;
-  method: Method;
-  mimetype: string;
-  post: CallableNest;
-  query: CallableNest;
-  resource?: R;
-  session: CallableSession;
-  url: URL;
-};
 
 export type RequestInitializer<R = unknown, C = unknown> = {
   resource: R,
@@ -127,21 +114,31 @@ export type CookieOptions = {
 
 export type IM = IncomingMessage;
 export type SR = ServerResponse<IncomingMessage>;
-export type IMInitializer<
+
+export type HTTPResponse = Response<SR>;
+export type HTTPRequest<
   C extends UnknownNest = UnknownNest
-> = RequestInitializer<IM, Server<C, IM, SR>>;
-export type SRInitializer = ResponseInitializer<SR>;
+> = Request<IM, HTTPServer<C>>;
+export type HTTPRouter<
+  C extends UnknownNest = UnknownNest
+> = Router<IM, SR, HTTPServer<C>>;
+export type HTTPServer<
+  C extends UnknownNest = UnknownNest
+> = Server<C, IM, SR>;
 
 //--------------------------------------------------------------------//
 // Fetch Types
 
-export type FetchRequest = globalThis.Request;
-export type FetchResponse = globalThis.Response;
-export type FetchRequestInitializer<
+export type FetchResponse = Response<NodeOptResponse>;
+export type FetchRequest<
   C extends UnknownNest = UnknownNest
-> = RequestInitializer<FetchRequest, Server<C, IM, SR>>;
-export type FetchResponseInitializer = ResponseInitializer<FetchResponse>;
-export type NoResponseInitializer = ResponseInitializer<undefined>;
+> = Request<NodeRequest, FetchServer<C>>;
+export type FetchRouter<
+  C extends UnknownNest = UnknownNest
+> = Router<NodeRequest, NodeOptResponse, FetchServer<C>>;
+export type FetchServer<
+  C extends UnknownNest = UnknownNest
+> = Server<C, NodeRequest, NodeOptResponse>;
 
 //--------------------------------------------------------------------//
 // Loader Types
@@ -165,7 +162,7 @@ export type RouterQueueArgs<
   R = unknown, 
   S = unknown, 
   C = unknown
-> = [RequestInterface<R, C>, ResponseInterface<S>];
+> = [ Request<R, C>, Response<S> ];
 
 export interface Route<R = unknown, S = unknown, C = unknown> 
   extends Event<RouterQueueArgs<R, S, C>> 
@@ -180,4 +177,15 @@ export type ServerHandler<
   C extends UnknownNest = UnknownNest, 
   R = unknown, 
   S = unknown
->  = (ctx: Server<C, R, S>, req: R, res: S) => S;
+> = (ctx: Server<C, R, S>, req: R, res: S) => Promise<S>;
+
+export type ServerGateway = (options: NodeServerOptions) => NodeServer;
+
+export type ServerOptions<
+  C extends UnknownNest = UnknownNest, 
+  R = unknown, 
+  S = unknown
+> = PluginLoaderOptions & {
+  handler?: ServerHandler<C, R, S>,
+  gateway?: (server: Server<C, R, S>) => ServerGateway
+};

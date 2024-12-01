@@ -13,7 +13,6 @@ import { status } from '@stackpress/types/dist/StatusCode';
 import type { 
   Body, 
   CallableSession,
-  ResponseInterface,
   ResponseDispatcher,
   ResponseInitializer,
   ResponseErrorOptions
@@ -29,9 +28,7 @@ import { isHash } from './helpers';
  * - access to original response resource
  * - preconfigured response methods
  */
-export default class Response<S = unknown> 
-  implements ResponseInterface<S> 
-{
+export default class Response<S = unknown> {
   //head controller
   public readonly headers: CallableMap<string, string|string[]>;
   //session controller

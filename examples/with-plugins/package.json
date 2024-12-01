@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A simple boilerplate for using Ingest with plugins.",
   "private": true,
+  "plugins": [
+     "./dist/plugin"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "ts-node src/scripts/serve.ts"

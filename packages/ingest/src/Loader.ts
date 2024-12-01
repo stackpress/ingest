@@ -137,7 +137,7 @@ export class PluginLoader extends ConfigLoader {
     const { 
       plugins, 
       modules = this.modules(), 
-      key = 'plugin' 
+      key = 'plugins' 
     } = options;
 
     this._key = key;

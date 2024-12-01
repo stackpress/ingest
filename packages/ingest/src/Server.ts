@@ -8,15 +8,18 @@ import { nest } from '@stackpress/types/dist/Nest';
 import { map } from '@stackpress/types/dist/helpers';
 //local
 import type { 
-  PluginLoaderOptions,
   RequestInitializer,
   ResponseInitializer,
-  ServerHandler
+  ServerGateway,
+  ServerHandler,
+  ServerOptions,
+  NodeServerOptions
 } from './types';
 import Router from './Router';
 import Request from './Request';
 import Response from './Response';
 import { PluginLoader } from './Loader';
+import { handler, gateway } from './helpers';
 
 /**
  * Generic server class
@@ -44,8 +47,17 @@ export default class Server<
   public readonly loader: PluginLoader;
   //list of plugin configurations
   public readonly plugins: CallableMap;
-  //handler
-  protected _handler: ServerHandler<C, R, S> = (_, __, res) => res;
+  //gateway used for development or stand alone
+  protected _gateway: ServerGateway;
+  //handler used for API entry
+  protected _handler: ServerHandler<C, R, S>;
+
+  /**
+   * Sets the request handler
+   */
+  public set gateway(callback: ServerGateway) {
+    this._gateway = callback;
+  }
 
   /**
    * Sets the request handler
@@ -57,11 +69,13 @@ export default class Server<
   /**
    * Sets up the plugin loader
    */
-  public constructor(options: PluginLoaderOptions = {}) {
+  public constructor(options: ServerOptions<C, R, S> = {}) {
     super();
     this.config = nest();
     this.plugins = map();
     this.loader = new PluginLoader(options);
+    this._gateway = (options.gateway || gateway)(this);
+    this._handler = options.handler || handler;
   }
 
   /**
@@ -80,6 +94,13 @@ export default class Server<
       }
     });
     return this;
+  }
+
+  /**
+   * Creates a new server
+   */
+  public create(options: NodeServerOptions = {}) {
+    return this._gateway(options);
   }
 
   /**

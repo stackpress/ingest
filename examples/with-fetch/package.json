@@ -1,5 +1,5 @@
 {
-  "name": "ingest-with-vercel",
+  "name": "ingest-with-fetch",
   "version": "1.0.0",
   "description": "A simple boilerplate for using Ingest with Vercel.",
   "private": true,

@@ -1,1 +1,1 @@
-module.exports = require('./dist/runtime/fetch')
+module.exports = require('./dist/fetch')
