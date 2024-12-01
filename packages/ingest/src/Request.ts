@@ -23,7 +23,7 @@ import { isHash, objectFromQuery } from './helpers';
  * - access to original request resource
  * - attach a context (like a server/app class)
  */
-export default class Request<R = unknown, C = unknown> {
+export default class Request<R = unknown, X = unknown> {
   //data controller
   public readonly data: CallableNest;
   //head controller
@@ -41,13 +41,13 @@ export default class Request<R = unknown, C = unknown> {
   //payload body
   protected _body: Body|null;
   //the server or route
-  protected _context?: C;
+  protected _context?: X;
   //body mimetype
   protected _mimetype: string;
   //whether if the body was loaded
   protected _loaded = false;
   //body loader
-  protected _loader?: RequestLoader<R, C>;
+  protected _loader?: RequestLoader<R, X>;
   //original request resource
   protected _resource?: R;
 
@@ -62,7 +62,7 @@ export default class Request<R = unknown, C = unknown> {
    * Returns the context
    */
   public get context() {
-    return this._context as C;
+    return this._context as X;
   }
 
   /**
@@ -110,14 +110,14 @@ export default class Request<R = unknown, C = unknown> {
   /**
    * Sets Loader
    */
-  public set loader(loader: RequestLoader<R, C>) {
+  public set loader(loader: RequestLoader<R, X>) {
     this._loader = loader;
   }
 
   /**
    * Sets request defaults
    */
-  public constructor(init: Partial<RequestInitializer<R, C>> = {}) {
+  public constructor(init: Partial<RequestInitializer<R, X>> = {}) {
     this.data = nest();
     this.url = init.url instanceof URL ? init.url
       : typeof init.url === 'string' ? new URL(init.url)

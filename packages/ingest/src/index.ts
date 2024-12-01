@@ -5,7 +5,7 @@ import Exception from './Exception';
 import { ConfigLoader, PluginLoader } from './Loader';
 import Request from './Request';
 import Response from './Response';
-import Router from './Router';
+import Router, { ServerRouter } from './Router';
 import Server from './Server';
 import { ReadSession, WriteSession, session } from './Session';
 
@@ -21,6 +21,7 @@ export {
   Request,
   Response,
   Router,
+  ServerRouter,
   Server,
   ReadSession,
   WriteSession

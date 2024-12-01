@@ -1,10 +1,13 @@
 //stackpress
+//import type { Task, Event } from '@stackpress/types/dist/types';
 import RouterBase from '@stackpress/types/dist/Router';
 //local
 import type { 
   Route,
-  RouterQueueArgs
+  RouterQueueArgs,
+  UnknownNest
 } from './types';
+import type Server from './Server';
 import Request from './Request';
 import Response from './Response';
 import { routeParams } from './helpers';
@@ -22,11 +25,12 @@ export default class Router<
   //response resource
   S = unknown, 
   //context (usually the server)
-  C = unknown
+  X = unknown
 > 
-  extends RouterBase<Request<R, C>, Response<S>>
+  extends RouterBase<Request<R, X>, Response<S>>
 {
-  protected _event?: Route<R, S, C>;
+  //Static event data analyzer
+  protected _event?: Route<R, S, X>; // Event<Array<any>>
 
   /**
    * Returns a task queue for given the event
@@ -34,7 +38,7 @@ export default class Router<
    */
   public tasks(event: string) {
     const matches = this.match(event);
-    const queue = this.makeQueue<RouterQueueArgs<R, S, C>>();
+    const queue = this.makeQueue<RouterQueueArgs<R, S, X>>();
 
     for (const [ event, match ] of matches) {
       const tasks = this._listeners[event];
@@ -95,3 +99,12 @@ export default class Router<
     return queue;
   }
 }
+
+export class ServerRouter<
+  //context (usually the server)
+  C extends UnknownNest = UnknownNest,
+  //request resource
+  R = unknown, 
+  //response resource
+  S = unknown
+> extends Router<R, S, Server<C, R, S>> {}

@@ -22,6 +22,8 @@ import type Router from './Router';
 import type Server from './Server';
 import type { WriteSession } from './Session';
 
+export { UnknownNest };
+
 //--------------------------------------------------------------------//
 // Node Types
 
@@ -67,18 +69,18 @@ export type Query = string | Map<string, any> | NestedObject;
 export type Session = Record<string, string> | Map<string, string>;
 export type Post = Record<string, unknown> | Map<string, any>;
 export type LoaderResults = { body?: Body, post?: Post };
-export type RequestLoader<R = unknown, C = unknown> = (
-  req: Request<R, C>
+export type RequestLoader<R = unknown, X = unknown> = (
+  req: Request<R, X>
 ) => Promise<LoaderResults|undefined>;
 
 export type CallableSession = (
   (name: string) => string|string[]|undefined
 ) & WriteSession;
 
-export type RequestInitializer<R = unknown, C = unknown> = {
+export type RequestInitializer<R = unknown, X = unknown> = {
   resource: R,
   body?: Body,
-  context?: C,
+  context?: X,
   headers?: Headers,
   mimetype?: string,
   data?: Data,
@@ -161,14 +163,16 @@ export type PluginLoaderOptions = ConfigLoaderOptions & {
 export type RouterQueueArgs<
   R = unknown, 
   S = unknown, 
-  C = unknown
-> = [ Request<R, C>, Response<S> ];
+  X = unknown
+> = [ Request<R, X>, Response<S> ];
 
-export interface Route<R = unknown, S = unknown, C = unknown> 
-  extends Event<RouterQueueArgs<R, S, C>> 
-{
-  keys: Record<string, string>
-}
+export type Route<
+  R = unknown, 
+  S = unknown, 
+  X = unknown
+> = Event<RouterQueueArgs<R, S, X>> & {
+  keys?: Record<string, string>
+};
 
 //--------------------------------------------------------------------//
 // Server Types
