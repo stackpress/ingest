@@ -166,4 +166,53 @@ describe('Response Tests', () => {
     await response.dispatch();
     expect(dispatched).to.be.true;
   });
+
+  it('Should handle all body types', () => {
+    const response = new Response();
+    
+    // Test Buffer type
+    response.body = Buffer.from('test');
+    expect(response.type).to.equal('buffer');
+    
+    // Test Uint8Array type
+    response.body = new Uint8Array([1, 2, 3]);
+    expect(response.type).to.equal('uint8array');
+    
+    // Test null type
+    response.body = null;
+    expect(response.type).to.equal('null');
+    
+    // Test string type
+    response.body = 'test';
+    expect(response.type).to.equal('string');
+  });
+
+  it('Should handle all header initialization types', () => {
+    // Test Map headers
+    const mapHeaders = new Map([['Content-Type', 'application/json']]);
+    const responseWithMap = new Response({ headers: mapHeaders });
+    expect(responseWithMap.headers.get('Content-Type')).to.equal('application/json');
+
+    // Test object headers
+    const objHeaders = { 'Content-Type': 'application/json' };
+    const responseWithObj = new Response({ headers: objHeaders });
+    expect(responseWithObj.headers.get('Content-Type')).to.equal('application/json');
+
+    // Test undefined headers
+    const responseWithUndefined = new Response({ headers: undefined });
+    expect(responseWithUndefined.headers.size).to.equal(0);
+  });
+
+  it('Should handle all dispatch scenarios', async () => {
+    const response = new Response();
+    
+    // Test dispatching without dispatcher
+    await response.dispatch();
+    expect(response.sent).to.be.true;
+    
+    // Test dispatching when already sent
+    const prevSent = response.sent;
+    await response.dispatch();
+    expect(response.sent).to.equal(prevSent);
+  });
 });
