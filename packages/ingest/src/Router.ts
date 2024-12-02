@@ -30,7 +30,6 @@ export default class Router<
   public tasks(event: string) {
     const matches = this.match(event);
     const queue = this.makeQueue<RouterQueueArgs<R, S, X>>();
-
     for (const [ event, match ] of matches) {
       const tasks = this._listeners[event];
       //if no direct observers

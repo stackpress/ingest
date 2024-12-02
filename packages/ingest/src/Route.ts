@@ -91,19 +91,8 @@ export default class Route<
         this.response
       );
     } catch(error) {
-      //if there is an error
-      //upgrade the error to an exception
-      const exception = Exception
-        .upgrade(error as Error)
-        .toResponse()
-      //set the exception as the error
-      this.response.setError(exception);
       //allow plugins to handle the error
-      status = await this.request.context.emit(
-        'error', 
-        this.request, 
-        this.response
-      );
+      status = await this._catch(error as Error);
     }
     //if the status was incomplete (309)
     return status.code !== Status.ABORT.code;
@@ -122,19 +111,8 @@ export default class Route<
         this.response
       );
     } catch(error) {
-      //if there is an error
-      //upgrade the error to an exception
-      const exception = Exception
-        .upgrade(error as Error)
-        .toResponse();
-      //set the exception as the error
-      this.response.setError(exception);
       //allow plugins to handle the error
-      status = await this.request.context.emit(
-        'error', 
-        this.request, 
-        this.response
-      );
+      status = await this._catch(error as Error);
     }
     //if the status was incomplete (309)
     if (status.code === Status.ABORT.code) {
@@ -183,21 +161,34 @@ export default class Route<
         this.response
       );
     } catch(error) {
-      //if there is an error
-      //upgrade the error to an exception
-      const exception = Exception
-        .upgrade(error as Error)
-        .toResponse();
-      //set the exception as the error
-      this.response.setError(exception);
       //allow plugins to handle the error
-      status = await this.request.context.emit(
-        'error', 
-        this.request, 
-        this.response
-      );
+      status = await this._catch(error as Error);
     }
     //if the status was incomplete (309)
     return status.code !== Status.ABORT.code;
+  }
+
+  /**
+   * Default error flow
+   */
+  protected async _catch(error: Error) {
+    //if there is an error
+    const event = this.request.context.event;
+    //upgrade the error to an exception
+    const exception = !(error instanceof Exception) 
+      ? Exception.upgrade(error as Error)
+      : error;
+
+    if (event) {
+      exception.withEvent(this.request.context.event);
+    }
+    //set the exception as the error
+    this.response.setError(exception.toResponse());
+    //allow plugins to handle the error
+    return await this.request.context.emit(
+      'error', 
+      this.request, 
+      this.response
+    );
   }
 }

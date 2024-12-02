@@ -1,5 +1,6 @@
 //stackpress
 import type { 
+  Event,
   Trace, 
   NestedObject,
   CallableMap, 
@@ -43,6 +44,8 @@ export default class Response<S = unknown> {
   protected _dispatcher?: ResponseDispatcher<S>;
   //body error message
   protected _error?: string;
+  //body error event
+  protected _event?: Event<Array<any>>;
   //body mimetype
   protected _mimetype?: string;
   //original request resource
@@ -75,6 +78,13 @@ export default class Response<S = unknown> {
    */
   public get error(): string|undefined {
     return this._error;
+  }
+
+  /**
+   * Returns the event
+   */
+  public get event(): Event<Array<any>>|undefined {
+    return this._event;
   }
   
   /**
@@ -167,6 +177,13 @@ export default class Response<S = unknown> {
    */
   public set error(error: string) {
     this._error = error;
+  }
+
+  /**
+   * Manually sets the event
+   */
+  public set event(event: Event<Array<any>>|undefined) {
+    this._event = event;
   }
 
   /**
@@ -273,6 +290,7 @@ export default class Response<S = unknown> {
     status?: string
   ) {
     if (typeof error !== 'string') {
+      this._event = error.event;
       errors = error.errors || errors;
       stack = error.stack || stack;
       code = error.code || code;

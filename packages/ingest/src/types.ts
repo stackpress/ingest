@@ -8,11 +8,13 @@ import type {
 import type { Readable } from 'node:stream';
 //stackpress
 import type { 
+  Event,
   Method, 
   Trace,
   NestedObject,
   UnknownNest,
-  FileSystem
+  FileSystem,
+  ErrorResponse
 } from '@stackpress/types/dist/types';
 //local
 import type Request from './Request';
@@ -31,6 +33,13 @@ export { NodeServer, NodeServerOptions };
 export type NodeRequest = globalThis.Request;
 export type NodeResponse = globalThis.Response;
 export type NodeOptResponse = NodeResponse|undefined;
+
+//--------------------------------------------------------------------//
+// Error Types
+
+export type ErrorEventResponse = ErrorResponse & {
+  event?: Event<Array<any>>
+};
 
 //--------------------------------------------------------------------//
 // Payload Types
@@ -53,6 +62,7 @@ export type ResponseInitializer<S = unknown> = {
 export type ResponseErrorOptions = {
   error: string, 
   errors?: NestedObject<string|string[]>, 
+  event?: Event<Array<any>>,
   stack?: Trace[],
   code?: number, 
   status?: string
