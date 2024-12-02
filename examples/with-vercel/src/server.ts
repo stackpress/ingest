@@ -1,4 +1,6 @@
 //ingest
 import { server } from '@stackpress/ingest/fetch';
 
-export default server();
+const app = server();
+
+export default app;
