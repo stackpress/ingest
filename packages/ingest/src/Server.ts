@@ -1,3 +1,5 @@
+//modules
+import { createServer } from 'node:http';
 //stackpress
 import type { 
   CallableMap, 
@@ -19,7 +21,6 @@ import Router from './Router';
 import Request from './Request';
 import Response from './Response';
 import { PluginLoader } from './Loader';
-import { handler, gateway } from './helpers';
 
 /**
  * Generic server class
@@ -140,4 +141,29 @@ export default class Server<
   public response(init: Partial<ResponseInitializer<S>> = {}) {
     return new Response<S>(init);
   }
-}
+};
+
+/**
+ * Default server gateway
+ */
+export function gateway<
+  C extends UnknownNest = UnknownNest, 
+  R = unknown, 
+  S = unknown
+>(server: Server<C, R, S>) {
+  return (options: NodeServerOptions) => createServer(
+    options, 
+    (im, sr) => server.handle(im as R, sr as S)
+  );
+};
+
+/**
+ * Default server request handler
+ */
+export async function handler<
+  C extends UnknownNest = UnknownNest, 
+  R = unknown, 
+  S = unknown
+>(ctx: Server<C, R, S>, req: R, res: S) {
+  return res;
+};

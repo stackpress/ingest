@@ -1,11 +1,5 @@
-//modules
-import { createServer } from 'node:http';
 //stackpress
-import type { UnknownNest } from '@stackpress/types/dist/types';
 import Nest from '@stackpress/types/dist/Nest';
-//local
-import type { NodeServerOptions } from './types';
-import type Server from './Server';
 
 /**
  * Returns true if the value is a native JS object
@@ -181,30 +175,5 @@ export function withUnknownHost(url: string) {
   }
 
   return `http://unknownhost${url}`;
-};
-
-/**
- * Default server gateway
- */
-export function gateway<
-  C extends UnknownNest = UnknownNest, 
-  R = unknown, 
-  S = unknown
->(server: Server<C, R, S>) {
-  return (options: NodeServerOptions) => createServer(
-    options, 
-    (im, sr) => server.handle(im as R, sr as S)
-  );
-};
-
-/**
- * Default server request handler
- */
-export async function handler<
-  C extends UnknownNest = UnknownNest, 
-  R = unknown, 
-  S = unknown
->(ctx: Server<C, R, S>, req: R, res: S) {
-  return res;
 };
 
