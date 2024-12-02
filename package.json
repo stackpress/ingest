@@ -6,6 +6,8 @@
   ],
   "scripts": {
     "build": "yarn --cwd packages/ingest build",
+    "entries:build": "yarn --cwd examples/with-entries build",
+    "entries:dev": "yarn --cwd examples/with-entries dev",
     "fetch:build": "yarn --cwd examples/with-fetch build",
     "fetch:dev": "yarn --cwd examples/with-fetch dev",
     "http:build": "yarn --cwd examples/with-http build",

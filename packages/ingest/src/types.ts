@@ -11,11 +11,14 @@ import type {
   Event,
   Method, 
   Trace,
+  RouterMap,
+  RouterAction,
   NestedObject,
   UnknownNest,
   FileSystem,
   ErrorResponse
 } from '@stackpress/types/dist/types';
+import type EventEmitter from '@stackpress/types/dist/event/EventEmitter';
 //local
 import type Request from './Request';
 import type Response from './Response';
@@ -175,6 +178,20 @@ export type RouterQueueArgs<
   X = unknown
 > = [ Request<R, X>, Response<S> ];
 
+export type RouterEntry<
+  R = unknown, 
+  S = unknown, 
+  X = unknown
+> = string|RouterAction<Request<R, X>, Response<S>>;
+
+export type EntryTask = { entry: string, priority: number };
+
+export type RouterEmitter<
+  R = unknown, 
+  S = unknown, 
+  X = unknown
+> = EventEmitter<RouterMap<Request<R, X>, Response<S>>>;
+
 //--------------------------------------------------------------------//
 // Server Types
 
@@ -194,3 +211,9 @@ export type ServerOptions<
   handler?: ServerHandler<C, R, S>,
   gateway?: (server: Server<C, R, S>) => ServerGateway
 };
+
+export type ServerRequest<
+  C extends UnknownNest = UnknownNest, 
+  R = unknown, 
+  S = unknown
+> = Request<R, Server<C, R, S>>;
