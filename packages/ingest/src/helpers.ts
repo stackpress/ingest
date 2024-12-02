@@ -1,5 +1,5 @@
 //stackpress
-import Nest from '@stackpress/types/dist/Nest';
+import Nest from '@stackpress/types/dist/data/Nest';
 
 /**
  * Returns true if the value is a native JS object

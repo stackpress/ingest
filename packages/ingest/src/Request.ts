@@ -3,8 +3,8 @@ import * as cookie from 'cookie';
 //stackpress
 import type { CallableMap, CallableNest } from '@stackpress/types/dist/types';
 import type { Method } from '@stackpress/types/dist/types';
-import { nest } from '@stackpress/types/dist/Nest';
-import { map } from '@stackpress/types/dist/helpers';
+import map from '@stackpress/types/dist/data/map';
+import { nest } from '@stackpress/types/dist/data/Nest';
 //local
 import type { 
   Body,

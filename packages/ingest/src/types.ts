@@ -8,13 +8,12 @@ import type {
 import type { Readable } from 'node:stream';
 //stackpress
 import type { 
-  Event,
   Method, 
   Trace,
   NestedObject,
-  UnknownNest
+  UnknownNest,
+  FileSystem
 } from '@stackpress/types/dist/types';
-import type FileSystem from '@stackpress/types/dist/filesystem/FileSystem';
 //local
 import type Request from './Request';
 import type Response from './Response';
@@ -165,14 +164,6 @@ export type RouterQueueArgs<
   S = unknown, 
   X = unknown
 > = [ Request<R, X>, Response<S> ];
-
-export type Route<
-  R = unknown, 
-  S = unknown, 
-  X = unknown
-> = Event<RouterQueueArgs<R, S, X>> & {
-  keys?: Record<string, string>
-};
 
 //--------------------------------------------------------------------//
 // Server Types

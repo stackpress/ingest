@@ -6,8 +6,8 @@ import type {
   CallableNest, 
   UnknownNest 
 } from '@stackpress/types';
-import { nest } from '@stackpress/types/dist/Nest';
-import { map } from '@stackpress/types/dist/helpers';
+import map from '@stackpress/types/dist/data/map';
+import { nest } from '@stackpress/types/dist/data/Nest';
 //local
 import type { 
   RequestInitializer,

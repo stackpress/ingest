@@ -1,12 +1,7 @@
 //stackpress
-//import type { Task, Event } from '@stackpress/types/dist/types';
-import RouterBase from '@stackpress/types/dist/Router';
+import EventRouter from '@stackpress/types/dist/event/EventRouter';
 //local
-import type { 
-  Route,
-  RouterQueueArgs,
-  UnknownNest
-} from './types';
+import type { RouterQueueArgs, UnknownNest } from './types';
 import type Server from './Server';
 import Request from './Request';
 import Response from './Response';
@@ -27,14 +22,10 @@ export default class Router<
   //context (usually the server)
   X = unknown
 > 
-  extends RouterBase<Request<R, X>, Response<S>>
+  extends EventRouter<Request<R, X>, Response<S>>
 {
-  //Static event data analyzer
-  protected _event?: Route<R, S, X>; // Event<Array<any>>
-
   /**
    * Returns a task queue for given the event
-   * TODO: update on next @stackpress/types version
    */
   public tasks(event: string) {
     const matches = this.match(event);
@@ -55,7 +46,6 @@ export default class Router<
           this._event = { 
             ...match, 
             ...task, 
-            keys: {},
             args: [ req, res ], 
             action: task.item 
           };
@@ -65,13 +55,13 @@ export default class Router<
             //extract the params from the route
             const context = routeParams(route.path, req.url.pathname);
             //set the event keys
-            this._event.keys = context.params;
+            this._event.data.params = context.params;
             //add the params to the request data
             req.data.set(context.params);
             //are there any args?
             if (context.args.length) {
               //update the event parameters
-              this._event.parameters = context.args;
+              this._event.data.args = context.args;
               //also add the args to the request data
               req.data.set(context.args);
             }

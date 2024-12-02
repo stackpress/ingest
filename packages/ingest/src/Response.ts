@@ -1,14 +1,14 @@
 //stackpress
 import type { 
-  Status, 
   Trace, 
   NestedObject,
   CallableMap, 
-  CallableNest
+  CallableNest,
+  ResponseStatus
 } from '@stackpress/types/dist/types';
-import { nest } from '@stackpress/types/dist/Nest';
-import { map } from '@stackpress/types/dist/helpers';
-import { status } from '@stackpress/types/dist/StatusCode';
+import map from '@stackpress/types/dist/data/map';
+import { nest } from '@stackpress/types/dist/data/Nest';
+import { getStatus } from '@stackpress/types/dist/Status';
 //local
 import type { 
   Body, 
@@ -152,7 +152,7 @@ export default class Response<S = unknown> {
    */
   public set code(code: number) {
     this._code = code;
-    this._status = status(code)?.status || '';
+    this._status = getStatus(code)?.status || '';
   }
 
   /**
@@ -186,7 +186,7 @@ export default class Response<S = unknown> {
   /**
    * Sets a stack trace
    */
-  public set status(status: Status) {
+  public set status(status: ResponseStatus) {
     this._code = status.code;
     this._status = status.status;
   }
@@ -331,7 +331,7 @@ export default class Response<S = unknown> {
    */
   public setStatus(code: number, message?: string) {
     this._code = code;
-    this._status = message || status(code)?.status || '';
+    this._status = message || getStatus(code)?.status || '';
     return this;
   }
 

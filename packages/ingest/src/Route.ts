@@ -1,6 +1,6 @@
 //stackpress
 import type { UnknownNest } from '@stackpress/types/dist/types';
-import StatusCode from '@stackpress/types/dist/StatusCode';
+import Status from '@stackpress/types/dist/Status';
 //local
 import type Server from './Server';
 import type Request from './Request';
@@ -83,7 +83,7 @@ export default class Route<
    */
   public async prepare() {
     //default status
-    let status = StatusCode.OK;
+    let status = Status.OK;
     try { //to allow plugins to handle the request
       status = await this.request.context.emit(
         'request', 
@@ -106,7 +106,7 @@ export default class Route<
       );
     }
     //if the status was incomplete (309)
-    return status.code !== StatusCode.ABORT.code;
+    return status.code !== Status.ABORT.code;
   }
 
   /**
@@ -114,7 +114,7 @@ export default class Route<
    */
   public async process() {
     //default status
-    let status = StatusCode.OK;
+    let status = Status.OK;
     try { //to emit the route
       await this.request.context.emit(
         this.event, 
@@ -137,7 +137,7 @@ export default class Route<
       );
     }
     //if the status was incomplete (309)
-    if (status.code === StatusCode.ABORT.code) {
+    if (status.code === Status.ABORT.code) {
       //the callback that set that should have already processed
       //the request and is signaling to no longer continue
       return false;
@@ -149,8 +149,8 @@ export default class Route<
     if (!this.response.body && !this.response.code) {
       //make a not found exception
       const exception = Exception
-        .for(StatusCode.NOT_FOUND.status)
-        .withCode(StatusCode.NOT_FOUND.code)
+        .for(Status.NOT_FOUND.status)
+        .withCode(Status.NOT_FOUND.code)
         .toResponse();
       //set the exception as the error
       this.response.setError(exception);
@@ -164,10 +164,10 @@ export default class Route<
     //if no status was set
     if (!this.response.code || !this.response.status) {
       //make it okay
-      this.response.status = StatusCode.OK;
+      this.response.status = Status.OK;
     }
     //if the status was incomplete (309)
-    return status.code !== StatusCode.ABORT.code;
+    return status.code !== Status.ABORT.code;
   }
 
   /**
@@ -175,7 +175,7 @@ export default class Route<
    */
   public async shutdown() {
     //default status
-    let status = StatusCode.OK;
+    let status = Status.OK;
     try { //to allow plugins to handle the response
       status = await this.request.context.emit(
         'response', 
@@ -198,6 +198,6 @@ export default class Route<
       );
     }
     //if the status was incomplete (309)
-    return status.code !== StatusCode.ABORT.code;
+    return status.code !== Status.ABORT.code;
   }
 }
