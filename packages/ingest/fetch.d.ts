@@ -1,1 +1,1 @@
-export * from './dist/runtime/fetch';
+export * from './dist/fetch';

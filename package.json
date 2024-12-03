@@ -5,15 +5,13 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn run build:ingest && yarn run build:vercel && yarn run build:netlify",
-    "build:ingest": "yarn --cwd packages/ingest build",
-    "build:vercel": "yarn --cwd packages/ingest-vercel build",
-    "build:netlify": "yarn --cwd packages/ingest-netlify build",
-    "vercel:build": "yarn --cwd examples/with-vercel generate",
-    "vercel:build:ts": "yarn --cwd examples/with-vercel build:tsc",
-    "vercel:dev": "yarn --cwd examples/with-vercel dev",
-    "netlify:build": "yarn --cwd examples/with-netlify generate",
-    "netlify:dev": "yarn --cwd examples/with-netlify dev",
+    "build": "yarn --cwd packages/ingest build",
+    "entries:build": "yarn --cwd examples/with-entries build",
+    "entries:dev": "yarn --cwd examples/with-entries dev",
+    "fetch:build": "yarn --cwd examples/with-fetch build",
+    "fetch:dev": "yarn --cwd examples/with-fetch dev",
+    "http:build": "yarn --cwd examples/with-http build",
+    "http:dev": "yarn --cwd examples/with-http dev",
     "plugins:build": "yarn --cwd examples/with-plugins build",
     "plugins:dev": "yarn --cwd examples/with-plugins dev",
     "test": "yarn --cwd packages/ingest test"

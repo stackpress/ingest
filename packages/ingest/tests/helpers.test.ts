@@ -7,10 +7,10 @@ import {
   objectFromJson,
   eventParams,
   routeParams,
-  withUnknownHost,
-  readableStreamToReadable,
-  readableToReadableStream
+  withUnknownHost
 } from '../src/helpers';
+import { readableStreamToReadable } from '../src/http/helpers';
+import { readableToReadableStream } from '../src/fetch/helpers';
 import { Readable } from 'stream';
 
 describe('helpers', () => {

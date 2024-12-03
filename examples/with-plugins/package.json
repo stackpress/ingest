@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "description": "A simple boilerplate for using Ingest with plugins.",
   "private": true,
+  "plugins": [
+     "./src/plugin"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "ts-node src/scripts/serve.ts"
   },
   "dependencies": {
-    "@stackpress/ingest-vercel": "0.2.14"
+    "@stackpress/ingest": "0.3.6"
   },
   "devDependencies": {
     "@types/node": "22.9.3",

@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "description": "A simple boilerplate for using Ingest with Vercel.",
   "private": true,
+  "plugins": [
+     "./dist/plugin"
+  ],
   "scripts": {
     "generate": "yarn build:tsc && yarn build:files",
     "build:tsc": "tsc",
     "build:files": "ts-node src/scripts/build.ts",
-    "dev": "ts-node src/scripts/server.ts"
+    "dev": "ts-node src/scripts/serve.ts"
   },
   "dependencies": {
-    "@stackpress/ingest-vercel": "0.2.14"
+    "@stackpress/ingest": "0.3.6"
   },
   "devDependencies": {
     "@types/node": "22.9.3",

@@ -1,8 +1,0 @@
-{
-  "build": [
-    "./dist/plugin/build"
-  ],
-  "client": [
-    "./dist/plugin/client"
-  ]
-}

@@ -1,28 +1,34 @@
+//stackpress
 import type { 
-  Status, 
   Trace, 
   NestedObject,
   CallableMap, 
-  CallableNest
+  CallableNest,
+  ResponseStatus
 } from '@stackpress/types/dist/types';
+import map from '@stackpress/types/dist/data/map';
+import { nest } from '@stackpress/types/dist/data/Nest';
+import { getStatus } from '@stackpress/types/dist/Status';
+//local
 import type { 
-  SR,
   Body, 
-  FetchResponse,
   CallableSession,
   ResponseDispatcher,
   ResponseInitializer,
   ResponseErrorOptions
 } from './types';
-
-import { nest } from '@stackpress/types/dist/Nest';
-import { map } from '@stackpress/types/dist/helpers';
-import { status } from '@stackpress/types/dist/StatusCode';
-
 import { session } from './Session';
 import { isHash } from './helpers';
 
-export default class Response {
+/**
+ * Generic response wrapper that works with 
+ * ServerResponse and WHATWG (Fetch) Response
+ * 
+ * - map to native resource using dispatcher()
+ * - access to original response resource
+ * - preconfigured response methods
+ */
+export default class Response<S = unknown> {
   //head controller
   public readonly headers: CallableMap<string, string|string[]>;
   //session controller
@@ -34,13 +40,13 @@ export default class Response {
   //response status code
   protected _code = 0;
   //response dispatcher
-  protected _dispatcher?: ResponseDispatcher;
+  protected _dispatcher?: ResponseDispatcher<S>;
   //body error message
   protected _error?: string;
   //body mimetype
   protected _mimetype?: string;
   //original request resource
-  protected _resource?: SR|FetchResponse;
+  protected _resource?: S;
   //whether if the response was sent
   protected _sent = false;
   //stack trace
@@ -110,7 +116,7 @@ export default class Response {
    * Returns the original resource
    */
   public get resource() {
-    return this._resource;
+    return this._resource as S;
   }
 
   /**
@@ -146,13 +152,13 @@ export default class Response {
    */
   public set code(code: number) {
     this._code = code;
-    this._status = status(code)?.status || '';
+    this._status = getStatus(code)?.status || '';
   }
 
   /**
    * Sets Dispatcher
    */
-  public set dispatcher(dispatcher: ResponseDispatcher) {
+  public set dispatcher(dispatcher: ResponseDispatcher<S>) {
     this._dispatcher = dispatcher;
   }
 
@@ -166,7 +172,7 @@ export default class Response {
   /**
    * Sets the resource
    */
-  public set resource(resource: SR|FetchResponse|undefined) {
+  public set resource(resource: S) {
     this._resource = resource;
   }
 
@@ -180,7 +186,7 @@ export default class Response {
   /**
    * Sets a stack trace
    */
-  public set status(status: Status) {
+  public set status(status: ResponseStatus) {
     this._code = status.code;
     this._status = status.status;
   }
@@ -202,7 +208,7 @@ export default class Response {
   /**
    * Sets the initial values of the payload
    */
-  constructor(init: ResponseInitializer = {}) {
+  constructor(init: Partial<ResponseInitializer<S>> = {}) {
     this._mimetype = init.mimetype;
     this._body = init.body || null;
     this._resource = init.resource;
@@ -222,16 +228,14 @@ export default class Response {
    */
   public async dispatch() {
     //if it's already sent, return
-    if (this._sent) {
-      return this;
+    if (!this._sent) {
+      const resource = typeof this._dispatcher === 'function'
+        ? await this._dispatcher(this)
+        : this.resource;
+      this._sent = true;
+      return resource;
     }
-    //if there is a loader is a function, use that
-    if (typeof this._dispatcher === 'function') {
-      await this._dispatcher(this);
-    }
-    //flag as sent
-    this.stop();
-    return this;
+    return this.resource;
   }
 
   /**
@@ -327,7 +331,7 @@ export default class Response {
    */
   public setStatus(code: number, message?: string) {
     this._code = code;
-    this._status = message || status(code)?.status || '';
+    this._status = message || getStatus(code)?.status || '';
     return this;
   }
 

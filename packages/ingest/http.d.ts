@@ -1,1 +1,1 @@
-export * from './dist/runtime/http';
+export * from './dist/http';

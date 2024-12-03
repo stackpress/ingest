@@ -1,28 +1,29 @@
+//modules
+import * as cookie from 'cookie';
+//stackpress
 import type { CallableMap, CallableNest } from '@stackpress/types/dist/types';
 import type { Method } from '@stackpress/types/dist/types';
+import map from '@stackpress/types/dist/data/map';
+import { nest } from '@stackpress/types/dist/data/Nest';
+//local
 import type { 
-  IM,
   Body,
   CallableSession,
-  RequestLoader, 
-  RequestInitializer, 
-  FetchRequest
+  RequestLoader,
+  RequestInitializer
 } from './types';
-
-import * as cookie from 'cookie';
-import { nest } from '@stackpress/types/dist/Nest';
-import { map } from '@stackpress/types/dist/helpers';
-
-import { 
-  isHash, 
-  objectFromQuery, 
-  eventParams, 
-  routeParams
-} from './helpers';
-import Context from './Context';
 import { session } from './Session';
+import { isHash, objectFromQuery } from './helpers';
 
-export default class Request<C = unknown> {
+/**
+ * Generic request wrapper that works with
+ * IncomingMessage and WHATWG (Fetch) Request
+ * 
+ * - native body reader using loader()
+ * - access to original request resource
+ * - attach a context (like a server/app class)
+ */
+export default class Request<R = unknown, X = unknown> {
   //data controller
   public readonly data: CallableNest;
   //head controller
@@ -40,15 +41,15 @@ export default class Request<C = unknown> {
   //payload body
   protected _body: Body|null;
   //the server or route
-  protected _context?: C;
+  protected _context?: X;
   //body mimetype
   protected _mimetype: string;
   //whether if the body was loaded
   protected _loaded = false;
   //body loader
-  protected _loader?: RequestLoader;
+  protected _loader?: RequestLoader<R, X>;
   //original request resource
-  protected _resource?: IM|FetchRequest;
+  protected _resource?: R;
 
   /**
    * Returns the body
@@ -61,7 +62,7 @@ export default class Request<C = unknown> {
    * Returns the context
    */
   public get context() {
-    return this._context as C;
+    return this._context as X;
   }
 
   /**
@@ -82,7 +83,7 @@ export default class Request<C = unknown> {
    * Returns the original resource
    */
   public get resource() {
-    return this._resource;
+    return this._resource as R;
   }
 
   /**
@@ -109,14 +110,14 @@ export default class Request<C = unknown> {
   /**
    * Sets Loader
    */
-  public set loader(loader: RequestLoader) {
+  public set loader(loader: RequestLoader<R, X>) {
     this._loader = loader;
   }
 
   /**
    * Sets request defaults
    */
-  public constructor(init: RequestInitializer<C> = {}) {
+  public constructor(init: Partial<RequestInitializer<R, X>> = {}) {
     this.data = nest();
     this.url = init.url instanceof URL ? init.url
       : typeof init.url === 'string' ? new URL(init.url)
@@ -177,25 +178,6 @@ export default class Request<C = unknown> {
     } else if (isHash(init.data)) {
       this.data.set(init.data);
     }
-  }
-
-  /**
-   * Returns a new request context with pattern
-   * ie. req.fromPattern(/foo/)
-   * ie. req.fromPattern('/foo/')
-   */
-  public fromPattern(pattern: string|RegExp) {
-    const args = eventParams(pattern.toString(), this.url.pathname);
-    return new Context<C>(this, { args });
-  }
-
-  /**
-   * Returns a new request context with route
-   * ie. req.fromRoute('/foo/:bar')
-   */
-  public fromRoute(route: string) {
-    const { args, params } = routeParams(route, this.url.pathname);
-    return new Context<C>(this, { args, params });
   }
 
   /**

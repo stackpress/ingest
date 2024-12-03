@@ -1,6 +1,7 @@
+//stackprss
+import ReadonlyMap from '@stackpress/types/dist/data/ReadonlyMap';
+//local
 import type { Revision, CallableSession } from './types';
-
-import ReadonlyMap from '@stackpress/types/dist/readonly/Map';
 
 /**
  * Readonly session controller
