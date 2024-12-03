@@ -1,5 +1,6 @@
-import { ServerRequest, Response, Exception } from '@stackpress/ingest';
+import { ServerRequest, Response } from '@stackpress/ingest';
+import Error from '../error';
 
 export default function ErrorResponse(req: ServerRequest, res: Response) {
-  throw Exception.for('Not implemented');
+  Error('Not implemented');
 };

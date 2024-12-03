@@ -15,8 +15,7 @@ import type {
   RouterAction,
   NestedObject,
   UnknownNest,
-  FileSystem,
-  ErrorResponse
+  FileSystem
 } from '@stackpress/types/dist/types';
 import type EventEmitter from '@stackpress/types/dist/event/EventEmitter';
 //local
@@ -36,13 +35,6 @@ export { NodeServer, NodeServerOptions };
 export type NodeRequest = globalThis.Request;
 export type NodeResponse = globalThis.Response;
 export type NodeOptResponse = NodeResponse|undefined;
-
-//--------------------------------------------------------------------//
-// Error Types
-
-export type ErrorEventResponse = ErrorResponse & {
-  event?: Event<Array<any>>
-};
 
 //--------------------------------------------------------------------//
 // Payload Types
@@ -158,6 +150,7 @@ export type FetchServer<
 // Loader Types
 
 export type ConfigLoaderOptions = {
+  cache?: boolean,
   cwd?: string,
   fs?: FileSystem,
   filenames?: string[]

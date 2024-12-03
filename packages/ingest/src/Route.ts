@@ -172,18 +172,10 @@ export default class Route<
    * Default error flow
    */
   protected async _catch(error: Error) {
-    //if there is an error
-    const event = this.request.context.event;
     //upgrade the error to an exception
-    const exception = !(error instanceof Exception) 
-      ? Exception.upgrade(error as Error)
-      : error;
-
-    if (event) {
-      exception.withEvent(this.request.context.event);
-    }
+    const exception = Exception.upgrade(error as Error).toResponse();
     //set the exception as the error
-    this.response.setError(exception.toResponse());
+    this.response.setError(exception);
     //allow plugins to handle the error
     return await this.request.context.emit(
       'error', 

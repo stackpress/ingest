@@ -8,19 +8,30 @@ import type { ConfigLoaderOptions, PluginLoaderOptions } from './types';
 import Exception from './Exception';
 
 export class ConfigLoader extends FileLoader {
+  //list of filenames and extensions to look for
   protected _filenames: string[];
+  //whether to use require.cache
+  protected _cache: boolean;
+
   /**
    * Setups up the current working directory
    */
   public constructor(options: ConfigLoaderOptions = {}) {
     super(options.fs || new NodeFS(), options.cwd || process.cwd());
-    this._filenames = options.filenames || [
-      '/plugins.js', 
-      '/plugins.json', 
-      '/package.json',
-      '.js', 
-      '.json' 
-    ];
+    const { 
+      cache = true, 
+      filenames = [
+        '/plugins.js', 
+        '/plugins.json', 
+        '/package.json',
+        '/plugins.ts', 
+        '.js', 
+        '.json', 
+        '.ts' 
+      ] 
+    } = options;
+    this._cache = cache;
+    this._filenames = filenames
   }
 
   /**
@@ -41,7 +52,14 @@ export class ConfigLoader extends FileLoader {
       return defaults;
     }
     //require the plugin
-    let imported = await import(file);
+    const basepath = this.basepath(file);
+    let imported = await import(basepath);
+    //if dont cache
+    if (!this._cache) {
+      //delete it from the require cache 
+      //so it can be processed again
+      delete require.cache[require.resolve(basepath)];
+    }
     //if using import
     if (imported.default) {
       imported = imported.default;
@@ -71,7 +89,14 @@ export class ConfigLoader extends FileLoader {
       return defaults;
     }
     //require the plugin
-    let imported = require(file);
+    const basepath = this.basepath(file);
+    let imported = require(basepath);
+    //if dont cache
+    if (!this._cache) {
+      //delete it from the require cache 
+      //so it can be processed again
+      delete require.cache[require.resolve(basepath)];
+    }
     //if using import
     if (imported.default) {
       imported = imported.default;
@@ -89,6 +114,18 @@ export class ConfigLoader extends FileLoader {
   public resolve(pathname = this.cwd) {
     //get the absolute path
     return super.resolve(pathname, this.cwd, this._filenames);
+  }
+
+  /**
+   * Removes the extension (.js or .ts) from the pathname
+   */
+  public basepath(pathname: string) {
+    //if .js or .ts 
+    if (pathname.endsWith('.js') || pathname.endsWith('.ts')) {
+      //remove the extname
+      return pathname.substring(0, pathname.length - 3);
+    }
+    return pathname;
   }
 }
 
@@ -109,7 +146,17 @@ export class PluginLoader extends ConfigLoader {
   public get plugins(): string[] {
     if (!this._plugins) {
       const file = this.resolve();
-      let plugins = file ? require(file): [];
+      let plugins: any = [];
+      if (file) {
+        const basepath = this.basepath(file);
+        plugins = require(basepath);
+        //if dont cache
+        if (!this._cache) {
+          //delete it from the require cache 
+          //so it can be processed again
+          delete require.cache[require.resolve(basepath)];
+        }
+      }
       //if import
       if (plugins.default) {
         plugins = plugins.default;

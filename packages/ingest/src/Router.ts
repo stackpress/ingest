@@ -129,14 +129,16 @@ export default class Router<
     }
     //add the listener to the group
     this.entries.get(key)?.add({ entry, priority });
+    //scope the emitter
+    const emitter = this;
     //now listen for the event
-    super.on(event, async (req, res) => {
+    super.on(event, async function EntryFile(req, res) {
       //import the action
       const imports = await import(entry);
       //get the default export
       const action = imports.default;
       //if dont cache
-      if (!this.cache) {
+      if (!emitter.cache) {
         //delete it from the require cache 
         //so it can be processed again
         delete require.cache[require.resolve(entry)];

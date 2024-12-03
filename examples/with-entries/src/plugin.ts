@@ -8,7 +8,7 @@ export default function plugin(server: HTTPServer<Config>) {
   server.config.set(config);
 
   server.get('/', path.join(__dirname, 'routes/home'));
-  server.get('/login', path.join(__dirname, 'routes/home'));
+  server.get('/login', path.join(__dirname, 'routes/login'));
 
   server.get('/user', path.join(__dirname, 'routes/user/search'));
   server.post('/user', path.join(__dirname, 'routes/user/create'));

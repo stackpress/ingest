@@ -4,14 +4,14 @@
   "description": "A simple boilerplate for using Ingest with plugins.",
   "private": true,
   "plugins": [
-     "./dist/plugin"
+     "./src/plugin"
   ],
   "scripts": {
     "build": "tsc",
     "dev": "ts-node src/scripts/serve.ts"
   },
   "dependencies": {
-    "@stackpress/ingest": "0.3.4"
+    "@stackpress/ingest": "0.3.6"
   },
   "devDependencies": {
     "@types/node": "22.9.3",
