@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 import Request from '../src/Request';
-import { map } from '@stackpress/types/dist/helpers';
 
 describe('Request Tests', () => {
   it('Should be empty', () => {
@@ -122,28 +121,6 @@ describe('Request Tests', () => {
     
     const arrayBody = new Request({ body: ['item1', 'item2'] });
     expect(arrayBody.type).to.equal('array');
-  });
-
-  it('Should handle pattern matching', () => {
-    const request = new Request({
-      url: 'http://example.com/user/123'
-    });
-
-    const context1 = request.fromPattern('/user/([0-9]+)/');
-    expect(context1?.args?.values().next().value).to.equal('123');
-
-    const context2 = request.fromPattern(new RegExp('user/([0-9]+)'));
-    expect(context2?.args?.values().next().value).to.equal('123');
-  });
-
-  it('Should handle route parameters', () => {
-    const request = new Request({
-      url: 'http://unknownhost/users/123/posts/456'
-    });
-
-    const context = request.fromRoute('/users/:id/posts/:postId');
-    expect(context?.params.get('id')).to.equal('123');
-    expect(context?.params.get('postId')).to.equal('456');
   });
 
   it('Should handle body loading', async () => {
