@@ -180,6 +180,19 @@ export default class Router<
   }
 
   /**
+   * Routes to another route
+   */
+  public async routeTo(
+    method: string, 
+    path: string, 
+    request: Request<R, X>, 
+    response: Response<S>
+  ) {
+    const event = `${method.toUpperCase()} ${path}`;
+    return await this.emit(event, request, response);  
+  }
+
+  /**
    * Returns a task queue for given the event
    */
   public tasks(event: string) {

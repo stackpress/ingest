@@ -8,9 +8,7 @@ import type {
 import type { Readable } from 'node:stream';
 //stackpress
 import type { 
-  Event,
   Method, 
-  Trace,
   RouterMap,
   RouterAction,
   NestedObject,
@@ -40,7 +38,7 @@ export type NodeOptResponse = NodeResponse|undefined;
 // Payload Types
 
 export type Body = string | Buffer | Uint8Array | Readable | ReadableStream
-  | Record<string, unknown> | Array<unknown>;
+  | Record<string, unknown> | Array<unknown> | {};
 
 //--------------------------------------------------------------------//
 // Response Types
@@ -53,15 +51,6 @@ export type ResponseInitializer<S = unknown> = {
   mimetype?: string,
   resource?: S
 };
-
-export type ResponseErrorOptions = {
-  error: string, 
-  errors?: NestedObject<string|string[]>, 
-  event?: Event<Array<any>>,
-  stack?: Trace[],
-  code?: number, 
-  status?: string
-}
 
 //--------------------------------------------------------------------//
 // Request Types

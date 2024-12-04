@@ -4,7 +4,9 @@ import type {
   NestedObject,
   CallableMap, 
   CallableNest,
-  ResponseStatus
+  ResponseStatus,
+  StatusResponse,
+  ErrorResponse
 } from '@stackpress/types/dist/types';
 import map from '@stackpress/types/dist/data/map';
 import { nest } from '@stackpress/types/dist/data/Nest';
@@ -14,8 +16,7 @@ import type {
   Body, 
   CallableSession,
   ResponseDispatcher,
-  ResponseInitializer,
-  ResponseErrorOptions
+  ResponseInitializer
 } from './types';
 import { session } from './Session';
 import { isHash } from './helpers';
@@ -239,6 +240,43 @@ export default class Response<S = unknown> {
   }
 
   /**
+   * Merges a success response object into this response
+   */
+  public fromStatusResponse(response: Partial<StatusResponse>) {
+    const {
+      code,
+      status,
+      error,
+      errors,
+      stack,
+      results,
+      total
+    } = response;
+    if (code) {
+      this._code = code;
+    }
+    if (status) {
+      this._status = status;
+    }
+    if (error) {
+      this._error = error;
+    }
+    if (errors) {
+      this.errors.set(errors);
+    }
+    if (stack) {
+      this._stack = stack;
+    }
+    if (results) {
+      this._body = results;
+    }
+    if (total) {
+      this._total = total;
+    }
+    return this;
+  }
+
+  /**
    * Redirect
    */
   public redirect(url: string, code = 302, status?: string) {
@@ -266,7 +304,7 @@ export default class Response<S = unknown> {
    * Sets error message
    */
   public setError(
-    error: string|ResponseErrorOptions, 
+    error: string|ErrorResponse, 
     errors: NestedObject<string|string[]> = {}, 
     stack: Trace[] = [],
     code = 400, 
@@ -310,6 +348,7 @@ export default class Response<S = unknown> {
    * Sets the body as Object with checks 
    */
   public setResults(body: NestedObject, code = 200, status?: string) {
+    this._total = 1;
     return this.setBody('text/json', body, code, status);
   }
 
@@ -348,5 +387,20 @@ export default class Response<S = unknown> {
   public stop() {
     this._sent = true;
     return this;
+  }
+
+  /**
+   * Converts the response to a status response
+   */
+  public toStatusResponse(): Partial<StatusResponse> {
+    return {
+      code: this._code,
+      status: this._status,
+      error: this._error,
+      errors: this.errors(),
+      stack: this._stack,
+      results: this._body,
+      total: this._total
+    };
   }
 }

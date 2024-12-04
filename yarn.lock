@@ -367,10 +367,10 @@
     tslib "^2.6.2"
     webcrypto-core "^1.8.0"
 
-"@stackpress/types@0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@stackpress/types/-/types-0.3.6.tgz#fcab1c387befe3fda4ec74b791e5862f999eb9bc"
-  integrity sha512-fAuTlbjofTOxMo0YBu4p0Z9T3j+zMTkg8qoSQMLs78oveQZj0P93ZjpIXucWOQNLsLaPj64Wxgu3N5ChCevpQw==
+"@stackpress/types@0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@stackpress/types/-/types-0.3.7.tgz#0cee8ea90f9610a94ce0288f67fdd0d16acf8be7"
+  integrity sha512-ENjiUtxpACc99T22NCgdd+6WogFerIdPGVBMr0rcht7YOQ4x2rmF2hoUIR4Gt1yVui9Mq9xHlHeuMjoHMLgqQw==
   dependencies:
     "@inquirer/prompts" "7.1.0"
 

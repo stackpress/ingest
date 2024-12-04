@@ -196,7 +196,9 @@ export class PluginLoader extends ConfigLoader {
    * Requires all the files and registers it to the context.
    * You can only bootstrap server files.
    */
-  public async bootstrap(loader: (name: string, plugin: unknown) => Promise<void>) {
+  public async bootstrap(
+    loader: (name: string, plugin: unknown) => Promise<void>
+  ) {
     //if not bootstrapped
     if (!this._bootstrapped) {
       //config should be a list of files
