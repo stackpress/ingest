@@ -83,6 +83,7 @@ describe('Response Tests', () => {
       error: 'Something good is bad',
       errors: { foo: 'bar' },
       code: 500,
+      status: 'Internal Server Error',
       stack: [{ method: 'GET', file: 'index.ts', line: 1, char: 1 }]
     });
     expect(response.code).to.equal(500);
