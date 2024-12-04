@@ -7,8 +7,9 @@ import type { Method, UnknownNest } from '@stackpress/types/dist/types';
 import type { 
   Body,
   FetchServer,
+  FetchEntryAction,
   NodeRequest,
-  NodeResponse,
+  NodeOptResponse,
   LoaderResults,
   CookieOptions
 } from '../types';
@@ -33,7 +34,8 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
    */
   public static async plug<C extends UnknownNest = UnknownNest>(
     context: FetchServer<C>, 
-    request: NodeRequest
+    request: NodeRequest,
+    action?: FetchEntryAction<C>
   ) {
     const server = new Adapter(context, request);
     return server.plug();
@@ -55,18 +57,16 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
   /**
    * Handles the request
    */
-  public async plug() {
+  public async plug(action?: FetchEntryAction<C>) {
     //initialize the request
     const req = this.request();
     const res = this.response();
     //determine event name
-    const event = `${req.method} ${req.url.pathname}`;
+    const event = action || `${req.method} ${req.url.pathname}`;
     //load the body
     await req.load();
     //hook the plugins
-    await Route.emit<C, NodeRequest, NodeResponse|undefined>(
-      event, req, res
-    );
+    await Route.emit<C, NodeRequest, NodeOptResponse>(event, req, res);
     //if the response was not sent by now,
     if (!res.sent) {
       //send the response
@@ -121,7 +121,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
    * Sets up the response
    */
   public response() {
-    const response = new Response<NodeResponse|undefined>();
+    const response = new Response<NodeOptResponse>();
     response.dispatcher = dispatcher(
       this._context.config<CookieOptions>('cookie') || { path: '/' }
     );
@@ -152,7 +152,7 @@ export function loader<C extends UnknownNest = UnknownNest>(
  * Maps out an Ingest Response to a Fetch Response
  */
 export function dispatcher(options: CookieOptions = { path: '/' }) {
-  return async (res: Response<NodeResponse|undefined>) => {
+  return async (res: Response<NodeOptResponse>) => {
     //fetch type responses dont start with a resource
     //so if it magically has a resource, then it must 
     //have been set in a route. So we can just return it.

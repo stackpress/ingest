@@ -2,6 +2,7 @@
 import type { UnknownNest } from '@stackpress/types/dist/types';
 import Status from '@stackpress/types/dist/Status';
 //local
+import type { EntryAction } from './types';
 import type Server from './Server';
 import type Request from './Request';
 import type Response from './Response';
@@ -30,7 +31,7 @@ export default class Route<
     R = unknown, 
     S = unknown
   >(
-    event: string,
+    event: EntryAction<R, S, Server<C, R, S>>,
     request: Request<R, Server<C, R, S>>,
     response: Response<S>
   ) {
@@ -38,7 +39,7 @@ export default class Route<
     return route.emit();
   }
 
-  public readonly event: string;
+  public readonly event: EntryAction<R, S, Server<C, R, S>>;
   public readonly request: Request<R, Server<C, R, S>>;
   public readonly response: Response<S>;
 
@@ -46,7 +47,7 @@ export default class Route<
    * Gets everything needed from route.handle()
    */
   constructor(
-    event: string,
+    event: EntryAction<R, S, Server<C, R, S>>,
     request: Request<R, Server<C, R, S>>,
     response: Response<S>
   ) {
@@ -105,11 +106,15 @@ export default class Route<
     //default status
     let status = Status.OK;
     try { //to emit the route
-      await this.request.context.emit(
-        this.event, 
-        this.request, 
-        this.response
-      );
+      if (typeof this.event === 'string') {
+        await this.request.context.emit(
+          this.event, 
+          this.request, 
+          this.response
+        );
+      } else {
+       await this.event(this.request, this.response); 
+      }
     } catch(error) {
       //allow plugins to handle the error
       status = await this._catch(error as Error);

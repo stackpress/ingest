@@ -7,6 +7,7 @@ import type {
   IM, 
   SR, 
   HTTPServer, 
+  HTTPEntryAction,
   ServerOptions,
   NodeServerOptions
 } from '../types';
@@ -47,9 +48,10 @@ export function gateway<C extends UnknownNest = UnknownNest>(
 export async function handler<C extends UnknownNest = UnknownNest>(
   context: HTTPServer<C>, 
   request: IM,
-  response: SR
+  response: SR,
+  action?: HTTPEntryAction<C>
 ) {
-  return await Adapter.plug(context, request, response);
+  return await Adapter.plug(context, request, response, action);
 };
 
 /**

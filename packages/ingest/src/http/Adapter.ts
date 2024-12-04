@@ -8,6 +8,7 @@ import type {
   IM,
   SR,
   HTTPServer,
+  HTTPEntryAction,
   LoaderResults,
   CookieOptions
 } from '../types';
@@ -30,10 +31,11 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
   public static async plug<C extends UnknownNest = UnknownNest>(
     context: HTTPServer<C>, 
     request: IM,
-    response: SR
+    response: SR,
+    action?: HTTPEntryAction<C>
   ) {
     const server = new Adapter(context, request, response);
-    return server.plug();
+    return server.plug(action);
   };
 
   //the parent server context
@@ -55,12 +57,12 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
   /**
    * Handles the request
    */
-  public async plug() {
+  public async plug(action?: HTTPEntryAction<C>) {
     //initialize the request
     const req = this.request();
     const res = this.response();
     //determine event name
-    const event = `${req.method} ${req.url.pathname}`;
+    const event = action || `${req.method} ${req.url.pathname}`;
     //load the body
     await req.load();
     //hook the plugins

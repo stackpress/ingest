@@ -4,7 +4,7 @@ import EventRouter from '@stackpress/types/dist/event/EventRouter';
 //local
 import type { 
   EntryTask,
-  RouterEntry,
+  EntryAction,
   RouterEmitter,
   RouterQueueArgs, 
   UnknownNest 
@@ -47,63 +47,63 @@ export default class Router<
   /**
    * Route for any method
    */
-  public all(path: string, action: RouterEntry<R, S, X>, priority?: number) {
+  public all(path: string, action: EntryAction<R, S, X>, priority?: number) {
     return this.route('[A-Z]+', path, action, priority);
   }
 
   /**
    * Route for CONNECT method
    */
-  public connect(path: string, action: RouterEntry<R, S, X>, priority?: number) {
+  public connect(path: string, action: EntryAction<R, S, X>, priority?: number) {
     return this.route('CONNECT', path, action, priority);
   }
 
   /**
    * Route for DELETE method
    */
-  public delete(path: string, action: RouterEntry<R, S, X>, priority?: number) {
+  public delete(path: string, action: EntryAction<R, S, X>, priority?: number) {
     return this.route('DELETE', path, action, priority);
   }
 
   /**
    * Route for GET method
    */
-  public get(path: string, action: RouterEntry<R, S, X>, priority?: number) {
+  public get(path: string, action: EntryAction<R, S, X>, priority?: number) {
     return this.route('GET', path, action, priority);
   }
 
   /**
    * Route for HEAD method
    */
-  public head(path: string, action: RouterEntry<R, S, X>, priority?: number) {
+  public head(path: string, action: EntryAction<R, S, X>, priority?: number) {
     return this.route('HEAD', path, action, priority);
   }
 
   /**
    * Route for OPTIONS method
    */
-  public options(path: string, action: RouterEntry<R, S, X>, priority?: number) {
+  public options(path: string, action: EntryAction<R, S, X>, priority?: number) {
     return this.route('OPTIONS', path, action, priority);
   }
 
   /**
    * Route for PATCH method
    */
-  public patch(path: string, action: RouterEntry<R, S, X>, priority?: number) {
+  public patch(path: string, action: EntryAction<R, S, X>, priority?: number) {
     return this.route('PATCH', path, action, priority);
   }
 
   /**
    * Route for POST method
    */
-  public post(path: string, action: RouterEntry<R, S, X>, priority?: number) {
+  public post(path: string, action: EntryAction<R, S, X>, priority?: number) {
     return this.route('POST', path, action, priority);
   }
 
   /**
    * Route for PUT method
    */
-  public put(path: string, action: RouterEntry<R, S, X>, priority?: number) {
+  public put(path: string, action: EntryAction<R, S, X>, priority?: number) {
     return this.route('PUT', path, action, priority);
   }
 
@@ -112,7 +112,7 @@ export default class Router<
    */
   public on(
     event: string|RegExp, 
-    action: RouterEntry<R, S, X>,
+    action: EntryAction<R, S, X>,
     priority = 0
   ) {
     if (typeof action !== 'string') {
@@ -157,7 +157,7 @@ export default class Router<
   public route(
     method: Method|'[A-Z]+', 
     path: string, 
-    action: RouterEntry<R, S, X>, 
+    action: EntryAction<R, S, X>, 
     priority?: number
   ) {
     //convert path to a regex pattern

@@ -120,6 +120,9 @@ export type HTTPRouter<
 export type HTTPServer<
   C extends UnknownNest = UnknownNest
 > = Server<C, IM, SR>;
+export type HTTPEntryAction<
+  C extends UnknownNest = UnknownNest
+> = EntryAction<IM, SR, HTTPServer<C>>;
 
 //--------------------------------------------------------------------//
 // Fetch Types
@@ -134,6 +137,9 @@ export type FetchRouter<
 export type FetchServer<
   C extends UnknownNest = UnknownNest
 > = Server<C, NodeRequest, NodeOptResponse>;
+export type FetchEntryAction<
+  C extends UnknownNest = UnknownNest
+> = EntryAction<NodeRequest, NodeOptResponse, FetchServer<C>>;
 
 //--------------------------------------------------------------------//
 // Loader Types
@@ -160,7 +166,7 @@ export type RouterQueueArgs<
   X = unknown
 > = [ Request<R, X>, Response<S> ];
 
-export type RouterEntry<
+export type EntryAction<
   R = unknown, 
   S = unknown, 
   X = unknown
