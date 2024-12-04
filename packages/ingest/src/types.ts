@@ -38,7 +38,7 @@ export type NodeOptResponse = NodeResponse|undefined;
 // Payload Types
 
 export type Body = string | Buffer | Uint8Array | Readable | ReadableStream
-  | Record<string, unknown> | Array<unknown> | {};
+  | Record<string, unknown> | Array<unknown>;
 
 //--------------------------------------------------------------------//
 // Response Types

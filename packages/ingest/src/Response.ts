@@ -242,7 +242,7 @@ export default class Response<S = unknown> {
   /**
    * Merges a success response object into this response
    */
-  public fromStatusResponse(response: Partial<StatusResponse>) {
+  public fromStatusResponse<T = unknown>(response: Partial<StatusResponse<T>>) {
     const {
       code,
       status,
@@ -268,6 +268,9 @@ export default class Response<S = unknown> {
       this._stack = stack;
     }
     if (results) {
+      if (isHash(results) || Array.isArray(results)) {
+        this._mimetype = 'text/json';
+      }
       this._body = results;
     }
     if (total) {
