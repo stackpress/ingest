@@ -1,6 +1,6 @@
 {
   "name": "@stackpress/ingest",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "license": "Apache-2.0",
   "description": "An event driven serverless framework",
   "author": "Chris <chris@stackpress.io>",
@@ -25,7 +25,7 @@
     "test": "nyc ts-mocha tests/*.test.ts"
   },
   "dependencies": {
-    "@stackpress/types": "0.3.7",
+    "@stackpress/types": "0.3.10",
     "@whatwg-node/server": "0.6.7",
     "cookie": "1.0.2"
   },
