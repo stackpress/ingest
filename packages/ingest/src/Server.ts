@@ -103,10 +103,12 @@ export default class Server<
    */
   public async call(
     event: string, 
-    request: Request<R, Server<C, R, S>>|Record<string, any>,
+    request?: Request<R, Server<C, R, S>>|Record<string, any>,
     response?: Response<S>
   ) {
-    if (isHash(request)) {
+    if (!request) {
+      request = this.request();
+    } else if (isHash(request)) {
       const data = request as Record<string, any>;
       request = this.request({ data });
     }
@@ -167,7 +169,7 @@ export default class Server<
   public async routeTo(
     method: string, 
     path: string, 
-    request: Request<R, Server<C, R, S>>|Record<string, any>,
+    request?: Request<R, Server<C, R, S>>|Record<string, any>,
     response?: Response<S>
   ) {
     const event = `${method.toUpperCase()} ${path}`;
