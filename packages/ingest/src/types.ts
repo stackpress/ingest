@@ -120,6 +120,9 @@ export type HTTPRouter<
 export type HTTPServer<
   C extends UnknownNest = UnknownNest
 > = Server<C, IM, SR>;
+export type HTTPServerOptions<
+  C extends UnknownNest = UnknownNest
+> = ServerOptions<C, IM, SR>;
 export type HTTPEntryAction<
   C extends UnknownNest = UnknownNest
 > = EntryAction<IM, SR, HTTPServer<C>>;
@@ -137,6 +140,9 @@ export type FetchRouter<
 export type FetchServer<
   C extends UnknownNest = UnknownNest
 > = Server<C, NodeRequest, NodeOptResponse>;
+export type FetchServerOptions<
+  C extends UnknownNest = UnknownNest
+> = ServerOptions<C, NodeRequest, NodeOptResponse>;
 export type FetchEntryAction<
   C extends UnknownNest = UnknownNest
 > = EntryAction<NodeRequest, NodeOptResponse, FetchServer<C>>;
@@ -148,11 +154,11 @@ export type ConfigLoaderOptions = {
   cache?: boolean,
   cwd?: string,
   fs?: FileSystem,
+  key?: string,
   filenames?: string[]
 };
 
 export type PluginLoaderOptions = ConfigLoaderOptions & {
-  key?: string,
   modules?: string, 
   plugins?: string[]
 };

@@ -12,6 +12,8 @@ export class ConfigLoader extends FileLoader {
   protected _filenames: string[];
   //whether to use require.cache
   protected _cache: boolean;
+  //key name
+  protected _key: string;
 
   /**
    * Setups up the current working directory
@@ -20,6 +22,7 @@ export class ConfigLoader extends FileLoader {
     super(options.fs || new NodeFS(), options.cwd || process.cwd());
     const { 
       cache = true, 
+      key = 'plugins', 
       filenames = [
         '/plugins.js', 
         '/plugins.json', 
@@ -30,6 +33,7 @@ export class ConfigLoader extends FileLoader {
         '.ts' 
       ] 
     } = options;
+    this._key = key;
     this._cache = cache;
     this._filenames = filenames
   }
@@ -64,9 +68,9 @@ export class ConfigLoader extends FileLoader {
     if (imported.default) {
       imported = imported.default;
     }
-    //if package.json, look for the `incept` key
-    if (imported.incept) {
-      imported = imported.incept;
+    //if package.json, look for the key
+    if (imported[this._key]) {
+      imported = imported[this._key];
     } 
     return imported as T;
   }
@@ -101,9 +105,9 @@ export class ConfigLoader extends FileLoader {
     if (imported.default) {
       imported = imported.default;
     }
-    //if package.json, look for the `incept` key
-    if (imported.incept) {
-      imported = imported.incept;
+    //if package.json, look for the key
+    if (imported[this._key]) {
+      imported = imported[this._key];
     } 
     return imported as T;
   }
@@ -134,8 +138,6 @@ export class PluginLoader extends ConfigLoader {
   protected _modules: string;
   //List of plugins
   protected _plugins?: string[];
-  //key name
-  protected _key: string;
   //if already bootstrapped
   protected _bootstrapped = false;
 
@@ -181,13 +183,8 @@ export class PluginLoader extends ConfigLoader {
    */
   public constructor(options: PluginLoaderOptions) {
     super(options);
-    const { 
-      plugins, 
-      modules = this.modules(), 
-      key = 'plugins' 
-    } = options;
+    const { plugins, modules = this.modules() } = options;
 
-    this._key = key;
     this._modules = modules;
     this._plugins = plugins;
   }
@@ -206,7 +203,7 @@ export class PluginLoader extends ConfigLoader {
         const plugin = this.require(pathname);
         if(Array.isArray(plugin)) {
           //get the folder name of the plugin pathname
-          const cwd = path.dirname(pathname);
+          const cwd = path.dirname(this.resolve(pathname) || pathname);
           //make a new plugin
           //cwd, this._modules, plugin
           const child = new PluginLoader({ 
