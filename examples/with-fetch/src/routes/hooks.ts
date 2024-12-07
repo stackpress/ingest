@@ -1,3 +1,5 @@
+import type { ResponseStatus } from '@stackpress/types/dist/types';
+import { getStatus } from '@stackpress/types/dist/Status';
 import { Exception } from '@stackpress/ingest';
 import { router } from '@stackpress/ingest/fetch';
 
@@ -11,8 +13,10 @@ route.get('/catch', function ErrorResponse(req, res) {
     throw Exception.for('Not implemented');
   } catch (e) {
     const error = e as Exception;
+    const status = getStatus(error.code) as ResponseStatus;
     res.setError({ 
-      code: error.code, 
+      code: status.code, 
+      status: status.status, 
       error: error.message,
       stack: error.trace()
     });
