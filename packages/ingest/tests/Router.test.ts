@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { expect } from 'chai';
 
 import type { Method } from '@stackpress/types/dist/types';
-import type { RouterEntry } from '../src/types';
+import type { EntryAction } from '../src/types';
 import path from 'path';
 import Router from '../src/Router';
 import Request from '../src/Request';
@@ -93,7 +93,7 @@ describe('Router Tests', () => {
     for (const method of methods) {
       const route = router[method].bind(router) as (
         path: string, 
-        action: RouterEntry<unknown, unknown, unknown>, priority?: number
+        action: EntryAction<unknown, unknown, unknown>, priority?: number
       ) => Router<unknown, unknown, unknown>; 
       route('/some/route/path', path.join(__dirname, 'fixtures/any'));
       const METHOD = method.toUpperCase() as Method;
