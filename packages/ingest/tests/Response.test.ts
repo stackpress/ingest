@@ -216,4 +216,21 @@ describe('Response Tests', () => {
     await response.dispatch();
     expect(response.sent).to.equal(prevSent);
   });
+
+  it('Should convert to exception', () => {
+    const response = new Response();
+    response.setError({
+      error: 'Something good is bad',
+      errors: { foo: 'bar' },
+      code: 500,
+      status: 'Internal Server Error',
+      stack: [{ method: 'GET', file: 'index.ts', line: 1, char: 1 }]
+    });
+    const exception = response.toException();
+    expect(exception.code).to.equal(500);
+    expect(exception.errors.foo).to.equal('bar');
+    expect(exception.stack).to.equal(
+      'Response: Something good is bad\n  at GET (index.ts:1:1)'
+    );
+  });
 });

@@ -20,6 +20,7 @@ import type {
 } from './types';
 import { session } from './Session';
 import { isHash } from './helpers';
+import Exception from './Exception';
 
 /**
  * Generic response wrapper that works with 
@@ -257,6 +258,8 @@ export default class Response<S = unknown> {
     }
     if (status) {
       this._status = status;
+    } else if (this._code) {
+      this._status = getStatus(this._code)?.status || 'Unknown Status';
     }
     if (error) {
       this._error = error;
@@ -390,6 +393,27 @@ export default class Response<S = unknown> {
   public stop() {
     this._sent = true;
     return this;
+  }
+
+  /**
+   * Converts the response to an exception
+   */
+  public toException(message?: string) {
+    const error = message || this._error || 'Unknown Error';
+    const exception = Exception.for(error)
+      .withCode(this._code)
+      .withErrors(this.errors());
+    if (this._stack) {
+      let stack = `Response: ${error}\n`;
+      stack += this._stack.map(
+        trace => `  at ${trace.method} (`
+          +`${trace.file}:${trace.line}:${trace.char}`
+        + `)`
+      ).join('\n');
+      exception.stack = stack;
+    }
+
+    return exception;
   }
 
   /**
