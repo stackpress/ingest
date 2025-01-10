@@ -101,7 +101,7 @@ export default class Server<
   /**
    * Returns a response object given the event and request
    */
-  public async call(
+  public async call<T = unknown>(
     event: string, 
     request?: Request<R, Server<C, R, S>>|Record<string, any>,
     response?: Response<S>
@@ -115,7 +115,7 @@ export default class Server<
     const req = request as Request<R, Server<C, R, S>>;
     const res = response || this.response();
     await this.emit(event, req, res);  
-    return res.toStatusResponse();
+    return res.toStatusResponse<T>();
   }
 
   /**

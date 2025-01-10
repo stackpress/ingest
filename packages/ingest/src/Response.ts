@@ -419,14 +419,14 @@ export default class Response<S = unknown> {
   /**
    * Converts the response to a status response
    */
-  public toStatusResponse(): Partial<StatusResponse> {
+  public toStatusResponse<T = unknown>(): Partial<StatusResponse<T>> {
     return {
       code: this._code,
       status: this._status,
       error: this._error,
       errors: this.errors(),
       stack: this._stack,
-      results: this._body,
+      results: this._body as T,
       total: this._total
     };
   }

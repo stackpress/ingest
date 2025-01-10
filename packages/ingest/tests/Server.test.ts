@@ -57,9 +57,9 @@ describe('Server Tests', () => {
     const res = new Response();
     await server.call('foo', req, res);
     expect(res.body).to.equal('- bar');
-    const response1 = await server.call('foo', { foo: 'baz' });
+    const response1 = await server.call<string>('foo', { foo: 'baz' });
     expect(response1.results).to.equal('- baz');
-    const response2 = await server.call('foo');
+    const response2 = await server.call<string>('foo');
     expect(response2.results).to.equal('- undefined');
   });
 
