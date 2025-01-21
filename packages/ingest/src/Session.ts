@@ -1,5 +1,5 @@
 //stackprss
-import ReadonlyMap from '@stackpress/types/dist/data/ReadonlyMap';
+import ReadonlyMap from '@stackpress/lib/dist/data/ReadonlyMap';
 //local
 import type { Revision, CallableSession } from './types';
 

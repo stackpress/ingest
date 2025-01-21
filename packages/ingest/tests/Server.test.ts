@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
-import { UnknownNest } from '@stackpress/types';
+import { UnknownNest } from '@stackpress/lib';
 
 import Server from '../src/Server';
 import Request from '../src/Request';

@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 
-import type { Method } from '@stackpress/types/dist/types';
+import type { Method } from '@stackpress/lib/dist/types';
 import type { EntryAction } from '../src/types';
 import path from 'path';
 import Router from '../src/Router';

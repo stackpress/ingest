@@ -1,6 +1,6 @@
 //stackpress
-import type { Method } from '@stackpress/types/dist/types';
-import EventRouter from '@stackpress/types/dist/event/EventRouter';
+import type { Method } from '@stackpress/lib/dist/types';
+import EventRouter from '@stackpress/lib/dist/event/EventRouter';
 //local
 import type { 
   EntryTask,

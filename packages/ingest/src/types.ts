@@ -14,8 +14,8 @@ import type {
   NestedObject,
   UnknownNest,
   FileSystem
-} from '@stackpress/types/dist/types';
-import type EventEmitter from '@stackpress/types/dist/event/EventEmitter';
+} from '@stackpress/lib/dist/types';
+import type EventEmitter from '@stackpress/lib/dist/event/EventEmitter';
 //local
 import type Request from './Request';
 import type Response from './Response';

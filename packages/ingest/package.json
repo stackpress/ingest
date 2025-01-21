@@ -1,6 +1,6 @@
 {
   "name": "@stackpress/ingest",
-  "version": "0.3.17",
+  "version": "0.3.21",
   "license": "Apache-2.0",
   "description": "An event driven serverless framework",
   "author": "Chris <chris@stackpress.io>",
@@ -22,10 +22,10 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "nyc ts-mocha tests/*.test.ts"
+    "test": "ts-mocha tests/*.test.ts"
   },
   "dependencies": {
-    "@stackpress/types": "0.3.17",
+    "@stackpress/lib": "0.3.21",
     "@whatwg-node/server": "0.6.7",
     "cookie": "1.0.2"
   },
@@ -35,7 +35,6 @@
     "@types/node": "22.9.3",
     "chai": "4.5.0",
     "mocha": "10.8.2",
-    "nyc": "17.1.0",
     "ts-mocha": "10.0.0",
     "ts-node": "10.9.2",
     "typescript": "5.7.2"

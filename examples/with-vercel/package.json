@@ -13,7 +13,7 @@
     "dev": "ts-node src/scripts/serve.ts"
   },
   "dependencies": {
-    "@stackpress/ingest": "0.3.17"
+    "@stackpress/ingest": "0.3.21"
   },
   "devDependencies": {
     "@types/node": "22.9.3",

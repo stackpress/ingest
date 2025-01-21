@@ -2,7 +2,7 @@
 import { createServer } from 'node:http';
 import { createServerAdapter } from '@whatwg-node/server';
 //stackpress
-import type { UnknownNest } from '@stackpress/types/dist/types';
+import type { UnknownNest } from '@stackpress/lib/dist/types';
 //common
 import type { 
   FetchServer,

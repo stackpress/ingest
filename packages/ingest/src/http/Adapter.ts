@@ -2,7 +2,7 @@
 import { Readable } from 'node:stream';
 import * as cookie from 'cookie';
 //stackpress
-import type { Method, UnknownNest } from '@stackpress/types/dist/types';
+import type { Method, UnknownNest } from '@stackpress/lib/dist/types';
 //common
 import type { 
   IM,

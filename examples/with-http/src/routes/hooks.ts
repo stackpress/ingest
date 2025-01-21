@@ -1,5 +1,5 @@
-import type { ResponseStatus } from '@stackpress/types/dist/types';
-import { getStatus } from '@stackpress/types/dist/Status';
+import type { ResponseStatus } from '@stackpress/lib/dist/types';
+import { getStatus } from '@stackpress/lib/dist/Status';
 import { Exception } from '@stackpress/ingest';
 import { router } from '@stackpress/ingest/http';
 

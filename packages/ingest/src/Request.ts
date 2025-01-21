@@ -1,10 +1,10 @@
 //modules
 import * as cookie from 'cookie';
 //stackpress
-import type { CallableMap, CallableNest } from '@stackpress/types/dist/types';
-import type { Method } from '@stackpress/types/dist/types';
-import map from '@stackpress/types/dist/data/map';
-import { nest } from '@stackpress/types/dist/data/Nest';
+import type { CallableMap, CallableNest } from '@stackpress/lib/dist/types';
+import type { Method } from '@stackpress/lib/dist/types';
+import map from '@stackpress/lib/dist/data/map';
+import { nest } from '@stackpress/lib/dist/data/Nest';
 //local
 import type { 
   Body,
