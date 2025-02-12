@@ -1,0 +1,4 @@
+# Local Netlify folder
+.netlify
+yarn.lock
+node_modules

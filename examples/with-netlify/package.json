@@ -1,0 +1,19 @@
+{
+  "name": "ingest-with-fetch",
+  "version": "1.0.0",
+  "description": "A simple boilerplate for using Ingest with fetch API.",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/server.ts"
+  },
+  "dependencies": {
+    "@netlify/functions": "^3.0.0",
+    "@stackpress/ingest": "0.3.27"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "ts-node": "10.9.2",
+    "typescript": "^4.9.5"
+  }
+}
