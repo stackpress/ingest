@@ -1,0 +1,12 @@
+[functions]
+external_node_modules = ["@stackpress/ingest"]
+
+[build]
+command = "yarn build"
+environment = { NODE_VERSION = "20" }
+functions = "src"
+
+[[redirects]]
+from = "/*"
+to = "/.netlify/functions/handler"
+status = 200
