@@ -63,7 +63,7 @@ route.get('/__sse__', function SSE(req, res) {
     .set('Access-Control-Allow-Origin', '*');
 
   let timerId: any;
-  const msg = new TextEncoder().encode("data: hello\r\n\r\n");
+  const msg = new TextEncoder().encode('data: hello\r\n\r\n');
   res.setBody('text/event-stream', new ReadableStream({
     start(controller) {
       timerId = setInterval(() => {

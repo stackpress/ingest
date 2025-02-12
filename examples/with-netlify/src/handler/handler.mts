@@ -1,8 +1,8 @@
-import { server } from "@stackpress/ingest/fetch";
-import pages from "../routes/pages";
-import user from "../routes/user";
-import tests from "../routes/tests";
-import hooks from "../routes/hooks";
+import { server } from '@stackpress/ingest/fetch';
+import pages from '../routes/pages';
+import user from '../routes/user';
+import tests from '../routes/tests';
+import hooks from '../routes/hooks';
 
 export async function handler(event: any, context: any) {
   const app = server();
