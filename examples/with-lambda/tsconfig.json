@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+      "declaration": true,
+      "esModuleInterop": true,
+      "lib": ["es2021", "es7", "es6", "dom"],
+      "module": "commonjs",
+      "noUnusedLocals": true,
+      "outDir": "./dist/",
+      "preserveConstEnums": true,
+      "resolveJsonModule": true,
+      "removeComments": true,
+      "sourceMap": false,
+      "strict": true,
+      "target": "es2017",
+      "skipLibCheck": true
+    },
+    "include": ["src/**/*.ts", "index.ts"],
+    "exclude": ["dist", "node_modules"]
+  }
+  

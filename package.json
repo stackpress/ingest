@@ -12,6 +12,8 @@
     "fetch:dev": "yarn --cwd examples/with-fetch dev",
     "http:build": "yarn --cwd examples/with-http build",
     "http:dev": "yarn --cwd examples/with-http dev",
+    "lambda:build": "yarn --cwd examples/with-lambda build",
+    "lambda:dev": "yarn --cwd examples/with-lambda dev",
     "plugins:build": "yarn --cwd examples/with-plugins build",
     "plugins:dev": "yarn --cwd examples/with-plugins dev",
     "report": "nyc yarn test && nyc report -r lcov",
@@ -19,5 +21,8 @@
   },
   "devDependencies": {
     "nyc": "17.1.0"
+  },
+  "dependencies": {
+    "@stackpress/ingest": "^0.3.27"
   }
 }
