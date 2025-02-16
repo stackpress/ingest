@@ -1,4 +1,4 @@
-import { server } from "@stackpress/ingest/http";
+import { server } from "@stackpress/ingest/fetch";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 
 // server starter
