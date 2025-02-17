@@ -1,7 +1,7 @@
 {
-  "name": "ingest-with-fetch",
+  "name": "ingest-with-netlify",
   "version": "1.0.0",
-  "description": "A simple boilerplate for using Ingest with fetch API.",
+  "description": "A simple boilerplate for using Ingest with Netlify",
   "private": true,
   "scripts": {
     "build": "tsc",
