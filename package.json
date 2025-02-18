@@ -21,8 +21,5 @@
   },
   "devDependencies": {
     "nyc": "17.1.0"
-  },
-  "dependencies": {
-    "@stackpress/ingest": "^0.3.27"
   }
 }

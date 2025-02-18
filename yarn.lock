@@ -1639,10 +1639,10 @@
     "@smithy/types" "^4.1.0"
     tslib "^2.6.2"
 
-"@stackpress/lib@0.3.27":
-  version "0.3.27"
-  resolved "https://registry.npmjs.org/@stackpress/lib/-/lib-0.3.27.tgz"
-  integrity sha512-ei3AlEqcho80AgB/W1U9pX9JEK90iZQ11All/AyUVGCeCEgCiHJd6VlwdkhqIZULNb4LJ6Dnz2MRyAeVKX0NBA==
+"@stackpress/lib@0.3.28":
+  version "0.3.28"
+  resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.3.28.tgz#b1c5249d02b11860d1bffe7ac749f89baead4a0a"
+  integrity sha512-9WqKWUwL/f90d61AuCjo6/vdCqDHr74Kz3184tdoolpmxAFNa9La9JULR2/qoew8yEMo90JM7mZPIU4BPBRMrQ==
   dependencies:
     "@inquirer/prompts" "7.1.0"
 
