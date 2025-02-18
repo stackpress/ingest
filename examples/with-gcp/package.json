@@ -1,0 +1,20 @@
+{
+  "name": "ingest-with-gcp",
+  "version": "1.0.0",
+  "description": "A simple boilerplate for using Ingest with GCP functions.",
+  "main": "dist/handler.js",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "functions-framework --target=handler --port=8081"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.5",
+    "@stackpress/ingest": "0.3.28"
+  },
+  "devDependencies": {
+    "@types/node": "22.9.3",
+    "ts-node": "10.9.2",
+    "typescript": "5.7.2"
+  }
+}

@@ -10,6 +10,8 @@
     "entries:dev": "yarn --cwd examples/with-entries dev",
     "fetch:build": "yarn --cwd examples/with-fetch build",
     "fetch:dev": "yarn --cwd examples/with-fetch dev",
+    "gcp:build": "yarn --cwd examples/with-gcp build",
+    "gcp:dev": "yarn --cwd examples/with-gcp dev",
     "http:build": "yarn --cwd examples/with-http build",
     "http:dev": "yarn --cwd examples/with-http dev",
     "lambda:build": "yarn --cwd examples/with-lambda build",
