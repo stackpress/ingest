@@ -1653,10 +1653,26 @@
     "@smithy/types" "^4.1.0"
     tslib "^2.6.2"
 
-"@stackpress/lib@0.3.29":
-  version "0.3.29"
-  resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.3.29.tgz#d0cbbb069d99df7bfc798fbc2eae52280ce3272d"
-  integrity sha512-x89/wUIIw2dLdA4QNoBlJmU8EQingvh0uq53xFtPtfJPrd0YFBnnxe+rsBxRiqcJSL8/A/L3IH6TVS2Ezfi2AQ==
+"@stackpress/ingest@0.3.28":
+  version "0.3.28"
+  resolved "https://registry.yarnpkg.com/@stackpress/ingest/-/ingest-0.3.28.tgz#fa9b61a52a61a6ec276181e7a73f763b55c65994"
+  integrity sha512-7BCg8PYOO6aTrMI/TLUDiub1PS7R6hZvrqbvlxk77Y/Bql/EOKZUe1SjuRJ1CHMNee+FDCpcZTXBIwTSDJNGhQ==
+  dependencies:
+    "@stackpress/lib" "0.3.28"
+    "@whatwg-node/server" "0.6.7"
+    cookie "1.0.2"
+
+"@stackpress/lib@0.3.28":
+  version "0.3.28"
+  resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.3.28.tgz#b1c5249d02b11860d1bffe7ac749f89baead4a0a"
+  integrity sha512-9WqKWUwL/f90d61AuCjo6/vdCqDHr74Kz3184tdoolpmxAFNa9La9JULR2/qoew8yEMo90JM7mZPIU4BPBRMrQ==
+  dependencies:
+    "@inquirer/prompts" "7.1.0"
+
+"@stackpress/lib@0.3.30":
+  version "0.3.30"
+  resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.3.30.tgz#a31aac974df62a5c991346e50f7abcbc067754b3"
+  integrity sha512-aUuhYxrftwL3CL6nh3knMNCAPjKdOudBgwHCiKQDf7Q/p1ZoTc/iVZ3SXthNDUmsilpgfsjXKipe5jmpD+KK5g==
   dependencies:
     "@inquirer/prompts" "7.1.0"
 
