@@ -37,7 +37,7 @@ router.get('/redirect', function Redirect(req, res) {
  */
 router.get('/icon.png', function Icon(req, res) {
   if (res.code || res.status || res.body) return; 
-  const file = path.resolve(process.cwd(), 'icon.png'); 
+  const file = path.resolve(process.cwd(), 'public', 'icon.png'); 
   if (fs.existsSync(file)) {
     res.setBody('image/png', fs.createReadStream(file));
   }

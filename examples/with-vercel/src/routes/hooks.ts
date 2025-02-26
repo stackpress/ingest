@@ -26,7 +26,7 @@ router.get('/error', function ErrorResponse(req, res) {
 /**
  * 404 handler
  */
-router.get('/**', function NotFound(req, res) {
+router.on('response', function NotFound(req, res) {
   if (!res.code && !res.status && !res.sent) {
     //send the response
     res.setHTML('Not Found');

@@ -1,4 +1,4 @@
-# GCP Function Example
+# Google Cloud Function Example
 
 This is an example of GCP function using Typescript and Yarn.
 
@@ -12,12 +12,16 @@ This is an example of GCP function using Typescript and Yarn.
 
 At the first time running the project run the command:
 
-    $ yarn
+```bash
+$ yarn
+```
 
 Then you can build and start the local dev:
 
-    $ yarn gcp:build
-    $ yarn gcp:dev
+```bash
+$ yarn gcp:build
+$ yarn gcp:dev
+```
 
 Once the project is running check out http://localhost:8081.
 
@@ -25,26 +29,30 @@ Once the project is running check out http://localhost:8081.
 
 Deploy the GCP function (cd examples/with-gcp)
 
-    $ gcloud functions deploy gcp-function \
-        --entry-point=handler \
-        --runtime nodejs20 \
-        --trigger-http \
-        --allow-unauthenticated \
-        --project [PROJECT ID]
-
+```bash
+$ gcloud functions deploy gcp-function \
+  --entry-point=handler \
+  --runtime nodejs20 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --project [PROJECT ID]
+```
 access the URL (example): https://us-central1-zinc-style-449212-s0.cloudfunctions.net/gcp-function
 
 ## Authenticate for invocation
 
 If authentication is required (--no-allow-unauthenticated), execute this line:
 
-    $ curl  -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
-        [FUNCTION URL]
+```bash
+$ curl  -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  [FUNCTION URL]
+```
 
 more info: https://cloud.google.com/functions/docs/securing/authenticating
 
 To invoke the GCP function directly, execute this line:
 
-    $ gcloud functions call [FUNCTION NAME]
-
+```bash
+$ gcloud functions call [FUNCTION NAME]
+```
 more info: https://cloud.google.com/functions/docs/running/direct

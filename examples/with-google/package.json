@@ -1,5 +1,5 @@
 {
-  "name": "ingest-with-gcp",
+  "name": "ingest-with-google",
   "version": "1.0.0",
   "description": "A simple boilerplate for using Ingest with GCP functions.",
   "main": "dist/handler.js",
@@ -9,8 +9,8 @@
     "dev": "functions-framework --target=handler --port=8081"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.4.5",
-    "@stackpress/ingest": "0.3.30"
+    "@google-cloud/functions-framework": "3.4.5",
+    "@stackpress/ingest": "0.3.31"
   },
   "devDependencies": {
     "@types/node": "22.9.3",

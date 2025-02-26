@@ -687,9 +687,9 @@
   resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.23.1.tgz#81fd50d11e2c32b2d6241470e3185b70c7b30699"
   integrity sha512-BHpFFeslkWrXWyUPnbKm+xYYVYruCinGcftSBaa8zoF9hZO4BcSCFUvHVTtzpIY6YzUnYtuEhZ+C9iEXjxnasg==
 
-"@google-cloud/functions-framework@^3.4.5":
+"@google-cloud/functions-framework@3.4.5":
   version "3.4.5"
-  resolved "https://registry.npmjs.org/@google-cloud/functions-framework/-/functions-framework-3.4.5.tgz#43636959c59b2395b061bb25c5bf0879fd2de900"
+  resolved "https://registry.yarnpkg.com/@google-cloud/functions-framework/-/functions-framework-3.4.5.tgz#43636959c59b2395b061bb25c5bf0879fd2de900"
   integrity sha512-mf3Yw3kRPsz0K7TytvSoqO3peuVZWPi9B3S8zacIk49zi2WqL+rjHaw4zPZ8T3O89jDsCZVj5PFpDJC6Ge4mpA==
   dependencies:
     "@types/express" "^5.0.0"
@@ -1653,22 +1653,6 @@
     "@smithy/types" "^4.1.0"
     tslib "^2.6.2"
 
-"@stackpress/ingest@0.3.30":
-  version "0.3.30"
-  resolved "https://registry.npmjs.org/@stackpress/ingest/-/ingest-0.3.30.tgz#5bff67871b19733141b53171b1a6c660c27e300a"
-  integrity sha512-M+SdQuC6HtxYhLt568O9KVnngaywxMgrhy2kpGL9zOYdfvtDUiYTCQojr6+G018TAek03uWK7i3zpaYtkv4DZA==
-  dependencies:
-    "@stackpress/lib" "0.3.30"
-    "@whatwg-node/server" "0.6.7"
-    cookie "1.0.2"
-
-"@stackpress/lib@0.3.30":
-  version "0.3.30"
-  resolved "https://registry.npmjs.org/@stackpress/lib/-/lib-0.3.30.tgz#a31aac974df62a5c991346e50f7abcbc067754b3"
-  integrity sha512-aUuhYxrftwL3CL6nh3knMNCAPjKdOudBgwHCiKQDf7Q/p1ZoTc/iVZ3SXthNDUmsilpgfsjXKipe5jmpD+KK5g==
-  dependencies:
-    "@inquirer/prompts" "7.1.0"
-
 "@stackpress/lib@0.3.31":
   version "0.3.31"
   resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.3.31.tgz#41dc6ae5a8a5b6a705749dda8ea249b24580c71f"
@@ -1696,9 +1680,9 @@
   resolved "https://registry.npmjs.org/@tsconfig/node16/-/node16-1.0.4.tgz"
   integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
 
-"@types/aws-lambda@^8.10.147":
+"@types/aws-lambda@8.10.147":
   version "8.10.147"
-  resolved "https://registry.npmjs.org/@types/aws-lambda/-/aws-lambda-8.10.147.tgz#dc5c89aa32f47a9b35e52c32630545c83afa6f2f"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.147.tgz#dc5c89aa32f47a9b35e52c32630545c83afa6f2f"
   integrity sha512-nD0Z9fNIZcxYX5Mai2CTmFD7wX7UldCkW2ezCF8D1T5hdiLsnTWDGRpfRYntU6VjTdLQjOvyszru7I1c1oCQew==
 
 "@types/body-parser@*":
@@ -1761,7 +1745,7 @@
   resolved "https://registry.npmjs.org/@types/mocha/-/mocha-10.0.10.tgz"
   integrity sha512-xPyYSz1cMPnJQhl0CLMH68j3gprKZaTjG3s5Vi+fDgx+uhG9NOXwbVt52eFS8ECyXhyKcjDLCBEqBExKuiZb7Q==
 
-"@types/node@*", "@types/node@^22.13.1":
+"@types/node@*":
   version "22.13.4"
   resolved "https://registry.npmjs.org/@types/node/-/node-22.13.4.tgz"
   integrity sha512-ywP2X0DYtX3y08eFVx5fNIw7/uIv8hYUKgXoK8oayJlLnKcRfEYCxWMVE1XagUdVtCJlZT1AU4LXEABW+L1Peg==
@@ -1807,11 +1791,12 @@
     "@types/node" "*"
     "@types/send" "*"
 
-"@whatwg-node/disposablestack@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.npmjs.org/@whatwg-node/disposablestack/-/disposablestack-0.0.5.tgz"
-  integrity sha512-9lXugdknoIequO4OYvIjhygvfSEgnO8oASLqLelnDhkRjgBZhc39shC3QSlZuyDO9bgYSIVa2cHAiN+St3ty4w==
+"@whatwg-node/disposablestack@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/disposablestack/-/disposablestack-0.0.6.tgz#2064a1425ea66194def6df0c7a1851b6939c82bb"
+  integrity sha512-LOtTn+JgJvX8WfBVJtF08TGrdjuFzGJc4mkP8EdDI8ADbvO7kiexYep1o8dwnt0okb0jYclCDXF13xU7Ge4zSw==
   dependencies:
+    "@whatwg-node/promise-helpers" "^1.0.0"
     tslib "^2.6.3"
 
 "@whatwg-node/events@^0.0.3":
@@ -1819,12 +1804,12 @@
   resolved "https://registry.npmjs.org/@whatwg-node/events/-/events-0.0.3.tgz"
   integrity sha512-IqnKIDWfXBJkvy/k6tzskWTc2NK3LcqHlb+KHGCrjOCH4jfQckRX0NAiIcC/vIqQkzLYw2r2CTSwAxcrtcD6lA==
 
-"@whatwg-node/fetch@^0.10.0":
-  version "0.10.3"
-  resolved "https://registry.npmjs.org/@whatwg-node/fetch/-/fetch-0.10.3.tgz"
-  integrity sha512-jCTL/qYcIW2GihbBRHypQ/Us7saWMNZ5fsumsta+qPY0Pmi1ccba/KRQvgctmQsbP69FWemJSs8zVcFaNwdL0w==
+"@whatwg-node/fetch@^0.10.5":
+  version "0.10.5"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/fetch/-/fetch-0.10.5.tgz#8537e50d32bac0f2e9cecff206588ca41d836df5"
+  integrity sha512-+yFJU3hmXPAHJULwx0VzCIsvr/H0lvbPvbOH3areOH3NAuCxCwaJsQ8w6/MwwMcvEWIynSsmAxoyaH04KeosPg==
   dependencies:
-    "@whatwg-node/node-fetch" "^0.7.7"
+    "@whatwg-node/node-fetch" "^0.7.11"
     urlpattern-polyfill "^10.0.0"
 
 "@whatwg-node/fetch@^0.8.1":
@@ -1849,13 +1834,21 @@
     fast-url-parser "^1.1.3"
     tslib "^2.3.1"
 
-"@whatwg-node/node-fetch@^0.7.7":
-  version "0.7.9"
-  resolved "https://registry.npmjs.org/@whatwg-node/node-fetch/-/node-fetch-0.7.9.tgz"
-  integrity sha512-rp4/lzxK5DDxFFdXcCR3gG4OyWPHqmN1GrKostx2NEy7sHUQA/B3j0M2z+qfMQVg5SC4RRm0eFwD73e+GgAM3A==
+"@whatwg-node/node-fetch@^0.7.11":
+  version "0.7.12"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/node-fetch/-/node-fetch-0.7.12.tgz#41d7c35a1ea4d9ab8fd0fac5d0bc32350915ba22"
+  integrity sha512-ec9ZPDImceXD9gShv0VTc6q0waZ7ccpiYXNbAeGMjGQAZ8hkAeAYOXoiJsfaHO5Pt0UR+SbNVTJGP2aeFMYz0Q==
   dependencies:
-    "@whatwg-node/disposablestack" "^0.0.5"
+    "@whatwg-node/disposablestack" "^0.0.6"
+    "@whatwg-node/promise-helpers" "^1.0.0"
     busboy "^1.6.0"
+    tslib "^2.6.3"
+
+"@whatwg-node/promise-helpers@^1.0.0":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/promise-helpers/-/promise-helpers-1.2.1.tgz#835006411e6f656159bc1ecc7e2475721feb5307"
+  integrity sha512-+faGtJlS4U8NSaSzRVN37xAprPdhoobYzUSUo4DgH8APtfFyizmNxp0ckwKcURoL8cy2B+bKxOWU/VIH2nFeLg==
+  dependencies:
     tslib "^2.6.3"
 
 "@whatwg-node/server@0.6.7":
@@ -1866,13 +1859,14 @@
     "@whatwg-node/fetch" "^0.8.1"
     tslib "^2.3.1"
 
-"@whatwg-node/server@^0.9.67":
-  version "0.9.67"
-  resolved "https://registry.npmjs.org/@whatwg-node/server/-/server-0.9.67.tgz"
-  integrity sha512-s7gqiQ/B0p4WdqPtI5WuXp9K37DtuOlk/KF7mK+gy/cmXcqfdSAjSweDpwxtmb2lDmzxDgtrT4mpOUaddSNpCw==
+"@whatwg-node/server@0.9.70":
+  version "0.9.70"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/server/-/server-0.9.70.tgz#531f64522964637f60f0e6a78612732a8065214f"
+  integrity sha512-YjZgF5E29R8QwtYo5WWIERXA0Hn7TSmrpVsIGYZpJDSQNE0gFpcsijmzxpviYtSm69Ayu8B9xOg+EFVk+sVtgA==
   dependencies:
-    "@whatwg-node/disposablestack" "^0.0.5"
-    "@whatwg-node/fetch" "^0.10.0"
+    "@whatwg-node/disposablestack" "^0.0.6"
+    "@whatwg-node/fetch" "^0.10.5"
+    "@whatwg-node/promise-helpers" "^1.0.0"
     tslib "^2.6.3"
 
 accepts@~1.3.8:
@@ -4046,9 +4040,9 @@ serve-static@1.16.2:
     parseurl "~1.3.3"
     send "0.19.0"
 
-serverless-offline@^14.4.0:
+serverless-offline@14.4.0:
   version "14.4.0"
-  resolved "https://registry.npmjs.org/serverless-offline/-/serverless-offline-14.4.0.tgz#4009e568b44bc84d87f932087f1d0973da4ba57f"
+  resolved "https://registry.yarnpkg.com/serverless-offline/-/serverless-offline-14.4.0.tgz#4009e568b44bc84d87f932087f1d0973da4ba57f"
   integrity sha512-PKNDc33HwFH6qD/VIOjhhiu6bKffIIMTG4DjOR1Kh2lv3zriIuW5bCzPUzGS7aP/x7rQbz/LDNWxftzsp6uizQ==
   dependencies:
     "@aws-sdk/client-lambda" "^3.636.0"
@@ -4406,7 +4400,7 @@ tsconfig-paths@^3.5.0:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@^2.0.0, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.6.2, tslib@^2.6.3, tslib@^2.7.0, tslib@^2.8.1:
+tslib@2.8.1, tslib@^2.0.0, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.6.2, tslib@^2.6.3, tslib@^2.7.0, tslib@^2.8.1:
   version "2.8.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
@@ -4470,11 +4464,6 @@ typescript@5.7.2:
   version "5.7.2"
   resolved "https://registry.npmjs.org/typescript/-/typescript-5.7.2.tgz"
   integrity sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==
-
-typescript@^4.9.5:
-  version "4.9.5"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-4.9.5.tgz"
-  integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 undici-types@~6.19.8:
   version "6.19.8"
