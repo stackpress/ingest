@@ -29,14 +29,22 @@ Deploy the GCP function (cd examples/with-gcp)
         --entry-point=handler \
         --runtime nodejs20 \
         --trigger-http \
-        --no-allow-unauthenticated \
+        --allow-unauthenticated \
         --project [PROJECT ID]
+
+access the URL (example): https://us-central1-zinc-style-449212-s0.cloudfunctions.net/gcp-function
 
 ## Authenticate for invocation
 
-Since authentication is required, clicking the URL will return Error: Forbidden. Execute this line:
+If authentication is required (--no-allow-unauthenticated), execute this line:
 
     $ curl  -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
         [FUNCTION URL]
 
 more info: https://cloud.google.com/functions/docs/securing/authenticating
+
+To invoke the GCP function directly, execute this line:
+
+    $ gcloud functions call [FUNCTION NAME]
+
+more info: https://cloud.google.com/functions/docs/running/direct
