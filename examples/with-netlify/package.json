@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@netlify/functions": "^3.0.0",
-    "@stackpress/ingest": "0.3.31"
+    "@stackpress/ingest": "0.3.32"
   },
   "devDependencies": {
     "@types/node": "22.9.3",
