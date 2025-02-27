@@ -2,7 +2,7 @@
 import type { UnknownNest } from '@stackpress/lib/dist/types';
 import Status from '@stackpress/lib/dist/Status';
 //local
-import type { EntryAction } from './types';
+import type { ServerAction } from './types';
 import type Server from './Server';
 import type Request from './Request';
 import type Response from './Response';
@@ -31,7 +31,7 @@ export default class Route<
     R = unknown, 
     S = unknown
   >(
-    event: EntryAction<R, S, Server<C, R, S>>,
+    event: ServerAction<C, R, S>|string,
     request: Request<R, Server<C, R, S>>,
     response: Response<S>
   ) {
@@ -39,7 +39,7 @@ export default class Route<
     return route.emit();
   }
 
-  public readonly event: EntryAction<R, S, Server<C, R, S>>;
+  public readonly event: ServerAction<C, R, S>|string;
   public readonly request: Request<R, Server<C, R, S>>;
   public readonly response: Response<S>;
 
@@ -47,7 +47,7 @@ export default class Route<
    * Gets everything needed from route.handle()
    */
   constructor(
-    event: EntryAction<R, S, Server<C, R, S>>,
+    event: ServerAction<C, R, S>|string,
     request: Request<R, Server<C, R, S>>,
     response: Response<S>
   ) {

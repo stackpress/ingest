@@ -9,7 +9,7 @@ import type {
   NodeRequest,
   NodeResponse,
   NodeOptResponse,
-  FetchEntryAction,
+  FetchAction,
   ServerOptions,
   NodeServerOptions
 } from '../types';
@@ -57,7 +57,7 @@ export async function handler<C extends UnknownNest = UnknownNest>(
   context: FetchServer<C>, 
   request: NodeRequest,
   response: NodeOptResponse,
-  action?: FetchEntryAction<C>
+  action?: string|FetchAction<C>
 ) {
   return await Adapter.plug(context, request, action);
 };

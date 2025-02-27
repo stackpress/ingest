@@ -8,7 +8,7 @@ import type {
   IM,
   SR,
   HTTPServer,
-  HTTPEntryAction,
+  HTTPAction,
   LoaderResults,
   CookieOptions
 } from '../types';
@@ -32,7 +32,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
     context: HTTPServer<C>, 
     request: IM,
     response: SR,
-    action?: HTTPEntryAction<C>
+    action?: string|HTTPAction<C>
   ) {
     const server = new Adapter(context, request, response);
     return server.plug(action);
@@ -57,7 +57,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
   /**
    * Handles the request
    */
-  public async plug(action?: HTTPEntryAction<C>) {
+  public async plug(action?: string|HTTPAction<C>) {
     //initialize the request
     const req = this.request();
     const res = this.response();

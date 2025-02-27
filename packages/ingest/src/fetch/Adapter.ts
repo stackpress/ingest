@@ -7,7 +7,7 @@ import type { Method, UnknownNest } from '@stackpress/lib/dist/types';
 import type { 
   Body,
   FetchServer,
-  FetchEntryAction,
+  FetchAction,
   NodeRequest,
   NodeOptResponse,
   LoaderResults,
@@ -35,7 +35,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
   public static async plug<C extends UnknownNest = UnknownNest>(
     context: FetchServer<C>, 
     request: NodeRequest,
-    action?: FetchEntryAction<C>
+    action?: string|FetchAction<C>
   ) {
     const server = new Adapter(context, request);
     return server.plug();
@@ -57,7 +57,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
   /**
    * Handles the request
    */
-  public async plug(action?: FetchEntryAction<C>) {
+  public async plug(action?: string|FetchAction<C>) {
     //initialize the request
     const req = this.request();
     const res = this.response();

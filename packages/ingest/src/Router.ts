@@ -4,7 +4,8 @@ import EventRouter from '@stackpress/lib/dist/event/EventRouter';
 //local
 import type { 
   EntryTask,
-  EntryAction,
+  RouterAction,
+  RouterImport,
   RouterEmitter,
   RouterQueueArgs, 
   UnknownNest 
@@ -35,6 +36,10 @@ export default class Router<
   public readonly cache: boolean;
   //A route map to task queues
   public readonly entries = new Map<string, Set<EntryTask>>();
+  //Router entry extension
+  public readonly withEntries: RouterEntries<R, S, X>;
+  //Router import extension
+  public readonly withImports: RouterImports<R, S, X>;
 
   /**
    * Determine whether to use require cache
@@ -42,69 +47,78 @@ export default class Router<
   constructor(cache = true) {
     super();
     this.cache = cache;
+    this.withEntries = new RouterEntries<R, S, X>(this);
+    this.withImports = new RouterImports<R, S, X>(this);
   }
 
   /**
    * Route for any method
    */
-  public all(path: string, action: EntryAction<R, S, X>, priority?: number) {
+  public all(path: string, action: RouterAction<R, S, X>, priority?: number) {
     return this.route('[A-Z]+', path, action, priority);
   }
 
   /**
    * Route for CONNECT method
    */
-  public connect(path: string, action: EntryAction<R, S, X>, priority?: number) {
+  public connect(path: string, action: RouterAction<R, S, X>, priority?: number) {
     return this.route('CONNECT', path, action, priority);
   }
 
   /**
    * Route for DELETE method
    */
-  public delete(path: string, action: EntryAction<R, S, X>, priority?: number) {
+  public delete(path: string, action: RouterAction<R, S, X>, priority?: number) {
     return this.route('DELETE', path, action, priority);
   }
 
   /**
    * Route for GET method
    */
-  public get(path: string, action: EntryAction<R, S, X>, priority?: number) {
+  public get(path: string, action: RouterAction<R, S, X>, priority?: number) {
     return this.route('GET', path, action, priority);
   }
 
   /**
    * Route for HEAD method
    */
-  public head(path: string, action: EntryAction<R, S, X>, priority?: number) {
+  public head(path: string, action: RouterAction<R, S, X>, priority?: number) {
     return this.route('HEAD', path, action, priority);
   }
 
   /**
    * Route for OPTIONS method
    */
-  public options(path: string, action: EntryAction<R, S, X>, priority?: number) {
+  public options(path: string, action: RouterAction<R, S, X>, priority?: number) {
     return this.route('OPTIONS', path, action, priority);
   }
 
   /**
    * Route for PATCH method
    */
-  public patch(path: string, action: EntryAction<R, S, X>, priority?: number) {
+  public patch(path: string, action: RouterAction<R, S, X>, priority?: number) {
     return this.route('PATCH', path, action, priority);
   }
 
   /**
    * Route for POST method
    */
-  public post(path: string, action: EntryAction<R, S, X>, priority?: number) {
+  public post(path: string, action: RouterAction<R, S, X>, priority?: number) {
     return this.route('POST', path, action, priority);
   }
 
   /**
    * Route for PUT method
    */
-  public put(path: string, action: EntryAction<R, S, X>, priority?: number) {
+  public put(path: string, action: RouterAction<R, S, X>, priority?: number) {
     return this.route('PUT', path, action, priority);
+  }
+
+  /**
+   * Route for TRACE method
+   */
+  public trace(path: string, action: RouterAction<R, S, X>, priority?: number) {
+    return this.route('TRACE', path, action, priority);
   }
 
   /**
@@ -112,7 +126,7 @@ export default class Router<
    */
   public on(
     event: string|RegExp, 
-    action: EntryAction<R, S, X>,
+    action: RouterAction<R, S, X>,
     priority = 0
   ) {
     if (typeof action !== 'string') {
@@ -157,7 +171,7 @@ export default class Router<
   public route(
     method: Method|'[A-Z]+', 
     path: string, 
-    action: EntryAction<R, S, X>, 
+    action: RouterAction<R, S, X>, 
     priority?: number
   ) {
     //convert path to a regex pattern
@@ -294,6 +308,351 @@ export default class Router<
       }
     }
     return this;
+  }
+}
+
+export class RouterEntries<
+  //request resource
+  R = unknown, 
+  //response resource
+  S = unknown, 
+  //context (usually the server)
+  X = unknown
+>  {
+  //main router
+  protected _router: Router<R, S, X>;
+  
+  /**
+   * Set the router
+   */
+  constructor(router: Router<R, S, X>) {
+    this._router = router;
+  }
+
+  /**
+   * Route for any method
+   */
+  public all(path: string, action: string, priority?: number) {
+    return this.route('[A-Z]+', path, action, priority);
+  }
+
+  /**
+   * Route for CONNECT method
+   */
+  public connect(path: string, action: string, priority?: number) {
+    return this.route('CONNECT', path, action, priority);
+  }
+
+  /**
+   * Route for DELETE method
+   */
+  public delete(path: string, action: string, priority?: number) {
+    return this.route('DELETE', path, action, priority);
+  }
+
+  /**
+   * Route for GET method
+   */
+  public get(path: string, action: string, priority?: number) {
+    return this.route('GET', path, action, priority);
+  }
+
+  /**
+   * Route for HEAD method
+   */
+  public head(path: string, action: string, priority?: number) {
+    return this.route('HEAD', path, action, priority);
+  }
+
+  /**
+   * Route for OPTIONS method
+   */
+  public options(path: string, action: string, priority?: number) {
+    return this.route('OPTIONS', path, action, priority);
+  }
+
+  /**
+   * Route for PATCH method
+   */
+  public patch(path: string, action: string, priority?: number) {
+    return this.route('PATCH', path, action, priority);
+  }
+
+  /**
+   * Route for POST method
+   */
+  public post(path: string, action: string, priority?: number) {
+    return this.route('POST', path, action, priority);
+  }
+
+  /**
+   * Route for PUT method
+   */
+  public put(path: string, action: string, priority?: number) {
+    return this.route('PUT', path, action, priority);
+  }
+
+  /**
+   * Route for TRACE method
+   */
+  public trace(path: string, action: string, priority?: number) {
+    return this.route('TRACE', path, action, priority);
+  }
+
+  /**
+   * Makes an entry action
+   */
+  public make(entry: string) {
+    const router = this._router;
+    return async function EntryFile(req: Request<R, X>, res: Response<S>) {
+      //import the action
+      const imports = await import(entry);
+      //get the default export
+      const action = imports.default;
+      //if dont cache
+      if (!router.cache) {
+        //delete it from the require cache 
+        //so it can be processed again
+        delete require.cache[require.resolve(entry)];
+      }
+      //run the action
+      //NOTE: it's probably better 
+      // to not strongly type this...
+      return await action(req, res);
+    }
+  }
+
+  /**
+   * Adds a callback to the given event listener
+   */
+  public on(
+    event: string|RegExp, 
+    entry: string,
+    priority = 0
+  ) {
+    //get all the router entries
+    const entries = this._router.entries;
+    //create a key for the entry
+    const key = event.toString();
+    //if the listener group does not exist, create it
+    if (!entries.has(key)) {
+      entries.set(key, new Set());
+    }
+    //add the listener to the group
+    entries.get(key)?.add({ entry, priority });
+    //now listen for the event
+    this._router.on(event, this.make(entry), priority);
+    return this;
+  }
+
+  /**
+   * Returns a route
+   */
+  public route(
+    method: Method|'[A-Z]+', 
+    path: string, 
+    entry: string,
+    priority?: number
+  ) {
+    //convert path to a regex pattern
+    const pattern = path
+      //replace the :variable-_name01
+      .replace(/(\:[a-zA-Z0-9\-_]+)/g, '*')
+      //replace the stars
+      //* -> ([^/]+)
+      .replaceAll('*', '([^/]+)')
+      //** -> ([^/]+)([^/]+) -> (.*)
+      .replaceAll('([^/]+)([^/]+)', '(.*)');
+    //now form the event pattern
+    const event = new RegExp(`^${method}\\s${pattern}/*$`, 'ig');
+    this._router.routes.set(event.toString(), {
+      method: method === '[A-Z]+' ? 'ALL' : method,
+      path: path
+    });
+    //add to tasks
+    return this.on(event, entry, priority);
+  }
+}
+
+export class RouterImports<
+  //request resource
+  R = unknown, 
+  //response resource
+  S = unknown, 
+  //context (usually the server)
+  X = unknown
+>  {
+  //main router
+  protected _router: Router<R, S, X>;
+  
+  /**
+   * Set the router
+   */
+  constructor(router: Router<R, S, X>) {
+    this._router = router;
+  }
+
+  /**
+   * Route for any method
+   */
+  public all(path: string, action: RouterImport, priority?: number) {
+    return this.route('[A-Z]+', path, action, priority);
+  }
+
+  /**
+   * Route for CONNECT method
+   */
+  public connect(path: string, action: RouterImport, priority?: number) {
+    return this.route('CONNECT', path, action, priority);
+  }
+
+  /**
+   * Route for DELETE method
+   */
+  public delete(path: string, action: RouterImport, priority?: number) {
+    return this.route('DELETE', path, action, priority);
+  }
+
+  /**
+   * Route for GET method
+   */
+  public get(path: string, action: RouterImport, priority?: number) {
+    return this.route('GET', path, action, priority);
+  }
+
+  /**
+   * Route for HEAD method
+   */
+  public head(path: string, action: RouterImport, priority?: number) {
+    return this.route('HEAD', path, action, priority);
+  }
+
+  /**
+   * Route for OPTIONS method
+   */
+  public options(path: string, action: RouterImport, priority?: number) {
+    return this.route('OPTIONS', path, action, priority);
+  }
+
+  /**
+   * Route for PATCH method
+   */
+  public patch(path: string, action: RouterImport, priority?: number) {
+    return this.route('PATCH', path, action, priority);
+  }
+
+  /**
+   * Route for POST method
+   */
+  public post(path: string, action: RouterImport, priority?: number) {
+    return this.route('POST', path, action, priority);
+  }
+
+  /**
+   * Route for PUT method
+   */
+  public put(path: string, action: RouterImport, priority?: number) {
+    return this.route('PUT', path, action, priority);
+  }
+
+  /**
+   * Route for TRACE method
+   */
+  public trace(path: string, action: RouterImport, priority?: number) {
+    return this.route('TRACE', path, action, priority);
+  }
+
+  /**
+   * Makes an import action
+   */
+  public make(entry: RouterImport) {
+    const router = this._router;
+    const path = this._getImportPath(entry);
+    return async function ImportFile(req: Request<R, X>, res: Response<S>) {
+      //import the action
+      const imports = (await entry()) as { 
+        default: RouterAction<R, S, X> 
+      };
+      //get the default export
+      const action = imports.default;
+      //if dont cache
+      if (!router.cache && path.length) {
+        //delete it from the require cache 
+        //so it can be processed again
+        delete require.cache[require.resolve(path)];
+      }
+      //run the action
+      //NOTE: it's probably better 
+      // to not strongly type this...
+      return await action(req, res);
+    }
+  }
+
+  /**
+   * Adds a callback to the given event listener
+   */
+  public on(
+    event: string|RegExp, 
+    entry: RouterImport,
+    priority = 0
+  ) {
+    //get all the router entries
+    const entries = this._router.entries;
+    //create a key for the entry
+    const key = event.toString();
+    //if the listener group does not exist, create it
+    if (!entries.has(key)) {
+      entries.set(key, new Set());
+    }
+    //get the import path
+    const path = this._getImportPath(entry);
+    //add the listener to the group
+    entries.get(key)?.add({ entry: path, priority });
+    //now listen for the event
+    this._router.on(event, this.make(entry), priority);
+    return this;
+  }
+
+  /**
+   * Returns a route
+   */
+  public route(
+    method: Method|'[A-Z]+', 
+    path: string, 
+    entry: RouterImport,
+    priority?: number
+  ) {
+    //convert path to a regex pattern
+    const pattern = path
+      //replace the :variable-_name01
+      .replace(/(\:[a-zA-Z0-9\-_]+)/g, '*')
+      //replace the stars
+      //* -> ([^/]+)
+      .replaceAll('*', '([^/]+)')
+      //** -> ([^/]+)([^/]+) -> (.*)
+      .replaceAll('([^/]+)([^/]+)', '(.*)');
+    //now form the event pattern
+    const event = new RegExp(`^${method}\\s${pattern}/*$`, 'ig');
+    this._router.routes.set(event.toString(), {
+      method: method === '[A-Z]+' ? 'ALL' : method,
+      path: path
+    });
+    //add to tasks
+    return this.on(event, entry, priority);
+  }
+
+  /**
+   * Parses the import path from the entry function
+   */
+  protected _getImportPath(entry: RouterImport) {
+    const callback = entry.toString();
+    //ex. callback = "() => import('foobar')"
+    //ex. callback = "() => import(`foobar`)"
+    //we need to extract foobar from the callback
+    const matches = Array.from(
+      callback.matchAll(/((import)|(require))\(\s*['"`](.+)['"`]\s*\)/g)
+    )[0];
+    return matches ? (Array.from(matches)[4] || ''): '';
   }
 }
 

@@ -7,7 +7,7 @@ import type {
   IM, 
   SR, 
   HTTPServer, 
-  HTTPEntryAction,
+  HTTPAction,
   ServerOptions,
   NodeServerOptions
 } from '../types';
@@ -49,7 +49,7 @@ export async function handler<C extends UnknownNest = UnknownNest>(
   context: HTTPServer<C>, 
   request: IM,
   response: SR,
-  action?: HTTPEntryAction<C>
+  action?: string|HTTPAction<C>
 ) {
   return await Adapter.plug(context, request, response, action);
 };

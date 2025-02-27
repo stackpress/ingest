@@ -10,7 +10,8 @@ import type { Readable } from 'node:stream';
 import type { 
   Method, 
   RouterMap,
-  RouterAction,
+  //see: RouterAction (below)
+  //RouterAction as RouterActionRR,
   NestedObject,
   UnknownNest,
   FileSystem
@@ -123,9 +124,9 @@ export type HTTPServer<
 export type HTTPServerOptions<
   C extends UnknownNest = UnknownNest
 > = ServerOptions<C, IM, SR>;
-export type HTTPEntryAction<
+export type HTTPAction<
   C extends UnknownNest = UnknownNest
-> = EntryAction<IM, SR, HTTPServer<C>>;
+> = RouterAction<IM, SR, HTTPServer<C>>;
 
 //--------------------------------------------------------------------//
 // Fetch Types
@@ -143,9 +144,9 @@ export type FetchServer<
 export type FetchServerOptions<
   C extends UnknownNest = UnknownNest
 > = ServerOptions<C, NodeRequest, NodeOptResponse>;
-export type FetchEntryAction<
+export type FetchAction<
   C extends UnknownNest = UnknownNest
-> = EntryAction<NodeRequest, NodeOptResponse, FetchServer<C>>;
+> = RouterAction<NodeRequest, NodeOptResponse, FetchServer<C>>;
 
 //--------------------------------------------------------------------//
 // Loader Types
@@ -166,17 +167,28 @@ export type PluginLoaderOptions = ConfigLoaderOptions & {
 //--------------------------------------------------------------------//
 // Router Types
 
+//TODO: Replace with RouterActionRR<Request<R, X>, Response<S>>; when lib is updated
+export type RouterAction<
+  R = unknown, 
+  S = unknown, 
+  X = unknown
+> = (req: Request<R, X>, res: Response<S>) => void|boolean|undefined|Promise<void|boolean|undefined>
+
+export type RouterImport = () => Promise<{
+  //imported routes can be as generic or specific as needed
+  default: RouterAction<any, any, any>
+}>;
+
+
+// (req: ServerRequest, res: Response<unknown>) => Promise<void>
+// RouterAction<unknown, unknown, Server<Config, IncomingMessage, SR>>
+// (req: R, res: S) => void | boolean | Promise<void | boolean>
+
 export type RouterQueueArgs<
   R = unknown, 
   S = unknown, 
   X = unknown
 > = [ Request<R, X>, Response<S> ];
-
-export type EntryAction<
-  R = unknown, 
-  S = unknown, 
-  X = unknown
-> = string|RouterAction<Request<R, X>, Response<S>>;
 
 export type EntryTask = { entry: string, priority: number };
 
@@ -188,6 +200,23 @@ export type RouterEmitter<
 
 //--------------------------------------------------------------------//
 // Server Types
+
+export type ServerAction<
+  //configuration map
+  C extends UnknownNest = UnknownNest, 
+  //request resource
+  R = unknown, 
+  //response resource
+  S = unknown
+> = RouterAction<R, S, Server<C, R, S>>;
+
+export type ServerImport<C extends UnknownNest = UnknownNest> = () => Promise<{ 
+  default: RouterAction<
+    unknown, 
+    unknown, 
+    Server<C, Request<unknown, C>, Response<unknown>>
+  >
+}>;
 
 export type ServerHandler<
   C extends UnknownNest = UnknownNest, 

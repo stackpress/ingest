@@ -4,7 +4,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 // server starter
 const app = server();
 
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   res.setHTML('<h1>Hello, World from Lambda!</h1>');
 });
 
@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   return {
     statusCode: 200,
-    headers: { "Content-Type": "text/html" },
+    headers: { 'Content-Type': 'text/html' },
     body: '<h1>Hello, World from Lambda!</h1>',
   };
 };
