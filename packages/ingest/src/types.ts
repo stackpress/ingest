@@ -10,8 +10,7 @@ import type { Readable } from 'node:stream';
 import type { 
   Method, 
   RouterMap,
-  //see: RouterAction (below)
-  //RouterAction as RouterActionRR,
+  RouterAction as RouterActionRR,
   NestedObject,
   UnknownNest,
   FileSystem
@@ -166,23 +165,16 @@ export type PluginLoaderOptions = ConfigLoaderOptions & {
 
 //--------------------------------------------------------------------//
 // Router Types
-
-//TODO: Replace with RouterActionRR<Request<R, X>, Response<S>>; when lib is updated
 export type RouterAction<
   R = unknown, 
   S = unknown, 
   X = unknown
-> = (req: Request<R, X>, res: Response<S>) => void|boolean|undefined|Promise<void|boolean|undefined>
+> = RouterActionRR<Request<R, X>, Response<S>>;
 
 export type RouterImport = () => Promise<{
   //imported routes can be as generic or specific as needed
   default: RouterAction<any, any, any>
 }>;
-
-
-// (req: ServerRequest, res: Response<unknown>) => Promise<void>
-// RouterAction<unknown, unknown, Server<Config, IncomingMessage, SR>>
-// (req: R, res: S) => void | boolean | Promise<void | boolean>
 
 export type RouterQueueArgs<
   R = unknown, 
