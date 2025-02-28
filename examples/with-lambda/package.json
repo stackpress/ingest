@@ -8,7 +8,7 @@
     "dev": "LAMBDA_LOCAL=true ts-node index.ts"
   },
   "dependencies": {
-    "@stackpress/ingest": "0.3.32",
+    "@stackpress/ingest": "0.3.33",
     "@types/aws-lambda": "8.10.147",
     "@whatwg-node/server": "0.9.70",
     "tslib": "2.8.1"
