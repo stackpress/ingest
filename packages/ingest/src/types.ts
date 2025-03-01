@@ -183,6 +183,7 @@ export type RouterQueueArgs<
 > = [ Request<R, X>, Response<S> ];
 
 export type EntryTask = { entry: string, priority: number };
+export type ImportTask = { import: RouterImport, priority: number };
 
 export type RouterEmitter<
   R = unknown, 

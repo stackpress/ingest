@@ -14,6 +14,8 @@
     "gcp:dev": "yarn --cwd examples/with-gcp dev",
     "http:build": "yarn --cwd examples/with-http build",
     "http:dev": "yarn --cwd examples/with-http dev",
+    "imports:build": "yarn --cwd examples/with-imports build",
+    "imports:dev": "yarn --cwd examples/with-imports dev",
     "lambda:build": "yarn --cwd examples/with-lambda build",
     "lambda:dev": "yarn --cwd examples/with-lambda dev",
     "plugins:build": "yarn --cwd examples/with-plugins build",

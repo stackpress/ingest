@@ -4,6 +4,7 @@ import EventRouter from '@stackpress/lib/dist/event/EventRouter';
 //local
 import type { 
   EntryTask,
+  ImportTask,
   RouterAction,
   RouterImport,
   RouterEmitter,
@@ -32,10 +33,6 @@ export default class Router<
 > 
   extends EventRouter<Request<R, X>, Response<S>>
 {
-  //whether to use require cache
-  public readonly cache: boolean;
-  //A route map to task queues
-  public readonly entries = new Map<string, Set<EntryTask>>();
   //Router entry extension
   public readonly withEntries: RouterEntries<R, S, X>;
   //Router import extension
@@ -46,8 +43,7 @@ export default class Router<
    */
   constructor(cache = true) {
     super();
-    this.cache = cache;
-    this.withEntries = new RouterEntries<R, S, X>(this);
+    this.withEntries = new RouterEntries<R, S, X>(this, cache);
     this.withImports = new RouterImports<R, S, X>(this);
   }
 
@@ -119,50 +115,6 @@ export default class Router<
    */
   public trace(path: string, action: RouterAction<R, S, X>, priority?: number) {
     return this.route('TRACE', path, action, priority);
-  }
-
-  /**
-   * Adds a callback to the given event listener
-   */
-  public on(
-    event: string|RegExp, 
-    action: RouterAction<R, S, X>,
-    priority = 0
-  ) {
-    if (typeof action !== 'string') {
-      super.on(event, action, priority);
-      return this;
-    }
-    //cast entry file
-    const entry = action as string;
-    //create a key for the entry
-    const key = event.toString();
-    //if the listener group does not exist, create it
-    if (!this.entries.has(key)) {
-      this.entries.set(key, new Set());
-    }
-    //add the listener to the group
-    this.entries.get(key)?.add({ entry, priority });
-    //scope the emitter
-    const emitter = this;
-    //now listen for the event
-    super.on(event, async function EntryFile(req, res) {
-      //import the action
-      const imports = await import(entry);
-      //get the default export
-      const action = imports.default;
-      //if dont cache
-      if (!emitter.cache) {
-        //delete it from the require cache 
-        //so it can be processed again
-        delete require.cache[require.resolve(entry)];
-      }
-      //run the action
-      //NOTE: it's probably better 
-      // to not strongly type this...
-      return await action(req, res);
-    }, priority);
-    return this;
   }
 
   /**
@@ -262,7 +214,7 @@ export default class Router<
    */
   public use(emitter: RouterEmitter<R, S, X>) {
     //check if the emitter is a router
-    const entryRouter = emitter instanceof Router;
+    const actionRouter = emitter instanceof Router;
     const eventRouter = emitter instanceof EventRouter;
     //first concat their regexp with this one
     emitter.regexp.forEach(pattern => this.regexp.add(pattern));
@@ -285,18 +237,18 @@ export default class Router<
         if (typeof route !== 'undefined') {
           this.routes.set(event, route);
         }
-        if (entryRouter) {
+        if (actionRouter) {
           //get the entries from the source emitter
-          const entries = emitter.entries.get(event);
+          const entries = emitter.withEntries.entries.get(event);
           //if there are entries
           if (typeof entries !== 'undefined') {
             //if the entries do not exist, create them
-            if (!this.entries.has(event)) {
-              this.entries.set(event, new Set());
+            if (!this.withEntries.entries.has(event)) {
+              this.withEntries.entries.set(event, new Set());
             }
             //add the entries
             for (const entry of entries) {
-              this.entries.get(event)?.add(entry);
+              this.withEntries.entries.get(event)?.add(entry);
             }
           }
         }
@@ -319,14 +271,19 @@ export class RouterEntries<
   //context (usually the server)
   X = unknown
 >  {
+  //whether to use require cache
+  public readonly cache: boolean;
+  //A route map to task queues
+  public readonly entries = new Map<string, Set<EntryTask>>();
   //main router
   protected _router: Router<R, S, X>;
   
   /**
    * Set the router
    */
-  constructor(router: Router<R, S, X>) {
+  constructor(router: Router<R, S, X>, cache = true) {
     this._router = router;
+    this.cache = cache;
   }
 
   /**
@@ -402,23 +359,23 @@ export class RouterEntries<
   /**
    * Makes an entry action
    */
-  public make(entry: string) {
-    const router = this._router;
+  public make(action: string) {
+    const router = this;
     return async function EntryFile(req: Request<R, X>, res: Response<S>) {
       //import the action
-      const imports = await import(entry);
+      const imports = await import(action);
       //get the default export
-      const action = imports.default;
+      const callback = imports.default;
       //if dont cache
       if (!router.cache) {
         //delete it from the require cache 
         //so it can be processed again
-        delete require.cache[require.resolve(entry)];
+        delete require.cache[require.resolve(callback)];
       }
       //run the action
       //NOTE: it's probably better 
       // to not strongly type this...
-      return await action(req, res);
+      return await callback(req, res);
     }
   }
 
@@ -430,16 +387,14 @@ export class RouterEntries<
     entry: string,
     priority = 0
   ) {
-    //get all the router entries
-    const entries = this._router.entries;
     //create a key for the entry
     const key = event.toString();
     //if the listener group does not exist, create it
-    if (!entries.has(key)) {
-      entries.set(key, new Set());
+    if (!this.entries.has(key)) {
+      this.entries.set(key, new Set());
     }
     //add the listener to the group
-    entries.get(key)?.add({ entry, priority });
+    this.entries.get(key)?.add({ entry, priority });
     //now listen for the event
     this._router.on(event, this.make(entry), priority);
     return this;
@@ -482,6 +437,8 @@ export class RouterImports<
   //context (usually the server)
   X = unknown
 >  {
+  //A route map to task queues
+  public readonly imports = new Map<string, Set<ImportTask>>();
   //main router
   protected _router: Router<R, S, X>;
   
@@ -565,26 +522,18 @@ export class RouterImports<
   /**
    * Makes an import action
    */
-  public make(entry: RouterImport) {
-    const router = this._router;
-    const path = this._getImportPath(entry);
+  public make(action: RouterImport) {
     return async function ImportFile(req: Request<R, X>, res: Response<S>) {
       //import the action
-      const imports = (await entry()) as { 
+      const imports = (await action()) as { 
         default: RouterAction<R, S, X> 
       };
       //get the default export
-      const action = imports.default;
-      //if dont cache
-      if (!router.cache && path.length) {
-        //delete it from the require cache 
-        //so it can be processed again
-        delete require.cache[require.resolve(path)];
-      }
+      const callback = imports.default;
       //run the action
       //NOTE: it's probably better 
       // to not strongly type this...
-      return await action(req, res);
+      return await callback(req, res);
     }
   }
 
@@ -593,23 +542,19 @@ export class RouterImports<
    */
   public on(
     event: string|RegExp, 
-    entry: RouterImport,
+    action: RouterImport,
     priority = 0
   ) {
-    //get all the router entries
-    const entries = this._router.entries;
     //create a key for the entry
     const key = event.toString();
     //if the listener group does not exist, create it
-    if (!entries.has(key)) {
-      entries.set(key, new Set());
+    if (!this.imports.has(key)) {
+      this.imports.set(key, new Set());
     }
-    //get the import path
-    const path = this._getImportPath(entry);
     //add the listener to the group
-    entries.get(key)?.add({ entry: path, priority });
+    this.imports.get(key)?.add({ import: action, priority });
     //now listen for the event
-    this._router.on(event, this.make(entry), priority);
+    this._router.on(event, this.make(action), priority);
     return this;
   }
 
@@ -639,20 +584,6 @@ export class RouterImports<
     });
     //add to tasks
     return this.on(event, entry, priority);
-  }
-
-  /**
-   * Parses the import path from the entry function
-   */
-  protected _getImportPath(entry: RouterImport) {
-    const callback = entry.toString();
-    //ex. callback = "() => import('foobar')"
-    //ex. callback = "() => import(`foobar`)"
-    //we need to extract foobar from the callback
-    const matches = Array.from(
-      callback.matchAll(/((import)|(require))\(\s*['"`](.+)['"`]\s*\)/g)
-    )[0];
-    return matches ? (Array.from(matches)[4] || ''): '';
   }
 }
 
