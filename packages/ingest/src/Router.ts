@@ -370,7 +370,7 @@ export class RouterEntries<
       if (!router.cache) {
         //delete it from the require cache 
         //so it can be processed again
-        delete require.cache[require.resolve(callback)];
+        delete require.cache[require.resolve(action)];
       }
       //run the action
       //NOTE: it's probably better 

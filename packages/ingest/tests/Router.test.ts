@@ -292,7 +292,7 @@ describe('Router Tests', () => {
     await cachedRouter.emit('GET /test', req, res2);
 
     expect(res1.body).to.equal(res2.body);
-    expect(uncachedRouter.cache).to.be.false;
-    expect(cachedRouter.cache).to.be.true;
+    expect(uncachedRouter.withEntries.cache).to.be.false;
+    expect(cachedRouter.withEntries.cache).to.be.true;
   });
 })
