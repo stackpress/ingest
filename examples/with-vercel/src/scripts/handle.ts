@@ -1,4 +1,4 @@
-import { server } from '@stackpress/ingest/fetch';
+import { server } from '@stackpress/ingest/whatwg';
 
 export default async function handle(request: Request) {
   //we need to create a new server instance

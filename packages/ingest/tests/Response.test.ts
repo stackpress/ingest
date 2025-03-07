@@ -110,7 +110,7 @@ describe('Response Tests', () => {
     expect(response.status).to.equal('OK');
     expect(response.body).to.contain('bar');
     expect(response.type).to.equal('string');
-    expect(response.mimetype).to.equal('text/json');
+    expect(response.mimetype).to.equal('application/json');
   });
 
   it('Should setup XML', () => {
@@ -130,7 +130,7 @@ describe('Response Tests', () => {
     expect(response.status).to.equal('OK');
     expect((response.body as Record<string, any>)?.name).to.equal('bar');
     expect(response.type).to.equal('object');
-    expect(response.mimetype).to.equal('text/json');
+    expect(response.mimetype).to.equal('application/json');
   });
 
   it('Should setup rows', () => {
@@ -140,7 +140,7 @@ describe('Response Tests', () => {
     expect(response.status).to.equal('OK');
     expect((response.body as Record<string, any>[])?.[0].name).to.equal('bar');
     expect(response.type).to.equal('array');
-    expect(response.mimetype).to.equal('text/json');
+    expect(response.mimetype).to.equal('application/json');
     expect(response.total).to.equal(100);
   });
 
@@ -154,14 +154,14 @@ describe('Response Tests', () => {
 
   it('Should dispatch', async () => {
     const response = new Response();
-    response.setBody('text/json', { name: 'bar' });
+    response.setBody('application/json', { name: 'bar' });
     let dispatched = false;
     response.dispatcher = async res => {
       expect(response.code).to.equal(200);
       expect(response.status).to.equal('OK');
       expect((response.body as Record<string, any>)?.name).to.equal('bar');
       expect(response.type).to.equal('object');
-      expect(response.mimetype).to.equal('text/json');
+      expect(response.mimetype).to.equal('application/json');
       dispatched = true;
     };
     await response.dispatch();

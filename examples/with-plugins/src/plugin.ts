@@ -1,4 +1,4 @@
-import type { HTTPServer } from '@stackpress/ingest';
+import type { HttpServer } from '@stackpress/ingest';
 import type { Config } from './config';
 
 import { config } from './config';
@@ -8,7 +8,7 @@ import pages from './routes/pages';
 import tests from './routes/tests';
 import user from './routes/user';
 
-export default function plugin(server: HTTPServer<Config>) {
+export default function plugin(server: HttpServer<Config>) {
   server.config.set(config);
   server.use(pages).use(tests).use(user).use(hooks);
   server.register('project', { welcome: 'Hello, World!!' });

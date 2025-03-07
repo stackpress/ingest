@@ -1,7 +1,7 @@
 import type { ResponseStatus } from '@stackpress/lib/dist/types';
 import { getStatus } from '@stackpress/lib/dist/Status';
 import { Exception } from '@stackpress/ingest';
-import { router } from '@stackpress/ingest/fetch';
+import { router } from '@stackpress/ingest/whatwg';
 
 const route = router();
 

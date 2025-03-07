@@ -7,8 +7,8 @@ import type { Method, UnknownNest } from '@stackpress/lib/dist/types';
 import type { 
   IM,
   SR,
-  HTTPServer,
-  HTTPAction,
+  HttpServer,
+  HttpAction,
   LoaderResults,
   CookieOptions
 } from '../types';
@@ -29,17 +29,17 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
    * Server request handler
    */
   public static async plug<C extends UnknownNest = UnknownNest>(
-    context: HTTPServer<C>, 
+    context: HttpServer<C>, 
     request: IM,
     response: SR,
-    action?: string|HTTPAction<C>
+    action?: string|HttpAction<C>
   ) {
     const server = new Adapter(context, request, response);
     return server.plug(action);
   };
 
   //the parent server context
-  protected _context: HTTPServer<C>;
+  protected _context: HttpServer<C>;
   //the native request
   protected _request: IM;
   //the native response
@@ -48,7 +48,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
   /**
    * Sets up the server
    */
-  constructor(context: HTTPServer<C>, request: IM, response: SR) {
+  constructor(context: HttpServer<C>, request: IM, response: SR) {
     this._context = context;
     this._request = request;
     this._response = response;
@@ -57,7 +57,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
   /**
    * Handles the request
    */
-  public async plug(action?: string|HTTPAction<C>) {
+  public async plug(action?: string|HttpAction<C>) {
     //initialize the request
     const req = this.request();
     const res = this.response();
@@ -102,7 +102,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
     //set query
     const query = objectFromQuery(url.searchParams.toString());
     //setup the payload
-    const request = new Request<IM, HTTPServer<C>>({
+    const request = new Request<IM, HttpServer<C>>({
       context,
       resource,
       headers,
@@ -137,7 +137,7 @@ export function loader<C extends UnknownNest = UnknownNest>(
   resource: IM, 
   size = 0
 ) {
-  return (req: Request<IM, HTTPServer<C>>) => {
+  return (req: Request<IM, HttpServer<C>>) => {
     return new Promise<LoaderResults|undefined>(resolve => {
       //if the body is cached
       if (req.body !== null) {

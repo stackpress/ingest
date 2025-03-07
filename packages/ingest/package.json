@@ -33,15 +33,15 @@
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
-    "fetch.js",
-    "fetch.d.ts",
     "http.js",
     "http.d.ts",
     "index.js",
     "index.d.ts",
     "dist",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "whatwg.js",
+    "whatwg.d.ts"
   ],
   "scripts": {
     "build": "tsc",

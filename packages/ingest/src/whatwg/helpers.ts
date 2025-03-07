@@ -4,21 +4,21 @@ import { Readable } from 'node:stream';
 import type { NodeRequest } from '../types';
 import { objectFromQuery } from '../helpers';
 
-export const NativeRequest = global.Request;
-export const NativeResponse = global.Response;
+export const WhatwgRequest = global.Request;
+export const WhatwgResponse = global.Response;
 
 /**
  * Parsed query object
  */
-export function fetchToURL(resource: NodeRequest) {
+export function reqToURL(resource: NodeRequest) {
   return new URL(resource.url); 
 };
 
 /**
  * Parsed URL query object
  */
-export function fetchQueryToObject(resource: NodeRequest) {
-  return objectFromQuery(fetchToURL(resource).searchParams.toString());
+export function reqQueryToObject(resource: NodeRequest) {
+  return objectFromQuery(reqToURL(resource).searchParams.toString());
 };
 
 /**

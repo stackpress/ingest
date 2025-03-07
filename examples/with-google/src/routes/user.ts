@@ -1,4 +1,4 @@
-import { router } from '@stackpress/ingest/fetch';
+import { router } from '@stackpress/ingest/whatwg';
 
 const route = router();
 

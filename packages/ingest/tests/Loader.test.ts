@@ -74,14 +74,6 @@ describe('ConfigLoader', () => {
       expect(result).to.deep.equal({ test: true });
     });
 
-    it('should handle non-cached imports', async () => {
-      const customLoader = new ConfigLoader({ cache: false });
-      const modulePath = path.join(__dirname, 'fixtures',
-     'test-module-commonjs.js');
-      const result = await customLoader.import(modulePath);
-      expect(result).to.deep.equal({ test: true });
-    });
-
     it('should handle import with non-existent file and no defaults', 
       async () => {
       const configLoader = new ConfigLoader({
@@ -152,50 +144,6 @@ describe('ConfigLoader', () => {
       }
     });
 
-    it('should handle require cache correctly', () => {
-      // First require
-      const modulePath = path.join(__dirname,
-     'fixtures', 'test-module-commonjs.js');
-      const result1 = loader.require(modulePath);
-      expect(result1).to.deep.equal({ test: true });
-
-      // Modify the module in require.cache to test caching
-      const cachedModule = require.cache[require.resolve(modulePath)];
-      if (cachedModule) {
-        cachedModule.exports = { test: false };
-      }
-
-      // Second require should use cache
-      const result2 = loader.require(modulePath);
-      expect(result2).to.deep.equal({ test: false });
-
-      // Clean up
-      delete require.cache[require.resolve(modulePath)];
-    });
-
-    it('should bypass require cache when cache is disabled', () => {
-      const customLoader = new ConfigLoader({ cache: false });
-      const modulePath = path.join(__dirname, 'fixtures', 
-      'test-module-commonjs.js');
-      
-      // First require
-      const result1 = customLoader.require(modulePath);
-      expect(result1).to.deep.equal({ test: true });
-
-      // Modify the module in require.cache
-      const cachedModule = require.cache[require.resolve(modulePath)];
-      if (cachedModule) {
-        cachedModule.exports = { test: false };
-      }
-
-      // Second require should not use cache
-      const result2 = customLoader.require(modulePath);
-      expect(result2).to.deep.equal({ test: true });
-
-      // Clean up
-      delete require.cache[require.resolve(modulePath)];
-    });
-
     it('should handle require with non-existent file and no defaults',
      () => {
       const configLoader = new ConfigLoader({
@@ -260,26 +208,6 @@ describe('ConfigLoader', () => {
         ('/path/to/file.ts')).to.equal('/path/to/file');
       expect(configLoader.basepath
         ('/path/to/file.json')).to.equal('/path/to/file.json');
-    });
-  });
-
-  /**
-   * Cache Configuration Tests
-   * Tests the functionality for cache configuration
-   */
-  describe('cache', () => {
-    it('should handle cache configuration', () => {
-      const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures'),
-        cache: false
-      });
-
-      const result1 = configLoader.require(path.join(__dirname, 
-      'fixtures', 'test-module-commonjs.js'));
-      const result2 = configLoader.require(path.join(__dirname,
-      'fixtures', 'test-module-commonjs.js'));
-      expect(result1).to.deep.equal({ test: true });
-      expect(result2).to.deep.equal({ test: true });
     });
   });
 

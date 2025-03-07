@@ -6,12 +6,12 @@ import type { UnknownNest } from '@stackpress/lib/dist/types';
 import type { 
   IM, 
   SR, 
-  HTTPServer, 
-  HTTPAction,
+  HttpServer, 
+  HttpAction,
   ServerOptions,
   NodeServerOptions
 } from '../types';
-import Router from '../Router';
+import Router from '../Router/Router';
 import Server from '../Server';
 //local
 import Adapter, { loader, dispatcher } from './Adapter';
@@ -34,7 +34,7 @@ export {
  * Default server gateway
  */
 export function gateway<C extends UnknownNest = UnknownNest>(
-  server: HTTPServer<C>
+  server: HttpServer<C>
 ) {
   return (options: NodeServerOptions) => createServer(
     options, 
@@ -46,10 +46,10 @@ export function gateway<C extends UnknownNest = UnknownNest>(
  * Server request handler
  */
 export async function handler<C extends UnknownNest = UnknownNest>(
-  context: HTTPServer<C>, 
+  context: HttpServer<C>, 
   request: IM,
   response: SR,
-  action?: string|HTTPAction<C>
+  action?: string|HttpAction<C>
 ) {
   return await Adapter.plug(context, request, response, action);
 };
@@ -69,5 +69,5 @@ export function server<C extends UnknownNest = UnknownNest>(
  * Default router factory
  */
 export function router<C extends UnknownNest = UnknownNest>() {
-  return new Router<IM, SR, HTTPServer<C>>();
+  return new Router<IM, SR, HttpServer<C>>();
 }

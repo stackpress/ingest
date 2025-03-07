@@ -11,8 +11,8 @@ import {
 } from '../src/helpers';
 import { readableStreamToReadable, imToURL, imQueryToObject } 
 from '../src/http/helpers';
-import { readableToReadableStream, fetchToURL, fetchQueryToObject } 
-from '../src/fetch/helpers';
+import { readableToReadableStream, reqToURL, reqQueryToObject } 
+from '../src/whatwg/helpers';
 import { Readable } from 'stream';
 import type { NodeRequest } from '../src/types';
 import type { IM } from '../src/types';
@@ -340,7 +340,7 @@ describe('helpers', () => {
       const request = {
         url: 'https://example.com/path?query=value'
       };
-      const url = fetchToURL(request as NodeRequest);
+      const url = reqToURL(request as NodeRequest);
       expect(url).to.be.instanceOf(URL);
       expect(url.href).to.equal('https://example.com/path?query=value');
       expect(url.pathname).to.equal('/path');
@@ -351,7 +351,7 @@ describe('helpers', () => {
       const request = {
         url: 'https://example.com/path'
       };
-      const url = fetchToURL(request as NodeRequest);
+      const url = reqToURL(request as NodeRequest);
       expect(url.href).to.equal('https://example.com/path');
       expect(url.search).to.equal('');
     });
@@ -366,7 +366,7 @@ describe('helpers', () => {
       const request = {
         url: 'https://example.com/path?foo=bar&baz=qux'
       };
-      const query = fetchQueryToObject(request as NodeRequest);
+      const query = reqQueryToObject(request as NodeRequest);
       expect(query).to.deep.equal({
         foo: 'bar',
         baz: 'qux'
@@ -377,7 +377,7 @@ describe('helpers', () => {
       const request = {
         url: 'https://example.com/path'
       };
-      const query = fetchQueryToObject(request as NodeRequest);
+      const query = reqQueryToObject(request as NodeRequest);
       expect(query).to.deep.equal({});
     });
   });

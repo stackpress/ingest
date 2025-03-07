@@ -28,9 +28,9 @@ describe('Request Tests', () => {
     const request = new Request({
       method: 'POST',
       url: 'http://localhost/foo/bar?bar=zoo',
-      mimetype: 'text/json',
+      mimetype: 'application/json',
       body: { foo: 'bar' },
-      headers: { 'Content-Type': 'text/json' },
+      headers: { 'Content-Type': 'application/json' },
       session: { foo: 'bar' },
       data: { foo: 'bar' },
       post: { foo: 'bar' },
@@ -40,7 +40,7 @@ describe('Request Tests', () => {
     expect(request.method).to.equal('POST');
     expect(request.url.href).to.equal('http://localhost/foo/bar?bar=zoo');
     
-    expect(request.mimetype).to.equal('text/json');
+    expect(request.mimetype).to.equal('application/json');
     expect(request.type).to.equal('object');
     expect((request.body as Record<string, any>)?.foo).to.contain('bar');
 

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { router } from '@stackpress/ingest/fetch';
+import { router } from '@stackpress/ingest/whatwg';
 
 const template = `
 <!DOCTYPE html>

@@ -72,7 +72,7 @@ export default class Server<
    * Sets up the plugin loader
    */
   public constructor(options: ServerOptions<C, R, S> = {}) {
-    super(options.cache);
+    super();
     this.config = nest();
     this.plugins = map();
     this.loader = new PluginLoader(options);

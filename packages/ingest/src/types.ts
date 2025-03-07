@@ -110,42 +110,42 @@ export type CookieOptions = {
 export type IM = IncomingMessage;
 export type SR = ServerResponse<IncomingMessage>;
 
-export type HTTPResponse = Response<SR>;
-export type HTTPRequest<
+export type HttpResponse = Response<SR>;
+export type HttpRequest<
   C extends UnknownNest = UnknownNest
-> = Request<IM, HTTPServer<C>>;
-export type HTTPRouter<
+> = Request<IM, HttpServer<C>>;
+export type HttpRouter<
   C extends UnknownNest = UnknownNest
-> = Router<IM, SR, HTTPServer<C>>;
-export type HTTPServer<
+> = Router<IM, SR, HttpServer<C>>;
+export type HttpServer<
   C extends UnknownNest = UnknownNest
 > = Server<C, IM, SR>;
-export type HTTPServerOptions<
+export type HttpServerOptions<
   C extends UnknownNest = UnknownNest
 > = ServerOptions<C, IM, SR>;
-export type HTTPAction<
+export type HttpAction<
   C extends UnknownNest = UnknownNest
-> = RouterAction<IM, SR, HTTPServer<C>>;
+> = RouterAction<IM, SR, HttpServer<C>>;
 
 //--------------------------------------------------------------------//
-// Fetch Types
+// Whatwg Types
 
-export type FetchResponse = Response<NodeOptResponse>;
-export type FetchRequest<
+export type WhatwgResponse = Response<NodeOptResponse>;
+export type WhatwgRequest<
   C extends UnknownNest = UnknownNest
-> = Request<NodeRequest, FetchServer<C>>;
-export type FetchRouter<
+> = Request<NodeRequest, WhatwgServer<C>>;
+export type WhatwgRouter<
   C extends UnknownNest = UnknownNest
-> = Router<NodeRequest, NodeOptResponse, FetchServer<C>>;
-export type FetchServer<
+> = Router<NodeRequest, NodeOptResponse, WhatwgServer<C>>;
+export type WhatwgServer<
   C extends UnknownNest = UnknownNest
 > = Server<C, NodeRequest, NodeOptResponse>;
-export type FetchServerOptions<
+export type WhatwgServerOptions<
   C extends UnknownNest = UnknownNest
 > = ServerOptions<C, NodeRequest, NodeOptResponse>;
-export type FetchAction<
+export type WhatwgAction<
   C extends UnknownNest = UnknownNest
-> = RouterAction<NodeRequest, NodeOptResponse, FetchServer<C>>;
+> = RouterAction<NodeRequest, NodeOptResponse, WhatwgServer<C>>;
 
 //--------------------------------------------------------------------//
 // Loader Types

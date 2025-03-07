@@ -1,9 +1,9 @@
-import type { HTTPServer } from '@stackpress/ingest';
+import type { HttpServer } from '@stackpress/ingest';
 import type { Config } from './config';
 
 import { config } from './config';
 
-export default function plugin(server: HTTPServer<Config>) {
+export default function plugin(server: HttpServer<Config>) {
   server.config.set(config);
 
   server.imports.get('/', () => import('./routes/home'));

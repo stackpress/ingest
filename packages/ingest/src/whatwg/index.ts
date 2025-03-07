@@ -5,23 +5,23 @@ import { createServerAdapter } from '@whatwg-node/server';
 import type { UnknownNest } from '@stackpress/lib/dist/types';
 //common
 import type { 
-  FetchServer,
+  WhatwgServer,
   NodeRequest,
   NodeResponse,
   NodeOptResponse,
-  FetchAction,
+  WhatwgAction,
   ServerOptions,
   NodeServerOptions
 } from '../types';
-import Router from '../Router';
+import Router from '../Router/Router';
 import Server from '../Server';
 //local
 import Adapter, { loader, dispatcher } from './Adapter';
 import {
-  NativeRequest,
-  NativeResponse,
-  fetchQueryToObject,
-  fetchToURL,
+  WhatwgRequest,
+  WhatwgResponse,
+  reqQueryToObject,
+  reqToURL,
   readableToReadableStream
 } from './helpers';
 
@@ -29,10 +29,10 @@ export {
   Adapter,
   loader,
   dispatcher,
-  NativeRequest,
-  NativeResponse,
-  fetchQueryToObject,
-  fetchToURL,
+  WhatwgRequest,
+  WhatwgResponse,
+  reqQueryToObject,
+  reqToURL,
   readableToReadableStream
 };
 
@@ -40,7 +40,7 @@ export {
  * Default server gateway
  */
 export function gateway<C extends UnknownNest = UnknownNest>(
-  server: FetchServer<C>
+  server: WhatwgServer<C>
 ) {
   return (options: NodeServerOptions) => {
     const adapter = createServerAdapter((request: NodeRequest) => {
@@ -54,10 +54,10 @@ export function gateway<C extends UnknownNest = UnknownNest>(
  * Server request handler
  */
 export async function handler<C extends UnknownNest = UnknownNest>(
-  context: FetchServer<C>, 
+  context: WhatwgServer<C>, 
   request: NodeRequest,
   response: NodeOptResponse,
-  action?: string|FetchAction<C>
+  action?: string|WhatwgAction<C>
 ) {
   return await Adapter.plug(context, request, action);
 };
@@ -79,5 +79,5 @@ export function server<C extends UnknownNest = UnknownNest>(
  * Default router factory
  */
 export function router<C extends UnknownNest = UnknownNest>() {
-  return new Router<NodeRequest, NodeOptResponse, FetchServer<C>>();
+  return new Router<NodeRequest, NodeOptResponse, WhatwgServer<C>>();
 }

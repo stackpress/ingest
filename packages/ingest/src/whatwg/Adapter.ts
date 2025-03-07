@@ -6,8 +6,8 @@ import type { Method, UnknownNest } from '@stackpress/lib/dist/types';
 //common
 import type { 
   Body,
-  FetchServer,
-  FetchAction,
+  WhatwgServer,
+  WhatwgAction,
   NodeRequest,
   NodeOptResponse,
   LoaderResults,
@@ -23,8 +23,8 @@ import {
 } from '../helpers';
 //local
 import { 
-  NativeResponse,
-  fetchToURL,
+  WhatwgResponse,
+  reqToURL,
   readableToReadableStream
 } from './helpers';
 
@@ -33,23 +33,23 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
    * Server request handler
    */
   public static async plug<C extends UnknownNest = UnknownNest>(
-    context: FetchServer<C>, 
+    context: WhatwgServer<C>, 
     request: NodeRequest,
-    action?: string|FetchAction<C>
+    action?: string|WhatwgAction<C>
   ) {
     const server = new Adapter(context, request);
     return server.plug();
   };
 
   //the parent server context
-  protected _context: FetchServer<C>;
+  protected _context: WhatwgServer<C>;
   //the native request
   protected _request: NodeRequest;
 
   /**
    * Sets up the server
    */
-  constructor(context: FetchServer<C>, request: NodeRequest) {
+  constructor(context: WhatwgServer<C>, request: NodeRequest) {
     this._context = context;
     this._request = request;
   }
@@ -57,7 +57,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
   /**
    * Handles the request
    */
-  public async plug(action?: string|FetchAction<C>) {
+  public async plug(action?: string|WhatwgAction<C>) {
     //initialize the request
     const req = this.request();
     const res = this.response();
@@ -99,11 +99,11 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
       this._request.headers.get('cookie') as string || ''
     ) as Record<string, string>;
     //set url
-    const url = fetchToURL(this._request);
+    const url = reqToURL(this._request);
     //set query
     const query = objectFromQuery(url.searchParams.toString());
     //setup the payload
-    const request = new Request<NodeRequest, FetchServer<C>>({
+    const request = new Request<NodeRequest, WhatwgServer<C>>({
       context,
       resource,
       headers,
@@ -135,7 +135,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
 export function loader<C extends UnknownNest = UnknownNest>(
   resource: NodeRequest
 ) {
-  return async (req: Request<NodeRequest, FetchServer<C>>) => {
+  return async (req: Request<NodeRequest, WhatwgServer<C>>) => {
     //if the body is cached
     if (req.body !== null) {
       return undefined;
@@ -149,14 +149,14 @@ export function loader<C extends UnknownNest = UnknownNest>(
 };
 
 /**
- * Maps out an Ingest Response to a Fetch Response
+ * Maps out an Ingest Response to a Whatwg Response
  */
 export function dispatcher(options: CookieOptions = { path: '/' }) {
   return async (res: Response<NodeOptResponse>) => {
     //fetch type responses dont start with a resource
     //so if it magically has a resource, then it must 
     //have been set in a route. So we can just return it.
-    if (res.resource instanceof NativeResponse) {
+    if (res.resource instanceof WhatwgResponse) {
       return res.resource;
     }
     let mimetype = res.mimetype;
@@ -193,7 +193,7 @@ export function dispatcher(options: CookieOptions = { path: '/' }) {
       });
     }
     //create response
-    const resource = new NativeResponse(body, {
+    const resource = new WhatwgResponse(body, {
       status: res.code,
       statusText: res.status
     });

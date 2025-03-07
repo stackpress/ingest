@@ -75,7 +75,7 @@ describe('Router Tests', () => {
   it('Should basic entry route', async () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
-    router.withEntries.get(
+    router.entries.get(
       '/some/route/path', 
       path.join(__dirname, 'fixtures/get')
     );
@@ -94,7 +94,7 @@ describe('Router Tests', () => {
 
     let tests = 0;
     for (const method of methods) {
-      const entries = router.withEntries;
+      const entries = router.entries;
       const route = entries[method].bind(entries) as (
         path: string, 
         action: string, 
@@ -120,7 +120,7 @@ describe('Router Tests', () => {
   it('Should basic import route', async () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
-    router.withImports.get(
+    router.imports.get(
       '/some/route/path', 
       () => import('./fixtures/get')
     );
@@ -139,7 +139,7 @@ describe('Router Tests', () => {
 
     let tests = 0;
     for (const method of methods) {
-      const imports = router.withImports;
+      const imports = router.imports;
       const route = imports[method].bind(imports) as (
         path: string, 
         action: RouterImport, 
@@ -165,7 +165,7 @@ describe('Router Tests', () => {
   it('Should route entry ALL', async () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
-    router.withEntries.all(
+    router.entries.all(
       '/some/route/path', 
       path.join(__dirname, 'fixtures/any')
     );
@@ -266,33 +266,5 @@ describe('Router Tests', () => {
     await router2.emit('GET /api/v1/test', req, res);
     
     expect(res.body).to.equal('router1');
-  });
-
-  it('Should handle entry file caching correctly', async () => {
-    const uncachedRouter = new Router(false);
-    const cachedRouter = new Router(true);
-
-    uncachedRouter.withEntries.get(
-      '/test', 
-      path.join(__dirname, 'fixtures/get')
-    );
-    cachedRouter.withEntries.get(
-      '/test', 
-      path.join(__dirname, 'fixtures/get')
-    );
-
-    const req = new Request({ 
-      method: 'GET',
-      url: new URL('http://localhost/test') 
-    });
-    const res1 = new Response();
-    const res2 = new Response();
-
-    await uncachedRouter.emit('GET /test', req, res1);
-    await cachedRouter.emit('GET /test', req, res2);
-
-    expect(res1.body).to.equal(res2.body);
-    expect(uncachedRouter.withEntries.cache).to.be.false;
-    expect(cachedRouter.withEntries.cache).to.be.true;
   });
 })

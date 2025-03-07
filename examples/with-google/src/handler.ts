@@ -1,4 +1,4 @@
-import { server } from '@stackpress/ingest/fetch';
+import { server } from '@stackpress/ingest/whatwg';
 import { HttpFunction } from '@google-cloud/functions-framework';
 
 import pages from './routes/pages';

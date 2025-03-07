@@ -1,4 +1,4 @@
-import { server } from '@stackpress/ingest/fetch';
+import { server } from '@stackpress/ingest/whatwg';
 import pages from '../routes/pages';
 import user from '../routes/user';
 import tests from '../routes/tests';
