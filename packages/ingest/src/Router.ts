@@ -6,13 +6,13 @@ import type {
   RouterAction,
   RouterEmitter,
   RouterQueueArgs
-} from '../types';
-import Request from '../Request';
-import Response from '../Response';
-import { routeParams } from '../helpers';
+} from './types';
+import Request from './Request';
+import Response from './Response';
+import { routeParams } from './helpers';
 //local
-import EntryRouter from './EntryRouter';
-import ImportRouter from './ImportRouter';
+import EntryRouter from './router/EntryRouter';
+import ImportRouter from './router/ImportRouter';
 
 /**
  * Generic router class

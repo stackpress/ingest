@@ -2,7 +2,7 @@
 import type { UnknownNest } from '../types';
 import type Server from '../Server';
 //local
-import Router from './Router';
+import Router from '../Router';
 
 export default class ServerRouter<
   //context (usually the server)

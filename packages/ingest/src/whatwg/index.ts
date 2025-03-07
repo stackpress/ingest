@@ -13,7 +13,7 @@ import type {
   ServerOptions,
   NodeServerOptions
 } from '../types';
-import Router from '../Router/Router';
+import Router from '../Router';
 import Server from '../Server';
 //local
 import Adapter, { loader, dispatcher } from './Adapter';

@@ -1,17 +1,13 @@
 //stackpress
 import type { Method } from '@stackpress/lib/dist/types';
 //common
-import type { 
-  ImportTask,
-  RouterAction,
-  RouterImport
-} from '../types';
+import type { EntryTask } from '../types';
 import Request from '../Request';
 import Response from '../Response';
 //local
-import type Router from './Router';
+import type Router from '../Router';
 
-export default class ImportRouter<
+export default class EntryRouter<
   //request resource
   R = unknown, 
   //response resource
@@ -20,7 +16,7 @@ export default class ImportRouter<
   X = unknown
 >  {
   //A route map to task queues
-  public readonly imports = new Map<string, Set<ImportTask>>();
+  public readonly entries = new Map<string, Set<EntryTask>>();
   //main router
   protected _router: Router<R, S, X>;
   
@@ -34,85 +30,83 @@ export default class ImportRouter<
   /**
    * Route for any method
    */
-  public all(path: string, action: RouterImport, priority?: number) {
+  public all(path: string, action: string, priority?: number) {
     return this.route('[A-Z]+', path, action, priority);
   }
 
   /**
    * Route for CONNECT method
    */
-  public connect(path: string, action: RouterImport, priority?: number) {
+  public connect(path: string, action: string, priority?: number) {
     return this.route('CONNECT', path, action, priority);
   }
 
   /**
    * Route for DELETE method
    */
-  public delete(path: string, action: RouterImport, priority?: number) {
+  public delete(path: string, action: string, priority?: number) {
     return this.route('DELETE', path, action, priority);
   }
 
   /**
    * Route for GET method
    */
-  public get(path: string, action: RouterImport, priority?: number) {
+  public get(path: string, action: string, priority?: number) {
     return this.route('GET', path, action, priority);
   }
 
   /**
    * Route for HEAD method
    */
-  public head(path: string, action: RouterImport, priority?: number) {
+  public head(path: string, action: string, priority?: number) {
     return this.route('HEAD', path, action, priority);
   }
 
   /**
    * Route for OPTIONS method
    */
-  public options(path: string, action: RouterImport, priority?: number) {
+  public options(path: string, action: string, priority?: number) {
     return this.route('OPTIONS', path, action, priority);
   }
 
   /**
    * Route for PATCH method
    */
-  public patch(path: string, action: RouterImport, priority?: number) {
+  public patch(path: string, action: string, priority?: number) {
     return this.route('PATCH', path, action, priority);
   }
 
   /**
    * Route for POST method
    */
-  public post(path: string, action: RouterImport, priority?: number) {
+  public post(path: string, action: string, priority?: number) {
     return this.route('POST', path, action, priority);
   }
 
   /**
    * Route for PUT method
    */
-  public put(path: string, action: RouterImport, priority?: number) {
+  public put(path: string, action: string, priority?: number) {
     return this.route('PUT', path, action, priority);
   }
 
   /**
    * Route for TRACE method
    */
-  public trace(path: string, action: RouterImport, priority?: number) {
+  public trace(path: string, action: string, priority?: number) {
     return this.route('TRACE', path, action, priority);
   }
 
   /**
-   * Makes an import action
+   * Makes an entry action
    */
-  public make(action: RouterImport) {
-    return async function ImportFileAction(
+  public make(action: string) {
+    return async function EntryFileAction(
       req: Request<R, X>, 
       res: Response<S>
     ) {
       //import the action
-      const imports = (await action()) as { 
-        default: RouterAction<R, S, X> 
-      };
+      const imports = await import(action);
       //get the default export
       const callback = imports.default;
       //run the action
@@ -125,17 +119,21 @@ export default class ImportRouter<
   /**
    * Adds a callback to the given event listener
    */
-  public on(event: string|RegExp, action: RouterImport, priority = 0) {
+  public on(
+    event: string|RegExp, 
+    entry: string,
+    priority = 0
+  ) {
     //create a key for the entry
     const key = event.toString();
     //if the listener group does not exist, create it
-    if (!this.imports.has(key)) {
-      this.imports.set(key, new Set());
+    if (!this.entries.has(key)) {
+      this.entries.set(key, new Set());
     }
     //add the listener to the group
-    this.imports.get(key)?.add({ import: action, priority });
+    this.entries.get(key)?.add({ entry, priority });
     //now listen for the event
-    this._router.on(event, this.make(action), priority);
+    this._router.on(event, this.make(entry), priority);
     return this;
   }
 
@@ -144,8 +142,8 @@ export default class ImportRouter<
    */
   public route(
     method: Method|'[A-Z]+', 
-    path: string,
-    entry: RouterImport,
+    path: string, 
+    entry: string,
     priority?: number
   ) {
     //convert path to a regex pattern

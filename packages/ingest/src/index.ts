@@ -1,12 +1,10 @@
 //modules
 import * as cookie from 'cookie';
 //router
-import {
-  Router,
-  EntryRouter,
-  ImportRouter,
-  ServerRouter
-} from './Router';
+import Router from './Router';
+import EntryRouter from './router/EntryRouter';
+import ImportRouter from './router/ImportRouter';
+import ServerRouter from './router/ServerRouter';
 //local
 import Exception from './Exception';
 import { ConfigLoader, PluginLoader } from './Loader';
