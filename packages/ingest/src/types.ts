@@ -11,6 +11,7 @@ import type {
   Method, 
   RouterMap,
   RouterAction as RouterActionRR,
+  RouterActionResults,
   NestedObject,
   UnknownNest,
   FileSystem
@@ -233,3 +234,22 @@ export type ServerRequest<
   R = unknown, 
   S = unknown
 > = Request<R, Server<C, R, S>>;
+
+//--------------------------------------------------------------------//
+// View Types
+
+export type ViewEngine<
+  R = unknown, 
+  S = unknown, 
+  X = unknown
+> = (
+  filePath: string, 
+  req: Request<R, X>, 
+  res: Response<S>
+) => RouterActionResults;
+
+export type ViewRender = (
+  filePath: string, 
+  props?: UnknownNest, 
+  options?: UnknownNest
+) => void|undefined|null|string|Promise<void|undefined|null|string>;

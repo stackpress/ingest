@@ -11,6 +11,7 @@ import Request from './Request';
 import Response from './Response';
 import { routeParams } from './helpers';
 //local
+import ViewRouter from './router/ViewRouter';
 import EntryRouter from './router/EntryRouter';
 import ImportRouter from './router/ImportRouter';
 
@@ -32,6 +33,7 @@ export default class Router<
   extends EventRouter<Request<R, X>, Response<S>>
 {
   //Router extensions
+  public readonly view: ViewRouter<R, S, X>;
   public readonly entries: EntryRouter<R, S, X>;
   public readonly imports: ImportRouter<R, S, X>;
 
@@ -40,6 +42,7 @@ export default class Router<
    */
   constructor() {
     super();
+    this.view = new ViewRouter<R, S, X>(this);
     this.entries = new EntryRouter<R, S, X>(this);
     this.imports = new ImportRouter<R, S, X>(this);
   }

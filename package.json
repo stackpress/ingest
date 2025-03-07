@@ -10,6 +10,8 @@
     "entries:dev": "yarn --cwd examples/with-entries dev",
     "gcp:build": "yarn --cwd examples/with-gcp build",
     "gcp:dev": "yarn --cwd examples/with-gcp dev",
+    "hbs:build": "yarn --cwd examples/with-handlebars build",
+    "hbs:dev": "yarn --cwd examples/with-handlebars dev",
     "http:build": "yarn --cwd examples/with-http build",
     "http:dev": "yarn --cwd examples/with-http dev",
     "imports:build": "yarn --cwd examples/with-imports build",

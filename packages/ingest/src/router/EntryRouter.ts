@@ -2,8 +2,8 @@
 import type { Method } from '@stackpress/lib/dist/types';
 //common
 import type { EntryTask } from '../types';
-import Request from '../Request';
-import Response from '../Response';
+import type Request from '../Request';
+import type Response from '../Response';
 //local
 import type Router from '../Router';
 
