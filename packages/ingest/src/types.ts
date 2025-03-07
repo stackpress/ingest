@@ -151,7 +151,6 @@ export type FetchAction<
 // Loader Types
 
 export type ConfigLoaderOptions = {
-  cache?: boolean,
   cwd?: string,
   fs?: FileSystem,
   key?: string,
@@ -165,6 +164,7 @@ export type PluginLoaderOptions = ConfigLoaderOptions & {
 
 //--------------------------------------------------------------------//
 // Router Types
+
 export type RouterAction<
   R = unknown, 
   S = unknown, 

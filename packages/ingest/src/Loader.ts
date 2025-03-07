@@ -10,8 +10,6 @@ import Exception from './Exception';
 export class ConfigLoader extends FileLoader {
   //list of filenames and extensions to look for
   protected _filenames: string[];
-  //whether to use require.cache
-  protected _cache: boolean;
   //key name
   protected _key: string;
 
@@ -21,7 +19,6 @@ export class ConfigLoader extends FileLoader {
   public constructor(options: ConfigLoaderOptions = {}) {
     super(options.fs || new NodeFS(), options.cwd || process.cwd());
     const { 
-      cache = true, 
       key = 'plugins', 
       filenames = [
         '/plugins.js', 
@@ -34,7 +31,6 @@ export class ConfigLoader extends FileLoader {
       ] 
     } = options;
     this._key = key;
-    this._cache = cache;
     this._filenames = filenames
   }
 
@@ -58,12 +54,6 @@ export class ConfigLoader extends FileLoader {
     //require the plugin
     const basepath = this.basepath(file);
     let imported = await import(basepath);
-    //if dont cache
-    if (!this._cache) {
-      //delete it from the require cache 
-      //so it can be processed again
-      delete require.cache[require.resolve(basepath)];
-    }
     //if using import
     if (imported.default) {
       imported = imported.default;
@@ -95,12 +85,6 @@ export class ConfigLoader extends FileLoader {
     //require the plugin
     const basepath = this.basepath(file);
     let imported = require(basepath);
-    //if dont cache
-    if (!this._cache) {
-      //delete it from the require cache 
-      //so it can be processed again
-      delete require.cache[require.resolve(basepath)];
-    }
     //if using import
     if (imported.default) {
       imported = imported.default;
@@ -152,12 +136,6 @@ export class PluginLoader extends ConfigLoader {
       if (file) {
         const basepath = this.basepath(file);
         plugins = require(basepath);
-        //if dont cache
-        if (!this._cache) {
-          //delete it from the require cache 
-          //so it can be processed again
-          delete require.cache[require.resolve(basepath)];
-        }
       }
       //if import
       if (plugins.default) {
