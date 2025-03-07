@@ -78,6 +78,10 @@ export default class Response<S = unknown> {
   public get error(): string|undefined {
     return this._error;
   }
+
+  public get redirected() {
+    return this.headers.has('Location');
+  }
   
   /**
    * Returns whether if the response was sent
@@ -272,7 +276,7 @@ export default class Response<S = unknown> {
     }
     if (results) {
       if (isHash(results) || Array.isArray(results)) {
-        this._mimetype = 'text/json';
+        this._mimetype = 'application/json';
       }
       this._body = results;
     }
@@ -347,7 +351,7 @@ export default class Response<S = unknown> {
     if (typeof body !== 'string') {
       body = JSON.stringify(body, null, 2);
     }
-    return this.setBody('text/json', body, code, status);
+    return this.setBody('application/json', body, code, status);
   }
 
   /**
@@ -355,7 +359,7 @@ export default class Response<S = unknown> {
    */
   public setResults(body: NestedObject, code = 200, status?: string) {
     this._total = 1;
-    return this.setBody('text/json', body, code, status);
+    return this.setBody('application/json', body, code, status);
   }
 
   /**
@@ -368,7 +372,7 @@ export default class Response<S = unknown> {
     status?: string
   ) {
     this._total = total;
-    return this.setBody('text/json', body, code, status);
+    return this.setBody('application/json', body, code, status);
   }
 
   /**
