@@ -6,27 +6,25 @@ import { config } from './config';
 export default function plugin(server: HTTPServer<Config>) {
   server.config.set(config);
 
-  const router = server.withImports;
+  server.imports.get('/', () => import('./routes/home'));
+  server.imports.get('/login', () => import('./routes/login'));
 
-  router.get('/', () => import('./routes/home'));
-  router.get('/login', () => import('./routes/login'));
+  server.imports.get('/user', () => import('./routes/user/search'));
+  server.imports.post('/user', () => import('./routes/user/create'));
+  server.imports.get('/user/:id', () => import('./routes/user/detail'));
+  server.imports.put('/user/:id', () => import('./routes/user/update'));
+  server.imports.delete('/user/:id', () => import('./routes/user/remove'));
 
-  router.get('/user', () => import('./routes/user/search'));
-  router.post('/user', () => import('./routes/user/create'));
-  router.get('/user/:id', () => import('./routes/user/detail'));
-  router.put('/user/:id', () => import('./routes/user/update'));
-  router.delete('/user/:id', () => import('./routes/user/remove'));
+  server.imports.get('/redirect', () => import('./routes/redirect'));
+  server.imports.get('/icon.png', () => import('./routes/icon'));
+  server.imports.get('/stream', () => import('./routes/stream'));
+  server.imports.get('/__sse__', () => import('./routes/sse'));
 
-  router.get('/redirect', () => import('./routes/redirect'));
-  router.get('/icon.png', () => import('./routes/icon'));
-  router.get('/stream', () => import('./routes/stream'));
-  router.get('/__sse__', () => import('./routes/sse'));
+  server.imports.get('/error', () => import('./routes/error'));
+  server.imports.get('/catch', () => import('./routes/catch'));
+  server.imports.get('/**', () => import('./routes/404'));
 
-  router.get('/error', () => import('./routes/error'));
-  router.get('/catch', () => import('./routes/catch'));
-  router.get('/**', () => import('./routes/404'));
-
-  router.on('error', () => import('./events/error'));
+  server.imports.on('error', () => import('./events/error'));
 
   server.register('project', { welcome: 'Hello, World!!' });
   server.on('request', (req, res) => {

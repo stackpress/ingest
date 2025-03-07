@@ -33,87 +33,126 @@ export default class Router<
 > 
   extends EventRouter<Request<R, X>, Response<S>>
 {
-  //Router entry extension
-  public readonly withEntries: RouterEntries<R, S, X>;
-  //Router import extension
-  public readonly withImports: RouterImports<R, S, X>;
+  //Router extensions
+  public readonly entries: RouterEntries<R, S, X>;
+  public readonly imports: RouterImports<R, S, X>;
 
   /**
    * Determine whether to use require cache
    */
-  constructor(cache = true) {
+  constructor() {
     super();
-    this.withEntries = new RouterEntries<R, S, X>(this, cache);
-    this.withImports = new RouterImports<R, S, X>(this);
+    this.entries = new RouterEntries<R, S, X>(this);
+    this.imports = new RouterImports<R, S, X>(this);
   }
 
   /**
    * Route for any method
    */
-  public all(path: string, action: RouterAction<R, S, X>, priority?: number) {
+  public all(
+    path: string, 
+    action: RouterAction<R, S, X>, 
+    priority?: number
+  ) {
     return this.route('[A-Z]+', path, action, priority);
   }
 
   /**
    * Route for CONNECT method
    */
-  public connect(path: string, action: RouterAction<R, S, X>, priority?: number) {
+  public connect(
+    path: string, 
+    action: RouterAction<R, S, X>, 
+    priority?: number
+  ) {
     return this.route('CONNECT', path, action, priority);
   }
 
   /**
    * Route for DELETE method
    */
-  public delete(path: string, action: RouterAction<R, S, X>, priority?: number) {
+  public delete(
+    path: string, 
+    action: RouterAction<R, S, X>, 
+    priority?: number
+  ) {
     return this.route('DELETE', path, action, priority);
   }
 
   /**
    * Route for GET method
    */
-  public get(path: string, action: RouterAction<R, S, X>, priority?: number) {
+  public get(
+    path: string, 
+    action: RouterAction<R, S, X>, 
+    priority?: number
+  ) {
     return this.route('GET', path, action, priority);
   }
 
   /**
    * Route for HEAD method
    */
-  public head(path: string, action: RouterAction<R, S, X>, priority?: number) {
+  public head(
+    path: string, 
+    action: RouterAction<R, S, X>, 
+    priority?: number
+  ) {
     return this.route('HEAD', path, action, priority);
   }
 
   /**
    * Route for OPTIONS method
    */
-  public options(path: string, action: RouterAction<R, S, X>, priority?: number) {
+  public options(
+    path: string, 
+    action: RouterAction<R, S, X>, 
+    priority?: number
+  ) {
     return this.route('OPTIONS', path, action, priority);
   }
 
   /**
    * Route for PATCH method
    */
-  public patch(path: string, action: RouterAction<R, S, X>, priority?: number) {
+  public patch(
+    path: string, 
+    action: RouterAction<R, S, X>, 
+    priority?: number
+  ) {
     return this.route('PATCH', path, action, priority);
   }
 
   /**
    * Route for POST method
    */
-  public post(path: string, action: RouterAction<R, S, X>, priority?: number) {
+  public post(
+    path: string, 
+    action: RouterAction<R, S, X>, 
+    priority?: number
+  ) {
     return this.route('POST', path, action, priority);
   }
 
   /**
    * Route for PUT method
    */
-  public put(path: string, action: RouterAction<R, S, X>, priority?: number) {
+  public put(
+    path: string, 
+    action: RouterAction<R, S, X>, 
+    priority?: number
+  ) {
     return this.route('PUT', path, action, priority);
   }
 
   /**
    * Route for TRACE method
    */
-  public trace(path: string, action: RouterAction<R, S, X>, priority?: number) {
+  public trace(
+    path: string, 
+    action: RouterAction<R, S, X>, 
+    priority?: number
+  ) {
     return this.route('TRACE', path, action, priority);
   }
 
@@ -239,16 +278,16 @@ export default class Router<
         }
         if (actionRouter) {
           //get the entries from the source emitter
-          const entries = emitter.withEntries.entries.get(event);
+          const entries = emitter.entries.entries.get(event);
           //if there are entries
           if (typeof entries !== 'undefined') {
             //if the entries do not exist, create them
-            if (!this.withEntries.entries.has(event)) {
-              this.withEntries.entries.set(event, new Set());
+            if (!emitter.entries.entries.has(event)) {
+              emitter.entries.entries.set(event, new Set());
             }
             //add the entries
             for (const entry of entries) {
-              this.withEntries.entries.get(event)?.add(entry);
+              emitter.entries.entries.get(event)?.add(entry);
             }
           }
         }
@@ -261,7 +300,7 @@ export default class Router<
     }
     return this;
   }
-}
+};
 
 export class RouterEntries<
   //request resource
@@ -271,8 +310,6 @@ export class RouterEntries<
   //context (usually the server)
   X = unknown
 >  {
-  //whether to use require cache
-  public readonly cache: boolean;
   //A route map to task queues
   public readonly entries = new Map<string, Set<EntryTask>>();
   //main router
@@ -281,9 +318,8 @@ export class RouterEntries<
   /**
    * Set the router
    */
-  constructor(router: Router<R, S, X>, cache = true) {
+  constructor(router: Router<R, S, X>) {
     this._router = router;
-    this.cache = cache;
   }
 
   /**
@@ -360,18 +396,14 @@ export class RouterEntries<
    * Makes an entry action
    */
   public make(action: string) {
-    const router = this;
-    return async function EntryFile(req: Request<R, X>, res: Response<S>) {
+    return async function EntryFileAction(
+      req: Request<R, X>, 
+      res: Response<S>
+    ) {
       //import the action
       const imports = await import(action);
       //get the default export
       const callback = imports.default;
-      //if dont cache
-      if (!router.cache) {
-        //delete it from the require cache 
-        //so it can be processed again
-        delete require.cache[require.resolve(action)];
-      }
       //run the action
       //NOTE: it's probably better 
       // to not strongly type this...
@@ -427,7 +459,7 @@ export class RouterEntries<
     //add to tasks
     return this.on(event, entry, priority);
   }
-}
+};
 
 export class RouterImports<
   //request resource
@@ -523,7 +555,10 @@ export class RouterImports<
    * Makes an import action
    */
   public make(action: RouterImport) {
-    return async function ImportFile(req: Request<R, X>, res: Response<S>) {
+    return async function ImportFileAction(
+      req: Request<R, X>, 
+      res: Response<S>
+    ) {
       //import the action
       const imports = (await action()) as { 
         default: RouterAction<R, S, X> 
@@ -540,11 +575,7 @@ export class RouterImports<
   /**
    * Adds a callback to the given event listener
    */
-  public on(
-    event: string|RegExp, 
-    action: RouterImport,
-    priority = 0
-  ) {
+  public on(event: string|RegExp, action: RouterImport, priority = 0) {
     //create a key for the entry
     const key = event.toString();
     //if the listener group does not exist, create it
@@ -563,7 +594,7 @@ export class RouterImports<
    */
   public route(
     method: Method|'[A-Z]+', 
-    path: string, 
+    path: string,
     entry: RouterImport,
     priority?: number
   ) {
@@ -585,7 +616,7 @@ export class RouterImports<
     //add to tasks
     return this.on(event, entry, priority);
   }
-}
+};
 
 export class ServerRouter<
   //context (usually the server)
@@ -594,4 +625,4 @@ export class ServerRouter<
   R = unknown, 
   //response resource
   S = unknown
-> extends Router<R, S, Server<C, R, S>> {}
+> extends Router<R, S, Server<C, R, S>> {};
