@@ -13,7 +13,7 @@
     "develop": "vercel dev"
   },
   "dependencies": {
-    "@stackpress/ingest": "0.4.2"
+    "@stackpress/ingest": "0.4.3"
   },
   "devDependencies": {
     "@types/node": "22.9.3",
