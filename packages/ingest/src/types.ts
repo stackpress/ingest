@@ -50,6 +50,7 @@ export type ResponseInitializer<S = unknown> = {
   body?: Body,
   headers?: Headers,
   mimetype?: string,
+  data?: Data,
   resource?: S
 };
 

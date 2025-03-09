@@ -37,6 +37,8 @@ export default class Response<S = unknown> {
   public readonly session: CallableSession;
   //error controller
   public readonly errors: CallableNest<NestedObject<string|string[]>>;
+  //props controller
+  public readonly data: CallableNest;
   //payload body
   protected _body: Body|null;
   //response status code
@@ -227,6 +229,12 @@ export default class Response<S = unknown> {
         ? Object.entries(init.headers as Record<string, string|string[]>)
         : undefined
     );
+    this.data = nest();
+    if (init.data instanceof Map) {
+      this.data.set(Object.fromEntries(init.data));
+    } else if (isHash(init.data)) {
+      this.data.set(init.data);
+    }
   }
 
   /**
