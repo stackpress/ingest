@@ -1,4 +1,5 @@
-//modules
+//node
+import type { TLSSocket } from 'node:tls';
 import { Readable } from 'node:stream';
 //common
 import type { IM } from '../types';
@@ -10,7 +11,9 @@ import { objectFromQuery, withUnknownHost } from '../helpers';
 export function imToURL(resource: IM) {
   const { url, headers } = resource;
   //determine protocol (by default https)
-  let protocol = 'https';
+  let protocol = (
+    resource.socket as TLSSocket
+  ).encrypted ? 'https' : 'http';
   //if there is an x-forwarded-proto header
   const proto = headers['x-forwarded-proto'];
   if (proto?.length) {
