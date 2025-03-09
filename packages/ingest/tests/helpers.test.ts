@@ -395,10 +395,11 @@ describe('helpers', () => {
      */
       const im = {
         url: '/path',
-        headers: { host: 'example.com' }
+        headers: { host: 'example.com' },
+        socket: { encrypted: false }
       } as unknown as IM;
       const url = imToURL(im);
-      expect(url.href).to.equal('https://example.com/path');
+      expect(url.href).to.equal('http://example.com/path');
     });
 
      /**
@@ -410,11 +411,12 @@ describe('helpers', () => {
         url: '/test',
         headers: {
           host: 'example.com',
-          'x-forwarded-proto': 'http'
-        }
+          'x-forwarded-proto': 'https'
+        },
+        socket: { encrypted: false }
       } as unknown as IM;
       const url = imToURL(im);
-      expect(url.protocol).to.equal('http:');
+      expect(url.protocol).to.equal('https:');
     });
 
      /**
@@ -427,7 +429,8 @@ describe('helpers', () => {
         headers: {
           host: 'example.com',
           'x-forwarded-proto': ['http', 'https']
-        }
+        },
+        socket: { encrypted: false }
       } as unknown as IM;
       const url = imToURL(im);
       expect(url.protocol).to.equal('http:');
@@ -443,7 +446,21 @@ describe('helpers', () => {
         headers: {
           host: 'example.com',
           'x-forwarded-proto': 'http, https'
-        }
+        },
+        socket: { encrypted: false }
+      } as unknown as IM;
+      const url = imToURL(im);
+      expect(url.protocol).to.equal('http:');
+    });
+
+    it('should handle x-forwarded-proto vs socket', () => {
+      const im = {
+        url: '/test',
+        headers: {
+          host: 'example.com',
+          'x-forwarded-proto': 'http'
+        },
+        socket: { encrypted: true }
       } as unknown as IM;
       const url = imToURL(im);
       expect(url.protocol).to.equal('http:');
@@ -456,10 +473,11 @@ describe('helpers', () => {
     it('should handle invalid URLs with unknownhost', () => {
       const im = {
         url: 'invalid-url',
-        headers: { host: undefined }
-      };
-      const url = imToURL(im as IM);
-      expect(url.href).to.equal('https://undefinedinvalid-url/');
+        headers: { host: undefined },
+        socket: { encrypted: false }
+      } as unknown as IM;
+      const url = imToURL(im);
+      expect(url.href).to.equal('http://undefinedinvalid-url/');
     });
   });
 
@@ -471,9 +489,10 @@ describe('helpers', () => {
     it('should convert IM URL query to object', () => {
       const im = {
         url: '/path?foo=bar&baz=qux',
-        headers: { host: 'example.com' }
-      };
-      const query = imQueryToObject(im as IM);
+        headers: { host: 'example.com' },
+        socket: { encrypted: false }
+      } as unknown as IM;
+      const query = imQueryToObject(im);
       expect(query).to.deep.equal({
         foo: 'bar',
         baz: 'qux'
@@ -483,9 +502,10 @@ describe('helpers', () => {
     it('should handle URL without query parameters', () => {
       const im = {
         url: '/path',
-        headers: { host: 'example.com' }
-      };
-      const query = imQueryToObject(im as IM);
+        headers: { host: 'example.com' },
+        socket: { encrypted: false }
+      } as unknown as IM;
+      const query = imQueryToObject(im);
       expect(query).to.deep.equal({});
     });
   });
