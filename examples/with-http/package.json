@@ -8,7 +8,7 @@
     "dev": "ts-node src/server.ts"
   },
   "dependencies": {
-    "@stackpress/ingest": "0.4.5"
+    "@stackpress/ingest": "0.4.6"
   },
   "devDependencies": {
     "@types/node": "22.9.3",
