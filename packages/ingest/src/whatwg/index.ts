@@ -17,23 +17,14 @@ import Router from '../Router';
 import Server from '../Server';
 //local
 import Adapter, { loader, dispatcher } from './Adapter';
-import {
-  WhatwgRequest,
-  WhatwgResponse,
-  reqQueryToObject,
-  reqToURL,
-  readableToReadableStream
-} from './helpers';
+
+
+export * from './helpers';
 
 export {
   Adapter,
   loader,
-  dispatcher,
-  WhatwgRequest,
-  WhatwgResponse,
-  reqQueryToObject,
-  reqToURL,
-  readableToReadableStream
+  dispatcher
 };
 
 /**

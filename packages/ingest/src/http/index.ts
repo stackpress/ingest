@@ -15,19 +15,13 @@ import Router from '../Router';
 import Server from '../Server';
 //local
 import Adapter, { loader, dispatcher } from './Adapter';
-import {
-  imQueryToObject,
-  imToURL,
-  readableStreamToReadable
-} from './helpers';
+
+export * from './helpers';
 
 export {
   Adapter,
   loader,
-  dispatcher,
-  imQueryToObject,
-  imToURL,
-  readableStreamToReadable
+  dispatcher
 };
 
 /**
