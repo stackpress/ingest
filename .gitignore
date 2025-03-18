@@ -133,3 +133,5 @@ archives
 .vercel
 .netlify
 .DS_Store
+cjs
+esm
