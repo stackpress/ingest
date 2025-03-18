@@ -1,7 +1,7 @@
 //modules
 import { createServer } from 'node:http';
 //stackpress
-import type { UnknownNest } from '@stackpress/lib/dist/types';
+import type { UnknownNest } from '@stackpress/lib/types';
 //common
 import type { 
   IM, 

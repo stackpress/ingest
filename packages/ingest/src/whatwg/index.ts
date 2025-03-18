@@ -2,7 +2,7 @@
 import { createServer } from 'node:http';
 import { createServerAdapter } from '@whatwg-node/server';
 //stackpress
-import type { UnknownNest } from '@stackpress/lib/dist/types';
+import type { UnknownNest } from '@stackpress/lib/types';
 //common
 import type { 
   WhatwgServer,
@@ -47,7 +47,7 @@ export function gateway<C extends UnknownNest = UnknownNest>(
 export async function handler<C extends UnknownNest = UnknownNest>(
   context: WhatwgServer<C>, 
   request: NodeRequest,
-  response: NodeOptResponse,
+  _response: NodeOptResponse,
   action?: string|WhatwgAction<C>
 ) {
   return await Adapter.plug(context, request, action);

@@ -1,6 +1,6 @@
 //stackpress
-import type { Method } from '@stackpress/lib/dist/types';
-import EventRouter from '@stackpress/lib/dist/event/EventRouter';
+import type { Method } from '@stackpress/lib/types';
+import EventRouter from '@stackpress/lib/EventRouter';
 //common
 import type { 
   RouterAction,

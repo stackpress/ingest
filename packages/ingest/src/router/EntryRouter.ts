@@ -1,5 +1,5 @@
 //stackpress
-import type { Method } from '@stackpress/lib/dist/types';
+import type { Method } from '@stackpress/lib/types';
 //common
 import type { EntryTask } from '../types';
 import type Request from '../Request';

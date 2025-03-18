@@ -1,4 +1,4 @@
-import Exception from '@stackpress/lib/dist/Exception';
+import Exception from '@stackpress/lib/Exception';
 
 /**
  * Exceptions are used to give more information

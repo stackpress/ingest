@@ -2,7 +2,7 @@
 import { Readable } from 'node:stream';
 import * as cookie from 'cookie';
 //stackpress
-import type { Method, UnknownNest } from '@stackpress/lib/dist/types';
+import type { Method, UnknownNest } from '@stackpress/lib/types';
 //common
 import type { 
   IM,
@@ -90,7 +90,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
     //set the headers
     const headers = Object.fromEntries(
       Object.entries(this._request.headers).filter(
-        ([key, value]) => typeof value !== 'undefined'
+        ([_key, value]) => typeof value !== 'undefined'
       )
     ) as Record<string, string|string[]>;
     //set session

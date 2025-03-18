@@ -1,6 +1,6 @@
 //stackpress
-import type { UnknownNest } from '@stackpress/lib/dist/types';
-import Status from '@stackpress/lib/dist/Status';
+import type { UnknownNest } from '@stackpress/lib/types';
+import Status from '@stackpress/lib/Status';
 //local
 import type { ServerAction } from './types';
 import type Server from './Server';

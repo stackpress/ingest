@@ -1,10 +1,13 @@
 //modules
 import * as cookie from 'cookie';
 //stackpress
-import type { CallableMap, CallableNest } from '@stackpress/lib/dist/types';
-import type { Method } from '@stackpress/lib/dist/types';
-import map from '@stackpress/lib/dist/data/map';
-import { nest } from '@stackpress/lib/dist/data/Nest';
+import type { 
+  Method, 
+  CallableMap, 
+  CallableNest 
+} from '@stackpress/lib/types';
+import map from '@stackpress/lib/map';
+import { nest } from '@stackpress/lib/Nest';
 //local
 import type { 
   Body,
@@ -138,7 +141,7 @@ export default class Request<R = unknown, X = unknown> {
         ? Object.entries(
           cookie.parse(this.headers.get('cookie') as string)
         ).filter(
-          ([ key, value ]) => typeof value !== 'undefined'
+          ([ _key, value ]) => typeof value !== 'undefined'
         ) as [string, string][]
         : undefined
     );

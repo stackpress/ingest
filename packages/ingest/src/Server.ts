@@ -6,8 +6,8 @@ import type {
   CallableNest, 
   UnknownNest 
 } from '@stackpress/lib';
-import map from '@stackpress/lib/dist/data/map';
-import { nest } from '@stackpress/lib/dist/data/Nest';
+import map from '@stackpress/lib/map';
+import { nest } from '@stackpress/lib/Nest';
 //local
 import type { 
   RequestInitializer,
@@ -198,6 +198,6 @@ export async function handler<
   C extends UnknownNest = UnknownNest, 
   R = unknown, 
   S = unknown
->(ctx: Server<C, R, S>, req: R, res: S) {
+>(_ctx: Server<C, R, S>, _req: R, res: S) {
   return res;
 };

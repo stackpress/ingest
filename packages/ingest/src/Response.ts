@@ -7,10 +7,10 @@ import type {
   ResponseStatus,
   StatusResponse,
   ErrorResponse
-} from '@stackpress/lib/dist/types';
-import map from '@stackpress/lib/dist/data/map';
-import { nest } from '@stackpress/lib/dist/data/Nest';
-import { getStatus } from '@stackpress/lib/dist/Status';
+} from '@stackpress/lib/types';
+import map from '@stackpress/lib/map';
+import { nest } from '@stackpress/lib/Nest';
+import { getStatus } from '@stackpress/lib/Status';
 //local
 import type { 
   Body, 

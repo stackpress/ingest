@@ -6,7 +6,7 @@
 
 import { expect } from 'chai';
 import path from 'node:path';
-import NodeFS from '@stackpress/lib/dist/system/NodeFS';
+import NodeFS from '@stackpress/lib/NodeFS';
 import { ConfigLoader, PluginLoader } from '../src/Loader';
 
 /**

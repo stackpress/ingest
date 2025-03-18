@@ -53,7 +53,7 @@ export function imQueryToObject(resource: IM) {
 export function readableStreamToReadable(stream: ReadableStream) {
   const reader = stream.getReader();
   return new Readable({
-    async read(size) {
+    async read(_size) {
       const { done, value } = await reader.read();
       if (done) {
         this.push(null);

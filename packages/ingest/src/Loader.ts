@@ -1,8 +1,8 @@
 //modules
 import path from 'node:path';
 //stackpress
-import NodeFS from '@stackpress/lib/dist/system/NodeFS';
-import FileLoader from '@stackpress/lib/dist/system/FileLoader';
+import NodeFS from '@stackpress/lib/NodeFS';
+import FileLoader from '@stackpress/lib/FileLoader';
 //local
 import type { ConfigLoaderOptions, PluginLoaderOptions } from './types';
 import Exception from './Exception';

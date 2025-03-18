@@ -1,5 +1,5 @@
 //stackpress
-import type { Method } from '@stackpress/lib/dist/types';
+import type { Method } from '@stackpress/lib/types';
 //common
 import type { EntryTask, ViewEngine, ViewRender } from '../types';
 import type Request from '../Request';
@@ -18,9 +18,9 @@ export default class ViewRouter<
   //A route map to task queues
   public readonly templates = new Map<string, Set<EntryTask>>();
   //engine
-  protected _engine: ViewEngine<R, S, X> = (filePath, req, res) => {};
+  protected _engine: ViewEngine<R, S, X> = (_filePath, _req, _res) => {};
   //render
-  protected _render: ViewRender = filePath => {};
+  protected _render: ViewRender = _filePath => {};
   //main router
   protected _router: Router<R, S, X>;
 

@@ -2,7 +2,7 @@
 import { Readable } from 'node:stream';
 import * as cookie from 'cookie';
 //stackpress
-import type { Method, UnknownNest } from '@stackpress/lib/dist/types';
+import type { Method, UnknownNest } from '@stackpress/lib/types';
 //common
 import type { 
   Body,
@@ -38,7 +38,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
     action?: string|WhatwgAction<C>
   ) {
     const server = new Adapter(context, request);
-    return server.plug();
+    return server.plug(action);
   };
 
   //the parent server context

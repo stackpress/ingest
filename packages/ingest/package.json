@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "@stackpress/ingest",
   "version": "0.4.6",
   "license": "Apache-2.0",
@@ -30,25 +31,138 @@
     "file system",
     "stackpress"
   ],
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
+  "types": "./cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./cjs/index.js",
+      "import": "./esm/index.js"
+    },
+    "./helpers": {
+      "require": "./cjs/helpers.js",
+      "import": "./esm/helpers.js"
+    },
+    "./types": {
+      "require": "./cjs/types.js",
+      "import": "./esm/types.js"
+    },
+    "./http": {
+      "require": "./cjs/http/index.js",
+      "import": "./esm/http/index.js"
+    },
+    "./http/helpers": {
+      "require": "./cjs/http/helpers.js",
+      "import": "./esm/http/helpers.js"
+    },
+    "./http/Adapter": {
+      "require": "./cjs/http/Adapter.js",
+      "import": "./esm/http/Adapter.js"
+    },
+    "./whatwg": {
+      "require": "./cjs/whatwg/index.js",
+      "import": "./esm/whatwg/index.js"
+    },
+    "./whatwg/helpers": {
+      "require": "./cjs/whatwg/helpers.js",
+      "import": "./esm/whatwg/helpers.js"
+    },
+    "./whatwg/Adapter": {
+      "require": "./cjs/whatwg/Adapter.js",
+      "import": "./esm/whatwg/Adapter.js"
+    },
+    "./Exception": {
+      "require": "./cjs/Exception.js",
+      "import": "./esm/Exception.js"
+    },
+    "./Loader": {
+      "require": "./cjs/Loader.js",
+      "import": "./esm/Loader.js"
+    },
+    "./Request": {
+      "require": "./cjs/Request.js",
+      "import": "./esm/Request.js"
+    },
+    "./Response": {
+      "require": "./cjs/Response.js",
+      "import": "./esm/Response.js"
+    },
+    "./Route": {
+      "require": "./cjs/Route.js",
+      "import": "./esm/Route.js"
+    },
+    "./Router": {
+      "require": "./cjs/Router.js",
+      "import": "./esm/Router.js"
+    },
+    "./Server": {
+      "require": "./cjs/Server.js",
+      "import": "./esm/Server.js"
+    },
+    "./Session": {
+      "require": "./cjs/Session.js",
+      "import": "./esm/Session.js"
+    },
+    "./EntryRouter": {
+      "require": "./cjs/router/EntryRouter.js",
+      "import": "./esm/router/EntryRouter.js"
+    },
+    "./ImportRouter": {
+      "require": "./cjs/router/ImportRouter.js",
+      "import": "./esm/router/ImportRouter.js"
+    },
+    "./ServerRouter": {
+      "require": "./cjs/router/ServerRouter.js",
+      "import": "./esm/router/ServerRouter.js"
+    },
+    "./ViewRouter": {
+      "require": "./cjs/router/ViewRouter.js",
+      "import": "./esm/router/ViewRouter.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "index": [ "./cjs/index.d.ts"],
+      "helpers": [ "./cjs/helpers.d.ts" ],
+      "types": [ "./cjs/types.d.ts" ],
+      "http": [ "./cjs/http/index.d.ts" ],
+      "http/helpers": [ "./cjs/http/helpers.d.ts" ],
+      "http/Adapter": [ "./cjs/http/Adapter.d.ts" ],
+      "whatwg": [ "./cjs/whatwg/index.d.ts" ],
+      "whatwg/helpers": [ "./cjs/whatwg/helpers.d.ts" ],
+      "whatwg/Adapter": [ "./cjs/whatwg/Adapter.d.ts" ],
+      "EntryRouter": [ "./cjs/router/EntryRouter.d.ts" ],
+      "ImportRouter": [ "./cjs/router/ImportRouter.d.ts" ],
+      "ServerRouter": [ "./cjs/router/ServerRouter.d.ts" ],
+      "ViewRouter": [ "./cjs/router/ViewRouter.d.ts" ],
+      "Exception": [ "./cjs/Exception.d.ts" ],
+      "Loader": [ "./cjs/Loader.d.ts" ],
+      "Request": [ "./cjs/Request.d.ts" ],
+      "Response": [ "./cjs/Response.d.ts" ],
+      "Route": [ "./cjs/Route.d.ts" ],
+      "Router": [ "./cjs/Router.d.ts" ],
+      "Server": [ "./cjs/Server.d.ts" ],
+      "Session": [ "./cjs/Session.d.ts" ]
+    }
+  },
   "files": [
-    "http.js",
-    "http.d.ts",
-    "index.js",
-    "index.d.ts",
-    "dist",
+    "cjs",
+    "esm",
     "LICENSE",
-    "README.md",
-    "whatwg.js",
-    "whatwg.d.ts"
+    "README.md"
   ],
   "scripts": {
-    "build": "tsc",
-    "test": "ts-mocha tests/*.test.ts"
+    "build": "yarn build:tsc && yarn build:pkg",
+    "build:pkg": "yarn build:pkg:cjs && yarn build:pkg:esm",
+    "build:pkg:cjs": "echo '{\"type\": \"commonjs\"}' > cjs/package.json",
+    "build:pkg:esm": "echo '{\"type\": \"module\"}' > esm/package.json",
+    "build:tsc": "yarn build:tsc:cjs && yarn build:tsc:esm",
+    "build:tsc:cjs": "tsc -p ./tsconfig.cjs.json",
+    "build:tsc:esm": "tsc -p ./tsconfig.esm.json",
+    "test": "ts-mocha -p ./tsconfig.cjs.json tests/*.test.ts"
   },
   "dependencies": {
-    "@stackpress/lib": "0.4.6",
+    "@stackpress/lib": "0.4.10",
     "@whatwg-node/server": "0.6.7",
     "cookie": "1.0.2"
   },
