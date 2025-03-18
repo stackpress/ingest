@@ -1,6 +1,6 @@
 import type { Config } from '../config';
-import type { ResponseStatus } from '@stackpress/lib/dist/types';
-import { getStatus } from '@stackpress/lib/dist/Status';
+import type { ResponseStatus } from '@stackpress/lib/types';
+import { getStatus } from '@stackpress/lib/Status';
 import { Exception } from '@stackpress/ingest';
 import { router } from '@stackpress/ingest/http';
 import Error from '../error';
