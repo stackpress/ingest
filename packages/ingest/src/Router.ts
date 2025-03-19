@@ -4,7 +4,9 @@ import EventRouter from '@stackpress/lib/EventRouter';
 //common
 import type { 
   RouterAction,
+  RouterActions,
   RouterEmitter,
+  RouterImport,
   RouterQueueArgs
 } from './types';
 import Request from './Request';
@@ -52,7 +54,7 @@ export default class Router<
    */
   public all(
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
   ) {
     return this.route('[A-Z]+', path, action, priority);
@@ -63,7 +65,7 @@ export default class Router<
    */
   public connect(
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
   ) {
     return this.route('CONNECT', path, action, priority);
@@ -74,7 +76,7 @@ export default class Router<
    */
   public delete(
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
   ) {
     return this.route('DELETE', path, action, priority);
@@ -85,7 +87,7 @@ export default class Router<
    */
   public get(
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
   ) {
     return this.route('GET', path, action, priority);
@@ -96,7 +98,7 @@ export default class Router<
    */
   public head(
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
   ) {
     return this.route('HEAD', path, action, priority);
@@ -107,7 +109,7 @@ export default class Router<
    */
   public options(
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
   ) {
     return this.route('OPTIONS', path, action, priority);
@@ -118,7 +120,7 @@ export default class Router<
    */
   public patch(
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
   ) {
     return this.route('PATCH', path, action, priority);
@@ -129,7 +131,7 @@ export default class Router<
    */
   public post(
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
   ) {
     return this.route('POST', path, action, priority);
@@ -140,7 +142,7 @@ export default class Router<
    */
   public put(
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
   ) {
     return this.route('PUT', path, action, priority);
@@ -151,7 +153,7 @@ export default class Router<
    */
   public trace(
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
   ) {
     return this.route('TRACE', path, action, priority);
@@ -163,9 +165,9 @@ export default class Router<
   public route(
     method: Method|'[A-Z]+', 
     path: string, 
-    action: RouterAction<R, S, X>, 
+    action: RouterActions<R, S, X>, 
     priority?: number
-  ) {
+  ): this {
     //convert path to a regex pattern
     const pattern = path
       //replace the :variable-_name01
@@ -175,14 +177,27 @@ export default class Router<
       .replaceAll('*', '([^/]+)')
       //** -> ([^/]+)([^/]+) -> (.*)
       .replaceAll('([^/]+)([^/]+)', '(.*)');
+    
     //now form the event pattern
     const event = new RegExp(`^${method}\\s${pattern}/*$`, 'ig');
     this.routes.set(event.toString(), {
       method: method === '[A-Z]+' ? 'ALL' : method,
       path: path
     });
-    //add to tasks
-    return this.on(event, action, priority);
+  
+    //delegate to appropriate router based on action type
+    if (typeof action === 'string') {
+      //view router for string paths
+      this.view.on(event, action, priority);
+    } else if (typeof action === 'function' && action.length === 0) {
+      //import router for parameterless functions
+      this.imports.on(event, action as RouterImport, priority);
+    } else {
+      //default router for request/response handlers
+      this.on(event, action as RouterAction<R, S, X>, priority);
+    }
+
+    return this;
   }
 
   /**

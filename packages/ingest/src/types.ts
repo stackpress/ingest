@@ -178,6 +178,12 @@ export type RouterImport = () => Promise<{
   default: RouterAction<any, any, any>
 }>;
 
+export type RouterActions<
+  R = unknown, 
+  S = unknown, 
+  X = unknown
+> = string | RouterAction<R, S, X> | RouterImport;
+
 export type RouterQueueArgs<
   R = unknown, 
   S = unknown, 
