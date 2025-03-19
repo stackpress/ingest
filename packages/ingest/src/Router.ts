@@ -167,7 +167,7 @@ export default class Router<
     path: string, 
     action: RouterActions<R, S, X>, 
     priority?: number
-  ): this {
+  ) {
     //convert path to a regex pattern
     const pattern = path
       //replace the :variable-_name01
