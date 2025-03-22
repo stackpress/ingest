@@ -7,6 +7,7 @@ import type { RouterImport } from '../src/types';
 import Router from '../src/Router';
 import Request from '../src/Request';
 import Response from '../src/Response';
+import ViewRouter from '../src/router/ViewRouter';
 
 type method = 'all' 
   | 'connect' | 'delete'  | 'get' 
@@ -266,5 +267,46 @@ describe('Router Tests', () => {
     await router2.emit('GET /api/v1/test', req, res);
     
     expect(res.body).to.equal('router1');
+  });
+
+  it('Should handle flexible routing types', async () => {
+    const router = new Router();
+    expect(router).to.be.instanceOf(Router);
+    router.view.engine = function (filePath, req, res) {
+      res.setBody('text/plain', filePath);
+    }
+    // Set up routes with different action types
+    router.get('/view/path', './templates/view.html');
+    router.get('/import/path', () => import('./fixtures/get'));
+    router.get('/standard/path', (req, res) => {
+      res.setBody('text/plain', 'standard response');
+    });
+  
+    // Test view routing
+    const viewRequest = new Request({
+      method: 'GET',
+      url: new URL('http://localhost/view/path')
+    });
+    const viewResponse = new Response();
+    await router.emit('GET /view/path', viewRequest, viewResponse);
+    expect(viewResponse.body).to.equal('./templates/view.html');
+  
+    // Test import routing
+    const importRequest = new Request({
+      method: 'GET',
+      url: new URL('http://localhost/import/path')
+    });
+    const importResponse = new Response();
+    await router.emit('GET /import/path', importRequest, importResponse);
+    expect(importResponse.body).to.equal('/import/path');
+  
+    // Test standard routing
+    const standardRequest = new Request({
+      method: 'GET',
+      url: new URL('http://localhost/standard/path')
+    });
+    const standardResponse = new Response();
+    await router.emit('GET /standard/path', standardRequest, standardResponse);
+    expect(standardResponse.body).to.equal('standard response');
   });
 })
