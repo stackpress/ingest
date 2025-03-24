@@ -2,10 +2,10 @@
   "private": true,
   "workspaces": [
     "examples/*",
-    "packages/*"
+    "ingest"
   ],
   "scripts": {
-    "build": "yarn --cwd packages/ingest build",
+    "build": "yarn --cwd ingest build",
     "entries:build": "yarn --cwd examples/with-entries build",
     "entries:dev": "yarn --cwd examples/with-entries dev",
     "gcp:build": "yarn --cwd examples/with-gcp build",
@@ -23,7 +23,7 @@
     "whatwg:build": "yarn --cwd examples/with-whatwg build",
     "whatwg:dev": "yarn --cwd examples/with-whatwg dev",
     "report": "nyc yarn test && nyc report -r lcov",
-    "test": "yarn --cwd packages/ingest test"
+    "test": "yarn --cwd ingest test"
   },
   "devDependencies": {
     "nyc": "17.1.0"

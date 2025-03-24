@@ -162,7 +162,7 @@ export default class Router<
     //parameter, it is an entry router action
     } else if (typeof action === 'function' 
       && action.length === 0
-      && !action
+      && !action.name
     ) {
       //import router for parameterless functions
       this.import.on(
@@ -310,7 +310,7 @@ export default class Router<
     //parameter, it is an entry router action
     } else if (typeof action === 'function' 
       && action.length === 0
-      && !action
+      && !action.name
     ) {
       //import router for parameterless functions
       this.import.route(

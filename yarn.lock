@@ -1778,12 +1778,13 @@
     "@smithy/types" "^4.1.0"
     tslib "^2.6.2"
 
-"@stackpress/lib@0.4.10":
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.4.10.tgz#479eea268ebe0b34b7caa3a988236af3bc144598"
-  integrity sha512-xtZ86US03hv/5lvAhbgNKgC7ktGoJ/hwHi+GL4RPt+MQq3qua467OnzMtAi7/cn0LSlbdCe5UVR+jgH8GGzKHg==
+"@stackpress/lib@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.5.2.tgz#b1a33f04f61aafe78309d7424b262ed4e4f433c4"
+  integrity sha512-h3tYpnbonaxTy/lDK81YfnH8wMsr2rw6l4bXFf2h+FET9bnrw8YWmrQCBrTl0GuuTa4BruuvwQF/n+Is2ZFhtw==
   dependencies:
     "@inquirer/prompts" "7.1.0"
+    cookie "1.0.2"
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.11"
@@ -2728,11 +2729,6 @@ escape-string-regexp@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
-
-esm@3.2.25:
-  version "3.2.25"
-  resolved "https://registry.yarnpkg.com/esm/-/esm-3.2.25.tgz#342c18c29d56157688ba5ce31f8431fbb795cc10"
-  integrity sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==
 
 esprima@^4.0.0:
   version "4.0.1"
