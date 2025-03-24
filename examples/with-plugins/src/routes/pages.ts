@@ -1,5 +1,5 @@
 import type { Config } from '../config';
-import { router } from '@stackpress/ingest/http';
+import { server } from '@stackpress/ingest/http';
 
 const template = `
 <!DOCTYPE html>
@@ -20,22 +20,22 @@ const template = `
 </html>
 `;
 
-const route = router<Config>();
+const router = server<Config>();
 
 /**
  * Home page
  */
-route.get('/', function HomePage(req, res) { 
-  const project = req.context.plugin<{ welcome: string }>('project');
+router.get('/', function HomePage(req, res, ctx) { 
+  const project = ctx.plugin<{ welcome: string }>('project');
   res.setHTML(project.welcome);
 });
 
 /**
  * Login page
  */
-route.get('/login', function Login(req, res) {
+router.get('/login', function Login(req, res) {
   //send the response
   res.setHTML(template.trim());
 });
 
-export default route;
+export default router;

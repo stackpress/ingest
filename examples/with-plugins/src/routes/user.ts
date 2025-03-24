@@ -1,7 +1,6 @@
-import type { Config } from '../config';
 import { router } from '@stackpress/ingest/http';
 
-const route = router<Config>();
+const route = router();
 
 let id = 0;
 

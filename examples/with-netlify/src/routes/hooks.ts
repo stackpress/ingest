@@ -1,7 +1,9 @@
-import type { ResponseStatus } from '@stackpress/lib/types';
-import { getStatus } from '@stackpress/lib/Status';
-import { Exception } from '@stackpress/ingest';
-import { router } from '@stackpress/ingest/whatwg';
+import { 
+  type ResponseStatus, 
+  Exception,
+  Status,
+  router 
+} from '@stackpress/ingest/whatwg';
 
 const route = router();
 
@@ -13,7 +15,7 @@ route.get('/catch', function ErrorResponse(req, res) {
     throw Exception.for('Not implemented');
   } catch (e) {
     const error = e as Exception;
-    const status = getStatus(error.code) as ResponseStatus;
+    const status = Status.get(error.code) as ResponseStatus;
     res.setError({ 
       code: status.code, 
       status: status.status, 

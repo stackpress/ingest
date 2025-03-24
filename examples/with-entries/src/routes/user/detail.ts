@@ -1,10 +1,11 @@
-import { ServerRequest, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
-export default function UserDetail(req: ServerRequest, res: Response) {
+export default action(function UserDetail(req, res) {
   //get params
   const id = parseInt(req.data('id') || '');
   if (!id) {
-    return res.setError('ID is required');
+    res.setError('ID is required');
+    return;
   }
   //maybe get from database?
   const results = { 
@@ -15,4 +16,4 @@ export default function UserDetail(req: ServerRequest, res: Response) {
   };
   //send the response
   res.setResults(results);
-};
+});

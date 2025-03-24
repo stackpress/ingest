@@ -1,19 +1,21 @@
-import type { ResponseStatus } from '@stackpress/lib/types';
-import { getStatus } from '@stackpress/lib/Status';
-import { Exception } from '@stackpress/ingest';
-import { ServerRouter } from '@stackpress/ingest';
+import { 
+  type ResponseStatus, 
+  Exception,
+  Status,
+  router 
+} from '@stackpress/ingest';
 
-const router = new ServerRouter();
+const route = router();
 
 /**
  * Error handlers
  */
-router.get('/error', function ErrorResponse(req, res) {
+route.get('/error', function ErrorResponse(req, res) {
   try {
     throw Exception.for('Not implemented');
   } catch (e) {
     const error = e as Exception;
-    const status = getStatus(error.code) as ResponseStatus;
+    const status = Status.get(error.code) as ResponseStatus;
     res.setError({ 
       code: status.code, 
       status: status.status, 
@@ -26,11 +28,11 @@ router.get('/error', function ErrorResponse(req, res) {
 /**
  * 404 handler
  */
-router.on('response', function NotFound(req, res) {
+route.on('response', function NotFound(req, res) {
   if (!res.code && !res.status && !res.sent) {
     //send the response
     res.setHTML('Not Found');
   }
 });
 
-export default router;
+export default route;

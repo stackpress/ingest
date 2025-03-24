@@ -37,195 +37,6 @@ describe('ConfigLoader', () => {
       expect(customLoader).to.be.instanceOf(ConfigLoader);
     });
   });
-
-  /**
-   * Import Method Tests
-   * Tests dynamic import functionality for different module types 
-   * and scenarios
-   */
-  describe('import', () => {
-    it('should return defaults when file not found', async () => {
-      const defaults = { test: true };
-      const result = await loader.import('/non/existent/path', defaults);
-      expect(result).to.deep.equal(defaults);
-    });
-
-    it('should throw when file not found and no defaults provided', 
-      async () => {
-      try {
-        await loader.import('/non/existent/path');
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error).to.exist;
-      }
-    });
-
-    it('should handle package.json with plugins key', async () => {
-      const pkgPath = path.join(__dirname, 
-        'fixtures', 'test-package.json');
-      const result = await loader.import(pkgPath);
-      expect(result).to.deep.equal({ test: true });
-    });
-
-    it('should handle ES modules with default export', async () => {
-      const modulePath = path.join(__dirname, 
-        'fixtures', 'test-module-commonjs.js');
-      const result = await loader.import(modulePath);
-      expect(result).to.deep.equal({ test: true });
-    });
-
-    it('should handle import with non-existent file and no defaults', 
-      async () => {
-      const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures')
-      });
-
-      try {
-        await configLoader.import('non-existent-file');
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error).to.exist;
-        expect(error.message).to.include('Could not resolve');
-      }
-    });
-
-    it('should handle import with non-existent file and defaults', 
-      async () => {
-      const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures')
-      });
-
-      const result = await configLoader.import('non-existent-file',
-      { default: true });
-      expect(result).to.deep.equal({ default: true });
-    });
-
-    it('should handle import with ES module default export', 
-      async () => { 
-        const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures')
-      });
-
-      const result = await configLoader.import(path.join(__dirname,
-     'fixtures', 'test-module-commonjs.js'));
-      expect(result).to.deep.equal({ test: true });
-    });
-
-    it('should handle import with package.json and key', async () => {
-      const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures'),
-        key: 'plugins'
-      });
-
-      const result = await configLoader.import(path.join(__dirname,
-     'fixtures', 'package.json'));
-      expect(result).to.deep.equal(['plugin1', 'plugin2']);
-    });
-  });
-
-  /**
-   * Require Method Tests
-   * Tests synchronous require functionality and cache management
-   */
-  describe('require', () => {
-    it('should return defaults when file not found', () => {
-      const defaults = { test: true };
-      const result = loader.require('/non/existent/path', defaults);
-      expect(result).to.deep.equal(defaults);
-    });
-
-    it('should throw when file not found and no defaults provided',
-     () => {
-      try {
-        loader.require('/non/existent/path');
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error).to.exist;
-      }
-    });
-
-    it('should handle require with non-existent file and no defaults',
-     () => {
-      const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures')
-      });
-
-      try {
-        configLoader.require('non-existent-file');
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error).to.exist;
-        expect(error.message).to.include('Could not resolve');
-      }
-    });
-
-    it('should handle require with non-existent file and defaults', 
-      () => {
-      const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures')
-      });
-
-      const result = configLoader.require('non-existent-file', 
-      { default: true });
-      expect(result).to.deep.equal({ default: true });
-    });
-
-    it('should handle require with CommonJS module', () => {
-      const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures')
-      });
-
-      const result = configLoader.require(path.join(__dirname, 
-      'fixtures', 'test-module-commonjs.js'));
-      expect(result).to.deep.equal({ test: true });
-    });
-
-    it('should handle require with package.json and key', () => {
-      const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures'),
-        key: 'plugins'
-      });
-
-      const result = configLoader.require(path.join(__dirname,
-     'fixtures', 'package.json'));
-      expect(result).to.deep.equal(['plugin1', 'plugin2']);
-    });
-  });
-
-  /**
-   * Basepath Method Tests
-   * Tests the functionality for resolving base paths
-   */
-  describe('basepath', () => {
-    it('should handle basepath with different extensions', () => {
-      const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures')
-      });
-
-      expect(configLoader.basepath
-        ('/path/to/file.js')).to.equal('/path/to/file');
-      expect(configLoader.basepath
-        ('/path/to/file.ts')).to.equal('/path/to/file');
-      expect(configLoader.basepath
-        ('/path/to/file.json')).to.equal('/path/to/file.json');
-    });
-  });
-
-  /**
-   * Filenames Configuration Tests
-   * Tests the functionality for filenames configuration
-   */
-  describe('filenames', () => {
-    it('should handle different filenames configuration', () => {
-      const configLoader = new ConfigLoader({
-        cwd: path.join(__dirname, 'fixtures'),
-        filenames: ['.custom']
-      });
-
-      const result = configLoader.resolve();
-      expect(result).to.be.null;
-    });
-  });
 });
 
 /**
@@ -234,7 +45,7 @@ describe('ConfigLoader', () => {
  */
 describe('PluginLoader', () => {
   let loader: PluginLoader;
-  const fixturesDir = path.join(__dirname, 'fixtures');
+  const fixturesDir = path.join(import.meta.dirname, 'fixtures');
   const options = {
     modules: path.join(fixturesDir, 'modules'),
     plugins: ['test-plugin']
@@ -253,7 +64,7 @@ describe('PluginLoader', () => {
       expect(loader).to.be.instanceOf(PluginLoader);
     });
 
-    it('should handle string plugin configuration', () => {
+    it('should handle string plugin configuration', async () => {
       const pluginPath = path.join(fixturesDir, 'test-module-commonjs.js');
       const testLoader = new PluginLoader({
         cwd: fixturesDir,
@@ -261,7 +72,8 @@ describe('PluginLoader', () => {
         plugins: [pluginPath]
       });
 
-      expect(testLoader.plugins).to.deep.equal([pluginPath]);
+      const plugins = await testLoader.plugins();
+      expect(plugins).to.deep.equal([pluginPath]);
     });
   });
 
@@ -270,39 +82,40 @@ describe('PluginLoader', () => {
    * Tests the functionality for loading plugins from config files
    */
   describe('plugins getter', () => {
-    it('should load plugins from config file', () => {
+    it('should load plugins from config file', async () => {
       const configPath = path.join(fixturesDir, 'plugins-config.js');
       const configLoader = new PluginLoader({
         cwd: fixturesDir,
         modules: options.modules,
-        plugins: require(configPath).plugins
+        plugins: (await import(configPath)).plugins
       });
-      expect(configLoader.plugins).to.deep.equal(['plugin1', 'plugin2']);
+      const plugins = await configLoader.plugins();
+      expect(plugins).to.deep.equal(['plugin1', 'plugin2']);
     });
 
     it('should handle default export in ES modules', async () => {
-      const configPath = path.join(fixturesDir, 'test-module-commonjs.js');
       const configLoader = new PluginLoader({
         cwd: fixturesDir,
         modules: options.modules
       });
-      const result = configLoader.plugins;
+      const result = await configLoader.plugins();
       expect(Array.isArray(result)).to.be.true;
     });
 
-    it('should handle empty or invalid config', () => {
+    it('should handle empty or invalid config', async () => {
       const emptyLoader = new PluginLoader({
         cwd: path.join(fixturesDir, 'empty'),
         modules: path.join(fixturesDir, 'empty')
       });
 
-      expect(emptyLoader.plugins).to.deep.equal([]);
+      const plugins = await emptyLoader.plugins();
+      expect(plugins).to.deep.equal([]);
     });
 
     it('should handle plugin loading errors', async () => {
       const mockLoader = async (name: string, plugin: unknown):
       Promise<void> => {};
-      const pluginPath = path.join(__dirname, 'fixtures',
+      const pluginPath = path.join(import.meta.dirname, 'fixtures',
      'test-module-commonjs.js');
       const testLoader = new PluginLoader({
         plugins: [pluginPath]
@@ -320,11 +133,16 @@ describe('PluginLoader', () => {
     });
 
     it('should handle nested plugin configurations', async () => {
-      const nestedPluginPath = path.join(fixturesDir,
-     'nested-plugin', 'plugin.js');
+      const nestedPluginPath = path.join(
+        fixturesDir,
+        'nested-plugin', 
+        'plugin.js'
+      );
       const loadedPlugins: string[] = [];
-      const mockLoader = async (name: string, plugin: unknown):
-      Promise<void> => {
+      const mockLoader = async (
+        name: string, 
+        plugin: unknown
+      ): Promise<void> => {
         loadedPlugins.push(path.basename(name, '.js'));
       };
 
@@ -335,7 +153,7 @@ describe('PluginLoader', () => {
       });
 
       // First get the plugins
-      const plugins = testLoader.plugins;
+      const plugins = await testLoader.plugins();
       expect(plugins).to.deep.equal([nestedPluginPath]);
 
       // Then bootstrap them
@@ -424,7 +242,7 @@ describe('PluginLoader', () => {
       });
 
       // First get the plugins
-      const plugins = testLoader.plugins;
+      const plugins = await testLoader.plugins();
       expect(plugins).to.deep.equal([nestedPluginPath]);
 
       // Then bootstrap them
@@ -433,7 +251,7 @@ describe('PluginLoader', () => {
       expect(loadedPlugins).to.include('sub-plugin');
     });
 
-    it('should handle package.json plugins', () => {
+    it('should handle package.json plugins', async () => {
       const packageJsonPath = path.join(fixturesDir, 'package.json');
 
       const testLoader = new PluginLoader({
@@ -442,10 +260,11 @@ describe('PluginLoader', () => {
         key: 'plugins'
       });
 
-      expect(testLoader.plugins).to.deep.equal(['plugin1', 'plugin2']);
+      const plugins = await testLoader.plugins()
+      expect(plugins).to.deep.equal(['plugin1', 'plugin2']);
     });
 
-    it('should handle string plugin input', () => {
+    it('should handle string plugin input', async () => {
       const pluginPath = path.join(fixturesDir, 'test-module.js');
 
       const testLoader = new PluginLoader({
@@ -454,7 +273,8 @@ describe('PluginLoader', () => {
         plugins: [pluginPath]
       });
 
-      expect(testLoader.plugins).to.deep.equal([pluginPath]);
+      const plugins = await testLoader.plugins()
+      expect(plugins).to.deep.equal([pluginPath]);
     });
 
     it('should handle relative paths in plugins', async () => {

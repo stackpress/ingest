@@ -8,8 +8,8 @@ import type { ConfigLoaderOptions, PluginLoaderOptions } from './types';
 import Exception from './Exception';
 
 export class ConfigLoader extends FileLoader {
-  //list of filenames and extensions to look for
-  protected _filenames: string[];
+  //list of extensions to look for
+  protected _extnames: string[];
   //key name
   protected _key: string;
 
@@ -20,7 +20,7 @@ export class ConfigLoader extends FileLoader {
     super(options.fs || new NodeFS(), options.cwd || process.cwd());
     const { 
       key = 'plugins', 
-      filenames = [
+      extnames = [
         '/plugins.js', 
         '/plugins.json', 
         '/package.json',
@@ -31,22 +31,22 @@ export class ConfigLoader extends FileLoader {
       ] 
     } = options;
     this._key = key;
-    this._filenames = filenames
+    this._extnames = extnames
   }
 
   /**
    * Simulates an import statement
    */
-  public async import<T = any>(pathname = this.cwd, defaults?: T) {
+  public async load<T = any>(filepath: string, defaults?: T) {
     //resolve the pathname
-    const file = this.resolve(pathname);
+    const file = await this.resolveFile(filepath);
     //if no file was resolved
     if (!file) {
       //throw an exception if there are no defaults
-      Exception.require (
+      Exception.require(
         typeof defaults !== 'undefined',
         'Could not resolve `%s`',
-        pathname
+        filepath
       );
       //return the defaults
       return defaults;
@@ -66,76 +66,92 @@ export class ConfigLoader extends FileLoader {
   }
 
   /**
-   * Simulates a require statement
-   */
-  public require<T = any>(pathname = this.cwd, defaults?: T) {
-    //resolve the pathname
-    const file = this.resolve(pathname);
-    //if no file was resolved
-    if (!file) {
-      //throw an exception if there are no defaults
-      Exception.require (
-        typeof defaults !== 'undefined',
-        'Could not resolve `%s`',
-        pathname
-      );
-      //return the defaults
-      return defaults;
-    }
-    //require the plugin
-    const basepath = this.basepath(file);
-    let imported = require(basepath);
-    //if using import
-    if (imported.default) {
-      imported = imported.default;
-    }
-    //if package.json, look for the key
-    if (imported[this._key]) {
-      imported = imported[this._key];
-    } 
-    return imported as T;
-  }
-
-  /**
    * Resolves the path name to a path that can be required
    */
-  public resolve(pathname = this.cwd) {
+  public async resolveFile(filepath = this.cwd) {
     //get the absolute path
-    return super.resolve(pathname, this.cwd, this._filenames);
-  }
-
-  /**
-   * Removes the extension (.js or .ts) from the pathname
-   */
-  public basepath(pathname: string) {
-    //if .js or .ts 
-    if (pathname.endsWith('.js') || pathname.endsWith('.ts')) {
-      //remove the extname
-      return pathname.substring(0, pathname.length - 3);
-    }
-    return pathname;
+    const resolved = await super.resolveFile(filepath, this._extnames, this.cwd);
+    return resolved;
   }
 }
 
 export class PluginLoader extends ConfigLoader {
   //The location for `node_modules`
-  protected _modules: string;
+  protected _modules?: string;
   //List of plugins
   protected _plugins?: string[];
   //if already bootstrapped
   protected _bootstrapped = false;
 
   /**
+   * Setups up the current working directory
+   */
+  public constructor(options: PluginLoaderOptions) {
+    super(options);
+    const { plugins, modules } = options;
+    this._modules = modules;
+    this._plugins = plugins;
+  }
+
+  /**
+   * Requires all the files and registers it to the context.
+   * You can only bootstrap server files.
+   */
+  public async bootstrap(
+    loader: (name: string, plugin: unknown) => Promise<void>
+  ) {
+    //if not bootstrapped
+    if (!this._bootstrapped) {
+      const plugins = await this.plugins();
+      //config should be a list of files
+      for (let pathname of plugins) {
+        const plugin = await this.load(pathname);
+        if (Array.isArray(plugin)) {
+          const absolute = await this.resolve(pathname);
+          //get the folder name of the plugin pathname
+          const cwd = path.dirname(absolute || pathname);
+          //make a new plugin
+          //cwd, this._modules, plugin
+          const child = new PluginLoader({ 
+            cwd, 
+            fs: this.fs, 
+            modules: this._modules, 
+            plugins: plugin 
+          });
+          //bootstrap
+          await child.bootstrap(loader);
+        } else {
+          if (!this._modules) {
+            this._modules = await this.lib();
+          }
+          //try consuming it
+          const filename = pathname.startsWith(this._modules) 
+            ? pathname.substring(this._modules.length + 1) 
+            : pathname.startsWith(this.cwd) 
+            ? pathname.substring(this.cwd.length + 1)
+            : pathname;
+          const extname = path.extname(filename);
+          const name = filename.substring(0, filename.length - extname.length);
+          await loader(name, plugin);
+        }
+      }
+    }
+    //set bootstrapped
+    this._bootstrapped = true;
+    return this;
+  }
+
+  /**
    * If the config is not set, then it loads it.
    * Returns the plugin configs
    */
-  public get plugins(): string[] {
+  public async plugins(): Promise<string[]> {
     if (!this._plugins) {
-      const file = this.resolve();
+      //try different file extensions to determine the filepath
+      const filepath = await this.resolveFile(this.cwd);
       let plugins: any = [];
-      if (file) {
-        const basepath = this.basepath(file);
-        plugins = require(basepath);
+      if (filepath) {
+        plugins = await this.load(filepath);
       }
       //if import
       if (plugins.default) {
@@ -154,59 +170,5 @@ export class PluginLoader extends ConfigLoader {
     }
 
     return Array.from(this._plugins);
-  }
-
-  /**
-   * Setups up the current working directory
-   */
-  public constructor(options: PluginLoaderOptions) {
-    super(options);
-    const { plugins, modules = this.modules() } = options;
-
-    this._modules = modules;
-    this._plugins = plugins;
-  }
-
-  /**
-   * Requires all the files and registers it to the context.
-   * You can only bootstrap server files.
-   */
-  public async bootstrap(
-    loader: (name: string, plugin: unknown) => Promise<void>
-  ) {
-    //if not bootstrapped
-    if (!this._bootstrapped) {
-      //config should be a list of files
-      for (let pathname of this.plugins) {
-        const plugin = this.require(pathname);
-        if(Array.isArray(plugin)) {
-          //get the folder name of the plugin pathname
-          const cwd = path.dirname(this.resolve(pathname) || pathname);
-          //make a new plugin
-          //cwd, this._modules, plugin
-          const child = new PluginLoader({ 
-            cwd, 
-            fs: this.fs, 
-            modules: this._modules, 
-            plugins: plugin 
-          });
-          //bootstrap
-          child.bootstrap(loader);
-        } else {
-          //try consuming it
-          const filename = pathname.startsWith(this._modules) 
-            ? pathname.substring(this._modules.length + 1) 
-            : pathname.startsWith(this.cwd) 
-            ? pathname.substring(this.cwd.length + 1)
-            : pathname;
-          const extname = path.extname(filename);
-          const name = filename.substring(0, filename.length - extname.length);
-          await loader(name, plugin);
-        }
-      }
-    }
-    //set bootstrapped
-    this._bootstrapped = true;
-    return this;
   }
 }

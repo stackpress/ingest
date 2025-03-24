@@ -1,5 +1,5 @@
-import { ServerRequest, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
-export default function Redirect(req: ServerRequest, res: Response) {
+export default action(function Redirect(req, res) {
   res.redirect('/user');
-};
+});

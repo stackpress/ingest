@@ -12,9 +12,8 @@ app.view.render = (filePath, props) => {
   const template = handlebars.compile(contents);
   return template(props);
 };
-app.view.engine = (filePath, req, res) => {
-  const view = req.context.view;
-  const html = view.render(filePath, { name: req.data.get('name') });
+app.view.engine = (filePath, req, res, ctx) => {
+  const html = ctx.view.render(filePath, { name: req.data.get('name') });
   if (typeof html === 'string') {
     res.setHTML(html);
   }

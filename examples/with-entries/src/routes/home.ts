@@ -1,6 +1,6 @@
-import { ServerRequest, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
-export default async function HomePage(req: ServerRequest, res: Response) { 
-  const project = req.context.plugin<{ welcome: string }>('project');
+export default action(async function HomePage(req, res, ctx) { 
+  const project = ctx.plugin<{ welcome: string }>('project');
   res.setHTML(project.welcome);
-};
+});

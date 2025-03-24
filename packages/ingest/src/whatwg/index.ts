@@ -18,8 +18,12 @@ import Server from '../Server';
 //local
 import Adapter, { loader, dispatcher } from './Adapter';
 
-
-export * from './helpers';
+export * from '../index';
+export {
+  reqToURL,
+  reqQueryToObject,
+  readableToReadableStream
+} from './helpers';
 
 export {
   Adapter,
@@ -69,6 +73,16 @@ export function server<C extends UnknownNest = UnknownNest>(
 /**
  * Default router factory
  */
-export function router<C extends UnknownNest = UnknownNest>() {
-  return new Router<NodeRequest, NodeOptResponse, WhatwgServer<C>>();
+export function router() {
+  return new Router<NodeRequest, NodeOptResponse>();
 }
+
+/**
+ * Just a pass along to imply the types 
+ * needed for the action arguments
+ */
+export function action<C extends UnknownNest = UnknownNest>(
+  action: WhatwgAction<C>
+) {
+  return action;
+};

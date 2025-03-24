@@ -1,4 +1,4 @@
-import { ServerRouter } from '@stackpress/ingest';
+import { server } from '@stackpress/ingest';
 
 const template = `
 <!DOCTYPE html>
@@ -20,13 +20,13 @@ const template = `
 `;
 
 
-const router = new ServerRouter();
+const router = server();
 
 /**
  * Home page
  */
-router.get('/', function HomePage(req, res) { 
-  const project = req.context.plugin<{ welcome: string }>('project');
+router.get('/', function HomePage(req, res, ctx) { 
+  const project = ctx.plugin<{ welcome: string }>('project');
   res.setHTML(project.welcome);
 });
 

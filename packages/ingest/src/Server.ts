@@ -10,18 +10,14 @@ import map from '@stackpress/lib/map';
 import { nest } from '@stackpress/lib/Nest';
 //local
 import type { 
-  RequestInitializer,
-  ResponseInitializer,
+  ServerAction,
   ServerGateway,
   ServerHandler,
   ServerOptions,
   NodeServerOptions
 } from './types';
 import Router from './Router';
-import Request from './Request';
-import Response from './Response';
 import { PluginLoader } from './Loader';
-import { isHash } from './helpers';
 
 /**
  * Generic server class
@@ -41,7 +37,7 @@ export default class Server<
   //response resource
   S = unknown
 > 
-  extends Router<R, S, Server<C, R, S>>
+  extends Router<R, S>
 {
   //arbitrary config map
   public readonly config: CallableNest<C>;
@@ -99,26 +95,6 @@ export default class Server<
   }
 
   /**
-   * Returns a response object given the event and request
-   */
-  public async call<T = unknown>(
-    event: string, 
-    request?: Request<R, Server<C, R, S>>|Record<string, any>,
-    response?: Response<S>
-  ) {
-    if (!request) {
-      request = this.request();
-    } else if (isHash(request)) {
-      const data = request as Record<string, any>;
-      request = this.request({ data });
-    }
-    const req = request as Request<R, Server<C, R, S>>;
-    const res = response || this.response();
-    await this.emit(event, req, res);  
-    return res.toStatusResponse<T>();
-  }
-
-  /**
    * Creates a new server
    */
   public create(options: NodeServerOptions = {}) {
@@ -147,34 +123,6 @@ export default class Server<
     this.plugins.set(name, config);
     return this;
   }
-
-  /**
-   * Creates a new request
-   */
-  public request(init: Partial<RequestInitializer<R, Server<C, R, S>>> = {}) {
-    init.context = this;
-    return new Request<R, Server<C, R, S>>(init);
-  }
-
-  /**
-   * Creates a new response
-   */
-  public response(init: Partial<ResponseInitializer<S>> = {}) {
-    return new Response<S>(init);
-  }
-
-  /**
-   * Routes to another route
-   */
-  public async routeTo(
-    method: string, 
-    path: string, 
-    request?: Request<R, Server<C, R, S>>|Record<string, any>,
-    response?: Response<S>
-  ) {
-    const event = `${method.toUpperCase()} ${path}`;
-    return await this.call(event, request, response);  
-  }
 };
 
 /**
@@ -200,4 +148,47 @@ export async function handler<
   S = unknown
 >(_ctx: Server<C, R, S>, _req: R, res: S) {
   return res;
+};
+
+/**
+ * Default server factory
+ */
+export function server<C extends UnknownNest = any>(
+  //Any: Server<UnknownNest> not assignable to type HttpServer<Config>
+  //Any: Type unknown is not assignable to type IncomingMessage
+  //Any: Type unknown is not assignable to type ServerResponse
+  options: ServerOptions<C, any, any> = {}
+) {
+  options.gateway = options.gateway || gateway;
+  options.handler = options.handler || handler;
+  //Any: Type unknown is not assignable to type IncomingMessage
+  //Any: Type unknown is not assignable to type ServerResponse
+  return new Server<C, any, any>(options);
+};
+
+/**
+ * Default router factory
+ */
+export function router() {
+  //Any: Type unknown is not assignable to type IncomingMessage
+  //Any: Type unknown is not assignable to type ServerResponse
+  return new Router<any, any>();
+}
+
+/**
+ * Just a pass along to imply the types 
+ * needed for the action arguments
+ */
+export function action<
+  //config map
+  //Any: Server<UnknownNest> not assignable to type HttpServer<Config>
+  C extends UnknownNest = any, 
+  //request resource
+  //Any: Type unknown is not assignable to type IncomingMessage
+  R = any, 
+  //response resource
+  //Any: Type unknown is not assignable to type ServerResponse
+  S = any
+>(action: ServerAction<C, R, S>) {
+  return action;
 };

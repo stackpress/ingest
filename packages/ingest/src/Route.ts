@@ -32,28 +32,32 @@ export default class Route<
     S = unknown
   >(
     event: ServerAction<C, R, S>|string,
-    request: Request<R, Server<C, R, S>>,
-    response: Response<S>
+    request: Request<R>,
+    response: Response<S>,
+    context: Server<C, R, S>
   ) {
-    const route = new Route(event, request, response);
+    const route = new Route(event, request, response, context);
     return route.emit();
   }
 
   public readonly event: ServerAction<C, R, S>|string;
-  public readonly request: Request<R, Server<C, R, S>>;
+  public readonly request: Request<R>;
   public readonly response: Response<S>;
+  public readonly context: Server<C, R, S>;
 
   /**
    * Gets everything needed from route.handle()
    */
   constructor(
     event: ServerAction<C, R, S>|string,
-    request: Request<R, Server<C, R, S>>,
-    response: Response<S>
+    request: Request<R>,
+    response: Response<S>,
+    context: Server<C, R, S>
   ) {
     this.event = event;
     this.request = request;
     this.response = response;
+    this.context = context;
   }
 
   /**
@@ -86,7 +90,7 @@ export default class Route<
     //default status
     let status = Status.OK;
     try { //to allow plugins to handle the request
-      status = await this.request.context.emit(
+      status = await this.context.emit(
         'request', 
         this.request, 
         this.response
@@ -107,13 +111,17 @@ export default class Route<
     let status = Status.OK;
     try { //to emit the route
       if (typeof this.event === 'string') {
-        await this.request.context.emit(
+        await this.context.emit(
           this.event, 
           this.request, 
           this.response
         );
       } else {
-       await this.event(this.request, this.response); 
+        await this.event(
+          this.request, 
+          this.response, 
+          this.context
+        ); 
       }
     } catch(error) {
       //allow plugins to handle the error
@@ -138,7 +146,7 @@ export default class Route<
       //set the exception as the error
       this.response.setError(exception);
       //allow plugins to handle the not found
-      status = await this.request.context.emit(
+      status = await this.context.emit(
         'error', 
         this.request, 
         this.response
@@ -160,7 +168,7 @@ export default class Route<
     //default status
     let status = Status.OK;
     try { //to allow plugins to handle the response
-      status = await this.request.context.emit(
+      status = await this.context.emit(
         'response', 
         this.request, 
         this.response
@@ -182,7 +190,7 @@ export default class Route<
     //set the exception as the error
     this.response.setError(exception);
     //allow plugins to handle the error
-    return await this.request.context.emit(
+    return await this.context.emit(
       'error', 
       this.request, 
       this.response

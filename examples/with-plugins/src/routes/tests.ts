@@ -1,7 +1,5 @@
-import type { Config } from '../config';
-
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
 import { router } from '@stackpress/ingest/http';
 
@@ -26,7 +24,7 @@ const template = `
 </html>
 `;
 
-const route = router<Config>();
+const route = router();
 
 /**
  * Redirect test

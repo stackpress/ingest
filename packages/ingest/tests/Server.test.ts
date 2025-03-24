@@ -21,18 +21,18 @@ describe('Server Tests', () => {
       res.setBody('text/plain', `- ${req.data('foo')}`);
     });
 
-    const req = new Request<unknown, Server>({ 
+    const req = new Request<unknown>({ 
       method: 'GET',
       url: new URL('http://localhost/some/route/path') ,
       data: { foo: 'bar' }
     });
     const res = new Response();
-    await server.routeTo('GET', '/some/route/path', req, res);
+    await server.resolve('GET', '/some/route/path', req, res);
     expect(res.body).to.equal('- bar');
-    const response1 = await server.routeTo('GET', '/some/route/path',
+    const response1 = await server.resolve('GET', '/some/route/path',
     { foo: 'baz' });
     expect(response1.results).to.equal('- baz');
-    const response2 = await server.routeTo('GET', '/some/route/path');
+    const response2 = await server.resolve('GET', '/some/route/path');
     expect(response2.results).to.equal('- undefined');
   });
 
@@ -48,17 +48,17 @@ describe('Server Tests', () => {
       res.setBody('text/plain', `- ${req.data('foo')}`);
     });
 
-    const req = new Request<unknown, Server>({ 
+    const req = new Request<unknown>({ 
       method: 'GET',
       url: new URL('http://localhost/some/route/path') ,
       data: { foo: 'bar' }
     });
     const res = new Response();
-    await server.call('foo', req, res);
+    await server.resolve('foo', req, res);
     expect(res.body).to.equal('- bar');
-    const response1 = await server.call<string>('foo', { foo: 'baz' });
+    const response1 = await server.resolve<string>('foo', { foo: 'baz' });
     expect(response1.results).to.equal('- baz');
-    const response2 = await server.call<string>('foo');
+    const response2 = await server.resolve<string>('foo');
     expect(response2.results).to.equal('- undefined');
   });
 
@@ -215,10 +215,10 @@ describe('Server Tests', () => {
       res.setBody('text/plain', 'DELETE');
     });
 
-    const getRes = await server.routeTo('GET', '/test');
-    const postRes = await server.routeTo('POST', '/test');
-    const putRes = await server.routeTo('PUT', '/test');
-    const deleteRes = await server.routeTo('DELETE', '/test');
+    const getRes = await server.resolve('GET', '/test');
+    const postRes = await server.resolve('POST', '/test');
+    const putRes = await server.resolve('PUT', '/test');
+    const deleteRes = await server.resolve('DELETE', '/test');
 
     expect(getRes.results).to.equal('GET');
     expect(postRes.results).to.equal('POST');

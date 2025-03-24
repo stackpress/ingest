@@ -1,6 +1,6 @@
-import { ServerRouter } from '@stackpress/ingest';
+import { server } from '@stackpress/ingest';
 
-const router = new ServerRouter();
+const router = server();
 
 let id = 0;
 

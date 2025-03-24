@@ -1,8 +1,8 @@
-import { ServerRequest, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
-export default function NotFound(req: ServerRequest, res: Response) {
+export default action(function NotFound(req, res) {
   if (!res.code && !res.status && !res.sent) {
     //send the response
     res.setHTML('Not Found');
   }
-};
+});

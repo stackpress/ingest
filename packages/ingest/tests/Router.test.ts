@@ -2,12 +2,9 @@ import { describe, it } from 'mocha';
 import { expect } from 'chai';
 
 import type { Method } from '@stackpress/lib/types';
-import path from 'path';
-import type { RouterImport } from '../src/types';
 import Router from '../src/Router';
 import Request from '../src/Request';
 import Response from '../src/Response';
-import ViewRouter from '../src/router/ViewRouter';
 
 type method = 'all' 
   | 'connect' | 'delete'  | 'get' 
@@ -73,55 +70,10 @@ describe('Router Tests', () => {
     expect(res.body).to.equal('/some/route/path');
   })
 
-  it('Should basic entry route', async () => {
-    const router = new Router();
-    expect(router).to.be.instanceOf(Router);
-    router.entries.get(
-      '/some/route/path', 
-      path.join(__dirname, 'fixtures/get')
-    );
-
-    const req = new Request({ 
-      method: 'GET',
-      url: new URL('http://localhost/some/route/path') 
-    });
-    const res = new Response();
-    await router.emit('GET /some/route/path', req, res);
-    expect(res.body).to.equal('/some/route/path');
-  })
-
-  it('Should route entry methods', async () => {
-    const router = new Router();
-
-    let tests = 0;
-    for (const method of methods) {
-      const entries = router.entries;
-      const route = entries[method].bind(entries) as (
-        path: string, 
-        action: string, 
-        priority?: number
-      ) => Router<unknown, unknown, unknown>; 
-      route(
-        '/some/route/path', 
-        path.join(__dirname, 'fixtures/any')
-      );
-      const METHOD = method.toUpperCase() as Method;
-      const req = new Request({ 
-        method: METHOD,
-        url: new URL('http://localhost/some/route/path') 
-      });
-      const res = new Response();
-      await router.emit(`${METHOD} /some/route/path`, req, res);
-      expect(res.body).to.equal(`${METHOD} /some/route/path`);
-      tests++;
-    }
-    expect(tests).to.equal(methods.length);
-  })
-
   it('Should basic import route', async () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
-    router.imports.get(
+    router.get(
       '/some/route/path', 
       () => import('./fixtures/get')
     );
@@ -133,51 +85,6 @@ describe('Router Tests', () => {
     const res = new Response();
     await router.emit('GET /some/route/path', req, res);
     expect(res.body).to.equal('/some/route/path');
-  })
-
-  it('Should route import methods', async () => {
-    const router = new Router();
-
-    let tests = 0;
-    for (const method of methods) {
-      const imports = router.imports;
-      const route = imports[method].bind(imports) as (
-        path: string, 
-        action: RouterImport, 
-        priority?: number
-      ) => Router<unknown, unknown, unknown>; 
-      route(
-        '/some/route/path', 
-        () => import('./fixtures/any')
-      );
-      const METHOD = method.toUpperCase() as Method;
-      const req = new Request({ 
-        method: METHOD,
-        url: new URL('http://localhost/some/route/path') 
-      });
-      const res = new Response();
-      await router.emit(`${METHOD} /some/route/path`, req, res);
-      expect(res.body).to.equal(`${METHOD} /some/route/path`);
-      tests++;
-    }
-    expect(tests).to.equal(methods.length);
-  })
-
-  it('Should route entry ALL', async () => {
-    const router = new Router();
-    expect(router).to.be.instanceOf(Router);
-    router.entries.all(
-      '/some/route/path', 
-      path.join(__dirname, 'fixtures/any')
-    );
-
-    const req = new Request({ 
-      method: 'POST',
-      url: new URL('http://localhost/some/route/path') 
-    });
-    const res = new Response();
-    await router.emit('POST /some/route/path', req, res);
-    expect(res.body).to.equal(`POST /some/route/path`);
   })
 
   it('Should handle route parameters correctly', async () => {

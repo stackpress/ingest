@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { ServerRouter } from '@stackpress/ingest';
+import fs from 'node:fs';
+import path from 'node:path';
+import { server } from '@stackpress/ingest';
 
 const template = `
 <!DOCTYPE html>
@@ -23,7 +23,7 @@ const template = `
 </html>
 `;
 
-const router = new ServerRouter();
+const router = server();
 
 /**
  * Redirect test

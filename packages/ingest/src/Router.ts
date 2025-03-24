@@ -1,52 +1,82 @@
 //stackpress
-import type { Method } from '@stackpress/lib/types';
-import EventRouter from '@stackpress/lib/EventRouter';
-//common
 import type { 
-  RouterAction,
-  RouterActions,
-  RouterEmitter,
-  RouterImport,
-  RouterQueueArgs
+  Method,
+  RequestOptions,
+  ResponseOptions,
+  StatusResponse
+} from '@stackpress/lib/types';
+import { isObject } from '@stackpress/lib/Nest';
+//router
+import type EntryRouter from './router/EntryRouter';
+import type ImportRouter from './router/ImportRouter';
+import type ViewRouter from './router/ViewRouter';
+import ActionRouter from './router/ActionRouter';
+//local
+import type { 
+  AnyRouterAction, 
+  ActionRouterAction, 
+  ImportRouterAction 
 } from './types';
 import Request from './Request';
 import Response from './Response';
-import { routeParams } from './helpers';
-//local
-import ViewRouter from './router/ViewRouter';
-import EntryRouter from './router/EntryRouter';
-import ImportRouter from './router/ImportRouter';
-
-/**
- * Generic router class
- * 
- * - all major http methods
- * - generic request<R> and response<S> wrappers
- * - adds route params to request data
- */
 export default class Router<
   //request resource
   R = unknown, 
   //response resource
-  S = unknown, 
-  //context (usually the server)
-  X = unknown
-> 
-  extends EventRouter<Request<R, X>, Response<S>>
-{
-  //Router extensions
-  public readonly view: ViewRouter<R, S, X>;
-  public readonly entries: EntryRouter<R, S, X>;
-  public readonly imports: ImportRouter<R, S, X>;
+  S = unknown
+> {
+  //action router main
+  public readonly action: ActionRouter<R, S, this>;
+  //entry router extension
+  public readonly entry: EntryRouter<R, S, this>;
+  //import router extension
+  public readonly import: ImportRouter<R, S, this>;
+  //view router extension
+  public readonly view: ViewRouter<R, S, this>;
 
   /**
-   * Determine whether to use require cache
+   * Returns the router entry map
    */
-  constructor() {
-    super();
-    this.view = new ViewRouter<R, S, X>(this);
-    this.entries = new EntryRouter<R, S, X>(this);
-    this.imports = new ImportRouter<R, S, X>(this);
+  public get entries() {
+    return this.entry.entries;
+  }
+
+  /**
+   * Returns the router import map
+   */
+  public get imports() {
+    return this.import.imports;
+  }
+
+  /**
+   * Returns the event listener map
+   */
+  public get listeners(): typeof this.action.listeners {
+    return this.action.listeners;
+  }
+
+  /**
+   * Returns the router route map
+   */
+  public get routes() {
+    return this.action.routes;
+  }
+
+  /**
+   * Returns the router view map
+   */
+  public get views() {
+    return this.view.views;
+  }
+
+  /**
+   * Sets the main router and its extensions
+   */
+  public constructor() {
+    this.action = new ActionRouter<R, S, this>(this);
+    this.entry = this.action.entry;
+    this.import = this.action.import;
+    this.view = this.action.view;
   }
 
   /**
@@ -54,10 +84,10 @@ export default class Router<
    */
   public all(
     path: string, 
-    action: RouterActions<R, S, X>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
-    return this.route('[A-Z]+', path, action, priority);
+    return this.route('ALL', path, action, priority);
   }
 
   /**
@@ -65,7 +95,7 @@ export default class Router<
    */
   public connect(
     path: string, 
-    action: RouterActions<R, S, X>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('CONNECT', path, action, priority);
@@ -76,10 +106,17 @@ export default class Router<
    */
   public delete(
     path: string, 
-    action: RouterActions<R, S, X>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('DELETE', path, action, priority);
+  }
+
+  /**
+   * Calls all the callbacks of the given event passing the given arguments
+   */
+  public async emit(event: string, req: Request<R>, res: Response<S>) {
+    return this.action.emit(event, req, res);
   }
 
   /**
@@ -87,7 +124,7 @@ export default class Router<
    */
   public get(
     path: string, 
-    action: RouterActions<R, S, X>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('GET', path, action, priority);
@@ -98,18 +135,59 @@ export default class Router<
    */
   public head(
     path: string, 
-    action: RouterActions<R, S, X>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('HEAD', path, action, priority);
   }
-
+  
+  /**
+   * Adds a callback to the given event listener
+   */
+  public on(
+    event: string|RegExp, 
+    action: AnyRouterAction<R, S, this>,
+    priority = 0
+  ) {
+    //delegate to appropriate router based on action type
+    //if action is a string, it is a view router action
+    if (typeof action === 'string') {
+      //view router for string paths
+      this.view.on(
+        event, 
+        action as string, 
+        priority
+      );
+    //if action is a function with no 
+    //parameter, it is an entry router action
+    } else if (typeof action === 'function' 
+      && action.length === 0
+      && !action
+    ) {
+      //import router for parameterless functions
+      this.import.on(
+        event, 
+        action as ImportRouterAction<R, S, this>,
+        priority
+      );
+    //if action is a function with more than 0 
+    //parameters, it is an action router action 
+    } else {
+      this.action.on(
+        event, 
+        action as ActionRouterAction<R, S, this>,
+        priority
+      );
+    }
+    return this;
+  }
+  
   /**
    * Route for OPTIONS method
    */
   public options(
     path: string, 
-    action: RouterActions<R, S, X>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('OPTIONS', path, action, priority);
@@ -120,7 +198,7 @@ export default class Router<
    */
   public patch(
     path: string, 
-    action: RouterActions<R, S, X>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('PATCH', path, action, priority);
@@ -131,7 +209,7 @@ export default class Router<
    */
   public post(
     path: string, 
-    action: RouterActions<R, S, X>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('POST', path, action, priority);
@@ -142,178 +220,176 @@ export default class Router<
    */
   public put(
     path: string, 
-    action: RouterActions<R, S, X>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('PUT', path, action, priority);
   }
+  
+  /**
+   * Creates a new request
+   */
+  public request(init: Partial<RequestOptions<R>> = {}) {
+    return new Request<R>(init);
+  }
 
   /**
-   * Route for TRACE method
+   * Emits an event and returns the response
    */
-  public trace(
+  public async resolve<T = unknown>(
+    event: string, 
+    request?: Request<R> | Record<string, any>, 
+    response?: Response<S>
+  ): Promise<Partial<StatusResponse<T>>>;
+  
+  /**
+   * Routes to another route and returns the response
+   */
+  public async resolve<T = unknown>(
+    method: Method | '*', 
     path: string, 
-    action: RouterActions<R, S, X>, 
-    priority?: number
+    request?: Request<R> | Record<string, any>, 
+    response?: Response<S>
+  ): Promise<Partial<StatusResponse<T>>>;
+  
+  /**
+   * Emits an event and returns the response, or
+   * Routes to another route and returns the response
+   */
+  public async resolve<T = unknown>(
+    methodPath: string, 
+    pathRequest?: string | Request<R> | Record<string, any>, 
+    requestResponse?: Request<R> | Record<string, any> | Response<S>, 
+    response?: Response<S>
   ) {
-    return this.route('TRACE', path, action, priority);
+    //if 2nd argument is a string
+    if (typeof pathRequest === 'string') {
+      //then this is route related
+      return this._resolveRoute<T>(
+        methodPath, 
+        pathRequest, 
+        requestResponse, 
+        response
+      );
+    }
+    //otherwise this is event related
+    return this._resolveEvent<T>(
+      methodPath, 
+      pathRequest, 
+      requestResponse as Response<S>
+    );
+  }
+
+  /**
+   * Creates a new response
+   */
+  public response(init: Partial<ResponseOptions<S>> = {}) {
+    return new Response<S>(init);
   }
 
   /**
    * Returns a route
    */
   public route(
-    method: Method|'[A-Z]+', 
+    method: Method, 
     path: string, 
-    action: RouterActions<R, S, X>, 
-    priority?: number
+    action: AnyRouterAction<R, S, this>, 
+    priority = 0
   ) {
-    //convert path to a regex pattern
-    const pattern = path
-      //replace the :variable-_name01
-      .replace(/(\:[a-zA-Z0-9\-_]+)/g, '*')
-      //replace the stars
-      //* -> ([^/]+)
-      .replaceAll('*', '([^/]+)')
-      //** -> ([^/]+)([^/]+) -> (.*)
-      .replaceAll('([^/]+)([^/]+)', '(.*)');
-    
-    //now form the event pattern
-    const event = new RegExp(`^${method}\\s${pattern}/*$`, 'ig');
-    this.routes.set(event.toString(), {
-      method: method === '[A-Z]+' ? 'ALL' : method,
-      path: path
-    });
-  
     //delegate to appropriate router based on action type
+    //if action is a string, it is a view router action
     if (typeof action === 'string') {
       //view router for string paths
-      this.view.on(event, action, priority);
-    } else if (typeof action === 'function' && action.length === 0) {
+      this.view.route(
+        method,
+        path, 
+        action as string, 
+        priority
+      );
+    //if action is a function with no 
+    //parameter, it is an entry router action
+    } else if (typeof action === 'function' 
+      && action.length === 0
+      && !action
+    ) {
       //import router for parameterless functions
-      this.imports.on(event, action as RouterImport, priority);
+      this.import.route(
+        method,
+        path, 
+        action as ImportRouterAction<R, S, this>,
+        priority
+      );
+    //if action is a function with more than 0 
+    //parameters, it is an action router action 
     } else {
-      //default router for request/response handlers
-      this.on(event, action as RouterAction<R, S, X>, priority);
-    }
-
-    return this;
-  }
-
-  /**
-   * Returns a task queue for given the event
-   */
-  public tasks(event: string) {
-    const matches = this.match(event);
-    const queue = this.makeQueue<RouterQueueArgs<R, S, X>>();
-    for (const [ event, match ] of matches) {
-      const tasks = this._listeners[event];
-      //if no direct observers
-      if (typeof tasks === 'undefined') {
-        continue;
-      }
-      //check to see if this is a route
-      const route = this.routes.get(event);
-      //then loop the observers
-      tasks.forEach(task => {
-        queue.add(async (req, res) => {
-          //set the current
-          this._event = { 
-            ...match, 
-            ...task, 
-            args: [ req, res ], 
-            action: task.item 
-          };
-          //ADDING THIS CONDITIONAL
-          //if the route is found
-          if (route) {
-            //extract the params from the route
-            const context = routeParams(route.path, req.url.pathname);
-            //set the event keys
-            this._event.data.params = context.params;
-            //add the params to the request data
-            req.data.set(context.params);
-            //are there any args?
-            if (context.args.length) {
-              //update the event parameters
-              this._event.data.args = context.args;
-              //also add the args to the request data
-              req.data.set(context.args);
-            }
-          }
-          //before hook
-          if (typeof this._before === 'function' 
-            && await this._before(this._event) === false
-          ) {
-            return false;
-          }
-          //if the method returns false
-          if (await task.item(req, res) === false) {
-            return false;
-          }
-          //after hook
-          if (typeof this._after === 'function' 
-            && await this._after(this._event) === false
-          ) {
-            return false;
-          }
-        }, task.priority);
-      });
-    }
-
-    return queue;
-  }
-
-  /**
-   * Allows events from other emitters to apply here
-   */
-  public use(emitter: RouterEmitter<R, S, X>) {
-    //check if the emitter is a router
-    const actionRouter = emitter instanceof Router;
-    const eventRouter = emitter instanceof EventRouter;
-    //first concat their regexp with this one
-    emitter.regexp.forEach(pattern => this.regexp.add(pattern));
-    //next this listen to what they were listening to
-    //event listeners = event -> Set
-    //loop through the listeners of the emitter
-    for (const event in emitter.listeners) {
-      //get the observers
-      const tasks = emitter.listeners[event];
-      //if no direct observers (shouldn't happen)
-      if (typeof tasks === 'undefined') {
-        //skip
-        continue;
-      }
-      //if the emitter is a router
-      if (eventRouter) {
-        //get the route from the source emitter
-        const route = emitter.routes.get(event);
-        //set the route
-        if (typeof route !== 'undefined') {
-          this.routes.set(event, route);
-        }
-        if (actionRouter) {
-          //get the entries from the source emitter
-          const entries = emitter.entries.entries.get(event);
-          //if there are entries
-          if (typeof entries !== 'undefined') {
-            //if the entries do not exist, create them
-            if (!emitter.entries.entries.has(event)) {
-              emitter.entries.entries.set(event, new Set());
-            }
-            //add the entries
-            for (const entry of entries) {
-              emitter.entries.entries.get(event)?.add(entry);
-            }
-          }
-        }
-      }
-      //then loop the tasks
-      for (const { item, priority } of tasks) {
-        //listen to each task one by one
-        this.on(event, item, priority);
-      }
+      this.action.route(
+        method,
+        path, 
+        action as ActionRouterAction<R, S, this>,
+        priority
+      );
     }
     return this;
   }
-};
+  
+  /**
+   * Route for TRACE method
+   */
+  public trace(
+    path: string, 
+    action: AnyRouterAction<R, S, this>, 
+    priority?: number
+  ) {
+    return this.route('TRACE', path, action, priority);
+  }
+
+  /**
+   * Allows routes from other routers to apply here
+   */
+  public use<T extends Router<R, S>>(router: T) {
+    //Patch: Router<R, S> is assignable to the constraint of type  
+    //this, but this could be instantiated with a different subtype  
+    //of constraint Router<R, S>
+    const thisRouter = router as unknown as this;
+    this.action.use(thisRouter.action);
+    this.entry.use(thisRouter.entry);
+    this.import.use(thisRouter.import);
+    this.view.use(thisRouter.view);
+    return this;
+  }
+  
+  /**
+   * Emits an event and returns the response
+   * (helper for resolve)
+   */
+  protected async _resolveEvent<T = unknown>(
+    event: string, 
+    request?: Request<R> | Record<string, any>, 
+    response?: Response<S>
+  ) {
+    if (!request) {
+      request = this.request();
+    } else if (isObject(request)) {
+      const data = request as Record<string, any>;
+      request = this.request({ data });
+    }
+    const req = request as Request<R>;
+    const res = response || this.response();
+    await this.emit(event, req, res);  
+    return res.toStatusResponse<T>();
+  }
+
+  /**
+   * Routes to another route and returns the response
+   * (helper for resolve)
+   */
+  protected async _resolveRoute<T = unknown>(
+    method: string, 
+    path: string, 
+    request?: Request<R>|Record<string, any>,
+    response?: Response<S>
+  ) {
+    const event = `${method.toUpperCase()} ${path}`;
+    return await this._resolveEvent<T>(event, request, response);  
+  }
+}

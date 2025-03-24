@@ -3,6 +3,11 @@ import { Readable } from 'node:stream';
 import * as cookie from 'cookie';
 //stackpress
 import type { Method, UnknownNest } from '@stackpress/lib/types';
+import { 
+  isObject, 
+  objectFromQuery, 
+  formDataToObject 
+} from '@stackpress/lib/Nest';
 //common
 import type { 
   Body,
@@ -16,11 +21,6 @@ import type {
 import Route from '../Route';
 import Request from '../Request';
 import Response from '../Response';
-import { 
-  isHash,
-  objectFromQuery,
-  formDataToObject
-} from '../helpers';
 //local
 import { 
   WhatwgResponse,
@@ -66,7 +66,12 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
     //load the body
     await req.load();
     //hook the plugins
-    await Route.emit<C, NodeRequest, NodeOptResponse>(event, req, res);
+    await Route.emit<C, NodeRequest, NodeOptResponse>(
+      event, 
+      req, 
+      res, 
+      this._context
+    );
     //if the response was not sent by now,
     if (!res.sent) {
       //send the response
@@ -79,8 +84,6 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
    * Sets up the request
    */
   public request() {
-    //set context
-    const context = this._context;
     //set resource
     const resource = this._request;
     //set method
@@ -103,8 +106,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
     //set query
     const query = objectFromQuery(url.searchParams.toString());
     //setup the payload
-    const request = new Request<NodeRequest, WhatwgServer<C>>({
-      context,
+    const request = new Request<NodeRequest>({
       resource,
       headers,
       method,
@@ -113,7 +115,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
       session,
       url
     });
-    request.loader = loader<C>(this._request);
+    request.loader = loader(this._request);
     return request;
   }
 
@@ -132,10 +134,10 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
 /**
  * Request body loader
  */
-export function loader<C extends UnknownNest = UnknownNest>(
+export function loader(
   resource: NodeRequest
 ) {
-  return async (req: Request<NodeRequest, WhatwgServer<C>>) => {
+  return async (req: Request<NodeRequest>) => {
     //if the body is cached
     if (req.body !== null) {
       return undefined;
@@ -172,7 +174,7 @@ export function dispatcher(options: CookieOptions = { path: '/' }) {
     } else if (res.body instanceof Readable) {
       body = readableToReadableStream(res.body);
     //if body is an object or array
-    } else if (isHash(res.body) || Array.isArray(res.body)) {
+    } else if (isObject(res.body) || Array.isArray(res.body)) {
       res.mimetype = 'application/json';
       body = JSON.stringify({
         code: res.code,

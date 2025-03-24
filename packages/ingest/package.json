@@ -99,10 +99,6 @@
       "require": "./cjs/Server.js",
       "import": "./esm/Server.js"
     },
-    "./Session": {
-      "require": "./cjs/Session.js",
-      "import": "./esm/Session.js"
-    },
     "./EntryRouter": {
       "require": "./cjs/router/EntryRouter.js",
       "import": "./esm/router/EntryRouter.js"
@@ -110,10 +106,6 @@
     "./ImportRouter": {
       "require": "./cjs/router/ImportRouter.js",
       "import": "./esm/router/ImportRouter.js"
-    },
-    "./ServerRouter": {
-      "require": "./cjs/router/ServerRouter.js",
-      "import": "./esm/router/ServerRouter.js"
     },
     "./ViewRouter": {
       "require": "./cjs/router/ViewRouter.js",
@@ -133,7 +125,6 @@
       "whatwg/Adapter": [ "./cjs/whatwg/Adapter.d.ts" ],
       "EntryRouter": [ "./cjs/router/EntryRouter.d.ts" ],
       "ImportRouter": [ "./cjs/router/ImportRouter.d.ts" ],
-      "ServerRouter": [ "./cjs/router/ServerRouter.d.ts" ],
       "ViewRouter": [ "./cjs/router/ViewRouter.d.ts" ],
       "Exception": [ "./cjs/Exception.d.ts" ],
       "Loader": [ "./cjs/Loader.d.ts" ],
@@ -141,8 +132,7 @@
       "Response": [ "./cjs/Response.d.ts" ],
       "Route": [ "./cjs/Route.d.ts" ],
       "Router": [ "./cjs/Router.d.ts" ],
-      "Server": [ "./cjs/Server.d.ts" ],
-      "Session": [ "./cjs/Session.d.ts" ]
+      "Server": [ "./cjs/Server.d.ts" ]
     }
   },
   "files": [
@@ -159,7 +149,7 @@
     "build:tsc": "yarn build:tsc:cjs && yarn build:tsc:esm",
     "build:tsc:cjs": "tsc -p ./tsconfig.cjs.json",
     "build:tsc:esm": "tsc -p ./tsconfig.esm.json",
-    "test": "ts-mocha -p ./tsconfig.cjs.json tests/*.test.ts"
+    "test": "ts-mocha -r tsx tests/*.test.ts"
   },
   "dependencies": {
     "@stackpress/lib": "0.4.10",
@@ -174,6 +164,7 @@
     "mocha": "10.8.2",
     "ts-mocha": "10.0.0",
     "ts-node": "10.9.2",
+    "tsx": "4.19.3",
     "typescript": "5.7.2"
   }
 }

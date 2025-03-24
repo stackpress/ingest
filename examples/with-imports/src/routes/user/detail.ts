@@ -1,6 +1,6 @@
-import { ServerRequest, Response } from '@stackpress/ingest';
+import { Request, Response } from '@stackpress/ingest';
 
-export default function UserDetail(req: ServerRequest, res: Response) {
+export default function UserDetail(req: Request, res: Response) {
   //get params
   const id = parseInt(req.data('id') || '');
   if (!id) {

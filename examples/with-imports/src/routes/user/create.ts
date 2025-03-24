@@ -1,8 +1,8 @@
-import { ServerRequest, Response } from '@stackpress/ingest';
+import { Request, Response } from '@stackpress/ingest';
 
 let id = 0;
 
-export default function UserCreate(req: ServerRequest, res: Response) {
+export default function UserCreate(req: Request, res: Response) {
   //get form body
   const form = req.data();
   //maybe insert into database?

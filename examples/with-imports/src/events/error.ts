@@ -1,6 +1,6 @@
-import { ServerRequest, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
-export default function Error(req: ServerRequest, res: Response) {
+export default action(function Error(req, res) {
   const html = [ `<h1>${res.error}</h1>` ];
   const stack = res.stack?.map((log, i) => {
     const { line, char } = log;
@@ -11,4 +11,4 @@ export default function Error(req: ServerRequest, res: Response) {
   html.push(`<pre>${stack.join('<br><br>')}</pre>`);
 
   res.setHTML(html.join('<br>'));
-}
+})

@@ -1,6 +1,6 @@
-import { ServerRequest, Response } from '@stackpress/ingest';
+import { Request, Response } from '@stackpress/ingest';
 
-export default async function SSE(req: ServerRequest, res: Response) {
+export default async function SSE(req: Request, res: Response) {
   res.headers
     .set('Cache-Control', 'no-cache')
     .set('Content-Encoding', 'none')

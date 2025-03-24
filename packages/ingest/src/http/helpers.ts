@@ -1,9 +1,11 @@
 //node
 import type { TLSSocket } from 'node:tls';
 import { Readable } from 'node:stream';
+//stackpress
+import { objectFromQuery } from '@stackpress/lib/Nest';
+import { withUnknownHost } from '@stackpress/lib/Request';
 //common
 import type { IM } from '../types';
-import { objectFromQuery, withUnknownHost } from '../helpers';
 
 /**
  * Parsed query object

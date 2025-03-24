@@ -1,6 +1,6 @@
-import { ServerRequest, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
-export default function UserSearch(req: ServerRequest, res: Response) {
+export default action(function UserSearch(req, res) {
   //get filters
   //const filters = req.query.get<Record<string, unknown>>('filter');
   //maybe get from database?
@@ -20,4 +20,4 @@ export default function UserSearch(req: ServerRequest, res: Response) {
   ];
   //send the response
   res.setRows(results, 100);
-};
+});

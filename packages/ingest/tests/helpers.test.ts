@@ -1,14 +1,5 @@
 import { expect } from 'chai';
-import { 
-  isHash, 
-  formDataToObject, 
-  objectFromQuery, 
-  objectFromFormData, 
-  objectFromJson,
-  eventParams,
-  routeParams,
-  withUnknownHost
-} from '../src/helpers';
+import { formDataToObject } from '../src/helpers';
 import { readableStreamToReadable, imToURL, imQueryToObject } 
 from '../src/http/helpers';
 import { readableToReadableStream, reqToURL, reqQueryToObject } 
@@ -24,36 +15,6 @@ import type { IM } from '../src/types';
  */
 
 describe('helpers', () => {
-  /**
-   * Tests for isHash function
-   * Verifies object type checking functionality
-   */
-
-  describe('isHash', () => {
-    /**
-     * Tests that isHash correctly identifies plain objects
-     * Verifies both empty objects and objects with properties
-     */
-
-    it('should return true for plain objects', () => {
-      expect(isHash({})).to.be.true;
-      expect(isHash({ foo: 'bar' })).to.be.true;
-    });
-
-    /**
-     * Tests that isHash correctly rejects non-object values
-     * Checks various primitive types and special values
-     */
-
-    it('should return false for non-objects', () => {
-      expect(isHash(null)).to.be.false;
-      expect(isHash(undefined)).to.be.false;
-      expect(isHash('string')).to.be.false;
-      expect(isHash(123)).to.be.false;
-      expect(isHash([])).to.be.false;
-      expect(isHash(new Date())).to.be.false;
-    });
-  });
 
    /**
    * Tests for formDataToObject function
@@ -88,118 +49,6 @@ describe('helpers', () => {
     it('should return empty object for unknown content type', () => {
       expect(formDataToObject
       ('text/plain', 'some data')).to.deep.equal({});
-    });
-  });
-
-  /**
-   * Tests for objectFromQuery function
-   * Ensures proper parsing of URL query strings to objects
-   */
-
-  describe('objectFromQuery', () => {
-    it('should parse query string with leading ?', () => {
-      const result = objectFromQuery('?foo=bar&baz=qux');
-      expect(result).to.deep.equal({ foo: 'bar', baz: 'qux' });
-    });
-
-    it('should parse query string without leading ?', () => {
-      const result = objectFromQuery('foo=bar&baz=qux');
-      expect(result).to.deep.equal({ foo: 'bar', baz: 'qux' });
-    });
-
-    it('should return empty object for empty query', () => {
-      expect(objectFromQuery('')).to.deep.equal({});
-    });
-  });
-
-   /**
-   * Tests for objectFromFormData function
-   * Verifies form data string parsing to objects
-   */
-
-  describe('objectFromFormData', () => {
-    it('should parse form data string', () => {
-      const formData = 
-     '--boundary\r\nContent-Disposition: form-data; name="field1"\r\n\r\nvalue1\r\n--boundary--';
-      const result = objectFromFormData(formData);
-      expect(result).to.deep.equal({ field1: 'value1' });
-    });
-
-    it('should return empty object for empty data', () => {
-      expect(objectFromFormData('')).to.deep.equal({});
-    });
-  });
-
- /**
-   * Tests for objectFromJson function
-   * Validates JSON string parsing to objects
-   */
-  describe('objectFromJson', () => {
-    it('should parse valid JSON object', () => {
-      const result = objectFromJson('{"name":"test","value":123}');
-      expect(result).to.deep.equal({ name: 'test', value: 123 });
-    });
-
-    it('should return empty object for invalid JSON', () => {
-      expect(objectFromJson('invalid')).to.deep.equal({});
-    });
-  });
-
-  /**
-   * Tests for eventParams function
-   * Checks URL parameter extraction using regex patterns
-   */
-
-  describe('eventParams', () => {
-    it('should extract parameters from URL with non-global regex', () => {
-      const result = eventParams('/user/(\\d+)/', 'user/123');
-      expect(result).to.deep.equal(['123']);
-    });
-
-    it('should extract parameters from URL with global regex', () => {
-      const result = eventParams('/user/(\\d+)/g', 'user/123');
-      expect(result).to.deep.equal(['123']);
-    });
-
-    it('should return undefined for non-matching URL', () => {
-      const result = eventParams('/user/(\\d+)/', 'user/abc');
-      expect(result).to.be.undefined;
-    });
-  });
-
-  /**
-   * Tests for routeParams function
-   * Validates route parameter extraction from URL paths
-   */
-
-  describe('routeParams', () => {
-    it('should extract named parameters from route', () => {
-      const result = routeParams
-      ('/users/:id/posts/:postId', '/users/123/posts/456');
-      expect(result.params).to.deep.equal({ id: '123', postId: '456' });
-    });
-
-    it('should return object with empty params for non-matching route',
-     () => {
-      const result = routeParams('/users/:id', '/posts/123');
-      expect(result.params).to.deep.equal({});
-    });
-  });
-
-    /**
-   * Tests for withUnknownHost function
-   * Ensures proper handling of URLs with missing or invalid hosts
-   */
-  describe('withUnknownHost', () => {
-    it('should add unknown host to URL without protocol', () => {
-      const result = withUnknownHost('example.com/path');
-      expect(result).to.equal('http://unknownhost/example.com/path');
-    });
-
-    it('should add unknown host to URL with protocol', () => {
-      const result = withUnknownHost('https://example.com/path');
-      expect(result).to.equal
-      ('http://unknownhost/https://example.com/path');
     });
   });
 

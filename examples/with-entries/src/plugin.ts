@@ -7,25 +7,25 @@ import { config } from './config';
 export default function plugin(server: HttpServer<Config>) {
   server.config.set(config);
 
-  server.entries.get('/', path.join(__dirname, 'routes/home'));
-  server.entries.get('/login', path.join(__dirname, 'routes/login'));
+  server.entry.get('/', path.join(__dirname, 'routes/home'));
+  server.entry.get('/login', path.join(__dirname, 'routes/login'));
 
-  server.entries.get('/user', path.join(__dirname, 'routes/user/search'));
-  server.entries.post('/user', path.join(__dirname, 'routes/user/create'));
-  server.entries.get('/user/:id', path.join(__dirname, 'routes/user/detail'));
-  server.entries.put('/user/:id', path.join(__dirname, 'routes/user/update'));
-  server.entries.delete('/user/:id', path.join(__dirname, 'routes/user/remove'));
+  server.entry.get('/user', path.join(__dirname, 'routes/user/search'));
+  server.entry.post('/user', path.join(__dirname, 'routes/user/create'));
+  server.entry.get('/user/:id', path.join(__dirname, 'routes/user/detail'));
+  server.entry.put('/user/:id', path.join(__dirname, 'routes/user/update'));
+  server.entry.delete('/user/:id', path.join(__dirname, 'routes/user/remove'));
 
-  server.entries.get('/redirect', path.join(__dirname, 'routes/redirect'));
-  server.entries.get('/icon.png', path.join(__dirname, 'routes/icon'));
-  server.entries.get('/stream', path.join(__dirname, 'routes/stream'));
-  server.entries.get('/__sse__', path.join(__dirname, 'routes/sse'));
+  server.entry.get('/redirect', path.join(__dirname, 'routes/redirect'));
+  server.entry.get('/icon.png', path.join(__dirname, 'routes/icon'));
+  server.entry.get('/stream', path.join(__dirname, 'routes/stream'));
+  server.entry.get('/__sse__', path.join(__dirname, 'routes/sse'));
 
-  server.entries.get('/error', path.join(__dirname, 'routes/error'));
-  server.entries.get('/catch', path.join(__dirname, 'routes/catch'));
-  server.entries.get('/**', path.join(__dirname, 'routes/404'));
+  server.entry.get('/error', path.join(__dirname, 'routes/error'));
+  server.entry.get('/catch', path.join(__dirname, 'routes/catch'));
+  server.entry.get('/**', path.join(__dirname, 'routes/404'));
 
-  server.entries.on('error', path.join(__dirname, 'events/error'));
+  server.entry.on('error', path.join(__dirname, 'events/error'));
 
   server.register('project', { welcome: 'Hello, World!!' });
   server.on('request', (req, res) => {

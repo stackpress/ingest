@@ -1,6 +1,6 @@
-import { ServerRequest, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 import Error from '../error';
 
-export default function ErrorResponse(req: ServerRequest, res: Response) {
+export default action(function ErrorResponse(req, res) {
   Error('Not implemented');
-};
+});
