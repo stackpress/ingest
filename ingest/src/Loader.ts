@@ -107,9 +107,17 @@ export class PluginLoader extends ConfigLoader {
       for (let pathname of plugins) {
         const plugin = await this.load(pathname);
         if (Array.isArray(plugin)) {
-          const absolute = await this.resolve(pathname);
+          const absolute = await this.resolve(
+            pathname, 
+            this.cwd, 
+            //will throw if not string
+            true
+          ) as string;
+          const stats = await this.fs.stat(absolute);
           //get the folder name of the plugin pathname
-          const cwd = path.dirname(absolute || pathname);
+          const cwd = stats.isFile() 
+            ? path.dirname(absolute) 
+            : absolute;
           //make a new plugin
           //cwd, this._modules, plugin
           const child = new PluginLoader({ 
@@ -120,20 +128,21 @@ export class PluginLoader extends ConfigLoader {
           });
           //bootstrap
           await child.bootstrap(loader);
-        } else {
-          if (!this._modules) {
-            this._modules = await this.lib();
-          }
-          //try consuming it
-          const filename = pathname.startsWith(this._modules) 
-            ? pathname.substring(this._modules.length + 1) 
-            : pathname.startsWith(this.cwd) 
-            ? pathname.substring(this.cwd.length + 1)
-            : pathname;
-          const extname = path.extname(filename);
-          const name = filename.substring(0, filename.length - extname.length);
-          await loader(name, plugin);
+          continue;
         }
+        if (!this._modules) {
+          this._modules = await this.lib();
+        }
+        //try consuming it
+        const filename = pathname.startsWith(this._modules) 
+          ? pathname.substring(this._modules.length + 1) 
+          : pathname.startsWith(this.cwd) 
+          ? pathname.substring(this.cwd.length + 1)
+          : pathname;
+        const extname = path.extname(filename);
+        const basepath = filename.length - extname.length;
+        const name = filename.substring(0, basepath);
+        await loader(name, plugin);
       }
     }
     //set bootstrapped
