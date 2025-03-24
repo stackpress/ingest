@@ -1778,10 +1778,10 @@
     "@smithy/types" "^4.1.0"
     tslib "^2.6.2"
 
-"@stackpress/lib@0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.5.2.tgz#b1a33f04f61aafe78309d7424b262ed4e4f433c4"
-  integrity sha512-h3tYpnbonaxTy/lDK81YfnH8wMsr2rw6l4bXFf2h+FET9bnrw8YWmrQCBrTl0GuuTa4BruuvwQF/n+Is2ZFhtw==
+"@stackpress/lib@0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.5.4.tgz#2aa72ddf59007d9ee1d47341479b60dafae1b460"
+  integrity sha512-rXKr9MGCJ6Ym0H9Z4SeoY9jEkiOFEjK8J/8hsZOkvPK1eLqkBHPlKq8CRuBC+auCULb2PIr59fOKRvnO2dhdIg==
   dependencies:
     "@inquirer/prompts" "7.1.0"
     cookie "1.0.2"
