@@ -13,7 +13,7 @@ import type {
   FileSystem
 } from '@stackpress/lib/types';
 //local
-import type ActionRouter from './router/ActionRouter';
+import type ActionRouter from './plugin/ActionRouter';
 import type Request from './Request';
 import type Response from './Response';
 import type Router from './Router';

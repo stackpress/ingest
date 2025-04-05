@@ -9,10 +9,10 @@ import {
 import Status from '@stackpress/lib/Status';
 //router
 import Router from './Router';
-import ActionRouter from './router/ActionRouter';
-import EntryRouter from './router/EntryRouter';
-import ImportRouter from './router/ImportRouter';
-import ViewRouter from './router/ViewRouter';
+import ActionRouter from './plugin/ActionRouter';
+import EntryRouter from './plugin/EntryRouter';
+import ImportRouter from './plugin/ImportRouter';
+import ViewRouter from './plugin/ViewRouter';
 //local
 import Exception from './Exception';
 import { ConfigLoader, PluginLoader } from './Loader';

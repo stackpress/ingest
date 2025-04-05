@@ -100,16 +100,16 @@
       "import": "./esm/Server.js"
     },
     "./EntryRouter": {
-      "require": "./cjs/router/EntryRouter.js",
-      "import": "./esm/router/EntryRouter.js"
+      "require": "./cjs/plugin/EntryRouter.js",
+      "import": "./esm/plugin/EntryRouter.js"
     },
     "./ImportRouter": {
-      "require": "./cjs/router/ImportRouter.js",
-      "import": "./esm/router/ImportRouter.js"
+      "require": "./cjs/plugin/ImportRouter.js",
+      "import": "./esm/plugin/ImportRouter.js"
     },
     "./ViewRouter": {
-      "require": "./cjs/router/ViewRouter.js",
-      "import": "./esm/router/ViewRouter.js"
+      "require": "./cjs/plugin/ViewRouter.js",
+      "import": "./esm/plugin/ViewRouter.js"
     }
   },
   "typesVersions": {
@@ -123,9 +123,9 @@
       "whatwg": [ "./cjs/whatwg/index.d.ts" ],
       "whatwg/helpers": [ "./cjs/whatwg/helpers.d.ts" ],
       "whatwg/Adapter": [ "./cjs/whatwg/Adapter.d.ts" ],
-      "EntryRouter": [ "./cjs/router/EntryRouter.d.ts" ],
-      "ImportRouter": [ "./cjs/router/ImportRouter.d.ts" ],
-      "ViewRouter": [ "./cjs/router/ViewRouter.d.ts" ],
+      "EntryRouter": [ "./cjs/plugin/EntryRouter.d.ts" ],
+      "ImportRouter": [ "./cjs/plugin/ImportRouter.d.ts" ],
+      "ViewRouter": [ "./cjs/plugin/ViewRouter.d.ts" ],
       "Exception": [ "./cjs/Exception.d.ts" ],
       "Loader": [ "./cjs/Loader.d.ts" ],
       "Request": [ "./cjs/Request.d.ts" ],

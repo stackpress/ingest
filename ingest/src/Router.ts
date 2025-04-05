@@ -7,10 +7,10 @@ import type {
 } from '@stackpress/lib/types';
 import { isObject } from '@stackpress/lib/Nest';
 //router
-import type EntryRouter from './router/EntryRouter';
-import type ImportRouter from './router/ImportRouter';
-import type ViewRouter from './router/ViewRouter';
-import ActionRouter from './router/ActionRouter';
+import type EntryRouter from './plugin/EntryRouter';
+import type ImportRouter from './plugin/ImportRouter';
+import type ViewRouter from './plugin/ViewRouter';
+import ActionRouter from './plugin/ActionRouter';
 //local
 import type { 
   AnyRouterAction, 
