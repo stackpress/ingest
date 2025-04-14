@@ -153,8 +153,7 @@
   },
   "dependencies": {
     "@stackpress/lib": "0.5.10",
-    "@whatwg-node/server": "0.6.7",
-    "cookie": "1.0.2"
+    "@whatwg-node/server": "0.6.7"
   },
   "devDependencies": {
     "@types/chai": "4.3.20",
