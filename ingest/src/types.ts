@@ -13,11 +13,11 @@ import type {
   FileSystem
 } from '@stackpress/lib/types';
 //local
-import type ActionRouter from './plugin/ActionRouter';
-import type Request from './Request';
-import type Response from './Response';
-import type Router from './Router';
-import type Server from './Server';
+import type ActionRouter from './plugin/ActionRouter.js';
+import type Request from './Request.js';
+import type Response from './Response.js';
+import type Router from './Router.js';
+import type Server from './Server.js';
 
 export type * from '@stackpress/lib/types';
 

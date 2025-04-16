@@ -12,11 +12,11 @@ import type {
   WhatwgAction,
   ServerOptions,
   NodeServerOptions
-} from '../types';
-import Router from '../Router';
-import Server from '../Server';
+} from '../types.js';
+import Router from '../Router.js';
+import Server from '../Server.js';
 //local
-import Adapter, { loader, dispatcher } from './Adapter';
+import Adapter, { loader, dispatcher } from './Adapter.js';
 
 export {
   isObject,
@@ -41,13 +41,13 @@ export {
   Server,
   ReadSession,
   WriteSession
-} from '../index';
+} from '../index.js';
 
 export {
   reqToURL,
   reqQueryToObject,
   readableToReadableStream
-} from './helpers';
+} from './helpers.js';
 
 export {
   Adapter,

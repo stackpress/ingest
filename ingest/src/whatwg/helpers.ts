@@ -1,8 +1,8 @@
 //modules
 import { Readable } from 'node:stream';
 //local
-import type { NodeRequest } from '../types';
-import { objectFromQuery } from '../helpers';
+import type { NodeRequest } from '../types.js';
+import { objectFromQuery } from '../helpers.js';
 
 export const WhatwgRequest = global.Request;
 export const WhatwgResponse = global.Response;

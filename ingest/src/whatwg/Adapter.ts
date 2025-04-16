@@ -17,16 +17,16 @@ import type {
   NodeOptResponse,
   LoaderResults,
   CookieOptions
-} from '../types';
-import Route from '../Route';
-import Request from '../Request';
-import Response from '../Response';
+} from '../types.js';
+import Route from '../Route.js';
+import Request from '../Request.js';
+import Response from '../Response.js';
 //local
 import { 
   WhatwgResponse,
   reqToURL,
   readableToReadableStream
-} from './helpers';
+} from './helpers.js';
 
 export default class Adapter<C extends UnknownNest = UnknownNest> {
   /**

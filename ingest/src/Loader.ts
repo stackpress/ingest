@@ -4,8 +4,8 @@ import path from 'node:path';
 import NodeFS from '@stackpress/lib/NodeFS';
 import FileLoader from '@stackpress/lib/FileLoader';
 //local
-import type { ConfigLoaderOptions, PluginLoaderOptions } from './types';
-import Exception from './Exception';
+import type { ConfigLoaderOptions, PluginLoaderOptions } from './types.js';
+import Exception from './Exception.js';
 
 export class ConfigLoader extends FileLoader {
   //list of extensions to look for

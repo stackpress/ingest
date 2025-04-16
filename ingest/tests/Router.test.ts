@@ -2,6 +2,8 @@ import { describe, it } from 'mocha';
 import { expect } from 'chai';
 
 import type { Method } from '@stackpress/lib/types';
+//NOTE: no extensions in tests because it's excluded in tsconfig.json and
+//we are testing in a typescript environment via `ts-mocha -r tsx` (esm)
 import Router from '../src/Router';
 import Request from '../src/Request';
 import Response from '../src/Response';

@@ -7,6 +7,8 @@
 import { expect } from 'chai';
 import path from 'node:path';
 import NodeFS from '@stackpress/lib/NodeFS';
+//NOTE: no extensions in tests because it's excluded in tsconfig.json and
+//we are testing in a typescript environment via `ts-mocha -r tsx` (esm)
 import { ConfigLoader, PluginLoader } from '../src/Loader';
 
 /**

@@ -16,13 +16,13 @@ import type {
   HttpAction,
   CookieOptions,
   LoaderResults
-} from '../types';
-import Route from '../Route';
-import Request from '../Request';
-import Response from '../Response';
-import Exception from '../Exception';
+} from '../types.js';
+import Route from '../Route.js';
+import Request from '../Request.js';
+import Response from '../Response.js';
+import Exception from '../Exception.js';
 //local
-import { imToURL, readableStreamToReadable } from './helpers';
+import { imToURL, readableStreamToReadable } from './helpers.js';
 
 export default class Adapter<C extends UnknownNest = UnknownNest> {
   /**

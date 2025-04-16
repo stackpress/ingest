@@ -34,7 +34,7 @@ export type {
   WhatwgServer,
   WhatwgServerOptions,
   WhatwgAction
-} from './types';
+} from './types.js';
 //modules
 import * as cookie from 'cookie';
 //stackpress
@@ -45,23 +45,23 @@ import {
 } from '@stackpress/lib/Session';
 import Status from '@stackpress/lib/Status';
 //router
-import Router from './Router';
-import ActionRouter from './plugin/ActionRouter';
-import EntryRouter from './plugin/EntryRouter';
-import ImportRouter from './plugin/ImportRouter';
-import ViewRouter from './plugin/ViewRouter';
+import Router from './Router.js';
+import ActionRouter from './plugin/ActionRouter.js';
+import EntryRouter from './plugin/EntryRouter.js';
+import ImportRouter from './plugin/ImportRouter.js';
+import ViewRouter from './plugin/ViewRouter.js';
 //local
-import Exception from './Exception';
-import { ConfigLoader, PluginLoader } from './Loader';
-import Request from './Request';
-import Response from './Response';
+import Exception from './Exception.js';
+import { ConfigLoader, PluginLoader } from './Loader.js';
+import Request from './Request.js';
+import Response from './Response.js';
 import Server, { 
   action, 
   handler, 
   gateway, 
   router, 
   server 
-} from './Server';
+} from './Server.js';
 
 export {
   isObject,
@@ -70,7 +70,7 @@ export {
   objectFromJson,
   withUnknownHost,
   formDataToObject
-} from './helpers';
+} from './helpers.js';
 
 export {
   cookie,

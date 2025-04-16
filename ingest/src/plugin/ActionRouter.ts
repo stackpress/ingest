@@ -13,13 +13,13 @@ import type {
   ActionRouterArgs,
   ActionRouterMap,
   ActionRouterAction
-} from '../types';
-import type Request from '../Request'; 
-import type Response from '../Response';
+} from '../types.js';
+import type Request from '../Request.js'; 
+import type Response from '../Response.js';
 //local
-import EntryRouter from './EntryRouter';
-import ImportRouter from './ImportRouter';
-import ViewRouter from './ViewRouter';
+import EntryRouter from './EntryRouter.js';
+import ImportRouter from './ImportRouter.js';
+import ViewRouter from './ViewRouter.js';
 
 /**
  * Event driven routing system. Bring 

@@ -2,11 +2,11 @@
 import type { UnknownNest } from '@stackpress/lib/types';
 import Status from '@stackpress/lib/Status';
 //local
-import type { ServerAction } from './types';
-import type Server from './Server';
-import type Request from './Request';
-import type Response from './Response';
-import Exception from './Exception';
+import type { ServerAction } from './types.js';
+import type Server from './Server.js';
+import type Request from './Request.js';
+import type Response from './Response.js';
+import Exception from './Exception.js';
 
 /**
  * Plugable route handler

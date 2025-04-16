@@ -6,11 +6,11 @@ import type {
   ImportRouterTaskItem,
   ActionRouterAction,
   ActionRouterListener
-} from '../types';
-import type Request from '../Request';
-import type Response from '../Response';
+} from '../types.js';
+import type Request from '../Request.js';
+import type Response from '../Response.js';
 //local
-import type ActionRouter from './ActionRouter';
+import type ActionRouter from './ActionRouter.js';
 
 export default class ImportRouter<R, S, X>  {
   //A route map to task queues

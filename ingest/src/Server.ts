@@ -15,9 +15,9 @@ import type {
   ServerHandler,
   ServerOptions,
   NodeServerOptions
-} from './types';
-import Router from './Router';
-import { PluginLoader } from './Loader';
+} from './types.js';
+import Router from './Router.js';
+import { PluginLoader } from './Loader.js';
 
 /**
  * Generic server class

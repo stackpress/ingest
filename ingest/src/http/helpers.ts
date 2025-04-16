@@ -5,7 +5,7 @@ import { Readable } from 'node:stream';
 import { objectFromQuery } from '@stackpress/lib/Nest';
 import { withUnknownHost } from '@stackpress/lib/Request';
 //common
-import type { IM } from '../types';
+import type { IM } from '../types.js';
 
 /**
  * Parsed query object
