@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@stackpress/ingest",
-  "version": "0.5.12",
+  "version": "0.5.14",
   "license": "Apache-2.0",
   "description": "An event driven serverless framework",
   "author": "Chris <chris@stackpress.io>",
@@ -152,7 +152,7 @@
     "test": "ts-mocha -r tsx tests/*.test.ts"
   },
   "dependencies": {
-    "@stackpress/lib": "0.5.12",
+    "@stackpress/lib": "0.5.14",
     "@whatwg-node/server": "0.6.7"
   },
   "devDependencies": {
