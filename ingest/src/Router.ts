@@ -16,9 +16,9 @@ import type {
   AnyRouterAction, 
   ActionRouterAction, 
   ImportRouterAction 
-} from './types';
-import Request from './Request';
-import Response from './Response';
+} from './types.js';
+import Request from './Request.js';
+import Response from './Response.js';
 export default class Router<
   //request resource
   R = unknown, 
