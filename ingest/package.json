@@ -116,7 +116,7 @@
   },
   "typesVersions": {
     "*": {
-      "index": [ "./cjs/index.d.ts"],
+      "index": [ "./cjs/index.d.ts" ],
       "helpers": [ "./cjs/helpers.d.ts" ],
       "types": [ "./cjs/types.d.ts" ],
       "http": [ "./cjs/http/index.d.ts" ],
