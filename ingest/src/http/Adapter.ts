@@ -1,8 +1,8 @@
 //modules
 import { Readable } from 'node:stream';
-import * as cookie from 'cookie';
 //stackpress
 import type { Method, UnknownNest } from '@stackpress/lib/types';
+import cookie from '@stackpress/lib/cookie';
 import { 
   isObject, 
   objectFromQuery, 

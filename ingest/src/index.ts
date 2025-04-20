@@ -36,7 +36,7 @@ export type {
   WhatwgAction
 } from './types.js';
 //modules
-import * as cookie from 'cookie';
+import cookie from '@stackpress/lib/cookie';
 //stackpress
 import { 
   ReadSession, 
