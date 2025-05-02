@@ -42,6 +42,13 @@ export default class Router<
   }
 
   /**
+   * Returns the event expressions map
+   */
+  public get expressions(): typeof this.action.expressions {
+    return this.action.expressions;
+  }
+
+  /**
    * Returns the router import map
    */
   public get imports() {
