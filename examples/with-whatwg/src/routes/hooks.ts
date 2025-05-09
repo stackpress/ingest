@@ -1,5 +1,5 @@
+import type { ResponseStatus } from '@stackpress/ingest/types';
 import { 
-  type ResponseStatus,
   Exception,
   Status,
   router 

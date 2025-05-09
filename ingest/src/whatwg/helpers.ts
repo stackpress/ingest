@@ -11,7 +11,14 @@ export const WhatwgResponse = global.Response;
  * Parsed query object
  */
 export function reqToURL(resource: NodeRequest) {
-  return new URL(resource.url); 
+  let url = new URL(resource.url);
+  //replace // with /
+  url.pathname = url.pathname.replaceAll('//', '/');
+  //also remove any trailing slashes
+  if (url.pathname.endsWith('/')) {
+    url.pathname = url.pathname.slice(0, -1);
+  }
+  return url; 
 };
 
 /**

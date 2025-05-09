@@ -11,7 +11,13 @@ import type { IM } from '../types.js';
  * Parsed query object
  */
 export function imToURL(resource: IM) {
-  const { url, headers } = resource;
+  let { url, headers } = resource;
+  //this should be just the pathname, so replace // with /
+  url = url?.replaceAll('//', '/');
+  //also remove any trailing slashes
+  if (url?.endsWith('/')) {
+    url = url.slice(0, -1);
+  }
   //determine protocol (by default https)
   let protocol = (
     resource.socket as TLSSocket
@@ -38,8 +44,7 @@ export function imToURL(resource: IM) {
   try {
     return new URL(uri);  
   } catch(e) {}
-  //we need to return a URL object
-  return new URL(withUnknownHost(url || '/'));
+  return new URL(withUnknownHost(url || '/'));;
 };
 
 /**
