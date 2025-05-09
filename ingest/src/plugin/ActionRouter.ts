@@ -53,6 +53,39 @@ export default class ActionRouter<R, S, X>
   }
 
   /**
+   * Route for any method
+   */
+  public all(
+    path: string, 
+    action: ActionRouterAction<R, S, X>, 
+    priority?: number
+  ) {
+    return this.route('ALL', path, action, priority);
+  }
+
+  /**
+   * Route for CONNECT method
+   */
+  public connect(
+    path: string, 
+    action: ActionRouterAction<R, S, X>, 
+    priority?: number
+  ) {
+    return this.route('CONNECT', path, action, priority);
+  }
+
+  /**
+   * Route for DELETE method
+   */
+  public delete(
+    path: string, 
+    action: ActionRouterAction<R, S, X>, 
+    priority?: number
+  ) {
+    return this.route('DELETE', path, action, priority);
+  }
+
+  /**
    * Calls all the callbacks of the given event passing the given arguments
    */
   public async emit(
@@ -86,6 +119,72 @@ export default class ActionRouter<R, S, X>
     }
     return this._eventNameFromRoute(method, path);
   }
+
+  /**
+   * Route for GET method
+   */
+  public get(
+    path: string, 
+    action: ActionRouterAction<R, S, X>, 
+    priority?: number
+  ) {
+    return this.route('GET', path, action, priority);
+  }
+
+  /**
+   * Route for HEAD method
+   */
+  public head(
+    path: string, 
+    action: ActionRouterAction<R, S, X>, 
+    priority?: number
+  ) {
+    return this.route('HEAD', path, action, priority);
+  }
+
+  /**
+   * Route for OPTIONS method
+   */
+  public options(
+    path: string, 
+    action: ActionRouterAction<R, S, X>, 
+    priority?: number
+  ) {
+    return this.route('OPTIONS', path, action, priority);
+  }
+
+  /**
+   * Route for PATCH method
+   */
+  public patch(
+    path: string, 
+    action: ActionRouterAction<R, S, X>, 
+    priority?: number
+  ) {
+    return this.route('PATCH', path, action, priority);
+  }
+
+  /**
+   * Route for POST method
+   */
+  public post(
+    path: string, 
+    action: ActionRouterAction<R, S, X>, 
+    priority?: number
+  ) {
+    return this.route('POST', path, action, priority);
+  }
+
+  /**
+   * Route for PUT method
+   */
+  public put(
+    path: string, 
+    action: ActionRouterAction<R, S, X>, 
+    priority?: number
+  ) {
+    return this.route('PUT', path, action, priority);
+  }
   
   /**
    * Returns a route
@@ -99,6 +198,17 @@ export default class ActionRouter<R, S, X>
     const event = this._eventNameFromRoute(method, path);
     const results = this._listen(event, action, priority);
     return { method, path, ...results };
+  }
+
+  /**
+   * Route for TRACE method
+   */
+  public trace(
+    path: string, 
+    action: ActionRouterAction<R, S, X>, 
+    priority?: number
+  ) {
+    return this.route('TRACE', path, action, priority);
   }
 
   /**

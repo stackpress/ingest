@@ -56,6 +56,26 @@ describe('Router Tests', () => {
     expect(tests).to.equal(methods.length);
   })
 
+  it('Should action route methods', async () => {
+    const router = new Router();
+
+    let tests = 0;
+    for (const method of methods) {
+      router.action[method]('/some/route/path', (req, res) => {
+        res.setBody('text/plain', `${method} ${req.url.pathname}`);
+      });
+      const req = new Request({ 
+        method: method.toUpperCase() as Method,
+        url: new URL('http://localhost/some/route/path') 
+      });
+      const res = new Response();
+      await router.action.emit(`${method.toUpperCase()} /some/route/path`, req, res);
+      expect(res.body).to.equal(`${method} /some/route/path`);
+      tests++;
+    }
+    expect(tests).to.equal(methods.length);
+  })
+
   it('Should route ALL', async () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
