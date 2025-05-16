@@ -22,10 +22,12 @@
     "plugins:dev": "yarn --cwd examples/with-plugins dev",
     "whatwg:build": "yarn --cwd examples/with-whatwg build",
     "whatwg:dev": "yarn --cwd examples/with-whatwg dev",
-    "report": "nyc yarn test && nyc report -r lcov",
+    "report": "yarn report:env nyc yarn test && nyc report -r lcov",
+    "report:env": "NODE_OPTIONS=\"--disable-warning=ExperimentalWarning --experimental-loader @istanbuljs/esm-loader-hook\"",
     "test": "yarn --cwd ingest test"
   },
   "devDependencies": {
+    "@istanbuljs/esm-loader-hook": "0.3.0",
     "nyc": "17.1.0"
   }
 }
