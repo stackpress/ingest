@@ -96,8 +96,16 @@ export type PluginLoaderOptions = ConfigLoaderOptions & {
 
 //action router
 export type ActionRouterArgs<R, S, X> = [ Request<R>, Response<S>, X ];
+export type ActionRouteProps<R, S, X> = {
+  req: Request<R>,
+  res: Response<S>,
+  ctx: X
+};
 export type ActionRouterMap<R, S, X> = Record<string, ActionRouterArgs<R, S, X>>;
 export type ActionRouterAction<R, S, X> = TaskAction<ActionRouterArgs<R, S, X>>;
+export type ActionRouterPropsAction<R, S, X> = (
+  props: ActionRouteProps<R, S, X>
+) => TaskResult;
 export type ActionRouterListener<R, S, X> = (
   event: string, 
   action: ActionRouterAction<R, S, X>, 
@@ -153,6 +161,16 @@ export type ServerAction<
   //response resource
   S = unknown
 > = ActionRouterAction<R, S, Server<C, R, S>>;
+//alias for ActionRouterPropsAction
+//used in action.props method
+export type ServerPropsAction<
+  //config map
+  C extends UnknownNest = UnknownNest, 
+  //request resource
+  R = unknown, 
+  //response resource
+  S = unknown
+> = ActionRouterPropsAction<R, S, Server<C, R, S>>;
 
 //used in Server class
 export type ServerHandler<
@@ -196,6 +214,9 @@ export type HttpServerOptions<
 export type HttpAction<
   C extends UnknownNest = UnknownNest
 > = ServerAction<C, IM, SR>;
+export type HttpPropsAction<
+  C extends UnknownNest = UnknownNest
+> = ServerPropsAction<C, IM, SR>;
 
 //--------------------------------------------------------------------//
 // Whatwg Types
@@ -212,6 +233,6 @@ export type WhatwgServerOptions<
 export type WhatwgAction<
   C extends UnknownNest = UnknownNest
 > = ServerAction<C, NodeRequest, NodeOptResponse>;
-
-
-
+export type WhatwgPropsAction<
+  C extends UnknownNest = UnknownNest
+> = ServerPropsAction<C, NodeRequest, NodeOptResponse>;

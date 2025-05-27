@@ -7,6 +7,7 @@ import type {
   IM, SR, 
   HttpServer, 
   HttpAction,
+  HttpPropsAction,
   ServerOptions,
   NodeServerOptions
 } from '../types.js';
@@ -96,4 +97,10 @@ export function action<C extends UnknownNest = UnknownNest>(
   action: HttpAction<C>
 ) {
   return action;
+};
+
+action.props = <C extends UnknownNest = any>(action: HttpPropsAction<C>) => {
+  return function ActionProps(req, res, ctx) {
+    return action({ req, res, ctx });
+  } as HttpAction<C>;
 };

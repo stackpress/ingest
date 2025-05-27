@@ -11,6 +11,7 @@ import { nest } from '@stackpress/lib/Nest';
 //local
 import type { 
   ServerAction,
+  ServerPropsAction,
   ServerGateway,
   ServerHandler,
   ServerOptions,
@@ -191,4 +192,20 @@ export function action<
   S = any
 >(action: ServerAction<C, R, S>) {
   return action;
+};
+
+action.props = <
+  //config map
+  //Any: Server<UnknownNest> not assignable to type HttpServer<Config>
+  C extends UnknownNest = any, 
+  //request resource
+  //Any: Type unknown is not assignable to type IncomingMessage
+  R = any, 
+  //response resource
+  //Any: Type unknown is not assignable to type ServerResponse
+  S = any
+>(action: ServerPropsAction<C, R, S>) => {
+  return function ActionProps(req, res, ctx) {
+    return action({ req, res, ctx });
+  } as ServerAction<C, R, S>;
 };

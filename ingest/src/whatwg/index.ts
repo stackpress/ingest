@@ -10,6 +10,7 @@ import type {
   NodeResponse,
   NodeOptResponse,
   WhatwgAction,
+  WhatwgPropsAction,
   ServerOptions,
   NodeServerOptions
 } from '../types.js';
@@ -109,4 +110,10 @@ export function action<C extends UnknownNest = UnknownNest>(
   action: WhatwgAction<C>
 ) {
   return action;
+};
+
+action.props = <C extends UnknownNest = any>(action: WhatwgPropsAction<C>) => {
+  return function ActionProps(req, res, ctx) {
+    return action({ req, res, ctx });
+  } as WhatwgAction<C>;
 };
