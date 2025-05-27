@@ -8,7 +8,7 @@
     "dev": "ts-node src/server.ts"
   },
   "dependencies": {
-    "@stackpress/ingest": "0.5.22",
+    "@stackpress/ingest": "0.5.23",
     "handlebars": "4.7.8"
   },
   "devDependencies": {
