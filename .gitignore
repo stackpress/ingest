@@ -135,3 +135,6 @@ archives
 .DS_Store
 cjs
 esm
+
+# AI
+.clinerules

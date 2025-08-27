@@ -1,0 +1,10 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Ingest",
+  "description": "An unopinionated, event driven, pluggable, server/less framework.",
+  "folders": [],
+  "excludeFolders": [],
+  "excludeFiles": [],
+  "rules": [],
+  "previousVersions": []
+}
