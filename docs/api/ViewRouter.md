@@ -18,7 +18,20 @@ router.get('/profile', './views/profile.hbs');
 router.get('/dashboard', './views/dashboard.ejs');
 ```
 
-## Properties
+ 1. [Properties](#1-properties)
+ 2. [HTTP Method Routing](#2-http-method-routing)
+ 3. [Event-Based Routing](#3-event-based-routing)
+ 4. [Template Engine Configuration](#4-template-engine-configuration)
+ 5. [Render Function Configuration](#5-render-function-configuration)
+ 6. [Creating Actions from Views](#6-creating-actions-from-views)
+ 7. [Using Other ViewRouters](#7-using-other-viewrouters)
+ 8. [Template Engine Integration](#8-template-engine-integration)
+ 9. [Data Flow and Context](#9-data-flow-and-context)
+ 10. [Error Handling and Fallbacks](#10-error-handling-and-fallbacks)
+ 11. [Integration with ActionRouter](#11-integration-with-actionrouter)
+ 12. [Best Practices](#12-best-practices)
+
+## 1. Properties
 
 The following properties are available when instantiating a ViewRouter.
 
@@ -28,11 +41,7 @@ The following properties are available when instantiating a ViewRouter.
 | `engine` | `ViewEngine<R, S, X>` | Template engine function for rendering views |
 | `render` | `ViewRender` | Render function for processing templates |
 
-## Methods
-
-The following methods are available when instantiating a ViewRouter.
-
-### HTTP Method Routing
+## 2. HTTP Method Routing
 
 The following examples show how to define view-based routes for different HTTP methods.
 
@@ -60,7 +69,7 @@ router.all('/error', './views/error.hbs');
 
 The ViewRouter instance to allow method chaining.
 
-### Event-Based Routing
+## 3. Event-Based Routing
 
 The following example shows how to route events to template files.
 
@@ -85,7 +94,7 @@ router.on(/^admin-.+$/, './views/admin-layout.hbs');
 
 The ViewRouter instance to allow method chaining.
 
-### Template Engine Configuration
+## 4. Template Engine Configuration
 
 The following example shows how to configure the template engine.
 
@@ -125,7 +134,7 @@ router.engine = async (filePath, req, res, ctx) => {
 
 `TaskResult` - void, boolean, or Promise of these types.
 
-### Render Function Configuration
+## 5. Render Function Configuration
 
 The following example shows how to configure the render function for standalone template processing.
 
@@ -161,7 +170,7 @@ router.render = async (filePath, props, options) => {
 
 `string|null|Promise<string|null>` - Rendered template or null if failed.
 
-### Creating Actions from Views
+## 6. Creating Actions from Views
 
 The following example shows how view files are converted to executable actions.
 
@@ -185,7 +194,7 @@ await action(request, response, context);
 
 An async function that calls the template engine with the file path.
 
-### Using Other ViewRouters
+## 7. Using Other ViewRouters
 
 The following example shows how to merge views from another router.
 
@@ -207,11 +216,13 @@ mainRouter.use(adminRouter); // Merges view configurations
 
 The ViewRouter instance to allow method chaining.
 
-## Template Engine Integration
+## 8. Template Engine Integration
 
-ViewRouter supports various template engines through the engine configuration:
+ViewRouter supports various template engines through the engine configuration.
 
-### Handlebars Integration
+### 8.1. Handlebars Integration
+
+The following example shows how to integrate Handlebars with ViewRouter.
 
 ```typescript
 import Handlebars from 'handlebars';
@@ -244,7 +255,9 @@ Handlebars.registerHelper('formatDate', (date) => {
 router.get('/profile', './views/profile.hbs');
 ```
 
-### EJS Integration
+### 8.2. EJS Integration
+
+The following example shows how to integrate EJS with ViewRouter.
 
 ```typescript
 import ejs from 'ejs';
@@ -269,7 +282,9 @@ router.engine = async (filePath, req, res, ctx) => {
 router.get('/dashboard', './views/dashboard.ejs');
 ```
 
-### Mustache Integration
+### 8.3. Mustache Integration
+
+The following example shows how to integrate Mustache with ViewRouter.
 
 ```typescript
 import Mustache from 'mustache';
@@ -290,7 +305,9 @@ router.engine = async (filePath, req, res, ctx) => {
 router.get('/simple', './views/simple.mustache');
 ```
 
-### Custom Template Engine
+### 8.4. Custom Template Engine
+
+The following example shows how to create a custom template engine with layout support.
 
 ```typescript
 // Custom template engine with layout support
@@ -319,11 +336,13 @@ router.engine = async (filePath, req, res, ctx) => {
 };
 ```
 
-## Data Flow and Context
+## 9. Data Flow and Context
 
-ViewRouter provides rich context to templates through request data:
+ViewRouter provides rich context to templates through request data.
 
-### Request Data Access
+### 9.1. Request Data Access
+
+The following example shows how templates receive request data.
 
 ```typescript
 router.get('/user/:id', './views/user.hbs');
@@ -350,7 +369,9 @@ router.on('GET /user/:id', async (req, res, ctx) => {
 }, 10); // Higher priority than view router
 ```
 
-### Context Integration
+### 9.2. Context Integration
+
+The following example shows how to integrate server context into templates.
 
 ```typescript
 router.engine = async (filePath, req, res, ctx) => {
@@ -379,11 +400,13 @@ router.engine = async (filePath, req, res, ctx) => {
 };
 ```
 
-## Error Handling and Fallbacks
+## 10. Error Handling and Fallbacks
 
-ViewRouter provides robust error handling for template rendering:
+ViewRouter provides robust error handling for template rendering.
 
-### Template Error Handling
+### 10.1. Template Error Handling
+
+The following example shows how to handle template rendering errors.
 
 ```typescript
 router.engine = async (filePath, req, res, ctx) => {
@@ -408,7 +431,9 @@ router.engine = async (filePath, req, res, ctx) => {
 };
 ```
 
-### Development vs Production Error Handling
+### 10.2. Development vs Production Error Handling
+
+The following example shows different error handling strategies for different environments.
 
 ```typescript
 const isDev = process.env.NODE_ENV === 'development';
@@ -435,11 +460,13 @@ router.engine = async (filePath, req, res, ctx) => {
 };
 ```
 
-## Integration with ActionRouter
+## 11. Integration with ActionRouter
 
-ViewRouter works as an extension of ActionRouter:
+ViewRouter works as an extension of ActionRouter, sharing the same event system and routing capabilities.
 
-### Initialization
+### 11.1. Initialization
+
+The following example shows how ViewRouter integrates with ActionRouter.
 
 ```typescript
 import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
@@ -453,7 +480,9 @@ actionRouter.view.get('/home', './views/home.hbs');
 const viewRouter = new ViewRouter(actionRouter, listen);
 ```
 
-### Mixed Routing Approaches
+### 11.2. Mixed Routing Approaches
+
+The following example shows how to combine different routing approaches.
 
 ```typescript
 // API routes return JSON
@@ -475,9 +504,13 @@ actionRouter.get('/users/:id', async (req, res, ctx) => {
 actionRouter.view.get('/users/:id', './views/user.hbs', 0);
 ```
 
-## Best Practices
+## 12. Best Practices
 
-### Template Organization
+The following guidelines help ensure effective use of ViewRouter in production applications.
+
+### 12.1. Template Organization
+
+The following examples show recommended template organization patterns.
 
 ```typescript
 // Organize templates by feature
@@ -501,7 +534,9 @@ router.engine = async (filePath, req, res, ctx) => {
 };
 ```
 
-### Performance Optimization
+### 12.2. Performance Optimization
+
+The following example shows how to implement template caching for better performance.
 
 ```typescript
 // Template caching
@@ -527,7 +562,9 @@ router.engine = async (filePath, req, res, ctx) => {
 };
 ```
 
-### Security Considerations
+### 12.3. Security Considerations
+
+The following example shows important security considerations for ViewRouter.
 
 ```typescript
 router.engine = async (filePath, req, res, ctx) => {
@@ -553,7 +590,9 @@ router.engine = async (filePath, req, res, ctx) => {
 };
 ```
 
-### SEO and Meta Tags
+### 12.4. SEO and Meta Tags
+
+The following example shows how to handle SEO and meta tags in templates.
 
 ```typescript
 router.engine = async (filePath, req, res, ctx) => {

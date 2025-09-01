@@ -1,12 +1,26 @@
 # API Reference
 
-Complete API documentation for the Ingest framework.
+Complete API documentation for the Ingest framework, providing comprehensive guides for all classes, plugins, and utilities in the framework.
 
-## Detailed Class Documentation
+ 1. [Core Classes](#1-core-classes)
+ 2. [Plugin System](#2-plugin-system)
+ 3. [Routing Interfaces](#3-routing-interfaces)
+ 4. [Event System](#4-event-system)
+ 5. [Adapters](#5-adapters)
+ 6. [Type Safety](#6-type-safety)
+ 7. [Error Handling](#7-error-handling)
+ 8. [Build Integration](#8-build-integration)
+
+## 1. Core Classes
+
+The following core classes provide the foundation of the Ingest framework.
+
+### 1.1. Detailed Class Documentation
 
 For comprehensive documentation of individual classes, see the following dedicated pages:
 
-### Core Classes
+**Core Classes**
+
 - **[Server](./Server.md)** - Main server class with configuration and plugin management
 - **[Router](./Router.md)** - Event-driven routing system with pattern matching
 - **[Request](./Request.md)** - Cross-platform request wrapper with data access methods
@@ -14,35 +28,25 @@ For comprehensive documentation of individual classes, see the following dedicat
 - **[Exception](./Exception.md)** - Enhanced error handling with structured error information
 - **[Route](./Route.md)** - Request lifecycle management with hooks and error handling
 
-### Plugin System
+**Plugin System**
+
 - **[ActionRouter](./ActionRouter.md)** - Function-based routing with multiple interfaces
 - **[EntryRouter](./EntryRouter.md)** - File-based routing for modular organization
 - **[ImportRouter](./ImportRouter.md)** - Dynamic import routing for code splitting
 - **[ViewRouter](./ViewRouter.md)** - Template-based routing for server-side rendering
 
-### Utilities
+**Utilities**
+
 - **[Loader](./Loader.md)** - Configuration and plugin loading utilities
 
-### Adapters
+**Adapters**
+
 - **[HttpAdapter](./HttpAdapter.md)** - Node.js HTTP server integration
 - **[WhatwgAdapter](./WhatwgAdapter.md)** - WHATWG Fetch API integration for serverless
 
-## Table of Contents
-
-- [Server](#server)
-- [Router](#router)
-- [Request](#request)
-- [Response](#response)
-- [Plugin System](#plugin-system)
-- [Routing Interfaces](#routing-interfaces)
-- [Event System](#event-system)
-- [Adapters](#adapters)
-
-## Server
+### 1.2. Server
 
 The Server class is the core of the Ingest framework, extending Router with configuration management and plugin support.
-
-### Creating a Server
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -52,7 +56,7 @@ import { server } from '@stackpress/ingest/whatwg';
 const app = server(options);
 ```
 
-### Properties
+#### 1.2.1. Properties
 
 The following properties are available when instantiating a Server.
 
@@ -62,11 +66,11 @@ The following properties are available when instantiating a Server.
 | `loader` | `PluginLoader` | Plugin loader instance |
 | `plugins` | `CallableMap` | Map of registered plugins |
 
-### Methods
+#### 1.2.2. Methods
 
 The following methods are available when instantiating a Server.
 
-#### Bootstrapping Plugins
+##### 1.2.2.1. Bootstrapping Plugins
 
 The following example shows how to load and initialize plugins.
 
@@ -78,7 +82,7 @@ await app.bootstrap();
 
 The Server instance to allow method chaining.
 
-#### Creating a Server Instance
+##### 1.2.2.2. Creating a Server Instance
 
 The following example shows how to create a native server instance.
 
@@ -99,7 +103,7 @@ server.listen(3000, () => {
 
 A native Node.js HTTP server instance.
 
-#### Handling Requests
+##### 1.2.2.3. Handling Requests
 
 The following example shows how to handle requests directly.
 
@@ -118,7 +122,7 @@ const result = await app.handle(request, response);
 
 A promise that resolves to the response object.
 
-#### Plugin Management
+##### 1.2.2.4. Plugin Management
 
 The following example shows how to register and retrieve plugins.
 
@@ -142,11 +146,9 @@ const authConfig = app.plugin<AuthConfig>('auth');
 For `register`: The Server instance to allow method chaining.
 For `plugin`: The plugin configuration or undefined.
 
-## Router
+### 1.3. Router
 
 The Router class provides event-driven routing capabilities with pattern matching and parameter extraction.
-
-### Creating a Router
 
 ```typescript
 import { Router } from '@stackpress/ingest';
@@ -154,11 +156,9 @@ import { Router } from '@stackpress/ingest';
 const router = new Router();
 ```
 
-### Methods
-
 The following methods are available when instantiating a Router.
 
-#### Defining Routes
+#### 1.3.1. Defining Routes
 
 The following example shows how to define routes with different HTTP methods.
 
@@ -187,7 +187,7 @@ router.route('POST', '/users', async (req, res) => {
 
 The Router instance to allow method chaining.
 
-#### Resolving Routes
+#### 1.3.2. Resolving Routes
 
 The following example shows how to resolve routes and get response data.
 
@@ -207,7 +207,7 @@ const response = await router.resolve('GET', '/users/123');
 
 A promise that resolves to a StatusResponse object.
 
-#### Creating Request/Response Objects
+#### 1.3.3. Creating Request/Response Objects
 
 The following example shows how to create request and response objects.
 
@@ -234,11 +234,11 @@ const res = router.response({
 
 A new Request or Response instance.
 
-## Request
+### 1.4. Request
 
 The Request class provides a generic wrapper for handling HTTP requests across different platforms.
 
-### Properties
+#### 1.4.1. Properties
 
 The following properties are available when instantiating a Request.
 
@@ -254,11 +254,8 @@ The following properties are available when instantiating a Request.
 | `body` | `Body` | Raw request body |
 | `loaded` | `boolean` | Whether the body has been loaded |
 
-### Methods
 
-The following methods are available when instantiating a Request.
-
-#### Loading Request Body
+#### 1.4.2. Loading Request Body
 
 The following example shows how to load the request body asynchronously.
 
@@ -271,11 +268,11 @@ console.log(req.body); // Access the loaded body
 
 The Request instance to allow method chaining.
 
-## Response
+### 1.5. Response
 
 The Response class provides a generic wrapper for handling HTTP responses across different platforms.
 
-### Properties
+#### 1.5.1. Properties
 
 The following properties are available when instantiating a Response.
 
@@ -289,11 +286,11 @@ The following properties are available when instantiating a Response.
 | `code` | `number` | HTTP status code |
 | `status` | `string` | HTTP status message |
 
-### Methods
+#### 1.5.2. Methods
 
 The following methods are available when instantiating a Response.
 
-#### Setting JSON Response
+##### 1.5.2.1. Setting JSON Response
 
 The following example shows how to set a JSON response.
 
@@ -314,7 +311,7 @@ res.setJSON('{"message": "Success"}', 201, 'Created');
 
 The Response instance to allow method chaining.
 
-#### Setting HTML Response
+##### 1.5.2.2. Setting HTML Response
 
 The following example shows how to set an HTML response.
 
@@ -334,7 +331,7 @@ res.setHTML('<h1>Welcome</h1>', 200, 'OK');
 
 The Response instance to allow method chaining.
 
-#### Setting Error Response
+##### 1.5.2.3. Setting Error Response
 
 The following example shows how to set an error response.
 
@@ -356,7 +353,7 @@ res.setError('Invalid input', { name: 'required' }, [], 400);
 
 The Response instance to allow method chaining.
 
-#### Redirecting
+##### 1.5.2.4. Redirecting
 
 The following example shows how to redirect the response.
 
@@ -376,13 +373,13 @@ res.redirect('/login', 302, 'Found');
 
 The Response instance to allow method chaining.
 
-## Plugin System
+## 2. Plugin System
 
 The plugin system allows you to extend server functionality through modular components.
 
-### Plugin Structure
+### 2.1. Plugin Structure
 
-A plugin is a function that receives the server instance and configures it:
+A plugin is a function that receives the server instance and configures it.
 
 ```typescript
 export default function myPlugin(server) {
@@ -399,9 +396,9 @@ export default function myPlugin(server) {
 }
 ```
 
-### Plugin Registration
+### 2.2. Plugin Registration
 
-Add plugins to your `package.json`:
+Add plugins to your `package.json` to enable automatic discovery and loading.
 
 ```json
 {
@@ -413,9 +410,9 @@ Add plugins to your `package.json`:
 }
 ```
 
-### Plugin Loader
+### 2.3. Plugin Loader
 
-The PluginLoader class handles plugin discovery and loading:
+The PluginLoader class handles plugin discovery and loading.
 
 ```typescript
 import { PluginLoader } from '@stackpress/ingest';
@@ -430,13 +427,13 @@ await loader.bootstrap(async (name, plugin) => {
 });
 ```
 
-## Routing Interfaces
+## 3. Routing Interfaces
 
 Ingest provides four different routing interfaces for maximum flexibility.
 
-### Action Router
+### 3.1. Action Router
 
-Traditional Express.js-like routing with inline handlers:
+Traditional Express.js-like routing with inline handlers.
 
 ```typescript
 app.action.get('/users', (req, res) => {
@@ -449,9 +446,9 @@ app.action.post('/users', (req, res) => {
 });
 ```
 
-### Entry Router
+### 3.2. Entry Router
 
-File-based routing that loads handlers from files:
+File-based routing that loads handlers from files.
 
 ```typescript
 app.entry.get('/users', './routes/users.js');
@@ -467,18 +464,18 @@ export default function handler(req, res) {
 }
 ```
 
-### Import Router
+### 3.3. Import Router
 
-Dynamic import routing for code splitting:
+Dynamic import routing for code splitting.
 
 ```typescript
 app.import.get('/users', () => import('./routes/users.js'));
 app.import.post('/users', () => import('./routes/create-user.js'));
 ```
 
-### View Router
+### 3.4. View Router
 
-Template-based routing for rendering views:
+Template-based routing for rendering views.
 
 ```typescript
 app.view.get('/users', './views/users.hbs');
@@ -494,13 +491,13 @@ app.view.render('hbs', (template, data) => {
 });
 ```
 
-## Event System
+## 4. Event System
 
 Ingest is built on a powerful event system that enables reactive programming patterns.
 
-### Event Listeners
+### 4.1. Event Listeners
 
-Add event listeners with optional priority:
+Add event listeners with optional priority for controlling execution order.
 
 ```typescript
 // Basic event listener
@@ -513,9 +510,9 @@ app.on('request', middleware1, 10);
 app.on('request', middleware2, 5);
 ```
 
-### Route Events
+### 4.2. Route Events
 
-Routes automatically generate events that you can listen to:
+Routes automatically generate events that you can listen to.
 
 ```typescript
 // Listen to specific route events
@@ -529,9 +526,9 @@ app.on('GET /api/*', (req, res) => {
 });
 ```
 
-### Event Hooks
+### 4.3. Event Hooks
 
-Set up before and after hooks for event processing:
+Set up before and after hooks for event processing.
 
 ```typescript
 app.before = async (event) => {
@@ -544,13 +541,13 @@ app.after = async (event) => {
 };
 ```
 
-## Adapters
+## 5. Adapters
 
 Ingest provides adapters for different runtime environments.
 
-### HTTP Adapter
+### 5.1. HTTP Adapter
 
-For Node.js HTTP servers:
+For Node.js HTTP servers.
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -563,9 +560,9 @@ app.get('/', (req, res) => {
 app.create().listen(3000);
 ```
 
-### WHATWG Adapter
+### 5.2. WHATWG Adapter
 
-For serverless environments and modern web APIs:
+For serverless environments and modern web APIs.
 
 ```typescript
 import { server } from '@stackpress/ingest/whatwg';
@@ -581,9 +578,9 @@ export default async function handler(request) {
 }
 ```
 
-### Custom Adapters
+### 5.3. Custom Adapters
 
-Create custom adapters for specific environments:
+Create custom adapters for specific environments.
 
 ```typescript
 import { Server } from '@stackpress/ingest';
@@ -600,9 +597,9 @@ class CustomServer extends Server {
 }
 ```
 
-## Type Safety
+## 6. Type Safety
 
-Ingest is built with TypeScript and provides comprehensive type definitions:
+Ingest is built with TypeScript and provides comprehensive type definitions.
 
 ```typescript
 import type { 
@@ -630,9 +627,9 @@ const app = server<Config>();
 app.config.set('database', { host: 'localhost', port: 5432 });
 ```
 
-## Error Handling
+## 7. Error Handling
 
-Ingest provides built-in error handling with the Exception class:
+Ingest provides built-in error handling with the Exception class.
 
 ```typescript
 import { Exception } from '@stackpress/ingest';
@@ -657,9 +654,9 @@ app.get('/users/:id', (req, res) => {
 });
 ```
 
-## Build Integration
+## 8. Build Integration
 
-Access routing information for build tools and bundlers:
+Access routing information for build tools and bundlers.
 
 ```typescript
 const app = server();
@@ -675,7 +672,7 @@ console.log(app.expressions); // Route patterns
 ```
 
 This information can be used to:
-- Generate static route manifests
-- Pre-bundle route modules
-- Optimize code splitting
-- Create deployment artifacts
+ - Generate static route manifests
+ - Pre-bundle route modules
+ - Optimize code splitting
+ - Create deployment artifacts

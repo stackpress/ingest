@@ -1,6 +1,6 @@
 # Loader
 
-Configuration and plugin loading utilities for the Ingest framework, providing file resolution and dynamic import capabilities.
+Configuration and plugin loading utilities for the Ingest framework, providing file resolution and dynamic import capabilities with support for multiple file formats.
 
 ```typescript
 import { ConfigLoader, PluginLoader } from '@stackpress/ingest';
@@ -16,11 +16,20 @@ const pluginLoader = new PluginLoader({
 });
 ```
 
-## ConfigLoader
+ 1. [ConfigLoader](#1-configloader)
+ 2. [PluginLoader](#2-pluginloader)
+ 3. [Plugin Resolution](#3-plugin-resolution)
+ 4. [Bootstrap Process](#4-bootstrap-process)
+ 5. [Error Handling](#5-error-handling)
+ 6. [Integration with Server](#6-integration-with-server)
+ 7. [Best Practices](#7-best-practices)
+ 8. [Examples](#8-examples)
+
+## 1. ConfigLoader
 
 File loader specialized for configuration files with support for multiple file extensions and key extraction.
 
-### Properties
+### 1.1. Properties
 
 The following properties are available when instantiating a ConfigLoader.
 
@@ -29,11 +38,11 @@ The following properties are available when instantiating a ConfigLoader.
 | `cwd` | `string` | Current working directory (inherited) |
 | `fs` | `FileSystem` | Filesystem interface being used (inherited) |
 
-### Methods
+### 1.2. Methods
 
 The following methods are available when instantiating a ConfigLoader.
 
-#### Loading Configuration Files
+#### 1.2.1. Loading Configuration Files
 
 The following example shows how to load configuration files with fallback defaults.
 
@@ -58,7 +67,7 @@ const plugins = await loader.load('./package.json');
 
 A promise that resolves to the loaded configuration data or defaults.
 
-#### Resolving Configuration Files
+#### 1.2.2. Resolving Configuration Files
 
 The following example shows how to resolve configuration files with multiple extension support.
 
@@ -79,9 +88,9 @@ const resolved = await loader.resolveFile('./config');
 
 A promise that resolves to the resolved file path or null if not found.
 
-### Configuration Options
+### 1.3. Configuration Options
 
-ConfigLoader accepts the following options during instantiation:
+ConfigLoader accepts the following options during instantiation for customized file loading behavior.
 
 ```typescript
 const loader = new ConfigLoader({
@@ -113,11 +122,11 @@ const loader = new ConfigLoader({
 ]
 ```
 
-## PluginLoader
+## 2. PluginLoader
 
-Extended configuration loader specialized for plugin management and bootstrapping.
+Extended configuration loader specialized for plugin management and bootstrapping with automatic dependency resolution.
 
-### Properties
+### 2.1. Properties
 
 The following properties are available when instantiating a PluginLoader.
 
@@ -126,13 +135,13 @@ The following properties are available when instantiating a PluginLoader.
 | `cwd` | `string` | Current working directory (inherited) |
 | `fs` | `FileSystem` | Filesystem interface being used (inherited) |
 
-### Methods
+### 2.2. Methods
 
 The following methods are available when instantiating a PluginLoader.
 
-#### Bootstrapping Plugins
+#### 2.2.1. Bootstrapping Plugins
 
-The following example shows how to bootstrap all configured plugins.
+The following example shows how to bootstrap all configured plugins with custom loading logic.
 
 ```typescript
 await pluginLoader.bootstrap(async (name, plugin) => {
@@ -158,9 +167,9 @@ await pluginLoader.bootstrap(async (name, plugin) => {
 
 The PluginLoader instance to allow method chaining.
 
-#### Getting Plugin List
+#### 2.2.2. Getting Plugin List
 
-The following example shows how to get the list of configured plugins.
+The following example shows how to get the list of configured plugins for inspection.
 
 ```typescript
 const plugins = await pluginLoader.plugins();
@@ -171,9 +180,9 @@ const plugins = await pluginLoader.plugins();
 
 A promise that resolves to an array of plugin paths.
 
-### Plugin Configuration
+### 2.3. Plugin Configuration
 
-PluginLoader accepts the following options during instantiation:
+PluginLoader accepts the following options during instantiation for flexible plugin management.
 
 ```typescript
 const loader = new PluginLoader({
@@ -192,11 +201,13 @@ const loader = new PluginLoader({
 | `key` | `string` | Key to extract from configuration files |
 | `extnames` | `string[]` | File extensions to try |
 
-### Plugin Resolution
+## 3. Plugin Resolution
 
-PluginLoader supports various plugin path formats:
+PluginLoader supports various plugin path formats for maximum flexibility in plugin organization.
 
-#### Local Plugins
+### 3.1. Local Plugins
+
+Load plugins from local files and directories within your project.
 
 ```typescript
 const plugins = [
@@ -206,7 +217,9 @@ const plugins = [
 ];
 ```
 
-#### NPM Packages
+### 3.2. NPM Packages
+
+Load plugins from installed NPM packages with automatic resolution.
 
 ```typescript
 const plugins = [
@@ -216,7 +229,9 @@ const plugins = [
 ];
 ```
 
-#### Nested Plugin Configurations
+### 3.3. Nested Plugin Configurations
+
+Support for nested plugin configurations allows for modular plugin organization.
 
 ```typescript
 // plugins.json
@@ -230,9 +245,13 @@ const plugins = [
 }
 ```
 
-### Bootstrap Process
+## 4. Bootstrap Process
 
-The bootstrap process follows these steps:
+The bootstrap process follows a systematic approach to ensure reliable plugin loading and initialization.
+
+### 4.1. Bootstrap Steps
+
+The bootstrap process executes the following steps in order:
 
 1. **Load Plugin List**: Resolves the plugins array from configuration
 2. **Process Each Plugin**: Iterates through each plugin path
@@ -241,9 +260,25 @@ The bootstrap process follows these steps:
 5. **Extract Plugin Name**: Generates a clean name for the plugin
 6. **Call Loader Function**: Invokes the provided loader with name and plugin
 
-### Error Handling
+### 4.2. Plugin Loading Order
 
-PluginLoader provides clear error messages for common issues:
+Plugins are loaded in the order they appear in the configuration, allowing for dependency management.
+
+```typescript
+const plugins = [
+  './plugins/database',  // Load database connection first
+  './plugins/auth',      // Then authentication (depends on database)
+  './plugins/api'        // Finally API routes (depends on auth)
+];
+```
+
+## 5. Error Handling
+
+PluginLoader provides comprehensive error handling for robust plugin management.
+
+### 5.1. Error Types
+
+Common error scenarios include missing files, invalid configurations, and plugin initialization failures.
 
 ```typescript
 try {
@@ -254,45 +289,9 @@ try {
 }
 ```
 
-### Integration with Server
+### 5.2. Graceful Degradation
 
-PluginLoader is typically used with the Server class for automatic plugin loading:
-
-```typescript
-import { server } from '@stackpress/ingest/http';
-
-const app = server();
-
-// Bootstrap plugins from package.json
-await app.bootstrap();
-
-// Or use custom plugin loader
-const pluginLoader = new PluginLoader({
-  plugins: ['./custom-plugin.js']
-});
-
-await pluginLoader.bootstrap(async (name, plugin) => {
-  if (typeof plugin === 'function') {
-    plugin(app);
-  }
-});
-```
-
-### Best Practices
-
-#### Plugin Organization
-
-```typescript
-// Organize plugins by functionality
-const plugins = [
-  './plugins/auth',      // Authentication
-  './plugins/database',  // Database connection
-  './plugins/logging',   // Logging setup
-  '@company/shared'      // Shared company plugins
-];
-```
-
-#### Error Resilience
+Implement error handling that allows the application to continue running even if some plugins fail.
 
 ```typescript
 await pluginLoader.bootstrap(async (name, plugin) => {
@@ -306,7 +305,73 @@ await pluginLoader.bootstrap(async (name, plugin) => {
 });
 ```
 
-#### Development vs Production
+## 6. Integration with Server
+
+PluginLoader integrates seamlessly with the Server class for automatic plugin loading and configuration.
+
+### 6.1. Automatic Bootstrap
+
+Use the server's built-in bootstrap method for standard plugin loading.
+
+```typescript
+import { server } from '@stackpress/ingest/http';
+
+const app = server();
+
+// Bootstrap plugins from package.json
+await app.bootstrap();
+```
+
+### 6.2. Custom Plugin Loading
+
+Use a custom PluginLoader for advanced plugin management scenarios.
+
+```typescript
+// Or use custom plugin loader
+const pluginLoader = new PluginLoader({
+  plugins: ['./custom-plugin.js']
+});
+
+await pluginLoader.bootstrap(async (name, plugin) => {
+  if (typeof plugin === 'function') {
+    plugin(app);
+  }
+});
+```
+
+## 7. Best Practices
+
+The following best practices ensure reliable and maintainable plugin management.
+
+### 7.1. Plugin Organization
+
+Organize plugins by functionality for better maintainability and understanding.
+
+```typescript
+// Organize plugins by functionality
+const plugins = [
+  './plugins/auth',      // Authentication
+  './plugins/database',  // Database connection
+  './plugins/logging',   // Logging setup
+  '@company/shared'      // Shared company plugins
+];
+```
+
+### 7.2. Error Resilience
+
+```typescript
+await pluginLoader.bootstrap(async (name, plugin) => {
+  try {
+    await loadPlugin(name, plugin);
+    console.log(`✓ Loaded plugin: ${name}`);
+  } catch (error) {
+    console.error(`✗ Failed to load plugin ${name}:`, error.message);
+    // Continue loading other plugins
+  }
+});
+```
+
+### 7.3. Development vs Production
 
 ```typescript
 const isDev = process.env.NODE_ENV === 'development';
@@ -316,4 +381,166 @@ const plugins = [
   ...(isDev ? ['./plugins/dev-tools'] : []),
   ...(process.env.ENABLE_ANALYTICS ? ['./plugins/analytics'] : [])
 ];
+```
+
+### 7.4. Plugin Dependencies
+
+Ensure plugins are loaded in the correct order to handle dependencies properly.
+
+```typescript
+const plugins = [
+  './plugins/config',     // Load configuration first
+  './plugins/database',   // Database depends on config
+  './plugins/auth',       // Auth depends on database
+  './plugins/routes'      // Routes depend on auth
+];
+```
+
+## 8. Examples
+
+The following examples demonstrate common Loader usage patterns for real-world applications.
+
+### 8.1. Basic Configuration Loading
+
+```typescript
+import { ConfigLoader } from '@stackpress/ingest';
+
+const configLoader = new ConfigLoader({
+  key: 'database',
+  extnames: ['.json', '.js', '.env.js']
+});
+
+// Load database configuration
+const dbConfig = await configLoader.load('./config/database', {
+  host: 'localhost',
+  port: 5432,
+  database: 'myapp'
+});
+
+console.log('Database config:', dbConfig);
+```
+
+### 8.2. Plugin System Implementation
+
+```typescript
+import { PluginLoader } from '@stackpress/ingest';
+import { server } from '@stackpress/ingest/http';
+
+const app = server();
+
+const pluginLoader = new PluginLoader({
+  cwd: process.cwd(),
+  plugins: [
+    './plugins/cors',
+    './plugins/auth',
+    './plugins/api',
+    '@company/monitoring'
+  ]
+});
+
+await pluginLoader.bootstrap(async (name, plugin) => {
+  console.log(`Loading plugin: ${name}`);
+  
+  if (typeof plugin === 'function') {
+    // Function plugin - call with server instance
+    await plugin(app);
+  } else if (plugin && typeof plugin === 'object') {
+    // Configuration plugin - apply settings
+    if (plugin.routes) {
+      app.use(plugin.routes);
+    }
+    if (plugin.middleware) {
+      plugin.middleware.forEach((mw: any) => app.use(mw));
+    }
+  }
+  
+  console.log(`✓ Plugin ${name} loaded successfully`);
+});
+
+console.log('All plugins loaded, starting server...');
+app.listen(3000);
+```
+
+### 8.3. Dynamic Plugin Discovery
+
+```typescript
+import { PluginLoader } from '@stackpress/ingest';
+import { readdir } from 'fs/promises';
+import { join } from 'path';
+
+async function discoverPlugins(pluginsDir: string) {
+  const entries = await readdir(pluginsDir, { withFileTypes: true });
+  const plugins = [];
+  
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      const pluginPath = join(pluginsDir, entry.name);
+      plugins.push(pluginPath);
+    }
+  }
+  
+  return plugins;
+}
+
+// Discover and load plugins dynamically
+const discoveredPlugins = await discoverPlugins('./src/plugins');
+
+const pluginLoader = new PluginLoader({
+  plugins: [
+    './plugins/core',  // Always load core plugins first
+    ...discoveredPlugins
+  ]
+});
+
+await pluginLoader.bootstrap(async (name, plugin) => {
+  try {
+    if (typeof plugin === 'function') {
+      await plugin(app);
+    }
+    console.log(`✓ Loaded plugin: ${name}`);
+  } catch (error) {
+    console.error(`✗ Failed to load plugin ${name}:`, error);
+  }
+});
+```
+
+### 8.4. Conditional Plugin Loading
+
+```typescript
+import { PluginLoader } from '@stackpress/ingest';
+
+const environment = process.env.NODE_ENV || 'development';
+const features = process.env.FEATURES?.split(',') || [];
+
+// Build plugin list based on environment and features
+const plugins = [
+  './plugins/core',
+  './plugins/database'
+];
+
+// Environment-specific plugins
+if (environment === 'development') {
+  plugins.push('./plugins/dev-tools', './plugins/hot-reload');
+} else if (environment === 'production') {
+  plugins.push('./plugins/monitoring', './plugins/performance');
+}
+
+// Feature-specific plugins
+if (features.includes('auth')) {
+  plugins.push('./plugins/auth');
+}
+
+if (features.includes('analytics')) {
+  plugins.push('./plugins/analytics');
+}
+
+const pluginLoader = new PluginLoader({ plugins });
+
+await pluginLoader.bootstrap(async (name, plugin) => {
+  console.log(`Loading ${name} for ${environment} environment`);
+  
+  if (typeof plugin === 'function') {
+    await plugin(app, { environment, features });
+  }
+});
 ```

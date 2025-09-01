@@ -1,31 +1,28 @@
 # Plugin Development Guide
 
-Learn how to create powerful plugins for the Ingest framework to extend functionality and build modular applications.
+Learn how to create powerful plugins for the Ingest framework to extend functionality and build modular applications. This guide covers everything from basic plugin structure to advanced patterns and publishing strategies.
 
-## Table of Contents
+ 1. [Plugin Basics](#1-plugin-basics)
+ 2. [Plugin Structure](#2-plugin-structure)
+ 3. [Configuration Management](#3-configuration-management)
+ 4. [Event Handling](#4-event-handling)
+ 5. [Route Registration](#5-route-registration)
+ 6. [Component Registration](#6-component-registration)
+ 7. [Advanced Patterns](#7-advanced-patterns)
+ 8. [Testing Plugins](#8-testing-plugins)
+ 9. [Publishing Plugins](#9-publishing-plugins)
 
-- [Plugin Basics](#plugin-basics)
-- [Plugin Structure](#plugin-structure)
-- [Configuration Management](#configuration-management)
-- [Event Handling](#event-handling)
-- [Route Registration](#route-registration)
-- [Component Registration](#component-registration)
-- [Advanced Patterns](#advanced-patterns)
-- [Testing Plugins](#testing-plugins)
-- [Publishing Plugins](#publishing-plugins)
+## 1. Plugin Basics
 
-## Plugin Basics
+Plugin basics cover the fundamental concepts and requirements for creating Ingest plugins. Understanding these concepts is essential for building effective and maintainable plugins.
 
-### What is a Plugin?
+### 1.1. What is a Plugin?
 
-A plugin in Ingest is a function that receives the server instance and configures it by:
-- Setting configuration values
-- Adding event listeners (middleware)
-- Registering routes
-- Registering reusable components
-- Extending server functionality
+A plugin in Ingest is a function that receives the server instance and configures it by setting configuration values, adding event listeners (middleware), registering routes, registering reusable components, and extending server functionality.
 
-### Plugin Function Signature
+### 1.2. Plugin Function Signature
+
+The following example shows the basic plugin function signature.
 
 ```typescript
 import type { HttpServer } from '@stackpress/ingest';
@@ -35,7 +32,7 @@ export default function myPlugin(server: HttpServer) {
 }
 ```
 
-### Plugin Registration
+### 1.3. Plugin Registration
 
 Add your plugin to the `plugins` array in `package.json`:
 
@@ -48,7 +45,7 @@ Add your plugin to the `plugins` array in `package.json`:
 }
 ```
 
-### Plugin Loading
+### 1.4. Plugin Loading
 
 Plugins are loaded automatically when you call `server.bootstrap()`:
 
@@ -60,9 +57,13 @@ await app.bootstrap(); // Loads all plugins
 app.create().listen(3000);
 ```
 
-## Plugin Structure
+## 2. Plugin Structure
 
-### Basic Plugin Template
+Plugin structure defines the organization and implementation patterns for creating well-structured and maintainable plugins.
+
+### 2.1. Basic Plugin Template
+
+The following example shows a basic plugin template with configuration, middleware, routes, and component registration.
 
 ```typescript
 // plugins/my-plugin.ts
@@ -106,7 +107,9 @@ export default function myPlugin(server: HttpServer) {
 }
 ```
 
-### TypeScript Plugin with Interfaces
+### 2.2. TypeScript Plugin with Interfaces
+
+The following example demonstrates creating a TypeScript plugin with proper interfaces and type safety.
 
 ```typescript
 // plugins/database.ts
@@ -198,9 +201,13 @@ async function createConnection(config: DatabaseConfig): Promise<DatabaseConnect
 }
 ```
 
-## Configuration Management
+## 3. Configuration Management
 
-### Setting Configuration
+Configuration management provides flexible ways to handle plugin settings and environment-specific configurations.
+
+### 3.1. Setting Configuration
+
+The following example shows how to set nested configuration values and individual properties.
 
 ```typescript
 export default function configPlugin(server: HttpServer) {
@@ -220,7 +227,9 @@ export default function configPlugin(server: HttpServer) {
 }
 ```
 
-### Reading Configuration
+### 3.2. Reading Configuration
+
+The following example demonstrates various ways to read configuration values.
 
 ```typescript
 export default function consumerPlugin(server: HttpServer) {
@@ -241,7 +250,9 @@ export default function consumerPlugin(server: HttpServer) {
 }
 ```
 
-### Environment-Based Configuration
+### 3.3. Environment-Based Configuration
+
+The following example shows how to implement environment-specific configuration management.
 
 ```typescript
 export default function envConfigPlugin(server: HttpServer) {
@@ -270,9 +281,13 @@ export default function envConfigPlugin(server: HttpServer) {
 }
 ```
 
-## Event Handling
+## 4. Event Handling
 
-### Request Middleware
+Event handling enables plugins to implement middleware patterns and respond to application events throughout the request lifecycle.
+
+### 4.1. Request Middleware
+
+The following example demonstrates implementing various types of middleware with priority-based execution.
 
 ```typescript
 export default function middlewarePlugin(server: HttpServer) {
@@ -337,7 +352,9 @@ async function validateToken(token: string) {
 }
 ```
 
-### Custom Events
+### 4.2. Custom Events
+
+The following example shows how to create and handle custom events for reactive programming patterns.
 
 ```typescript
 export default function eventPlugin(server: HttpServer) {
@@ -393,9 +410,13 @@ async function sendOrderConfirmation(orderData: any) { /* ... */ }
 async function createUser(userData: any) { return { id: Date.now(), ...userData }; }
 ```
 
-## Route Registration
+## 5. Route Registration
 
-### Adding Routes in Plugins
+Route registration allows plugins to add new endpoints and organize routes with common middleware patterns.
+
+### 5.1. Adding Routes in Plugins
+
+The following example demonstrates various ways to register routes within plugins.
 
 ```typescript
 export default function apiPlugin(server: HttpServer) {
@@ -449,7 +470,9 @@ export default function apiPlugin(server: HttpServer) {
 }
 ```
 
-### Route Groups and Prefixes
+### 5.2. Route Groups and Prefixes
+
+The following example shows how to create route groups with common middleware.
 
 ```typescript
 export default function routeGroupPlugin(server: HttpServer) {
@@ -485,9 +508,13 @@ export default function routeGroupPlugin(server: HttpServer) {
 }
 ```
 
-## Component Registration
+## 6. Component Registration
 
-### Registering Utilities
+Component registration enables plugins to provide reusable utilities and services that other plugins and application code can use.
+
+### 6.1. Registering Utilities
+
+The following example shows how to register various utility functions and helpers.
 
 ```typescript
 export default function utilsPlugin(server: HttpServer) {
@@ -543,7 +570,9 @@ export default function utilsPlugin(server: HttpServer) {
 }
 ```
 
-### Service Registration
+### 6.2. Service Registration
+
+The following example demonstrates registering complex services with multiple methods.
 
 ```typescript
 export default function servicesPlugin(server: HttpServer) {
@@ -612,9 +641,13 @@ export default function servicesPlugin(server: HttpServer) {
 }
 ```
 
-## Advanced Patterns
+## 7. Advanced Patterns
 
-### Plugin Dependencies
+Advanced patterns cover sophisticated plugin development techniques including dependency management, configuration validation, and conditional loading.
+
+### 7.1. Plugin Dependencies
+
+The following example shows how to implement plugin dependencies and ensure required plugins are available.
 
 ```typescript
 // plugins/advanced-auth.ts
@@ -677,7 +710,9 @@ function validatePassword(password: string, hash: string): boolean {
 }
 ```
 
-### Plugin Configuration Validation
+### 7.2. Plugin Configuration Validation
+
+The following example demonstrates implementing configuration validation using schema validation libraries.
 
 ```typescript
 import Joi from 'joi';
@@ -711,7 +746,9 @@ export default function validatedPlugin(server: HttpServer) {
 }
 ```
 
-### Conditional Plugin Loading
+### 7.3. Conditional Plugin Loading
+
+The following example shows how to implement conditional plugin loading based on environment and feature flags.
 
 ```typescript
 export default function conditionalPlugin(server: HttpServer) {
@@ -748,9 +785,13 @@ export default function conditionalPlugin(server: HttpServer) {
 }
 ```
 
-## Testing Plugins
+## 8. Testing Plugins
 
-### Unit Testing
+Testing plugins ensures reliability and maintainability through comprehensive unit and integration testing strategies.
+
+### 8.1. Unit Testing
+
+The following example shows how to write unit tests for plugin functionality.
 
 ```typescript
 // tests/plugins/auth.test.ts
@@ -791,7 +832,9 @@ describe('Auth Plugin', () => {
 });
 ```
 
-### Integration Testing
+### 8.2. Integration Testing
+
+The following example demonstrates testing plugin interactions and dependencies.
 
 ```typescript
 // tests/integration/plugin-integration.test.ts
@@ -834,7 +877,9 @@ describe('Plugin Integration', () => {
 });
 ```
 
-### Mocking Dependencies
+### 8.3. Mocking Dependencies
+
+The following example shows how to create mock dependencies for testing.
 
 ```typescript
 // tests/mocks/database.mock.ts
@@ -874,9 +919,13 @@ beforeEach(() => {
 });
 ```
 
-## Publishing Plugins
+## 9. Publishing Plugins
 
-### Package Structure
+Publishing plugins covers the complete process of packaging, documenting, and distributing plugins for community use.
+
+### 9.1. Package Structure
+
+The following structure shows the recommended organization for publishable plugins.
 
 ```
 my-ingest-plugin/
@@ -896,7 +945,9 @@ my-ingest-plugin/
     └── ...
 ```
 
-### Package.json Configuration
+### 9.2. Package.json Configuration
+
+The following example shows the recommended package.json configuration for published plugins.
 
 ```json
 {
@@ -932,7 +983,9 @@ my-ingest-plugin/
 }
 ```
 
-### Plugin Entry Point
+### 9.3. Plugin Entry Point
+
+The following example shows the recommended structure for the main plugin entry point.
 
 ```typescript
 // src/index.ts
@@ -952,57 +1005,5 @@ export default function authPlugin(server: HttpServer) {
 export * from './types';
 ```
 
-### Documentation
-
-```markdown
-# @my-org/ingest-auth-plugin
-
-Authentication plugin for the Ingest framework.
-
-## Installation
-
-```bash
-npm install @my-org/ingest-auth-plugin
-```
-
-## Usage
-
-Add to your `package.json`:
-
-```json
-{
-  "plugins": [
-    "@my-org/ingest-auth-plugin"
-  ]
-}
-```
-
-Configure in your server:
-
-```typescript
-import { server } from '@stackpress/ingest/http';
-
-const app = server();
-app.config.set('auth', {
-  secret: 'your-secret-key',
-  expiresIn: '24h'
-});
-
-await app.bootstrap();
-```
-
-## API
-
-### Configuration
-
-- `secret` (string): JWT secret key
-- `expiresIn` (string): Token expiration time
-- `algorithm` (string): JWT algorithm (default: 'HS256')
-
-### Methods
-
-- `auth.login(username, password)`: Authenticate user
-- `auth.register(userData)`: Register new user
-- `auth.verify(token)`: Verify JWT token
 
 This guide provides everything you need to create powerful, reusable plugins for the Ingest framework. Plugins are the key to building modular, maintainable applications that can be easily extended and customized.

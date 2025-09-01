@@ -13,13 +13,19 @@ const adapter = new WhatwgAdapter(context, request);
 const response = await adapter.plug();
 ```
 
-## Static Methods
+ 1. [Plugging WHATWG Requests](#1-plugging-whatwg-requests)
+ 2. [Methods](#2-methods)
+ 3. [Request Processing Flow](#3-request-processing-flow)
+ 4. [Body Loading](#4-body-loading)
+ 5. [Response Dispatching](#5-response-dispatching)
+ 6. [Serverless Integration Examples](#6-serverless-integration-examples)
+ 7. [Static Functions](#7-static-functions)
+ 8. [Advanced Usage](#8-advanced-usage)
+ 9. [Best Practices](#9-best-practices)
 
-The following methods can be accessed directly from WhatwgAdapter itself.
+## 1. Plugging WHATWG Requests
 
-### Plugging WHATWG Requests
-
-The following example shows how to handle WHATWG requests using the static plug method.
+The following example shows how to handle WHATWG requests using the static plug method for serverless environments.
 
 ```typescript
 import { server } from '@stackpress/ingest/whatwg';
@@ -56,13 +62,13 @@ export async function functionHandler(request: Request) {
 
 A promise that resolves to a WHATWG Response object.
 
-## Methods
+## 2. Methods
 
 The following methods are available when instantiating a WhatwgAdapter.
 
-### Processing Requests
+### 2.1. Processing Requests
 
-The following example shows how to process WHATWG requests through the adapter.
+The following example shows how to process WHATWG requests through the adapter with flexible action handling.
 
 ```typescript
 const adapter = new WhatwgAdapter(context, request);
@@ -90,7 +96,7 @@ const response3 = await adapter.plug(async (req, res, ctx) => {
 
 A promise that resolves to a WHATWG Response object.
 
-### Creating Request Objects
+### 2.2. Creating Request Objects
 
 The following example shows how WHATWG requests are converted to Ingest Request objects.
 
@@ -110,7 +116,7 @@ console.log(ingestRequest.session);    // Session data from cookies
 
 An Ingest Request object configured for the WHATWG request.
 
-### Creating Response Objects
+### 2.3. Creating Response Objects
 
 The following example shows how WHATWG responses are created for Ingest processing.
 
@@ -131,11 +137,13 @@ const whatwgResponse = await ingestResponse.dispatch();
 
 An Ingest Response object configured for WHATWG output.
 
-## Request Processing Flow
+## 3. Request Processing Flow
 
-WhatwgAdapter follows a structured request processing flow:
+WhatwgAdapter follows a structured request processing flow for reliable WHATWG request handling.
 
-### 1. Request Initialization
+### 3.1. Request Initialization
+
+Convert WHATWG Request to Ingest Request with comprehensive data extraction.
 
 ```typescript
 // Convert WHATWG Request to Ingest Request
@@ -146,7 +154,9 @@ const request = adapter.request();
 // - Sets up body loader for POST data
 ```
 
-### 2. Response Setup
+### 3.2. Response Setup
+
+Create Ingest Response for WHATWG Response with proper configuration.
 
 ```typescript
 // Create Ingest Response for WHATWG Response
@@ -156,7 +166,9 @@ const response = adapter.response();
 // - Prepares header management
 ```
 
-### 3. Body Loading
+### 3.3. Body Loading
+
+Load request body asynchronously with WHATWG-specific handling.
 
 ```typescript
 // Load request body asynchronously
@@ -166,7 +178,9 @@ await request.load();
 // - Handles multipart uploads
 ```
 
-### 4. Route Processing
+### 3.4. Route Processing
+
+Execute route through Route.emit with complete lifecycle management.
 
 ```typescript
 // Execute route through Route.emit
@@ -176,7 +190,9 @@ await Route.emit(event, request, response, context);
 // - Handles errors and 404s
 ```
 
-### 5. Response Dispatch
+### 3.5. Response Dispatch
+
+Create WHATWG Response with proper headers and content.
 
 ```typescript
 // Create WHATWG Response
@@ -187,11 +203,13 @@ const whatwgResponse = await response.dispatch();
 // - Sends response headers and body
 ```
 
-## Body Loading
+## 4. Body Loading
 
-WhatwgAdapter provides robust body loading for WHATWG requests:
+WhatwgAdapter provides robust body loading for WHATWG requests with native API support.
 
-### Automatic Body Parsing
+### 4.1. Automatic Body Parsing
+
+Parse request bodies automatically based on content type using WHATWG APIs.
 
 ```typescript
 // Body is automatically loaded and parsed
@@ -203,7 +221,9 @@ const jsonData = request.data.get();     // Combined data
 const rawBody = request.body;            // Raw body string
 ```
 
-### Content Type Handling
+### 4.2. Content Type Handling
+
+Handle different content types with appropriate parsing strategies.
 
 ```typescript
 // Form data (application/x-www-form-urlencoded)
@@ -220,7 +240,9 @@ const rawBody = request.body;            // Raw body string
 // Handles file uploads and form fields
 ```
 
-### Async Body Loading
+### 4.3. Async Body Loading
+
+Use WHATWG Request body methods for different data types.
 
 ```typescript
 // WHATWG Request body loading
@@ -230,11 +252,13 @@ const bodyFormData = await request.formData();
 const bodyArrayBuffer = await request.arrayBuffer();
 ```
 
-## Response Dispatching
+## 5. Response Dispatching
 
-WhatwgAdapter handles various response types and formats:
+WhatwgAdapter handles various response types and formats with WHATWG Response creation.
 
-### Response Type Handling
+### 5.1. Response Type Handling
+
+Handle different response types with appropriate WHATWG Response creation.
 
 ```typescript
 // String responses
@@ -258,7 +282,9 @@ response.body = { users: [...] };
 // Automatically serializes to JSON Response
 ```
 
-### Cookie Management
+### 5.2. Cookie Management
+
+Manage session cookies with automatic serialization for serverless environments.
 
 ```typescript
 // Session cookies are automatically handled
@@ -270,7 +296,9 @@ response.session.set('preferences', JSON.stringify(prefs));
 // Set-Cookie: preferences={"theme":"dark"}; Path=/
 ```
 
-### Header Management
+### 5.3. Header Management
+
+Set custom headers for security, caching, and API versioning.
 
 ```typescript
 // Custom headers
@@ -282,9 +310,11 @@ response.headers.set('X-Frame-Options', 'DENY');
 response.headers.set('X-Content-Type-Options', 'nosniff');
 ```
 
-## Serverless Integration Examples
+## 6. Serverless Integration Examples
 
-### Vercel Functions
+The following examples demonstrate WhatwgAdapter integration with popular serverless platforms.
+
+### 6.1. Vercel Functions
 
 ```typescript
 // api/users.ts
@@ -301,9 +331,13 @@ app.get('/api/users', async (req, res, ctx) => {
 export default async function handler(request: Request) {
   return await WhatwgAdapter.plug(app, request);
 }
+
+async function getUsers() {
+  return [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }];
+}
 ```
 
-### Netlify Functions
+### 6.2. Netlify Functions
 
 ```typescript
 // netlify/functions/api.ts
@@ -323,7 +357,7 @@ export default async function handler(request: Request) {
 }
 ```
 
-### Cloudflare Workers
+### 6.3. Cloudflare Workers
 
 ```typescript
 // worker.ts
@@ -343,7 +377,7 @@ export default {
 };
 ```
 
-### Deno Deploy
+### 6.4. Deno Deploy
 
 ```typescript
 // main.ts
@@ -361,7 +395,7 @@ Deno.serve(async (request: Request) => {
 });
 ```
 
-### AWS Lambda (with Response Streaming)
+### 6.5. AWS Lambda (with Response Streaming)
 
 ```typescript
 // lambda.ts
@@ -392,13 +426,13 @@ export const handler = async (event: any) => {
 };
 ```
 
-## Static Functions
+## 7. Static Functions
 
-WhatwgAdapter provides utility functions for request and response handling:
+WhatwgAdapter provides utility functions for request and response handling with WHATWG-specific implementations.
 
-### Request Body Loader
+### 7.1. Request Body Loader
 
-The following example shows how to create a custom body loader.
+The following example shows how to create a custom body loader for WHATWG requests.
 
 ```typescript
 import { loader } from '@stackpress/ingest/whatwg/Adapter';
@@ -421,9 +455,9 @@ await ingestRequest.load();
 
 A loader function that reads and parses the request body.
 
-### Response Dispatcher
+### 7.2. Response Dispatcher
 
-The following example shows how to create a custom response dispatcher.
+The following example shows how to create a custom response dispatcher for WHATWG responses.
 
 ```typescript
 import { dispatcher } from '@stackpress/ingest/whatwg/Adapter';
@@ -451,9 +485,9 @@ const whatwgResponse = await response.dispatch();
 
 A dispatcher function that creates a WHATWG Response object.
 
-## Advanced Usage
+## 8. Advanced Usage
 
-### Custom Request Processing
+### 8.1. Custom Request Processing
 
 ```typescript
 const app = server();
@@ -481,7 +515,7 @@ app.get('/api/data', async (req, res, ctx) => {
 });
 ```
 
-### Stream Processing
+### 8.2. Stream Processing
 
 ```typescript
 app.get('/api/stream', async (req, res, ctx) => {
@@ -501,7 +535,7 @@ app.get('/api/stream', async (req, res, ctx) => {
 });
 ```
 
-### Error Handling
+### 8.3. Error Handling
 
 ```typescript
 app.on('error', async (req, res) => {
@@ -525,9 +559,13 @@ app.on('error', async (req, res) => {
 });
 ```
 
-## Best Practices
+## 9. Best Practices
 
-### Environment Detection
+The following best practices ensure optimal performance and security in serverless environments.
+
+### 9.1. Environment Detection
+
+Detect and adapt to different serverless environments for optimal performance.
 
 ```typescript
 const app = server();
@@ -549,7 +587,9 @@ app.on('request', async (req, res) => {
 });
 ```
 
-### CORS Handling
+### 9.2. CORS Handling
+
+Implement proper CORS handling for cross-origin requests.
 
 ```typescript
 app.on('request', async (req, res) => {
@@ -569,7 +609,9 @@ app.on('request', async (req, res) => {
 });
 ```
 
-### Performance Optimization
+### 9.3. Performance Optimization
+
+Optimize responses for serverless environments with appropriate caching.
 
 ```typescript
 app.on('response', async (req, res) => {
@@ -586,7 +628,9 @@ app.on('response', async (req, res) => {
 });
 ```
 
-### Security Headers
+### 9.4. Security Headers
+
+Implement security headers appropriate for serverless deployments.
 
 ```typescript
 app.on('response', async (req, res) => {

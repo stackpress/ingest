@@ -1,34 +1,27 @@
 # Request
 
-The Request class provides a generic wrapper for handling HTTP requests across different platforms.
-
-## Overview
-
-The Request class provides:
-- Cross-platform compatibility (Node.js HTTP and WHATWG Fetch)
-- Data aggregation from query parameters, POST data, and additional context
-- Asynchronous body loading
-- Session management
-- Header handling
+The Request class provides a generic wrapper for handling HTTP requests across different platforms with unified data access and asynchronous body loading capabilities.
 
 ```typescript
 import { Request } from '@stackpress/ingest';
 
-const req = new Request({
+const req = new Request<ResourceType>({
   url: 'http://example.com/api',
   method: 'POST'
 });
 ```
 
-## Type Parameters
+ 1. [Properties](#1-properties)
+ 2. [Methods](#2-methods)
+ 3. [Data Access](#3-data-access)
+ 4. [Request Creation](#4-request-creation)
+ 5. [Body Loading](#5-body-loading)
+ 6. [Platform Compatibility](#6-platform-compatibility)
+ 7. [Type Parameters](#7-type-parameters)
+ 8. [Examples](#8-examples)
+ 9. [Type Safety](#9-type-safety)
 
-The Request class accepts one generic type parameter:
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `R` | `any` | Request resource type (e.g., IncomingMessage, Request) |
-
-## Properties
+## 1. Properties
 
 The following properties are available when instantiating a Request.
 
@@ -48,13 +41,13 @@ The following properties are available when instantiating a Request.
 | `type` | `string` | Type of body content |
 | `loader` | `RequestLoader<R>` | Body loader function |
 
-## Methods
+## 2. Methods
 
 The following methods are available when instantiating a Request.
 
-### Loading Request Body
+### 2.1. Loading Request Body
 
-The following example shows how to load the request body asynchronously.
+The following example shows how to load the request body asynchronously for processing POST data and file uploads.
 
 ```typescript
 const req = new Request({
@@ -71,13 +64,13 @@ console.log(req.loaded); // true
 
 The Request instance to allow method chaining.
 
-## Data Access
+## 3. Data Access
 
-The Request class provides multiple ways to access request data:
+The Request class provides multiple ways to access request data from different sources including query parameters, POST body, and session data.
 
-### Combined Data Access
+### 3.1. Combined Data Access
 
-The `data` property combines query parameters, POST data, and additional context:
+The `data` property combines query parameters, POST data, and additional context for unified access.
 
 ```typescript
 // URL: /users?page=1&limit=10
@@ -93,9 +86,9 @@ const allData = req.data.get();
 // Returns: { page: '1', limit: '10', name: 'John', email: 'john@example.com', userId: 123 }
 ```
 
-### Query Parameters
+### 3.2. Query Parameters
 
-Access URL query parameters directly:
+Access URL query parameters directly for filtering and pagination.
 
 ```typescript
 // URL: /search?q=javascript&category=programming&page=2
@@ -108,9 +101,9 @@ const allQuery = req.query.get();
 // Returns: { q: 'javascript', category: 'programming', page: '2' }
 ```
 
-### POST Data
+### 3.3. POST Data
 
-Access POST request body data:
+Access POST request body data after loading the request body.
 
 ```typescript
 // For POST requests with form data or JSON
@@ -123,9 +116,9 @@ const email = req.post.get('email');
 const allPost = req.post.get();
 ```
 
-### Headers
+### 3.4. Headers
 
-Access request headers:
+Access request headers for authentication, content negotiation, and metadata.
 
 ```typescript
 const contentType = req.headers.get('content-type');
@@ -144,9 +137,9 @@ for (const [name, value] of allHeaders) {
 }
 ```
 
-### Session Data
+### 3.5. Session Data
 
-Access and modify session data:
+Access and modify session data for user state management.
 
 ```typescript
 // Get session data
@@ -165,9 +158,13 @@ if (req.session.has('isAuthenticated')) {
 const sessionData = req.session.get();
 ```
 
-## Request Creation
+## 4. Request Creation
 
-### Basic Request Creation
+The Request class supports various initialization patterns for different use cases and platforms.
+
+### 4.1. Basic Request Creation
+
+Create a simple request with URL and method for basic HTTP operations.
 
 ```typescript
 import { Request } from '@stackpress/ingest';
@@ -178,7 +175,9 @@ const req = new Request({
 });
 ```
 
-### Request with Headers
+### 4.2. Request with Headers
+
+Include custom headers for authentication and content negotiation.
 
 ```typescript
 const req = new Request({
@@ -191,7 +190,9 @@ const req = new Request({
 });
 ```
 
-### Request with Data
+### 4.3. Request with Data
+
+Initialize request with query parameters and POST data.
 
 ```typescript
 const req = new Request({
@@ -207,7 +208,9 @@ const req = new Request({
 });
 ```
 
-### Request with Session
+### 4.4. Request with Session
+
+Include session data for user context and state management.
 
 ```typescript
 const req = new Request({
@@ -221,11 +224,13 @@ const req = new Request({
 });
 ```
 
-## Body Loading
+## 5. Body Loading
 
-The Request class supports asynchronous body loading for different content types:
+The Request class supports asynchronous body loading for different content types including JSON, form data, and file uploads.
 
-### JSON Body
+### 5.1. JSON Body
+
+Handle JSON request bodies for API endpoints.
 
 ```typescript
 const req = new Request({
@@ -240,7 +245,9 @@ console.log(req.mimetype); // 'application/json'
 console.log(req.post.get()); // { name: 'John', email: 'john@example.com' }
 ```
 
-### Form Data
+### 5.2. Form Data
+
+Process multipart form data for file uploads and complex forms.
 
 ```typescript
 const req = new Request({
@@ -255,7 +262,9 @@ console.log(req.post.get('username'));
 console.log(req.post.get('file')); // File data
 ```
 
-### URL Encoded Data
+### 5.3. URL Encoded Data
+
+Handle URL-encoded form submissions.
 
 ```typescript
 const req = new Request({
@@ -270,11 +279,13 @@ console.log(req.post.get('username')); // 'john'
 console.log(req.post.get('password')); // 'secret'
 ```
 
-## Platform Compatibility
+## 6. Platform Compatibility
 
-The Request class works across different platforms:
+The Request class provides cross-platform compatibility for Node.js HTTP and WHATWG Fetch environments.
 
-### Node.js HTTP
+### 6.1. Node.js HTTP
+
+Integration with Node.js HTTP server for traditional server applications.
 
 ```typescript
 import { createServer } from 'node:http';
@@ -289,7 +300,9 @@ createServer((incomingMessage, serverResponse) => {
 });
 ```
 
-### WHATWG Fetch (Serverless)
+### 6.2. WHATWG Fetch (Serverless)
+
+Support for serverless environments like Vercel, Netlify, and Cloudflare Workers.
 
 ```typescript
 // Vercel, Netlify, etc.
@@ -304,9 +317,42 @@ export default async function handler(request: Request) {
 }
 ```
 
-## Examples
+## 7. Type Parameters
 
-### Route Handler with Request Processing
+The Request class accepts one generic type parameter for type-safe resource handling.
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `R` | `any` | Request resource type (e.g., IncomingMessage, Request) |
+
+```typescript
+import type { IncomingMessage } from 'node:http';
+
+// Node.js HTTP request
+const nodeReq = new Request<IncomingMessage>({
+  resource: incomingMessage
+});
+
+// WHATWG Fetch request
+const fetchReq = new Request<globalThis.Request>({
+  resource: request
+});
+
+// Custom request type
+interface CustomRequest {
+  customProperty: string;
+}
+
+const customReq = new Request<CustomRequest>({
+  resource: { customProperty: 'value' }
+});
+```
+
+## 8. Examples
+
+The following examples demonstrate common Request usage patterns and best practices for real-world applications.
+
+### 8.1. Route Handler with Request Processing
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -342,7 +388,7 @@ app.post('/api/users', async (req, res) => {
 });
 ```
 
-### Authentication Middleware
+### 8.2. Authentication Middleware
 
 ```typescript
 app.on('request', async (req, res) => {
@@ -380,7 +426,7 @@ async function validateToken(token: string) {
 }
 ```
 
-### File Upload Handling
+### 8.3. File Upload Handling
 
 ```typescript
 app.post('/api/upload', async (req, res) => {
@@ -416,7 +462,7 @@ app.post('/api/upload', async (req, res) => {
 });
 ```
 
-## Type Safety
+## 9. Type Safety
 
 The Request class supports TypeScript generics for type-safe resource handling:
 

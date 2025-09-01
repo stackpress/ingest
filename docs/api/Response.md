@@ -1,33 +1,26 @@
 # Response
 
-The Response class provides a generic wrapper for handling HTTP responses across different platforms.
-
-## Overview
-
-The Response class provides:
-- Cross-platform compatibility (Node.js HTTP and WHATWG Fetch)
-- Multiple response types (JSON, HTML, errors, redirects)
-- Header management
-- Session handling
-- Status code management
+The Response class provides a generic wrapper for handling HTTP responses across different platforms with support for multiple response types, header management, and session handling.
 
 ```typescript
 import { Response } from '@stackpress/ingest';
 
-const res = new Response({
+const res = new Response<ResourceType>({
   headers: { 'Content-Type': 'application/json' }
 });
 ```
 
-## Type Parameters
+ 1. [Properties](#1-properties)
+ 2. [Methods](#2-methods)
+ 3. [Header Management](#3-header-management)
+ 4. [Session Management](#4-session-management)
+ 5. [Response Creation](#5-response-creation)
+ 6. [Platform Compatibility](#6-platform-compatibility)
+ 7. [Type Parameters](#7-type-parameters)
+ 8. [Examples](#8-examples)
+ 9. [Type Safety](#9-type-safety)
 
-The Response class accepts one generic type parameter:
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `S` | `any` | Response resource type (e.g., ServerResponse, Response) |
-
-## Properties
+## 1. Properties
 
 The following properties are available when instantiating a Response.
 
@@ -50,13 +43,13 @@ The following properties are available when instantiating a Response.
 | `type` | `string` | Type of body content |
 | `dispatcher` | `ResponseDispatcher<S>` | Response dispatcher function |
 
-## Methods
+## 2. Methods
 
 The following methods are available when instantiating a Response.
 
-### Setting JSON Response
+### 2.1. Setting JSON Response
 
-The following example shows how to set a JSON response.
+The following example shows how to set a JSON response for API endpoints.
 
 ```typescript
 // Simple JSON response
@@ -81,9 +74,9 @@ res.setJSON('{"message": "Success"}', 200, 'OK');
 
 The Response instance to allow method chaining.
 
-### Setting HTML Response
+### 2.2. Setting HTML Response
 
-The following example shows how to set an HTML response.
+The following example shows how to set an HTML response for web pages.
 
 ```typescript
 // Simple HTML response
@@ -114,9 +107,9 @@ res.setHTML(html, 200, 'OK');
 
 The Response instance to allow method chaining.
 
-### Setting Error Response
+### 2.3. Setting Error Response
 
-The following example shows how to set an error response.
+The following example shows how to set an error response with validation details.
 
 ```typescript
 // Simple error
@@ -153,7 +146,7 @@ res.setError({
 
 The Response instance to allow method chaining.
 
-### Setting Results Response
+### 2.4. Setting Results Response
 
 The following example shows how to set a single result response.
 
@@ -184,9 +177,9 @@ res.setResults({
 
 The Response instance to allow method chaining.
 
-### Setting Rows Response
+### 2.5. Setting Rows Response
 
-The following example shows how to set a collection response with total count.
+The following example shows how to set a collection response with total count for pagination.
 
 ```typescript
 // Collection with total count
@@ -215,9 +208,9 @@ res.setRows([], 0);
 
 The Response instance to allow method chaining.
 
-### Redirecting
+### 2.6. Redirecting
 
-The following example shows how to redirect the response.
+The following example shows how to redirect the response to another URL.
 
 ```typescript
 // Simple redirect
@@ -248,7 +241,7 @@ if (!user.isAuthenticated) {
 
 The Response instance to allow method chaining.
 
-### Dispatching Response
+### 2.7. Dispatching Response
 
 The following example shows how to dispatch the response to the native resource.
 
@@ -267,7 +260,7 @@ app.get('/api/users', async (req, res) => {
 
 The native response resource after dispatching.
 
-### Converting to Status Response
+### 2.8. Converting to Status Response
 
 The following example shows how to convert the response to a status response object.
 
@@ -288,11 +281,13 @@ return {
 
 A StatusResponse object with all response details.
 
-## Header Management
+## 3. Header Management
 
-The Response class provides comprehensive header management:
+The Response class provides comprehensive header management for HTTP responses including CORS, security, and caching headers.
 
-### Setting Headers
+### 3.1. Setting Headers
+
+Control response headers for content negotiation and security.
 
 ```typescript
 // Set individual headers
@@ -312,7 +307,9 @@ const res = new Response({
 });
 ```
 
-### Getting Headers
+### 3.2. Getting Headers
+
+Access and inspect response headers.
 
 ```typescript
 const contentType = res.headers.get('content-type');
@@ -329,7 +326,9 @@ for (const [name, value] of res.headers.entries()) {
 }
 ```
 
-### Common Headers
+### 3.3. Common Headers
+
+Set frequently used headers for web applications.
 
 ```typescript
 // CORS headers
@@ -348,11 +347,13 @@ res.headers.set('ETag', '"abc123"');
 res.headers.set('Last-Modified', new Date().toUTCString());
 ```
 
-## Session Management
+## 4. Session Management
 
-The Response class integrates with session management:
+The Response class integrates with session management for user state persistence.
 
-### Setting Session Data
+### 4.1. Setting Session Data
+
+Store user data in the session for subsequent requests.
 
 ```typescript
 // Set session values
@@ -368,7 +369,9 @@ res.session.set({
 });
 ```
 
-### Reading Session Data
+### 4.2. Reading Session Data
+
+Access session data for user context.
 
 ```typescript
 const userId = res.session.get('userId');
@@ -378,7 +381,9 @@ const username = res.session.get('username');
 const sessionData = res.session.get();
 ```
 
-### Session Cookies
+### 4.3. Session Cookies
+
+Manage session cookies with security options.
 
 ```typescript
 // Session cookies are automatically managed
@@ -389,9 +394,13 @@ res.headers.set('Set-Cookie', [
 ]);
 ```
 
-## Response Creation
+## 5. Response Creation
 
-### Basic Response Creation
+The Response class supports various initialization patterns for different use cases.
+
+### 5.1. Basic Response Creation
+
+Create a simple response for basic HTTP operations.
 
 ```typescript
 import { Response } from '@stackpress/ingest';
@@ -399,7 +408,9 @@ import { Response } from '@stackpress/ingest';
 const res = new Response();
 ```
 
-### Response with Headers
+### 5.2. Response with Headers
+
+Initialize response with custom headers.
 
 ```typescript
 const res = new Response({
@@ -410,7 +421,9 @@ const res = new Response({
 });
 ```
 
-### Response with Data
+### 5.3. Response with Data
+
+Initialize response with default data.
 
 ```typescript
 const res = new Response({
@@ -421,7 +434,9 @@ const res = new Response({
 });
 ```
 
-### Response with Resource
+### 5.4. Response with Resource
+
+Initialize response with platform-specific resource.
 
 ```typescript
 import type { ServerResponse } from 'node:http';
@@ -431,11 +446,13 @@ const res = new Response<ServerResponse>({
 });
 ```
 
-## Platform Compatibility
+## 6. Platform Compatibility
 
-The Response class works across different platforms:
+The Response class provides cross-platform compatibility for Node.js HTTP and WHATWG Fetch environments.
 
-### Node.js HTTP
+### 6.1. Node.js HTTP
+
+Integration with Node.js HTTP server for traditional server applications.
 
 ```typescript
 import { createServer } from 'node:http';
@@ -449,7 +466,9 @@ createServer((req, serverResponse) => {
 });
 ```
 
-### WHATWG Fetch (Serverless)
+### 6.2. WHATWG Fetch (Serverless)
+
+Support for serverless environments like Vercel, Netlify, and Cloudflare Workers.
 
 ```typescript
 // Vercel, Netlify, etc.
@@ -462,9 +481,40 @@ export default async function handler(request: Request) {
 }
 ```
 
-## Examples
+## 7. Type Parameters
 
-### API Route Handler
+The Response class accepts one generic type parameter for type-safe resource handling.
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `S` | `any` | Response resource type (e.g., ServerResponse, Response) |
+
+```typescript
+import type { ServerResponse } from 'node:http';
+
+// Node.js HTTP response
+const nodeRes = new Response<ServerResponse>({
+  resource: serverResponse
+});
+
+// WHATWG Fetch response
+const fetchRes = new Response<globalThis.Response>();
+
+// Custom response type
+interface CustomResponse {
+  customProperty: string;
+}
+
+const customRes = new Response<CustomResponse>({
+  resource: { customProperty: 'value' }
+});
+```
+
+## 8. Examples
+
+The following examples demonstrate common Response usage patterns and best practices for real-world applications.
+
+### 8.1. API Route Handler
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -491,9 +541,14 @@ app.get('/api/users/:id', async (req, res) => {
     res.setError('Database error', {}, [], 500);
   }
 });
+
+async function getUserById(id: string) {
+  // Database lookup logic
+  return { id, name: 'John Doe', updatedAt: Date.now() };
+}
 ```
 
-### Paginated Results
+### 8.2. Paginated Results
 
 ```typescript
 app.get('/api/users', async (req, res) => {
@@ -532,7 +587,7 @@ app.get('/api/users', async (req, res) => {
 });
 ```
 
-### File Download
+### 8.3. File Download
 
 ```typescript
 app.get('/api/files/:id/download', async (req, res) => {
@@ -563,7 +618,7 @@ app.get('/api/files/:id/download', async (req, res) => {
 });
 ```
 
-### Authentication Response
+### 8.4. Authentication Response
 
 ```typescript
 app.post('/api/auth/login', async (req, res) => {
@@ -609,7 +664,7 @@ app.post('/api/auth/login', async (req, res) => {
 });
 ```
 
-### Error Handling Middleware
+### 8.5. Error Handling Middleware
 
 ```typescript
 app.on('error', (error, req, res) => {
@@ -630,7 +685,7 @@ app.on('error', (error, req, res) => {
 });
 ```
 
-## Type Safety
+## 9. Type Safety
 
 The Response class supports TypeScript generics for type-safe resource handling:
 

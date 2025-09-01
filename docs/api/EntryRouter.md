@@ -15,7 +15,20 @@ router.post('/users', './routes/create-user.js');
 router.on('user-created', './handlers/user-created.js');
 ```
 
-## Properties
+## Table of Contents
+
+ 1. Properties
+ 2. HTTP Method Routing
+ 3. Event-Based Routing
+ 4. Creating Actions from Entries
+ 5. Using Other EntryRouters
+ 6. File Structure Requirements
+ 7. Dynamic Import Process
+ 8. Build Integration
+ 9. Integration with ActionRouter
+ 10. Best Practices
+
+## 1. Properties
 
 The following properties are available when instantiating an EntryRouter.
 
@@ -23,11 +36,7 @@ The following properties are available when instantiating an EntryRouter.
 |----------|------|-------------|
 | `entries` | `Map<string, Set<EntryRouterTaskItem>>` | Map of event names to entry file configurations (readonly) |
 
-## Methods
-
-The following methods are available when instantiating an EntryRouter.
-
-### HTTP Method Routing
+## 2. HTTP Method Routing
 
 The following examples show how to define file-based routes for different HTTP methods.
 
@@ -61,7 +70,7 @@ router.all('/health', './routes/health.js');
 
 The EntryRouter instance to allow method chaining.
 
-### Event-Based Routing
+## 3. Event-Based Routing
 
 The following example shows how to route events to file handlers.
 
@@ -86,7 +95,7 @@ router.on(/^email-.+$/, './handlers/email-handler.js');
 
 The EntryRouter instance to allow method chaining.
 
-### Creating Actions from Entries
+## 4. Creating Actions from Entries
 
 The following example shows how entry files are converted to executable actions.
 
@@ -110,7 +119,7 @@ await action(request, response, context);
 
 An async function that imports and executes the file's default export.
 
-### Using Other EntryRouters
+## 5. Using Other EntryRouters
 
 The following example shows how to merge entries from another router.
 
@@ -132,11 +141,13 @@ mainRouter.use(apiRouter); // Merges entry configurations
 
 The EntryRouter instance to allow method chaining.
 
-## File Structure Requirements
+## 6. File Structure Requirements
 
-Entry files must export a default function that matches the route handler signature:
+Entry files must export a default function that matches the route handler signature.
 
-### Basic Route Handler
+### 6.1. Basic Route Handler
+
+The following example shows a basic route handler file structure.
 
 ```typescript
 // ./routes/users/list.js
@@ -146,7 +157,9 @@ export default async function(req, res, ctx) {
 }
 ```
 
-### Route Handler with Parameters
+### 6.2. Route Handler with Parameters
+
+The following example shows how to handle route parameters in entry files.
 
 ```typescript
 // ./routes/users/get.js
@@ -164,7 +177,9 @@ export default async function(req, res, ctx) {
 }
 ```
 
-### Event Handler
+### 6.3. Event Handler
+
+The following example shows how to structure event handler files.
 
 ```typescript
 // ./handlers/user-login.js
@@ -181,7 +196,9 @@ export default async function(req, res, ctx) {
 }
 ```
 
-### Complex Route Handler
+### 6.4. Complex Route Handler
+
+The following example shows a complex route handler with validation and error handling.
 
 ```typescript
 // ./routes/users/create.js
@@ -214,19 +231,23 @@ export default async function(req, res, ctx) {
 }
 ```
 
-## Dynamic Import Process
+## 7. Dynamic Import Process
 
-EntryRouter uses dynamic imports to load route handlers at runtime:
+EntryRouter uses dynamic imports to load route handlers at runtime.
 
-### Import Flow
+### 7.1. Import Flow
 
-1. **Route Registration**: File path is registered with the route
-2. **Request Handling**: When route is matched, dynamic import is triggered
-3. **Module Loading**: File is imported using `import()` statement
-4. **Default Export**: The default export is extracted and executed
-5. **Execution**: Handler is called with request, response, and context
+The following steps describe how EntryRouter processes file imports:
 
-### Import Example
+ 1. **Route Registration**: File path is registered with the route
+ 2. **Request Handling**: When route is matched, dynamic import is triggered
+ 3. **Module Loading**: File is imported using `import()` statement
+ 4. **Default Export**: The default export is extracted and executed
+ 5. **Execution**: Handler is called with request, response, and context
+
+### 7.2. Import Example
+
+The following example shows the internal implementation of dynamic imports.
 
 ```typescript
 // Internal implementation
@@ -242,11 +263,13 @@ async function EntryFileAction(req, res, ctx) {
 }
 ```
 
-## Build Integration
+## 8. Build Integration
 
-EntryRouter provides build-time information for bundlers and static analysis:
+EntryRouter provides build-time information for bundlers and static analysis.
 
-### Entry Tracking
+### 8.1. Entry Tracking
+
+The following example shows how to access entry configurations for build tools.
 
 ```typescript
 // Access entry configurations
@@ -257,7 +280,9 @@ console.log(router.entries);
 // }
 ```
 
-### Bundle Optimization
+### 8.2. Bundle Optimization
+
+The following example shows how bundlers can optimize EntryRouter configurations.
 
 ```typescript
 // Bundlers can analyze entry configurations to:
@@ -273,11 +298,13 @@ const entries = Array.from(router.entries.values())
 console.log('Route files to bundle:', entries);
 ```
 
-## Integration with ActionRouter
+## 9. Integration with ActionRouter
 
-EntryRouter works as an extension of ActionRouter:
+EntryRouter works as an extension of ActionRouter, sharing the same event system and routing capabilities.
 
-### Initialization
+### 9.1. Initialization
+
+The following example shows how EntryRouter integrates with ActionRouter.
 
 ```typescript
 import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
@@ -291,7 +318,9 @@ actionRouter.entry.get('/users', './routes/users.js');
 const entryRouter = new EntryRouter(actionRouter, listen);
 ```
 
-### Shared Event System
+### 9.2. Shared Event System
+
+The following example shows how both routers share the same event system.
 
 ```typescript
 // Both routers share the same event system
@@ -303,9 +332,13 @@ await actionRouter.emit('GET /api', req, res);
 await actionRouter.emit('GET /files', req, res);
 ```
 
-## Best Practices
+## 10. Best Practices
 
-### File Organization
+The following guidelines help ensure effective use of EntryRouter in production applications.
+
+### 10.1. File Organization
+
+The following examples show recommended file organization patterns.
 
 ```typescript
 // Organize by feature
@@ -321,7 +354,9 @@ router.post('/posts', './routes/post/posts.js');
 router.put('/posts/:id', './routes/put/posts.js');
 ```
 
-### Error Handling
+### 10.2. Error Handling
+
+The following example shows proper error handling in entry files.
 
 ```typescript
 // ./routes/error-example.js
@@ -346,7 +381,9 @@ export default async function(req, res, ctx) {
 }
 ```
 
-### Shared Utilities
+### 10.3. Shared Utilities
+
+The following example shows how to share utilities across entry files.
 
 ```typescript
 // ./routes/shared/auth.js
@@ -373,7 +410,9 @@ export default async function(req, res, ctx) {
 }
 ```
 
-### Development vs Production
+### 10.4. Development vs Production
+
+The following example shows how to handle different environments with EntryRouter.
 
 ```typescript
 // Use different files for different environments
@@ -390,7 +429,9 @@ if (isDev) {
 }
 ```
 
-### Type Safety
+### 10.5. Type Safety
+
+The following example shows how to implement type safety in entry files.
 
 ```typescript
 // ./routes/typed-example.ts

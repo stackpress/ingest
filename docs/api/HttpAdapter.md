@@ -1,4 +1,4 @@
-## HttpAdapter
+# HttpAdapter
 
 Node.js HTTP adapter that bridges Node.js IncomingMessage and ServerResponse with the Ingest framework, enabling seamless integration with Node.js HTTP servers.
 
@@ -16,13 +16,18 @@ const adapter = new HttpAdapter(context, req, res);
 await adapter.plug();
 ```
 
-### Static Methods
+ 1. [Plugging HTTP Requests](#1-plugging-http-requests)
+ 2. [Methods](#2-methods)
+ 3. [Request Processing Flow](#3-request-processing-flow)
+ 4. [Body Loading](#4-body-loading)
+ 5. [Response Dispatching](#5-response-dispatching)
+ 6. [Integration Examples](#6-integration-examples)
+ 7. [Static Functions](#7-static-functions)
+ 8. [Best Practices](#8-best-practices)
 
-The following methods can be accessed directly from HttpAdapter itself.
+## 1. Plugging HTTP Requests
 
-#### Plugging HTTP Requests
-
-The following example shows how to handle HTTP requests using the static plug method.
+The following example shows how to handle HTTP requests using the static plug method for seamless integration.
 
 ```typescript
 import { createServer } from 'node:http';
@@ -59,13 +64,13 @@ const httpServer3 = createServer(async (req, res) => {
 
 A promise that resolves to the ServerResponse object after processing.
 
-### Methods
+## 2. Methods
 
 The following methods are available when instantiating an HttpAdapter.
 
-#### Processing Requests
+### 2.1. Processing Requests
 
-The following example shows how to process HTTP requests through the adapter.
+The following example shows how to process HTTP requests through the adapter with flexible action handling.
 
 ```typescript
 const adapter = new HttpAdapter(context, req, res);
@@ -93,7 +98,7 @@ await adapter.plug(async (req, res, ctx) => {
 
 A promise that resolves to the ServerResponse object after processing.
 
-#### Creating Request Objects
+### 2.2. Creating Request Objects
 
 The following example shows how HTTP requests are converted to Ingest Request objects.
 
@@ -113,7 +118,7 @@ console.log(request.session);    // Session data from cookies
 
 An Ingest Request object configured for the HTTP request.
 
-#### Creating Response Objects
+### 2.3. Creating Response Objects
 
 The following example shows how HTTP responses are created for Ingest processing.
 
@@ -134,11 +139,13 @@ await response.dispatch();
 
 An Ingest Response object configured for HTTP output.
 
-### Request Processing Flow
+## 3. Request Processing Flow
 
-HttpAdapter follows a structured request processing flow:
+HttpAdapter follows a structured request processing flow for reliable HTTP request handling.
 
-#### 1. Request Initialization
+### 3.1. Request Initialization
+
+Convert IncomingMessage to Ingest Request with comprehensive data extraction.
 
 ```typescript
 // Convert IncomingMessage to Ingest Request
@@ -149,7 +156,9 @@ const request = adapter.request();
 // - Sets up body loader for POST data
 ```
 
-#### 2. Response Setup
+### 3.2. Response Setup
+
+Create Ingest Response for ServerResponse with proper configuration.
 
 ```typescript
 // Create Ingest Response for ServerResponse
@@ -159,7 +168,9 @@ const response = adapter.response();
 // - Prepares header management
 ```
 
-#### 3. Body Loading
+### 3.3. Body Loading
+
+Load request body asynchronously with content type detection.
 
 ```typescript
 // Load request body asynchronously
@@ -170,7 +181,9 @@ await request.load();
 // - Enforces size limits
 ```
 
-#### 4. Route Processing
+### 3.4. Route Processing
+
+Execute route through Route.emit with complete lifecycle management.
 
 ```typescript
 // Execute route through Route.emit
@@ -180,7 +193,9 @@ await Route.emit(event, request, response, context);
 // - Handles errors and 404s
 ```
 
-#### 5. Response Dispatch
+### 3.5. Response Dispatch
+
+Send response to client with proper headers and content.
 
 ```typescript
 // Send response to client
@@ -191,11 +206,13 @@ await response.dispatch();
 // - Streams response body
 ```
 
-### Body Loading
+## 4. Body Loading
 
-HttpAdapter provides robust body loading for HTTP requests:
+HttpAdapter provides robust body loading for HTTP requests with automatic parsing and size limits.
 
-#### Automatic Body Parsing
+### 4.1. Automatic Body Parsing
+
+Parse request bodies automatically based on content type.
 
 ```typescript
 // Body is automatically loaded and parsed
@@ -207,7 +224,9 @@ const jsonData = request.data.get();     // Combined data
 const rawBody = request.body;            // Raw body string
 ```
 
-#### Content Type Handling
+### 4.2. Content Type Handling
+
+Handle different content types with appropriate parsing strategies.
 
 ```typescript
 // Form data (application/x-www-form-urlencoded)
@@ -224,7 +243,9 @@ const rawBody = request.body;            // Raw body string
 // Handles file uploads and form fields
 ```
 
-#### Size Limits
+### 4.3. Size Limits
+
+Enforce request size limits for security and performance.
 
 ```typescript
 // Configure body size limits
@@ -239,11 +260,13 @@ request.on('data', chunk => {
 });
 ```
 
-### Response Dispatching
+## 5. Response Dispatching
 
-HttpAdapter handles various response types and formats:
+HttpAdapter handles various response types and formats with automatic content type detection.
 
-#### Response Type Handling
+### 5.1. Response Type Handling
+
+Handle different response types with appropriate content type headers.
 
 ```typescript
 // String responses
@@ -267,7 +290,9 @@ response.body = { users: [...] };
 // Automatically serializes to JSON
 ```
 
-#### Cookie Management
+### 5.2. Cookie Management
+
+Manage session cookies with automatic serialization and security options.
 
 ```typescript
 // Session cookies are automatically handled
@@ -279,7 +304,9 @@ response.session.set('preferences', JSON.stringify(prefs));
 // Set-Cookie: preferences={"theme":"dark"}; Path=/
 ```
 
-#### Header Management
+### 5.3. Header Management
+
+Set custom headers for security, caching, and API versioning.
 
 ```typescript
 // Custom headers
@@ -291,9 +318,11 @@ response.headers.set('X-Frame-Options', 'DENY');
 response.headers.set('X-Content-Type-Options', 'nosniff');
 ```
 
-### Integration Examples
+## 6. Integration Examples
 
-#### Express.js Style Server
+The following examples demonstrate common HttpAdapter integration patterns for real-world applications.
+
+### 6.1. Express.js Style Server
 
 ```typescript
 import { createServer } from 'node:http';
@@ -321,9 +350,17 @@ const httpServer = createServer(async (req, res) => {
 httpServer.listen(3000, () => {
   console.log('Server running on port 3000');
 });
+
+async function getUsers() {
+  return [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }];
+}
+
+async function createUser(userData: any) {
+  return { id: Date.now(), ...userData };
+}
 ```
 
-#### Custom Middleware
+### 6.2. Custom Middleware
 
 ```typescript
 const app = server();
@@ -351,9 +388,15 @@ app.on('error', async (req, res) => {
   
   return true; // Continue processing
 });
+
+const logger = {
+  error: (message: string, context: any) => {
+    console.error(message, context);
+  }
+};
 ```
 
-#### File Upload Handling
+### 6.3. File Upload Handling
 
 ```typescript
 app.post('/upload', async (req, res, ctx) => {
@@ -372,15 +415,20 @@ app.post('/upload', async (req, res, ctx) => {
     count: files.length 
   });
 });
+
+async function saveFile(file: any) {
+  // File saving logic
+  console.log(`Saving file: ${file.name}`);
+}
 ```
 
-### Static Functions
+## 7. Static Functions
 
-HttpAdapter provides utility functions for request and response handling:
+HttpAdapter provides utility functions for request and response handling with customizable options.
 
-#### Request Body Loader
+### 7.1. Request Body Loader
 
-The following example shows how to create a custom body loader.
+The following example shows how to create a custom body loader with size limits.
 
 ```typescript
 import { loader } from '@stackpress/ingest/http/Adapter';
@@ -404,9 +452,9 @@ await request.load();
 
 A loader function that reads and parses the request body.
 
-#### Response Dispatcher
+### 7.2. Response Dispatcher
 
-The following example shows how to create a custom response dispatcher.
+The following example shows how to create a custom response dispatcher with cookie options.
 
 ```typescript
 import { dispatcher } from '@stackpress/ingest/http/Adapter';
@@ -434,9 +482,13 @@ await response.dispatch();
 
 A dispatcher function that writes the response to ServerResponse.
 
-### Best Practices
+## 8. Best Practices
 
-#### Error Handling
+The following best practices ensure robust and secure HTTP adapter implementations.
+
+### 8.1. Error Handling
+
+Implement comprehensive error handling for production reliability.
 
 ```typescript
 const httpServer = createServer(async (req, res) => {
@@ -459,7 +511,9 @@ const httpServer = createServer(async (req, res) => {
 });
 ```
 
-#### Performance Optimization
+### 8.2. Performance Optimization
+
+Configure server settings for optimal performance and resource usage.
 
 ```typescript
 // Enable keep-alive
@@ -478,7 +532,9 @@ app.on('request', async (req, res) => {
 });
 ```
 
-#### Security Headers
+### 8.3. Security Headers
+
+Implement security headers for protection against common vulnerabilities.
 
 ```typescript
 app.on('response', async (req, res) => {
@@ -492,7 +548,9 @@ app.on('response', async (req, res) => {
 });
 ```
 
-#### Graceful Shutdown
+### 8.4. Graceful Shutdown
+
+Implement graceful shutdown for clean server termination.
 
 ```typescript
 const httpServer = createServer(async (req, res) => {

@@ -1,32 +1,24 @@
 # Router
 
-The Router class provides event-driven routing capabilities with pattern matching and parameter extraction.
-
-## Overview
-
-The Router class is the foundation of Ingest's routing system, providing:
-- Event-driven routing with pattern matching
-- Multiple routing interfaces (action, entry, import, view)
-- HTTP method routing (GET, POST, PUT, DELETE, etc.)
-- Request and response object creation
-- Route resolution and event emission
+The Router class provides event-driven routing capabilities with pattern matching and parameter extraction for building flexible web applications and APIs.
 
 ```typescript
 import { Router } from '@stackpress/ingest';
 
-const router = new Router();
+const router = new Router<RequestType, ResponseType>();
 ```
 
-## Type Parameters
+ 1. [Properties](#1-properties)
+ 2. [Methods](#2-methods)
+ 3. [Routing Interfaces](#3-routing-interfaces)
+ 4. [Automatic Router Detection](#4-automatic-router-detection)
+ 5. [Route Patterns](#5-route-patterns)
+ 6. [Event System Integration](#6-event-system-integration)
+ 7. [Type Parameters](#7-type-parameters)
+ 8. [Examples](#8-examples)
+ 9. [Build Integration](#9-build-integration)
 
-The Router class accepts two generic type parameters:
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `R` | `unknown` | Request resource type |
-| `S` | `unknown` | Response resource type |
-
-## Properties
+## 1. Properties
 
 The following properties are available when instantiating a Router.
 
@@ -43,11 +35,11 @@ The following properties are available when instantiating a Router.
 | `routes` | `Map` | Map of route definitions |
 | `views` | `Map` | Map of view-based routes |
 
-## Methods
+## 2. Methods
 
 The following methods are available when instantiating a Router.
 
-### HTTP Method Routing
+### 2.1. HTTP Method Routing
 
 The following examples show how to define routes for different HTTP methods.
 
@@ -93,7 +85,7 @@ router.all('/health', (req, res) => {
 
 The Router instance to allow method chaining.
 
-### Generic Route Definition
+### 2.2. Generic Route Definition
 
 The following example shows how to define routes with specific HTTP methods.
 
@@ -122,9 +114,9 @@ router.route('PATCH', '/users/:id', (req, res) => {
 
 The Router instance to allow method chaining.
 
-### Event Handling
+### 2.3. Event Handling
 
-The following example shows how to add event listeners.
+The following example shows how to add event listeners for reactive programming.
 
 ```typescript
 // Listen to all requests
@@ -155,9 +147,9 @@ router.on(/^GET \/api\/.*$/, (req, res) => {
 
 The Router instance to allow method chaining.
 
-### Event Emission
+### 2.4. Event Emission
 
-The following example shows how to emit events manually.
+The following example shows how to emit events manually for custom workflows.
 
 ```typescript
 const req = router.request({ url: 'http://localhost/test' });
@@ -179,7 +171,7 @@ console.log(status.code); // 200, 404, etc.
 
 A promise that resolves to a Status object indicating success or failure.
 
-### Route Resolution
+### 2.5. Route Resolution
 
 The following examples show how to resolve routes and get response data.
 
@@ -218,7 +210,7 @@ const response = await router.resolve('POST', '/users', {
 
 A promise that resolves to a partial StatusResponse object.
 
-### Request and Response Creation
+### 2.6. Request and Response Creation
 
 The following examples show how to create request and response objects.
 
@@ -254,7 +246,7 @@ const res = router.response({
 
 A new Request or Response instance.
 
-### Router Composition
+### 2.7. Router Composition
 
 The following example shows how to merge routes from other routers.
 
@@ -276,13 +268,36 @@ mainRouter.use(apiRouter); // Merges routes and listeners
 
 The Router instance to allow method chaining.
 
-## Routing Interfaces
+## 3. Automatic Router Detection
 
-The Router class provides four different routing interfaces for maximum flexibility.
+The Router class can automatically determine which routing interface to use based on the action type, providing a seamless development experience.
 
-### Action Router (Traditional)
+```typescript
+// Automatically uses action router (function with parameters)
+router.get('/users', (req, res) => { /* handler */ });
 
-Express.js-like routing with inline handlers:
+// Automatically uses import router (parameterless function)
+router.get('/users', () => import('./routes/users.js'));
+
+// Automatically uses view router (string path)
+router.get('/users', './views/users.hbs');
+```
+
+The router analyzes the provided action and selects the appropriate interface:
+
+ - **Function with parameters** → Action Router (traditional routing)
+ - **Parameterless function** → Import Router (lazy loading)
+ - **String path** → View Router (template-based) or Entry Router (file-based)
+
+This automatic detection eliminates the need to explicitly specify which routing interface to use, making the API more intuitive and reducing boilerplate code.
+
+## 4. Routing Interfaces
+
+The Router class provides four different routing interfaces for maximum flexibility in how you define and organize your routes.
+
+### 4.1. Action Router (Traditional)
+
+Express.js-like routing with inline handlers for immediate function execution.
 
 ```typescript
 router.action.get('/users', (req, res) => {
@@ -295,9 +310,9 @@ router.action.post('/users', (req, res) => {
 });
 ```
 
-### Entry Router (File-based)
+### 4.2. Entry Router (File-based)
 
-File-based routing that loads handlers from files:
+File-based routing that loads handlers from external files for better organization.
 
 ```typescript
 router.entry.get('/users', './routes/users.js');
@@ -313,44 +328,31 @@ export default function handler(req, res) {
 }
 ```
 
-### Import Router (Lazy Loading)
+### 4.3. Import Router (Lazy Loading)
 
-Dynamic import routing for code splitting:
+Dynamic import routing for code splitting and performance optimization.
 
 ```typescript
 router.import.get('/users', () => import('./routes/users.js'));
 router.import.post('/users', () => import('./routes/create-user.js'));
 ```
 
-### View Router (Template-based)
+### 4.4. View Router (Template-based)
 
-Template-based routing for rendering views:
+Template-based routing for rendering views and server-side templates.
 
 ```typescript
 router.view.get('/users', './views/users.hbs');
 router.view.get('/profile', './views/profile.hbs');
 ```
 
-## Automatic Router Detection
+## 5. Route Patterns
 
-The Router class can automatically determine which routing interface to use based on the action type:
+The Router supports various route patterns for flexible URL matching and parameter extraction.
 
-```typescript
-// Automatically uses action router (function with parameters)
-router.get('/users', (req, res) => { /* handler */ });
+### 5.1. Parameter Routes
 
-// Automatically uses import router (parameterless function)
-router.get('/users', () => import('./routes/users.js'));
-
-// Automatically uses view router (string path)
-router.get('/users', './views/users.hbs');
-```
-
-## Route Patterns
-
-The Router supports various route patterns for flexible matching:
-
-### Parameter Routes
+Extract dynamic segments from URLs using named parameters.
 
 ```typescript
 // Single parameter
@@ -367,7 +369,9 @@ router.get('/users/:userId/posts/:postId', (req, res) => {
 });
 ```
 
-### Wildcard Routes
+### 5.2. Wildcard Routes
+
+Handle dynamic paths with wildcard matching for flexible routing.
 
 ```typescript
 // Single wildcard
@@ -383,7 +387,9 @@ router.get('/static/**', (req, res) => {
 });
 ```
 
-### Regular Expression Routes
+### 5.3. Regular Expression Routes
+
+Use regular expressions for complex pattern matching requirements.
 
 ```typescript
 // Regex pattern matching
@@ -393,11 +399,13 @@ router.on(/^GET \/api\/v(\d+)\/users$/, (req, res) => {
 });
 ```
 
-## Event System Integration
+## 6. Event System Integration
 
-The Router is built on a powerful event system that enables reactive programming:
+The Router is built on a powerful event system that enables reactive programming and middleware patterns.
 
-### Priority-Based Execution
+### 6.1. Priority-Based Execution
+
+Control the order of event handler execution using priority levels.
 
 ```typescript
 // Higher priority executes first
@@ -406,7 +414,9 @@ router.on('request', middleware2, 5);
 router.on('request', middleware3, 1);
 ```
 
-### Event Hooks
+### 6.2. Event Hooks
+
+Implement before and after hooks for cross-cutting concerns.
 
 ```typescript
 // Before hook
@@ -421,9 +431,34 @@ router.action.after = async (event) => {
 };
 ```
 
-## Examples
+## 7. Type Parameters
 
-### Basic REST API
+The Router class accepts two generic type parameters for type safety.
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `R` | `unknown` | Request resource type |
+| `S` | `unknown` | Response resource type |
+
+```typescript
+interface UserRequest {
+  userId: string;
+  permissions: string[];
+}
+
+interface ApiResponse {
+  data: any;
+  meta: { timestamp: number };
+}
+
+const router = new Router<UserRequest, ApiResponse>();
+```
+
+## 8. Examples
+
+The following examples demonstrate common Router usage patterns and best practices.
+
+### 8.1. Basic REST API
 
 ```typescript
 const router = new Router();
@@ -451,24 +486,9 @@ router.post('/users', async (req, res) => {
   const user = { id: Date.now(), ...userData };
   res.setJSON({ user }, 201);
 });
-
-// Update user
-router.put('/users/:id', async (req, res) => {
-  await req.load();
-  const userId = req.data.get('id');
-  const userData = req.data.get();
-  const user = { id: userId, ...userData };
-  res.setJSON({ user });
-});
-
-// Delete user
-router.delete('/users/:id', (req, res) => {
-  const userId = req.data.get('id');
-  res.setJSON({ id: userId, deleted: true });
-});
 ```
 
-### Middleware Pattern
+### 8.2. Middleware Pattern
 
 ```typescript
 const router = new Router();
@@ -495,7 +515,7 @@ router.get('/protected/data', (req, res) => {
 });
 ```
 
-### File-Based Routing
+### 8.3. File-Based Routing
 
 ```typescript
 const router = new Router();
@@ -513,9 +533,9 @@ router.view.get('/users', './views/users.hbs');
 router.view.get('/profile', './views/profile.hbs');
 ```
 
-## Build Integration
+## 9. Build Integration
 
-The Router exposes routing information that can be used by bundlers:
+The Router exposes routing information that can be used by bundlers and build tools for optimization.
 
 ```typescript
 const router = new Router();
@@ -530,8 +550,4 @@ console.log(router.views);       // View templates
 console.log(router.expressions); // Route patterns
 ```
 
-This information can be used to:
-- Generate static route manifests
-- Pre-bundle route modules
-- Optimize code splitting
-- Create deployment artifacts
+This information can be used to generate static route manifests, pre-bundle route modules, optimize code splitting, and create deployment artifacts for production environments.

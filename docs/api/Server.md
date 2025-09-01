@@ -2,15 +2,6 @@
 
 The Server class is the core of the Ingest framework, extending Router with configuration management and plugin support.
 
-## Overview
-
-The Server class provides a generic server implementation that:
-- Extends the Router class for event-driven routing
-- Manages configuration through a nested configuration object
-- Supports a plugin system for modular functionality
-- Provides generic request and response wrappers
-- Works with both HTTP and WHATWG server implementations
-
 ```typescript
 import { server } from '@stackpress/ingest/http';
 // or
@@ -19,17 +10,14 @@ import { server } from '@stackpress/ingest/whatwg';
 const app = server();
 ```
 
-## Type Parameters
+ 1. [Properties](#1-properties)
+ 2. [Methods](#2-methods)
+ 3. [Static Methods](#2-static-methods)
+ 4. [Configuration Management](#4-configuration-management)
+ 5. [Plugin System Integration](#5-plugin-system-integration)
+ 6. [Examples](#6-examples)
 
-The Server class accepts three generic type parameters:
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `C` | `UnknownNest` | Configuration map type |
-| `R` | `unknown` | Request resource type |
-| `S` | `unknown` | Response resource type |
-
-## Properties
+## 1. Properties
 
 The following properties are available when instantiating a Server.
 
@@ -39,11 +27,11 @@ The following properties are available when instantiating a Server.
 | `loader` | `PluginLoader` | Plugin loader instance for managing plugins |
 | `plugins` | `CallableMap` | Map of registered plugin configurations |
 
-## Methods
+## 2. Methods
 
 The following methods are available when instantiating a Server.
 
-### Bootstrapping Plugins
+### 2.1. Bootstrapping Plugins
 
 The following example shows how to load and initialize all registered plugins.
 
@@ -52,11 +40,15 @@ const app = server();
 await app.bootstrap();
 ```
 
+**Parameters**
+
+None.
+
 **Returns**
 
 The Server instance to allow method chaining.
 
-### Creating a Server Instance
+### 2.2. Creating a Server Instance
 
 The following example shows how to create a native server instance.
 
@@ -78,7 +70,7 @@ httpServer.listen(3000, () => {
 
 A native Node.js HTTP server instance.
 
-### Handling Requests
+### 2.3. Handling Requests
 
 The following example shows how to handle requests directly.
 
@@ -98,7 +90,7 @@ const result = await app.handle(request, response);
 
 A promise that resolves to the response object.
 
-### Plugin Management
+### 2.4. Plugin Management
 
 The following example shows how to register and retrieve plugins.
 
@@ -132,11 +124,7 @@ console.log(authConfig.secret);
 For `register`: The Server instance to allow method chaining.
 For `plugin`: The plugin configuration or undefined if not found.
 
-## Setters
-
-The following setters are available for customizing server behavior.
-
-### Setting Gateway
+### 2.5. Setting Gateway
 
 The following example shows how to set a custom gateway function.
 
@@ -155,7 +143,11 @@ app.gateway = (server) => {
 |----------|------|-------------|
 | `callback` | `ServerGateway` | Gateway function for creating server instances |
 
-### Setting Handler
+**Returns**
+
+None.
+
+### 2.6. Setting Handler
 
 The following example shows how to set a custom request handler.
 
@@ -173,13 +165,17 @@ app.handler = async (server, request, response) => {
 |----------|------|-------------|
 | `callback` | `ServerHandler<C, R, S>` | Handler function for processing requests |
 
-## Factory Functions
+**Returns**
 
-The following factory functions are available for creating server instances.
+None.
 
-### server()
+## 3. Static Methods
 
-Creates a new Server instance with optional configuration.
+The following methods can be accessed directly from Server itself.
+
+### 3.1. Creating Server Instances
+
+The following example shows how to create a new Server instance with optional configuration.
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -200,9 +196,9 @@ const app = server({
 
 A new Server instance.
 
-### router()
+### 3.2. Creating Router Instances
 
-Creates a new Router instance without server functionality.
+The following example shows how to create a new Router instance without server functionality.
 
 ```typescript
 import { router } from '@stackpress/ingest';
@@ -210,13 +206,17 @@ import { router } from '@stackpress/ingest';
 const appRouter = router();
 ```
 
+**Parameters**
+
+None.
+
 **Returns**
 
 A new Router instance.
 
-### action()
+### 3.3. Creating Type-Safe Actions
 
-Type helper for creating type-safe action handlers.
+The following example shows how to create type-safe action handlers.
 
 ```typescript
 import { action } from '@stackpress/ingest';
@@ -237,11 +237,13 @@ const userHandler = action<Config, Request, Response>((req, res, server) => {
 
 The same action function with proper typing.
 
-## Configuration Management
+## 4. Configuration Management
 
 The Server class provides a powerful configuration system through the `config` property.
 
-### Setting Configuration
+### 4.1. Setting Configuration
+
+The following example shows how to set nested configuration values.
 
 ```typescript
 // Set nested configuration
@@ -255,7 +257,9 @@ app.config.set('database', {
 app.config.set('app', 'name', 'My Application');
 ```
 
-### Reading Configuration
+### 4.2. Reading Configuration
+
+The following example demonstrates various ways to read configuration values.
 
 ```typescript
 // Get entire config section
@@ -268,11 +272,13 @@ const dbHost = app.config.get('database', 'host');
 const appName = app.config.path('app.name');
 ```
 
-## Plugin System Integration
+## 5. Plugin System Integration
 
 The Server class is designed to work seamlessly with the plugin system.
 
-### Plugin Loading
+### 5.1. Plugin Loading
+
+The following example shows how plugins are defined and loaded.
 
 ```typescript
 // Plugins are defined in package.json
@@ -288,7 +294,9 @@ The Server class is designed to work seamlessly with the plugin system.
 await app.bootstrap();
 ```
 
-### Plugin Access
+### 5.2. Plugin Access
+
+The following example demonstrates accessing plugin functionality.
 
 ```typescript
 // Access plugin functionality
@@ -299,9 +307,11 @@ const auth = app.plugin('auth');
 const token = await auth.generateToken(user);
 ```
 
-## Examples
+## 6. Examples
 
-### Basic HTTP Server
+### 6.1. Basic HTTP Server
+
+The following example shows how to create a basic HTTP server.
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -321,7 +331,9 @@ app.create().listen(3000, () => {
 });
 ```
 
-### Serverless Function
+### 6.2. Serverless Function
+
+The following example demonstrates creating a serverless function.
 
 ```typescript
 import { server } from '@stackpress/ingest/whatwg';
@@ -338,7 +350,9 @@ export default async function handler(request: Request) {
 }
 ```
 
-### With Plugins
+### 6.3. With Plugins
+
+The following example shows how to use the server with plugins.
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -367,14 +381,3 @@ app.get('/protected', (req, res) => {
 
 app.create().listen(3000);
 ```
-
-## Inheritance
-
-The Server class extends the Router class, inheriting all routing functionality:
-
-- Event-driven routing with pattern matching
-- Multiple routing interfaces (action, entry, import, view)
-- Request and response handling
-- Event emission and listening capabilities
-
-See [Router.md](./Router.md) for detailed routing documentation.

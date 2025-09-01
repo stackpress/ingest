@@ -1,21 +1,23 @@
 # Examples
 
-Comprehensive examples demonstrating various use cases and deployment scenarios for the Ingest framework.
+Comprehensive examples demonstrating various use cases and deployment scenarios for the Ingest framework. This document provides practical implementations across different environments and showcases the framework's flexibility in handling diverse application requirements.
 
-## Table of Contents
+ 1. [Basic HTTP Server](#1-basic-http-server)
+ 2. [Serverless Deployments](#2-serverless-deployments)
+ 3. [Plugin Development](#3-plugin-development)
+ 4. [Template Engine Integration](#4-template-engine-integration)
+ 5. [Advanced Routing](#5-advanced-routing)
+ 6. [Middleware and Event Handling](#6-middleware-and-event-handling)
+ 7. [Error Handling](#7-error-handling)
+ 8. [Build Integration](#8-build-integration)
 
-- [Basic HTTP Server](#basic-http-server)
-- [Serverless Deployments](#serverless-deployments)
-- [Plugin Development](#plugin-development)
-- [Template Engine Integration](#template-engine-integration)
-- [Advanced Routing](#advanced-routing)
-- [Middleware and Event Handling](#middleware-and-event-handling)
-- [Error Handling](#error-handling)
-- [Build Integration](#build-integration)
+## 1. Basic HTTP Server
 
-## Basic HTTP Server
+Basic HTTP server implementations demonstrate fundamental usage patterns and core functionality of the Ingest framework.
 
-### Simple REST API
+### 1.1. Simple REST API
+
+The following example shows how to create a basic REST API with user management endpoints.
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -85,7 +87,9 @@ app.create().listen(3000, () => {
 });
 ```
 
-### File Upload Handling
+### 1.2. File Upload Handling
+
+The following example demonstrates how to handle file uploads with validation and storage.
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -127,9 +131,13 @@ app.post('/upload', async (req, res) => {
 app.create().listen(3000);
 ```
 
-## Serverless Deployments
+## 2. Serverless Deployments
 
-### Vercel Deployment
+Serverless deployment examples showcase how to deploy Ingest applications across different cloud platforms and serverless environments.
+
+### 2.1. Vercel Deployment
+
+The following example shows how to deploy an Ingest application to Vercel using the WHATWG adapter.
 
 ```typescript
 // api/index.ts
@@ -172,7 +180,9 @@ export default async function handler(request: Request) {
 }
 ```
 
-### AWS Lambda Deployment
+### 2.2. AWS Lambda Deployment
+
+The following example demonstrates deploying to AWS Lambda with proper error handling and response formatting.
 
 ```typescript
 // index.ts
@@ -225,7 +235,9 @@ export const handler = async (
 };
 ```
 
-### Netlify Functions
+### 2.3. Netlify Functions
+
+The following example shows how to deploy to Netlify Functions with proper request handling.
 
 ```typescript
 // netlify/functions/api.ts
@@ -266,9 +278,13 @@ export const handler: Handler = async (event) => {
 };
 ```
 
-## Plugin Development
+## 3. Plugin Development
 
-### Authentication Plugin
+Plugin development examples demonstrate how to create reusable components that extend the Ingest framework's functionality.
+
+### 3.1. Authentication Plugin
+
+The following example shows how to create a comprehensive authentication plugin with JWT token management.
 
 ```typescript
 // plugins/auth.ts
@@ -341,7 +357,9 @@ export default function authPlugin(server: HttpServer) {
 }
 ```
 
-### Logging Plugin
+### 3.2. Logging Plugin
+
+The following example demonstrates implementing comprehensive logging functionality.
 
 ```typescript
 // plugins/logging.ts
@@ -381,7 +399,9 @@ export default function loggingPlugin(server: HttpServer) {
 }
 ```
 
-### Rate Limiting Plugin
+### 3.3. Rate Limiting Plugin
+
+The following example demonstrates implementing rate limiting functionality to protect against abuse.
 
 ```typescript
 // plugins/rateLimit.ts
@@ -430,9 +450,13 @@ export default function rateLimitPlugin(server: HttpServer) {
 }
 ```
 
-## Template Engine Integration
+## 4. Template Engine Integration
 
-### Handlebars Integration
+Template engine integration examples show how to use server-side rendering with various template engines.
+
+### 4.1. Handlebars Integration
+
+The following example demonstrates integrating Handlebars for server-side rendering.
 
 ```typescript
 // server.ts
@@ -494,6 +518,10 @@ app.view.get('/contact', 'contact.hbs');
 app.create().listen(3000);
 ```
 
+### 4.2. Template Files
+
+The following examples show template file structures for Handlebars integration.
+
 ```handlebars
 <!-- views/home.hbs -->
 <!DOCTYPE html>
@@ -547,9 +575,13 @@ app.create().listen(3000);
 </html>
 ```
 
-## Advanced Routing
+## 5. Advanced Routing
 
-### File-Based Routing
+Advanced routing examples showcase the framework's flexible routing capabilities and pattern matching features.
+
+### 5.1. File-Based Routing
+
+The following example demonstrates organizing routes using file-based routing for better code organization.
 
 ```typescript
 // server.ts
@@ -591,7 +623,9 @@ export default async function productsHandler(req, res, server) {
 }
 ```
 
-### Pattern-Based Routing
+### 5.2. Pattern-Based Routing
+
+The following example shows how to use wildcard patterns and regex matching for flexible route handling.
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -634,9 +668,13 @@ app.get('/**', (req, res) => {
 app.create().listen(3000);
 ```
 
-## Middleware and Event Handling
+## 6. Middleware and Event Handling
 
-### Request Processing Pipeline
+Middleware and event handling examples demonstrate how to implement request processing pipelines and reactive programming patterns.
+
+### 6.1. Request Processing Pipeline
+
+The following example shows how to create a comprehensive middleware pipeline with priority-based execution.
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -687,7 +725,9 @@ app.get('/api/test', (req, res) => {
 app.create().listen(3000);
 ```
 
-### Event-Driven Architecture
+### 6.2. Event-Driven Architecture
+
+The following example demonstrates implementing event-driven patterns for reactive programming.
 
 ```typescript
 import { server } from '@stackpress/ingest/http';
@@ -735,9 +775,13 @@ app.post('/api/orders', async (req, res) => {
 app.create().listen(3000);
 ```
 
-## Error Handling
+## 7. Error Handling
 
-### Global Error Handling
+Error handling examples demonstrate best practices for managing errors and providing meaningful feedback to clients.
+
+### 7.1. Global Error Handling
+
+The following example shows how to implement comprehensive global error handling with structured error responses.
 
 ```typescript
 import { server, Exception } from '@stackpress/ingest/http';
@@ -783,7 +827,14 @@ app.get('/api/users/:id', async (req, res) => {
   }
 });
 
-// Validation errors
+app.create().listen(3000);
+```
+
+### 7.2. Validation Error Handling
+
+The following example demonstrates handling validation errors with detailed error messages.
+
+```typescript
 app.post('/api/users', async (req, res) => {
   try {
     await req.load();
@@ -806,13 +857,15 @@ app.post('/api/users', async (req, res) => {
     await app.emit('error', error, req, res);
   }
 });
-
-app.create().listen(3000);
 ```
 
-## Build Integration
+## 8. Build Integration
 
-### Webpack Integration
+Build integration examples show how to leverage Ingest's routing information for bundlers and build tools.
+
+### 8.1. Webpack Integration
+
+The following example demonstrates integrating with Webpack for route-based code splitting.
 
 ```typescript
 // webpack.config.js
@@ -868,7 +921,9 @@ export default {
 };
 ```
 
-### Vite Integration
+### 8.2. Vite Integration
+
+The following example shows how to integrate with Vite for optimized development and production builds.
 
 ```typescript
 // vite.config.ts
