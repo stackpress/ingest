@@ -1,5 +1,6 @@
 //modules
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 //stackpress
 import NodeFS from '@stackpress/lib/NodeFS';
 import FileLoader from '@stackpress/lib/FileLoader';
@@ -53,7 +54,7 @@ export class ConfigLoader extends FileLoader {
     }
     //require the plugin
     const basepath = this.basepath(file);
-    let imported = await import(basepath);
+    let imported = await import(pathToFileURL(basepath).href);
     //if using import
     if (imported.default) {
       imported = imported.default;
