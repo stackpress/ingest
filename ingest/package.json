@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@stackpress/ingest",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "license": "Apache-2.0",
   "description": "An unopinionated, event driven, pluggable, server/less framework",
   "author": "Chris <chris@stackpress.io>",
