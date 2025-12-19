@@ -10,7 +10,6 @@ import {
 } from '@stackpress/lib/Nest';
 //common
 import type { 
-  Body,
   WhatwgServer,
   WhatwgAction,
   NodeRequest,
@@ -162,14 +161,14 @@ export function dispatcher(options: CookieOptions = { path: '/' }) {
       return res.resource;
     }
     let mimetype = res.mimetype;
-    let body: Body|null = null;
+    let body: BodyInit|null = null;
     //if body is a valid response
     if (typeof res.body === 'string' 
       || Buffer.isBuffer(res.body) 
       || res.body instanceof Uint8Array
       || res.body instanceof ReadableStream
     ) {
-      body = res.body;
+      body = res.body as BodyInit;
     //if it's a node stream
     } else if (res.body instanceof Readable) {
       body = readableToReadableStream(res.body);

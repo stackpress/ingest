@@ -12,8 +12,8 @@
     "handlebars": "4.7.8"
   },
   "devDependencies": {
-    "@types/node": "22.9.3",
+    "@types/node": "25.0.3",
     "ts-node": "10.9.2",
-    "typescript": "5.7.2"
+    "typescript": "5.9.3"
   }
 }
