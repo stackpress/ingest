@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "3.4.5",
-    "@stackpress/ingest": "0.6.5"
+    "@stackpress/ingest": "0.6.6"
   },
   "devDependencies": {
     "@types/node": "25.0.3",
