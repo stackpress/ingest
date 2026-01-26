@@ -6,7 +6,7 @@ import type {
   CallableNest, 
   UnknownNest 
 } from '@stackpress/lib';
-import map from '@stackpress/lib/map';
+import { map } from '@stackpress/lib/Map';
 import { nest } from '@stackpress/lib/Nest';
 //local
 import type { 
