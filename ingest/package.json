@@ -116,25 +116,63 @@
   },
   "typesVersions": {
     "*": {
-      "index": [ "./cjs/index.d.ts" ],
-      "helpers": [ "./cjs/helpers.d.ts" ],
-      "types": [ "./cjs/types.d.ts" ],
-      "http": [ "./cjs/http/index.d.ts" ],
-      "http/helpers": [ "./cjs/http/helpers.d.ts" ],
-      "http/Adapter": [ "./cjs/http/Adapter.d.ts" ],
-      "whatwg": [ "./cjs/whatwg/index.d.ts" ],
-      "whatwg/helpers": [ "./cjs/whatwg/helpers.d.ts" ],
-      "whatwg/Adapter": [ "./cjs/whatwg/Adapter.d.ts" ],
-      "EntryRouter": [ "./cjs/plugin/EntryRouter.d.ts" ],
-      "ImportRouter": [ "./cjs/plugin/ImportRouter.d.ts" ],
-      "ViewRouter": [ "./cjs/plugin/ViewRouter.d.ts" ],
-      "Exception": [ "./cjs/Exception.d.ts" ],
-      "Loader": [ "./cjs/Loader.d.ts" ],
-      "Request": [ "./cjs/Request.d.ts" ],
-      "Response": [ "./cjs/Response.d.ts" ],
-      "Route": [ "./cjs/Route.d.ts" ],
-      "Router": [ "./cjs/Router.d.ts" ],
-      "Server": [ "./cjs/Server.d.ts" ]
+      "index": [
+        "./cjs/index.d.ts"
+      ],
+      "helpers": [
+        "./cjs/helpers.d.ts"
+      ],
+      "types": [
+        "./cjs/types.d.ts"
+      ],
+      "http": [
+        "./cjs/http/index.d.ts"
+      ],
+      "http/helpers": [
+        "./cjs/http/helpers.d.ts"
+      ],
+      "http/Adapter": [
+        "./cjs/http/Adapter.d.ts"
+      ],
+      "whatwg": [
+        "./cjs/whatwg/index.d.ts"
+      ],
+      "whatwg/helpers": [
+        "./cjs/whatwg/helpers.d.ts"
+      ],
+      "whatwg/Adapter": [
+        "./cjs/whatwg/Adapter.d.ts"
+      ],
+      "EntryRouter": [
+        "./cjs/plugin/EntryRouter.d.ts"
+      ],
+      "ImportRouter": [
+        "./cjs/plugin/ImportRouter.d.ts"
+      ],
+      "ViewRouter": [
+        "./cjs/plugin/ViewRouter.d.ts"
+      ],
+      "Exception": [
+        "./cjs/Exception.d.ts"
+      ],
+      "Loader": [
+        "./cjs/Loader.d.ts"
+      ],
+      "Request": [
+        "./cjs/Request.d.ts"
+      ],
+      "Response": [
+        "./cjs/Response.d.ts"
+      ],
+      "Route": [
+        "./cjs/Route.d.ts"
+      ],
+      "Router": [
+        "./cjs/Router.d.ts"
+      ],
+      "Server": [
+        "./cjs/Server.d.ts"
+      ]
     }
   },
   "files": [
@@ -160,7 +198,7 @@
   "devDependencies": {
     "@types/chai": "4.3.20",
     "@types/mocha": "10.0.10",
-    "@types/node": "25.0.3",
+    "@types/node": "25.3.5",
     "chai": "4.5.0",
     "mocha": "10.8.2",
     "ts-mocha": "10.0.0",
