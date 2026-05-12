@@ -199,11 +199,13 @@ export function dispatcher(options: CookieOptions = { path: '/' }) {
       statusText: res.status
     });
     //write cookies
-    for (const [name, entry] of res.session.revisions.entries()) {
+    for (const [ name, entry ] of res.session.revisions.entries()) {
+      const cookieOptions = entry.options || options;
       if (entry.action === 'remove') {
+        const options = { ...cookieOptions, expires: new Date(0) };
         resource.headers.set(
           'Set-Cookie', 
-          cookie.serialize(name, '', { ...options, expires: new Date(0) })
+          cookie.serialize(name, '', options)
         );
       } else if (entry.action === 'set' 
         && typeof entry.value !== 'undefined'
@@ -213,7 +215,7 @@ export function dispatcher(options: CookieOptions = { path: '/' }) {
         for (const value of values) {
           resource.headers.set(
             'Set-Cookie', 
-            cookie.serialize(name, value, options)
+            cookie.serialize(name, value, cookieOptions)
           );
         }
       }
