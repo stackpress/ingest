@@ -6,19 +6,16 @@ import type {
 } from '@stackpress/lib/types';
 //common
 import type { 
+  ActionRouterArgs,
   ViewRouterTaskItem,
   ActionRouterListener
 } from '../types.js';
-import type Request from '../Request.js';
-import type Response from '../Response.js';
 //local
 import type ActionRouter from './ActionRouter.js';
 
-export type ViewEngine<R, S, X> = (
+export type ViewEngine<R, S, X, C = unknown, P = unknown> = (
   filePath: string, 
-  req: Request<R>, 
-  res: Response<S>,
-  ctx: X
+  ...args: ActionRouterArgs<R, S, X, C, P>
 ) => TaskResult;
 
 export type ViewRender = (
@@ -27,18 +24,18 @@ export type ViewRender = (
   options?: UnknownNest
 ) => string|null|Promise<string|null>;
 
-export default class ViewRouter<R, S, X> {
+export default class ViewRouter<R, S, X, C = unknown, P = unknown> {
   //A route map to task queues
   //event -> [ ...{ entry, priority } ]
   public readonly views = new Map<string, Set<ViewRouterTaskItem>>();
   //engine
-  protected _engine: ViewEngine<R, S, X> = () => void 0;
+  protected _engine: ViewEngine<R, S, X, C, P> = () => void 0;
   //render
   protected _render: ViewRender = () => null;
   //parent router
-  protected _router: ActionRouter<R, S, X>;
+  protected _router: ActionRouter<R, S, X, C, P>;
   //listener straight to the end
-  protected _listen: ActionRouterListener<R, S, X>;
+  protected _listen: ActionRouterListener<R, S, X, C, P>;
 
   /**
    * Get the view engine method
@@ -50,7 +47,7 @@ export default class ViewRouter<R, S, X> {
   /**
    * Set the view engine method
    */
-  public set engine(engine: ViewEngine<R, S, X>) {
+  public set engine(engine: ViewEngine<R, S, X, C, P>) {
     this._engine = engine;
   }
 
@@ -72,8 +69,8 @@ export default class ViewRouter<R, S, X> {
    * Sets the router
    */
   public constructor(
-    router: ActionRouter<R, S, X>,
-    listen: ActionRouterListener<R, S, X>
+    router: ActionRouter<R, S, X, C, P>,
+    listen: ActionRouterListener<R, S, X, C, P>
   ) {
     this._router = router;
     this._listen = listen;
@@ -92,12 +89,10 @@ export default class ViewRouter<R, S, X> {
     this.views.get(event)?.add({ entry: action, priority });
     const router = this;
     return async function TemplateFileAction(
-      req: Request<R>, 
-      res: Response<S>,
-      ctx: X
+      ...[ props ]: ActionRouterArgs<R, S, X, C, P>
     ) {
       if (!router._engine) return;
-      await router._engine(action, req, res, ctx);
+      await router._engine(action, props);
     }
   }
 
@@ -243,7 +238,7 @@ export default class ViewRouter<R, S, X> {
   /**
    * Allows views from other routers to apply here
    */
-  public use(router: ViewRouter<R, S, X>) {
+  public use(router: ViewRouter<R, S, X, C, P>) {
     //first concat their routes with this one
     //event -> [ ...{ entry, priority } ]
     router.views.forEach((tasks, event) => {

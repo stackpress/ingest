@@ -3,28 +3,27 @@ import type { Method } from '@stackpress/lib/types';
 //common
 import type { 
   EntryRouterTaskItem,
+  ActionRouterArgs,
   ActionRouterAction,
   ActionRouterListener
 } from '../types.js';
-import type Request from '../Request.js';
-import type Response from '../Response.js';
 //local
 import type ActionRouter from './ActionRouter.js';
-export default class EntryRouter<R, S, X>  {
+export default class EntryRouter<R, S, X, C = unknown, P = unknown>  {
   //A route map to task queues
   //event -> [ ...{ entry, priority } ]
   public readonly entries = new Map<string, Set<EntryRouterTaskItem>>();
   //parent router
-  protected _router: ActionRouter<R, S, X>;
+  protected _router: ActionRouter<R, S, X, C, P>;
   //listener straight to the end
-  protected _listen: ActionRouterListener<R, S, X>;
+  protected _listen: ActionRouterListener<R, S, X, C, P>;
 
   /**
    * Sets the router
    */
   public constructor(
-    router: ActionRouter<R, S, X>,
-    listen: ActionRouterListener<R, S, X>
+    router: ActionRouter<R, S, X, C, P>,
+    listen: ActionRouterListener<R, S, X, C, P>
   ) {
     this._router = router;
     this._listen = listen;
@@ -43,18 +42,16 @@ export default class EntryRouter<R, S, X>  {
     this.entries.get(event)?.add({ entry: action, priority });
     //return the new action
     return async function EntryFileAction(
-      req: Request<R>, 
-      res: Response<S>,
-      ctx: X
+      ...[ props ]: ActionRouterArgs<R, S, X, C, P>
     ) {
       //import the action
       const imports = await import(action) as { 
-        default: ActionRouterAction<R, S, X> 
+        default: ActionRouterAction<R, S, X, C, P> 
       };
       //get the default export
       const callback = imports.default;
       //run the action
-      return await callback(req, res, ctx);
+      return await callback(props);
     }
   }
   
@@ -200,7 +197,7 @@ export default class EntryRouter<R, S, X>  {
   /**
    * Allows entries from other routers to apply here
    */
-  public use(router: EntryRouter<R, S, X>) {
+  public use(router: EntryRouter<R, S, X, C, P>) {
     //first concat their routes with this one
     //event -> [ ...{ entry, priority } ]
     router.entries.forEach((tasks, event) => {

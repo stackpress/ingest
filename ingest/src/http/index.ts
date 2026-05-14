@@ -7,7 +7,6 @@ import type {
   IM, SR, 
   HttpServer, 
   HttpAction,
-  HttpPropsAction,
   ServerOptions,
   NodeServerOptions
 } from '../types.js';
@@ -75,11 +74,11 @@ export async function handler<C extends UnknownNest = UnknownNest>(
  * Default server factory
  */
 export function server<C extends UnknownNest = UnknownNest>(
-  options: ServerOptions<C, IM, SR> = {}
+  options: ServerOptions<IM, SR, C> = {}
 ) {
   options.gateway = options.gateway || gateway;
   options.handler = options.handler || handler;
-  return new Server<C, IM, SR>(options);
+  return new Server<IM, SR, C>(options);
 };
 
 /**
@@ -97,10 +96,4 @@ export function action<C extends UnknownNest = UnknownNest>(
   action: HttpAction<C>
 ) {
   return action;
-};
-
-action.props = <C extends UnknownNest = any>(action: HttpPropsAction<C>) => {
-  return function ActionProps(req, res, ctx) {
-    return action({ req, res, ctx });
-  } as HttpAction<C>;
 };

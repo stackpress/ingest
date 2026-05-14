@@ -65,7 +65,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
     //load the body
     await req.load();
     //hook the plugins
-    await Route.emit<C, NodeRequest, NodeOptResponse>(
+    await Route.emit<NodeRequest, NodeOptResponse, C>(
       event, 
       req, 
       res, 

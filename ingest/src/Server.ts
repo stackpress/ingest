@@ -10,13 +10,18 @@ import { map } from '@stackpress/lib/Map';
 import { nest } from '@stackpress/lib/Nest';
 //local
 import type { 
+  Infer,
+  KnownPlugin,
   ServerAction,
-  ServerPropsAction,
+  ServerPlugin,
+  ServerProps,
   ServerGateway,
   ServerHandler,
   ServerOptions,
   NodeServerOptions
 } from './types.js';
+import type Request from './Request.js';
+import type Response from './Response.js';
 import Router from './Router.js';
 import { PluginLoader } from './Loader.js';
 
@@ -31,14 +36,12 @@ import { PluginLoader } from './Loader.js';
  * - plug in http or fetch server with handler()
  */
 export default class Server<
-  //configuration map
-  C extends UnknownNest = UnknownNest, 
-  //request resource
   R = unknown, 
-  //response resource
-  S = unknown
+  S = unknown,
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
 > 
-  extends Router<R, S>
+  extends Router<R, S, CallableNest<C>, ServerPlugin<P>>
 {
   //arbitrary config map
   public readonly config: CallableNest<C>;
@@ -49,7 +52,7 @@ export default class Server<
   //gateway used for development or stand alone
   protected _gateway: ServerGateway;
   //handler used for API entry
-  protected _handler: ServerHandler<C, R, S>;
+  protected _handler: ServerHandler<R, S, C, P>;
 
   /**
    * Sets the request handler
@@ -61,14 +64,17 @@ export default class Server<
   /**
    * Sets the request handler
    */
-  public set handler(callback: ServerHandler<C, R, S>) {
+  public set handler(callback: ServerHandler<R, S, C, P>) {
     this._handler = callback;
   }
 
   /**
-   * Sets up the plugin loader
+   * Sets up the server runtime
+   *
+   * The server keeps config and plugin state on the class so
+   * handlers and bootstrapping share one source of truth.
    */
-  public constructor(options: ServerOptions<C, R, S> = {}) {
+  public constructor(options: ServerOptions<R, S, C, P> = {}) {
     super();
     this.config = nest();
     this.plugins = map();
@@ -111,18 +117,55 @@ export default class Server<
   }
 
   /**
+   * Builds the canonical handler props object
+   *
+   * Centralizing props construction keeps route dispatch,
+   * event dispatch, and direct action execution aligned.
+   */
+  public props(req: Request<R>, res: Response<S>): ServerProps<R, S, C, P> {
+    const plugin = this._plugin();
+    return {
+      request: req,
+      response: res,
+      server: this,
+      config: this.config,
+      plugin,
+      req,
+      res,
+      ctx: this,
+      cfg: this.config,
+      plg: plugin
+    };
+  }
+
+  /**
    * Gets the plugin by name
    */
-  public plugin<T = Record<string, any> | undefined>(name: string) {
-    return this.plugins.get(name) as T;
+  public plugin<V = Infer, K extends string = string>(name: K) {
+    return this.plugins.get(name) as V extends Infer
+      ? KnownPlugin<P, K>
+      : V;
   }
 
   /**
    * Registers a plugin
+   *
+   * Returning a narrowed server keeps plugin registration
+   * ergonomic during fluent setup without changing runtime shape.
    */
-  public register(name: string, config: Record<string, any>) {
+  public register<K extends string, V>(name: K, config: V) {
     this.plugins.set(name, config);
-    return this;
+    return this as unknown as Server<R, S, C, P & { [key in K]: V }>;
+  }
+
+  /**
+   * Creates the plugin lookup used by handler props
+   *
+   * The bound function preserves the familiar `plugin(name)`
+   * call shape while still sourcing data from the server.
+   */
+  protected _plugin(): ServerPlugin<P> {
+    return this.plugin.bind(this) as ServerPlugin<P>;
   }
 };
 
@@ -130,10 +173,11 @@ export default class Server<
  * Default server gateway
  */
 export function gateway<
-  C extends UnknownNest = UnknownNest, 
   R = unknown, 
-  S = unknown
->(server: Server<C, R, S>) {
+  S = unknown,
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+>(server: Server<R, S, C, P>) {
   return (options: NodeServerOptions) => createServer(
     options, 
     (im, sr) => server.handle(im as R, sr as S)
@@ -144,68 +188,43 @@ export function gateway<
  * Default server request handler
  */
 export async function handler<
-  C extends UnknownNest = UnknownNest, 
   R = unknown, 
-  S = unknown
->(_ctx: Server<C, R, S>, _req: R, res: S) {
+  S = unknown,
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+>(_ctx: Server<R, S, C, P>, _req: R, res: S) {
   return res;
 };
 
 /**
  * Default server factory
  */
-export function server<C extends UnknownNest = any>(
-  //Any: Server<UnknownNest> not assignable to type HttpServer<Config>
-  //Any: Type unknown is not assignable to type IncomingMessage
-  //Any: Type unknown is not assignable to type ServerResponse
-  options: ServerOptions<C, any, any> = {}
-) {
+export function server<
+  R = unknown,
+  S = unknown,
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+>(options: ServerOptions<R, S, C, P> = {}) {
   options.gateway = options.gateway || gateway;
   options.handler = options.handler || handler;
-  //Any: Type unknown is not assignable to type IncomingMessage
-  //Any: Type unknown is not assignable to type ServerResponse
-  return new Server<C, any, any>(options);
+  return new Server<R, S, C, P>(options);
 };
 
 /**
  * Default router factory
  */
 export function router() {
-  //Any: Type unknown is not assignable to type IncomingMessage
-  //Any: Type unknown is not assignable to type ServerResponse
-  return new Router<any, any>();
+  return new Router<unknown, unknown, unknown, unknown>();
 }
 
 /**
- * Just a pass along to imply the types 
- * needed for the action arguments
+ * Passes through a handler while preserving contextual props typing
  */
 export function action<
-  //config map
-  //Any: Server<UnknownNest> not assignable to type HttpServer<Config>
-  C extends UnknownNest = any, 
-  //request resource
-  //Any: Type unknown is not assignable to type IncomingMessage
-  R = any, 
-  //response resource
-  //Any: Type unknown is not assignable to type ServerResponse
-  S = any
->(action: ServerAction<C, R, S>) {
+  R = unknown,
+  S = unknown,
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+>(action: ServerAction<R, S, C, P>) {
   return action;
-};
-
-action.props = <
-  //config map
-  //Any: Server<UnknownNest> not assignable to type HttpServer<Config>
-  C extends UnknownNest = any, 
-  //request resource
-  //Any: Type unknown is not assignable to type IncomingMessage
-  R = any, 
-  //response resource
-  //Any: Type unknown is not assignable to type ServerResponse
-  S = any
->(action: ServerPropsAction<C, R, S>) => {
-  return function ActionProps(req, res, ctx) {
-    return action({ req, res, ctx });
-  } as ServerAction<C, R, S>;
 };

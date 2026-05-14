@@ -18,7 +18,7 @@ describe('Server Tests', () => {
    */
   it('Should route to', async () => {
     const server = new Server();
-    server.get('/some/route/path', (req, res) => {
+    server.get('/some/route/path', ({ req, res }) => {
       res.setBody('text/plain', `- ${req.data('foo')}`);
     });
 
@@ -45,7 +45,7 @@ describe('Server Tests', () => {
    */
   it('Should call', async () => {
     const server = new Server();
-    server.on('foo', (req, res) => {
+    server.on('foo', ({ req, res }) => {
       res.setBody('text/plain', `- ${req.data('foo')}`);
     });
 
@@ -129,19 +129,19 @@ describe('Server Tests', () => {
   it('Should handle custom gateway and handler', async () => {
     type CustomResponse = { custom: boolean };
     
-    const customGateway = (server: Server<any, any, CustomResponse>) => {
+    const customGateway = (server: Server<any, CustomResponse, any>) => {
       return (options: any) => createServer(options);
     };
 
     const customHandler = async (
-      ctx: Server<any, any, CustomResponse>, 
+      ctx: Server<any, CustomResponse, any>, 
       req: unknown, 
       res: unknown
     ): Promise<CustomResponse> => {
       return { custom: true };
     };
 
-    const server = new Server<any, any, CustomResponse>({
+    const server = new Server<any, CustomResponse, any>({
       gateway: customGateway,
       handler: customHandler
     });
@@ -203,16 +203,16 @@ describe('Server Tests', () => {
   it('Should handle different HTTP methods', async () => {
     const server = new Server();
     
-    server.get('/test', (req, res) => {
+    server.get('/test', ({ res }) => {
       res.setBody('text/plain', 'GET');
     });
-    server.post('/test', (req, res) => {
+    server.post('/test', ({ res }) => {
       res.setBody('text/plain', 'POST');
     });
-    server.put('/test', (req, res) => {
+    server.put('/test', ({ res }) => {
       res.setBody('text/plain', 'PUT');
     });
-    server.delete('/test', (req, res) => {
+    server.delete('/test', ({ res }) => {
       res.setBody('text/plain', 'DELETE');
     });
 
@@ -330,5 +330,41 @@ describe('Server Tests', () => {
 
     await server.bootstrap();
     expect(server.plugin('async-plugin')).to.deep.equal(asyncConfig);
+  });
+
+  /**
+   * Tests the canonical props aliases:
+   * - request and req point to the same object
+   * - response and res point to the same object
+   * - server and ctx point to the same object
+   * - config and cfg point to the same object
+   * - plugin and plg point to the same function
+   */
+  it('Should expose canonical props aliases', async () => {
+    const server = new Server();
+    let verified = false;
+
+    server.on('aliases', ({
+      request,
+      response,
+      server: context,
+      config,
+      plugin,
+      req,
+      res,
+      ctx,
+      cfg,
+      plg
+    }) => {
+      expect(request).to.equal(req);
+      expect(response).to.equal(res);
+      expect(context).to.equal(ctx);
+      expect(config).to.equal(cfg);
+      expect(plugin).to.equal(plg);
+      verified = true;
+    });
+
+    await server.resolve('aliases');
+    expect(verified).to.be.true;
   });
 });

@@ -10,7 +10,6 @@ import type {
   NodeResponse,
   NodeOptResponse,
   WhatwgAction,
-  WhatwgPropsAction,
   ServerOptions,
   NodeServerOptions
 } from '../types.js';
@@ -86,11 +85,11 @@ export async function handler<C extends UnknownNest = UnknownNest>(
  * Default server factory
  */
 export function server<C extends UnknownNest = UnknownNest>(
-  options: ServerOptions<C, NodeRequest, NodeOptResponse> = {}
+  options: ServerOptions<NodeRequest, NodeOptResponse, C> = {}
 ) {
   options.gateway = options.gateway || gateway;
   options.handler = options.handler || handler;
-  return new Server<C, NodeRequest, NodeOptResponse>(
+  return new Server<NodeRequest, NodeOptResponse, C>(
     options
   );
 };
@@ -110,10 +109,4 @@ export function action<C extends UnknownNest = UnknownNest>(
   action: WhatwgAction<C>
 ) {
   return action;
-};
-
-action.props = <C extends UnknownNest = any>(action: WhatwgPropsAction<C>) => {
-  return function ActionProps(req, res, ctx) {
-    return action({ req, res, ctx });
-  } as WhatwgAction<C>;
 };

@@ -17,8 +17,8 @@ Ingest is a lightweight, flexible server framework that brings the familiar Expr
 - **🚀 Serverless-First**: Designed specifically for serverless environments while maintaining compatibility with traditional servers
 - **🔄 Event-Driven**: Built on a robust event system that enables reactive programming patterns
 - **🛣️ Multi-Routing Interface**: Four different routing approaches in one framework
-- **🔌 Plugin System**: Highly extensible with a simple plugin architecture
-- **📦 Build Support**: Exposes routing information for bundlers and build tools
+- **🔌 Plugin System**: Optional automatic wiring for routes, hooks, and shared services
+- **📦 Build Support**: Exposes routing information for build and deployment tooling
 - **🌐 Cross-Platform**: Works with Node.js HTTP, WHATWG Fetch, and various serverless platforms
 
 ## Installation
@@ -39,11 +39,11 @@ import { server } from '@stackpress/ingest/http';
 const app = server();
 
 // Traditional Express-like routing
-app.get('/', (req, res) => {
+app.get('/', ({ req, res }) => {
   res.setHTML('<h1>Hello World!</h1>');
 });
 
-app.get('/api/users/:id', (req, res) => {
+app.get('/api/users/:id', ({ req, res }) => {
   const userId = req.data.get('id');
   res.setJSON({ id: userId, name: 'John Doe' });
 });
@@ -61,7 +61,7 @@ import { server } from '@stackpress/ingest/whatwg';
 
 const app = server();
 
-app.get('/api/hello', (req, res) => {
+app.get('/api/hello', ({ req, res }) => {
   res.setJSON({ message: 'Hello from Vercel!' });
 });
 
@@ -78,7 +78,7 @@ Ingest provides four different ways to define routes, giving you flexibility in 
 Express.js-like inline route handlers:
 
 ```typescript
-app.action.get('/users', (req, res) => {
+app.action.get('/users', ({ req, res }) => {
   res.setJSON({ users: [] });
 });
 ```
@@ -91,7 +91,7 @@ app.entry.get('/users', './routes/users.js');
 ```
 
 ### 3. Import Router (Lazy Loading)
-Dynamic imports for code splitting:
+Dynamic imports for lazy loading and tooling-aware route boundaries:
 
 ```typescript
 app.import.get('/users', () => import('./routes/users.js'));
@@ -110,7 +110,7 @@ Ingest can automatically determine which router to use based on your input:
 
 ```typescript
 // Automatically uses action router
-app.get('/users', (req, res) => { /* handler */ });
+app.get('/users', ({ req, res }) => { /* handler */ });
 
 // Automatically uses import router
 app.get('/users', () => import('./routes/users.js'));
@@ -121,14 +121,14 @@ app.get('/users', './views/users.hbs');
 
 ## Plugin System
 
-Ingest features a powerful plugin system that allows you to modularize your application:
+Ingest includes an optional plugin system that can automate application wiring. You can still wire routes, handlers, and services manually in a main file if you prefer:
 
 ### Creating a Plugin
 
 ```typescript
 // src/plugins/auth.ts
 export default function authPlugin(server) {
-  server.on('request', (req, res) => {
+  server.on('request', ({ req, res }) => {
     // Add authentication logic
     if (!req.headers.get('authorization')) {
       res.setError('Unauthorized', {}, [], 401);
@@ -171,12 +171,12 @@ Ingest is built on a powerful event system that allows for reactive programming:
 
 ```typescript
 // Listen to all requests
-app.on('request', (req, res) => {
+app.on('request', ({ req, res }) => {
   console.log(`${req.method} ${req.url.pathname}`);
 });
 
 // Listen to specific routes
-app.on('GET /api/users', (req, res) => {
+app.on('GET /api/users', ({ req, res }) => {
   // This runs for GET /api/users
 });
 
@@ -193,7 +193,7 @@ app.on('request', middleware2, 5);  // Lower priority
 import { server } from '@stackpress/ingest/whatwg';
 
 const app = server();
-app.get('/api/hello', (req, res) => {
+app.get('/api/hello', ({ req, res }) => {
   res.setJSON({ message: 'Hello from Lambda!' });
 });
 
@@ -210,7 +210,7 @@ export const handler = async (event, context) => {
 import { server } from '@stackpress/ingest/whatwg';
 
 const app = server();
-app.get('/api/users', (req, res) => {
+app.get('/api/users', ({ req, res }) => {
   res.setJSON({ users: [] });
 });
 
@@ -225,7 +225,7 @@ export default async function handler(req: Request) {
 import { server } from '@stackpress/ingest/whatwg';
 
 const app = server();
-app.get('/.netlify/functions/api', (req, res) => {
+app.get('/.netlify/functions/api', ({ req, res }) => {
   res.setJSON({ message: 'Hello from Netlify!' });
 });
 
@@ -238,7 +238,7 @@ export const handler = async (event, context) => {
 
 ## Build Support
 
-Ingest exposes routing information that can be used by bundlers and build tools:
+Ingest exposes routing information that can be used by build and deployment tooling:
 
 ```typescript
 const app = server();
@@ -252,17 +252,20 @@ console.log(app.entries);   // File entries
 console.log(app.views);     // View templates
 ```
 
-This information can be used by bundlers to:
+This information can be used by tooling to:
 - Pre-bundle route modules
 - Generate static route manifests
-- Optimize code splitting
+- Discover import, entry, and view boundaries
 - Create deployment artifacts
 
 ## Documentation
 
-- [API Reference](https://github.com/stackpress/ingest/tree/main/docs/api/README.md) - Complete API documentation
-- [Examples](https://github.com/stackpress/ingest/tree/main/docs/examples.md) - Comprehensive usage examples
-- [Plugin Development](https://github.com/stackpress/ingest/tree/main/docs/plugin-development.md) - Guide to creating plugins
+- [Specifications](https://github.com/stackpress/ingest/tree/main/specs/README.md) - Documentation index
+- [Overview](https://github.com/stackpress/ingest/tree/main/specs/overview.md) - What Ingest is optimizing for
+- [Concepts](https://github.com/stackpress/ingest/tree/main/specs/concepts/README.md) - How the system works
+- [Guides](https://github.com/stackpress/ingest/tree/main/specs/guides/README.md) - Task-oriented documentation
+- [API Reference](https://github.com/stackpress/ingest/tree/main/specs/api/README.md) - Exact class and method lookup
+- [Examples](https://github.com/stackpress/ingest/tree/main/specs/examples.md) - Example workspace guide
 
 ## Examples
 

@@ -16,43 +16,42 @@ import Exception from './Exception.js';
  * - properly formats the response
  */
 export default class Route<
-  //configuration map
-  C extends UnknownNest = UnknownNest, 
-  //request resource
   R = unknown, 
-  //response resource
-  S = unknown
+  S = unknown,
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
 > {
   /**
    * Hooks in plugins to the request lifecycle
    */
   public static async emit<
-    C extends UnknownNest = UnknownNest, 
     R = unknown, 
-    S = unknown
+    S = unknown,
+    C extends UnknownNest = UnknownNest,
+    P extends Record<string, unknown> = Record<string, unknown>
   >(
-    event: ServerAction<C, R, S>|string,
+    event: ServerAction<R, S, C, P>|string,
     request: Request<R>,
     response: Response<S>,
-    context: Server<C, R, S>
+    context: Server<R, S, C, P>
   ) {
     const route = new Route(event, request, response, context);
     return route.emit();
   }
 
-  public readonly event: ServerAction<C, R, S>|string;
+  public readonly event: ServerAction<R, S, C, P>|string;
   public readonly request: Request<R>;
   public readonly response: Response<S>;
-  public readonly context: Server<C, R, S>;
+  public readonly context: Server<R, S, C, P>;
 
   /**
    * Gets everything needed from route.handle()
    */
   constructor(
-    event: ServerAction<C, R, S>|string,
+    event: ServerAction<R, S, C, P>|string,
     request: Request<R>,
     response: Response<S>,
-    context: Server<C, R, S>
+    context: Server<R, S, C, P>
   ) {
     this.event = event;
     this.request = request;
@@ -117,11 +116,7 @@ export default class Route<
           this.response
         );
       } else {
-        await this.event(
-          this.request, 
-          this.response, 
-          this.context
-        ); 
+        await this.event(this.context.props(this.request, this.response)); 
       }
     } catch(error) {
       //allow plugins to handle the error

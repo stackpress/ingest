@@ -23,16 +23,20 @@ export default class Router<
   //request resource
   R = unknown, 
   //response resource
-  S = unknown
+  S = unknown,
+  //config props
+  C = unknown,
+  //plugin props
+  P = unknown
 > {
   //action router main
-  public readonly action: ActionRouter<R, S, this>;
+  public readonly action: ActionRouter<R, S, this, C, P>;
   //entry router extension
-  public readonly entry: EntryRouter<R, S, this>;
+  public readonly entry: EntryRouter<R, S, this, C, P>;
   //import router extension
-  public readonly import: ImportRouter<R, S, this>;
+  public readonly import: ImportRouter<R, S, this, C, P>;
   //view router extension
-  public readonly view: ViewRouter<R, S, this>;
+  public readonly view: ViewRouter<R, S, this, C, P>;
 
   /**
    * Returns the router entry map
@@ -80,7 +84,7 @@ export default class Router<
    * Sets the main router and its extensions
    */
   public constructor() {
-    this.action = new ActionRouter<R, S, this>(this);
+    this.action = new ActionRouter<R, S, this, C, P>(this);
     this.entry = this.action.entry;
     this.import = this.action.import;
     this.view = this.action.view;
@@ -91,7 +95,7 @@ export default class Router<
    */
   public all(
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority?: number
   ) {
     return this.route('ALL', path, action, priority);
@@ -102,7 +106,7 @@ export default class Router<
    */
   public connect(
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority?: number
   ) {
     return this.route('CONNECT', path, action, priority);
@@ -113,7 +117,7 @@ export default class Router<
    */
   public delete(
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority?: number
   ) {
     return this.route('DELETE', path, action, priority);
@@ -123,7 +127,7 @@ export default class Router<
    * Calls all the callbacks of the given event passing the given arguments
    */
   public async emit(event: string, req: Request<R>, res: Response<S>) {
-    return this.action.emit(event, req, res);
+    return this.action.emit(event, this.action.createProps(req, res, this));
   }
 
   /**
@@ -131,7 +135,7 @@ export default class Router<
    */
   public get(
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority?: number
   ) {
     return this.route('GET', path, action, priority);
@@ -142,7 +146,7 @@ export default class Router<
    */
   public head(
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority?: number
   ) {
     return this.route('HEAD', path, action, priority);
@@ -153,7 +157,7 @@ export default class Router<
    */
   public on(
     event: string|RegExp, 
-    action: AnyRouterAction<R, S, this>,
+    action: AnyRouterAction<R, S, this, C, P>,
     priority = 0
   ) {
     //delegate to appropriate router based on action type
@@ -174,7 +178,7 @@ export default class Router<
       //import router for parameterless functions
       this.import.on(
         event, 
-        action as ImportRouterAction<R, S, this>,
+        action as ImportRouterAction<R, S, this, C, P>,
         priority
       );
     //if action is a function with more than 0 
@@ -182,7 +186,7 @@ export default class Router<
     } else {
       this.action.on(
         event, 
-        action as ActionRouterAction<R, S, this>,
+        action as ActionRouterAction<R, S, this, C, P>,
         priority
       );
     }
@@ -194,7 +198,7 @@ export default class Router<
    */
   public options(
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority?: number
   ) {
     return this.route('OPTIONS', path, action, priority);
@@ -205,7 +209,7 @@ export default class Router<
    */
   public patch(
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority?: number
   ) {
     return this.route('PATCH', path, action, priority);
@@ -216,7 +220,7 @@ export default class Router<
    */
   public post(
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority?: number
   ) {
     return this.route('POST', path, action, priority);
@@ -227,7 +231,7 @@ export default class Router<
    */
   public put(
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority?: number
   ) {
     return this.route('PUT', path, action, priority);
@@ -300,7 +304,7 @@ export default class Router<
   public route(
     method: Method, 
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority = 0
   ) {
     //delegate to appropriate router based on action type
@@ -323,7 +327,7 @@ export default class Router<
       this.import.route(
         method,
         path, 
-        action as ImportRouterAction<R, S, this>,
+        action as ImportRouterAction<R, S, this, C, P>,
         priority
       );
     //if action is a function with more than 0 
@@ -332,7 +336,7 @@ export default class Router<
       this.action.route(
         method,
         path, 
-        action as ActionRouterAction<R, S, this>,
+        action as ActionRouterAction<R, S, this, C, P>,
         priority
       );
     }
@@ -344,7 +348,7 @@ export default class Router<
    */
   public trace(
     path: string, 
-    action: AnyRouterAction<R, S, this>, 
+    action: AnyRouterAction<R, S, this, C, P>, 
     priority?: number
   ) {
     return this.route('TRACE', path, action, priority);
@@ -353,7 +357,7 @@ export default class Router<
   /**
    * Allows routes from other routers to apply here
    */
-  public use<T extends Router<R, S>>(router: T) {
+  public use<T extends Router<R, S, C, P>>(router: T) {
     //Patch: Router<R, S> is assignable to the constraint of type  
     //this, but this could be instantiated with a different subtype  
     //of constraint Router<R, S>

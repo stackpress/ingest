@@ -66,7 +66,7 @@ export default class Adapter<C extends UnknownNest = UnknownNest> {
     //load the body
     await req.load();
     //hook the plugins
-    await Route.emit<C, IM, SR>(event, req, res, this._context);
+    await Route.emit<IM, SR, C>(event, req, res, this._context);
     //if the response was not sent by now,
     if (!res.sent) {
       //send the response

@@ -7,6 +7,7 @@ import type {
 } from 'node:http';
 //stackpress
 import type { 
+  CallableNest,
   TaskAction,
   TaskResult,
   UnknownNest,
@@ -95,30 +96,41 @@ export type PluginLoaderOptions = ConfigLoaderOptions & {
 // Router Types
 
 //action router
-export type ActionRouterArgs<R, S, X> = [ Request<R>, Response<S>, X ];
-export type ActionRouteProps<R, S, X> = {
+export type ActionRouteProps<R, S, X, C = unknown, P = unknown> = {
+  request: Request<R>,
+  response: Response<S>,
+  server: X,
+  config: C,
+  plugin: P,
   req: Request<R>,
   res: Response<S>,
-  ctx: X
+  ctx: X,
+  cfg: C,
+  plg: P
 };
-export type ActionRouterMap<R, S, X> = Record<string, ActionRouterArgs<R, S, X>>;
-export type ActionRouterAction<R, S, X> = TaskAction<ActionRouterArgs<R, S, X>>;
-export type ActionRouterPropsAction<R, S, X> = (
-  props: ActionRouteProps<R, S, X>
-) => TaskResult;
-export type ActionRouterListener<R, S, X> = (
+export type ActionRouterArgs<R, S, X, C = unknown, P = unknown> = [
+  ActionRouteProps<R, S, X, C, P>
+];
+export type ActionRouterMap<R, S, X, C = unknown, P = unknown> = Record<
+  string,
+  ActionRouterArgs<R, S, X, C, P>
+>;
+export type ActionRouterAction<R, S, X, C = unknown, P = unknown> = TaskAction<
+  ActionRouterArgs<R, S, X, C, P>
+>;
+export type ActionRouterListener<R, S, X, C = unknown, P = unknown> = (
   event: string, 
-  action: ActionRouterAction<R, S, X>, 
+  action: ActionRouterAction<R, S, X, C, P>, 
   priority?: number
-) => ActionRouter<R, S, X>;
+) => ActionRouter<R, S, X, C, P>;
 //entry router
 export type EntryRouterTaskItem = { entry: string, priority: number };
 //import router
-export type ImportRouterAction<R, S, X> = () => Promise<{
-  default: ActionRouterAction<R, S, X>
+export type ImportRouterAction<R, S, X, C = unknown, P = unknown> = () => Promise<{
+  default: ActionRouterAction<R, S, X, C, P>
 }>;
-export type ImportRouterTaskItem<R, S, X> = { 
-  import: ImportRouterAction<R, S, X>, 
+export type ImportRouterTaskItem<R, S, X, C = unknown, P = unknown> = { 
+  import: ImportRouterAction<R, S, X, C, P>, 
   priority: number 
 };
 //view router
@@ -143,49 +155,66 @@ export type ViewRouterRender = (
 export type AnyRouterAction<
   R = unknown, 
   S = unknown,
-  X = undefined
+  X = undefined,
+  C = unknown,
+  P = unknown
 > = string
-  | ActionRouterAction<R, S, X>
-  | ImportRouterAction<R, S, X>;
+  | ActionRouterAction<R, S, X, C, P>
+  | ImportRouterAction<R, S, X, C, P>;
 
 //--------------------------------------------------------------------//
 // Server Types
 
-//alias for ActionRouterAction
-//used in Route class
+export type Infer = { readonly __infer: unique symbol };
+export type KnownPlugin<P, K extends string> = K extends keyof P ? P[K] : unknown;
+export type ServerPlugin<
+  P extends Record<string, unknown> = Record<string, unknown>
+> = <V = Infer, K extends string = string>(
+  name: K
+) => V extends Infer ? KnownPlugin<P, K> : V;
+export type ServerProps<
+  R = unknown,
+  S = unknown,
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+> = ActionRouteProps<
+  R,
+  S,
+  Server<R, S, C, P>,
+  CallableNest<C>,
+  ServerPlugin<P>
+>;
+
+//alias for ActionRouterAction used in Route class
 export type ServerAction<
-  //config map
-  C extends UnknownNest = UnknownNest, 
-  //request resource
   R = unknown, 
-  //response resource
-  S = unknown
-> = ActionRouterAction<R, S, Server<C, R, S>>;
-//alias for ActionRouterPropsAction
-//used in action.props method
-export type ServerPropsAction<
-  //config map
-  C extends UnknownNest = UnknownNest, 
-  //request resource
-  R = unknown, 
-  //response resource
-  S = unknown
-> = ActionRouterPropsAction<R, S, Server<C, R, S>>;
+  S = unknown,
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+> = ActionRouterAction<
+  R,
+  S,
+  Server<R, S, C, P>,
+  CallableNest<C>,
+  ServerPlugin<P>
+>;
 
 //used in Server class
 export type ServerHandler<
-  C extends UnknownNest = UnknownNest, 
   R = unknown, 
-  S = unknown
-> = (ctx: Server<C, R, S>, req: R, res: S) => Promise<S>;
+  S = unknown,
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+> = (ctx: Server<R, S, C, P>, req: R, res: S) => Promise<S>;
 export type ServerGateway = (options: NodeServerOptions) => NodeServer;
 export type ServerOptions<
-  C extends UnknownNest = UnknownNest, 
   R = unknown, 
-  S = unknown
+  S = unknown,
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
 > = PluginLoaderOptions & {
-  handler?: ServerHandler<C, R, S>,
-  gateway?: (server: Server<C, R, S>) => ServerGateway
+  handler?: ServerHandler<R, S, C, P>,
+  gateway?: (server: Server<R, S, C, P>) => ServerGateway
 };
 
 //--------------------------------------------------------------------//
@@ -206,17 +235,17 @@ export type HttpResponse = Response<SR>;
 export type HttpRequest = Request<IM>;
 export type HttpRouter = Router<IM, SR>;
 export type HttpServer<
-  C extends UnknownNest = UnknownNest
-> = Server<C, IM, SR>;
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+> = Server<IM, SR, C, P>;
 export type HttpServerOptions<
-  C extends UnknownNest = UnknownNest
-> = ServerOptions<C, IM, SR>;
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+> = ServerOptions<IM, SR, C, P>;
 export type HttpAction<
-  C extends UnknownNest = UnknownNest
-> = ServerAction<C, IM, SR>;
-export type HttpPropsAction<
-  C extends UnknownNest = UnknownNest
-> = ServerPropsAction<C, IM, SR>;
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+> = ServerAction<IM, SR, C, P>;
 
 //--------------------------------------------------------------------//
 // Whatwg Types
@@ -225,14 +254,14 @@ export type WhatwgResponse = Response<NodeOptResponse>;
 export type WhatwgRequest = Request<NodeRequest>;
 export type WhatwgRouter = Router<NodeRequest, NodeOptResponse>;
 export type WhatwgServer<
-  C extends UnknownNest = UnknownNest
-> = Server<C, NodeRequest, NodeOptResponse>;
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+> = Server<NodeRequest, NodeOptResponse, C, P>;
 export type WhatwgServerOptions<
-  C extends UnknownNest = UnknownNest
-> = ServerOptions<C, NodeRequest, NodeOptResponse>;
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+> = ServerOptions<NodeRequest, NodeOptResponse, C, P>;
 export type WhatwgAction<
-  C extends UnknownNest = UnknownNest
-> = ServerAction<C, NodeRequest, NodeOptResponse>;
-export type WhatwgPropsAction<
-  C extends UnknownNest = UnknownNest
-> = ServerPropsAction<C, NodeRequest, NodeOptResponse>;
+  C extends UnknownNest = UnknownNest,
+  P extends Record<string, unknown> = Record<string, unknown>
+> = ServerAction<NodeRequest, NodeOptResponse, C, P>;

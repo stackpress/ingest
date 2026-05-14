@@ -23,7 +23,7 @@ describe('Router Tests', () => {
   it('Should basic route', async () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
-    router.get('/some/route/path', (req, res) => {
+    router.get('/some/route/path', ({ req, res }) => {
       res.setBody('text/plain', req.url.pathname);
     });
 
@@ -41,7 +41,7 @@ describe('Router Tests', () => {
 
     let tests = 0;
     for (const method of methods) {
-      router[method]('/some/route/path', (req, res) => {
+      router[method]('/some/route/path', ({ req, res }) => {
         res.setBody('text/plain', `${method} ${req.url.pathname}`);
       });
       const req = new Request({ 
@@ -61,7 +61,7 @@ describe('Router Tests', () => {
 
     let tests = 0;
     for (const method of methods) {
-      router.action[method]('/some/route/path', (req, res) => {
+      router.action[method]('/some/route/path', ({ req, res }) => {
         res.setBody('text/plain', `${method} ${req.url.pathname}`);
       });
       const req = new Request({ 
@@ -79,7 +79,7 @@ describe('Router Tests', () => {
   it('Should route ALL', async () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
-    router.all('/some/route/path', (req, res) => {
+    router.all('/some/route/path', ({ req, res }) => {
       res.setBody('text/plain', req.url.pathname);
     });
 
@@ -111,7 +111,7 @@ describe('Router Tests', () => {
 
   it('Should handle route parameters correctly', async () => {
     const router = new Router();
-    router.get('/users/:id/posts/:postId', (req, res) => {
+    router.get('/users/:id/posts/:postId', ({ req, res }) => {
       res.setBody('application/json', {
         params: req.data.get(),
         path: req.url.pathname
@@ -135,7 +135,7 @@ describe('Router Tests', () => {
 
   it('Should handle wildcard routes correctly', async () => {
     const router = new Router();
-    router.get('/files/**', (req, res) => {
+    router.get('/files/**', ({ req, res }) => {
       res.setBody('application/json', {
         params: req.data.get(),
         path: req.url.pathname
@@ -158,12 +158,14 @@ describe('Router Tests', () => {
     const calls: string[] = [];
 
     // Lower priority (1) route
-    router.get('/api/resource', (req, res) => {
+    router.get('/api/resource', ({ req }) => {
+      void req;
       calls.push('low');
     }, 1);
 
     // Higher priority (2) route
-    router.get('/api/resource', (req, res) => {
+    router.get('/api/resource', ({ req }) => {
+      void req;
       calls.push('high');
     }, 2);
 
@@ -182,7 +184,7 @@ describe('Router Tests', () => {
     const router1 = new Router();
     const router2 = new Router();
 
-    router1.get('/api/v1/test', (req, res) => {
+    router1.get('/api/v1/test', ({ res }) => {
       res.setBody('text/plain', 'router1');
     });
 
@@ -201,13 +203,13 @@ describe('Router Tests', () => {
   it('Should handle flexible routing types', async () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
-    router.view.engine = function (filePath, req, res) {
+    router.view.engine = function (filePath, { res }) {
       res.setBody('text/plain', filePath);
     }
     // Set up routes with different action types
     router.get('/view/path', './templates/view.html');
     router.get('/import/path', () => import('./fixtures/get'));
-    router.get('/standard/path', (req, res) => {
+    router.get('/standard/path', ({ res }) => {
       res.setBody('text/plain', 'standard response');
     });
   
