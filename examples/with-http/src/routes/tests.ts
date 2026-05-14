@@ -29,14 +29,14 @@ const route = router();
 /**
  * Redirect test
  */
-route.get('/redirect', function Redirect(req, res) {
+route.get('/redirect', function Redirect({ req, res }) {
   res.redirect('/user');
 });
 
 /**
  * Static file test
  */
-route.get('/icon.png', function Icon(req, res) {
+route.get('/icon.png', function Icon({ req, res }) {
   if (res.code || res.status || res.body) return; 
   const file = path.resolve(process.cwd(), 'icon.png'); 
   if (fs.existsSync(file)) {
@@ -47,7 +47,7 @@ route.get('/icon.png', function Icon(req, res) {
 /**
  * Stream template for SSE test
  */
-route.get('/stream', function Stream(req, res) {
+route.get('/stream', function Stream({ req, res }) {
   //send the response
   res.setHTML(template.trim());
 });
@@ -55,7 +55,7 @@ route.get('/stream', function Stream(req, res) {
 /**
  * SSE test
  */
-route.get('/__sse__', function SSE(req, res) {
+route.get('/__sse__', function SSE({ req, res }) {
   res.headers
     .set('Cache-Control', 'no-cache')
     .set('Content-Encoding', 'none')

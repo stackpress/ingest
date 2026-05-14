@@ -1,6 +1,6 @@
 import { action } from '@stackpress/ingest';
 
-export default action(function Error(req, res) {
+export default action(function Error({ req, res }) {
   const html = [ `<h1>${res.error}</h1>` ];
   const stack = res.stack?.map((log, i) => {
     const { line, char } = log;

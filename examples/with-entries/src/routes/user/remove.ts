@@ -1,6 +1,6 @@
 import { action } from '@stackpress/ingest';
 
-export default action(function UserRemove(req, res) {
+export default action(function UserRemove({ req, res }) {
   //get params
   const id = parseInt(req.data('id') || '');
   if (!id) {

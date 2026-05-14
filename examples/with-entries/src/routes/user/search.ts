@@ -1,6 +1,6 @@
 import { action } from '@stackpress/ingest';
 
-export default action(function UserSearch(req, res) {
+export default action(function UserSearch({ req, res }) {
   //get filters
   //const filters = req.query.get<Record<string, unknown>>('filter');
   //maybe get from database?

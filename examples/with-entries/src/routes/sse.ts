@@ -1,6 +1,6 @@
 import { action } from '@stackpress/ingest';
 
-export default action(async function SSE(req, res) {
+export default action(async function SSE({ req, res }) {
   res.headers
     .set('Cache-Control', 'no-cache')
     .set('Content-Encoding', 'none')

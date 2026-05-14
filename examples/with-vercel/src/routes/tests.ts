@@ -28,14 +28,14 @@ const router = server();
 /**
  * Redirect test
  */
-router.get('/redirect', function Redirect(req, res) {
+router.get('/redirect', function Redirect({ req, res }) {
   res.redirect('/user');
 });
 
 /**
  * Static file test
  */
-router.get('/icon.png', function Icon(req, res) {
+router.get('/icon.png', function Icon({ req, res }) {
   if (res.code || res.status || res.body) return; 
   const file = path.resolve(process.cwd(), 'public', 'icon.png'); 
   if (fs.existsSync(file)) {
@@ -46,7 +46,7 @@ router.get('/icon.png', function Icon(req, res) {
 /**
  * Stream template for SSE test
  */
-router.get('/stream', function Stream(req, res) {
+router.get('/stream', function Stream({ req, res }) {
   //send the response
   res.setHTML(template.trim());
 });
@@ -54,7 +54,7 @@ router.get('/stream', function Stream(req, res) {
 /**
  * SSE test
  */
-router.get('/__sse__', function SSE(req, res) {
+router.get('/__sse__', function SSE({ req, res }) {
   res.headers
     .set('Cache-Control', 'no-cache')
     .set('Content-Encoding', 'none')

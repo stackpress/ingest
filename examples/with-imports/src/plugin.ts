@@ -27,7 +27,7 @@ export default function plugin(server: HttpServer<Config>) {
   server.on('error', () => import('./events/error'));
 
   server.register('project', { welcome: 'Hello, World!!' });
-  server.on('request', (req, res) => {
+  server.on('request', ({ req, res }) => {
     console.log('Request:', req.url);
   });
 }

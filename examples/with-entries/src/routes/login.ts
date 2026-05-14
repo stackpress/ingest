@@ -19,7 +19,7 @@ const template = `
 </html>
 `;
 
-export default action(function Login(req, res) {
+export default action(function Login({ req, res }) {
   //send the response
   res.setHTML(template.trim());
 });

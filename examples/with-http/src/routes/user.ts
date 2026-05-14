@@ -7,7 +7,7 @@ let id = 0;
 /**
  * Example user API search
  */
-route.get('/user', function UserSearch(req, res) {
+route.get('/user', function UserSearch({ req, res }) {
   //get filters
   //const filters = req.query.get<Record<string, unknown>>('filter');
   //maybe get from database?
@@ -33,7 +33,7 @@ route.get('/user', function UserSearch(req, res) {
  * Example user API create (POST)
  * Need to use Postman to see this...
  */
-route.post('/user', function UserCreate(req, res) {
+route.post('/user', function UserCreate({ req, res }) {
   //get form body
   const form = req.data();
   //maybe insert into database?
@@ -45,7 +45,7 @@ route.post('/user', function UserCreate(req, res) {
 /**
  * Example user API detail
  */
-route.get('/user/:id', function UserDetail(req, res) {
+route.get('/user/:id', function UserDetail({ req, res }) {
   //get params
   const id = parseInt(req.data('id') || '');
   if (!id) {
@@ -62,7 +62,7 @@ route.get('/user/:id', function UserDetail(req, res) {
   //send the response
   res.setResults(results);
 });
-route.put('/user/:id', function UserUpdate(req, res) {
+route.put('/user/:id', function UserUpdate({ req, res }) {
   //get params
   const id = parseInt(req.data('id') || '');
   if (!id) {
@@ -81,7 +81,7 @@ route.put('/user/:id', function UserUpdate(req, res) {
  * Example user API delete (DELETE)
  * Need to use Postman to see this...
  */
-route.delete('/user/:id', function UserRemove(req, res) {
+route.delete('/user/:id', function UserRemove({ req, res }) {
   //get params
   const id = parseInt(req.data('id') || '');
   if (!id) {

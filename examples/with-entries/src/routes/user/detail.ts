@@ -1,6 +1,6 @@
 import { action } from '@stackpress/ingest';
 
-export default action(function UserDetail(req, res) {
+export default action(function UserDetail({ req, res }) {
   //get params
   const id = parseInt(req.data('id') || '');
   if (!id) {

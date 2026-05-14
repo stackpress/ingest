@@ -21,7 +21,7 @@ const template = `
 </html>
 `;
 
-export default action(function Stream(req, res) {
+export default action(function Stream({ req, res }) {
   //send the response
   res.setHTML(template.trim());
 });

@@ -25,7 +25,7 @@ const router = server<Config>();
 /**
  * Home page
  */
-router.get('/', function HomePage(req, res, ctx) { 
+router.get('/', function HomePage({ req, res, ctx }) { 
   const project = ctx.plugin<{ welcome: string }>('project');
   res.setHTML(project.welcome);
 });
@@ -33,7 +33,7 @@ router.get('/', function HomePage(req, res, ctx) {
 /**
  * Login page
  */
-router.get('/login', function Login(req, res) {
+router.get('/login', function Login({ req, res }) {
   //send the response
   res.setHTML(template.trim());
 });

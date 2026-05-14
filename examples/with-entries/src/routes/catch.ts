@@ -1,6 +1,6 @@
 import { action, Status, Exception } from '@stackpress/ingest';
 
-export default action(function ErrorResponse(req, res) {
+export default action(function ErrorResponse({ req, res }) {
   try {
     throw Exception.for('Not implemented');
   } catch (e) {

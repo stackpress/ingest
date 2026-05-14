@@ -10,7 +10,7 @@ const route = router();
 /**
  * Error handlers
  */
-route.get('/error', function ErrorResponse(req, res) {
+route.get('/error', function ErrorResponse({ req, res }) {
   try {
     throw Exception.for('Not implemented');
   } catch (e) {
@@ -28,7 +28,7 @@ route.get('/error', function ErrorResponse(req, res) {
 /**
  * 404 handler
  */
-route.on('response', function NotFound(req, res) {
+route.on('response', function NotFound({ req, res }) {
   if (!res.code && !res.status && !res.sent) {
     //send the response
     res.setHTML('Not Found');

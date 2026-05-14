@@ -24,14 +24,14 @@ const route = router();
 /**
  * Home page
  */
-route.get('/', function HomePage(req, res) { 
+route.get('/', function HomePage({ req, res }) { 
   res.setHTML('Hello, World');
 });
 
 /**
  * Login page
  */
-route.get('/login', function Login(req, res) {
+route.get('/login', function Login({ req, res }) {
   //send the response
   res.setHTML(template.trim());
 });

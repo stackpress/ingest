@@ -12,7 +12,7 @@ export default function plugin(server: HttpServer<Config>) {
   server.config.set(config);
   server.use(pages).use(tests).use(user).use(hooks);
   server.register('project', { welcome: 'Hello, World!!' });
-  server.on('request', (req, res) => {
+  server.on('request', ({ req, res }) => {
     console.log('Request:', req.url);
   });
 }

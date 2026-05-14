@@ -10,7 +10,7 @@ const route = router();
 /**
  * Error handlers
  */
-route.get('/catch', function ErrorResponse(req, res) {
+route.get('/catch', function ErrorResponse({ req, res }) {
   try {
     throw Exception.for('Not implemented');
   } catch (e) {
@@ -28,21 +28,21 @@ route.get('/catch', function ErrorResponse(req, res) {
 /**
  * Error handlers
  */
-route.get('/error', function ErrorResponse(req, res) {
+route.get('/error', function ErrorResponse({ req, res }) {
   throw Exception.for('Not implemented');
 });
 
 /**
  * 404 handler
  */
-route.get('/**', function NotFound(req, res) {
+route.get('/**', function NotFound({ req, res }) {
   if (!res.code && !res.status && !res.sent) {
     //send the response
     res.setHTML('Not Found');
   }
 });
 
-route.on('error', function Error(req, res) {
+route.on('error', function Error({ req, res }) {
   const html = [ `<h1>${res.error}</h1>` ];
   const stack = res.stack?.map((log, i) => {
     const { line, char } = log;
