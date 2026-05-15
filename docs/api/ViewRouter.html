@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ViewRouter | Ingest</title>
+    <meta name="description" content="Template-based routing system that routes to view files for server-side rendering, supporting various template engines and rendering strategies." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="is-active" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>ViewRouter</h1>
+            <p class="hero-summary">Template-based routing system that routes to view files for server-side rendering, supporting various template engines and rendering strategies.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#1-properties" title="1. Properties">1. Properties</a></li><li><a href="#2-http-method-routing" title="2. HTTP Method Routing">2. HTTP Method Routing</a></li><li><a href="#3-event-based-routing" title="3. Event-Based Routing">3. Event-Based Routing</a></li><li><a href="#4-template-engine-configuration" title="4. Template Engine Configuration">4. Template Engine Configuration</a></li><li><a href="#5-render-function-configuration" title="5. Render Function Configuration">5. Render Function Configuration</a></li><li><a href="#6-creating-actions-from-views" title="6. Creating Actions from Views">6. Creating Actions from Views</a></li><li><a href="#7-using-other-viewrouters" title="7. Using Other ViewRouters">7. Using Other ViewRouters</a></li><li><a href="#8-template-engine-integration" title="8. Template Engine Integration">8. Template Engine Integration</a></li><li><a href="#8-1-handlebars-integration" title="8.1. Handlebars Integration">8.1. Handlebars Integration</a></li><li><a href="#8-2-ejs-integration" title="8.2. EJS Integration">8.2. EJS Integration</a></li><li><a href="#8-3-mustache-integration" title="8.3. Mustache Integration">8.3. Mustache Integration</a></li><li><a href="#8-4-custom-template-engine" title="8.4. Custom Template Engine">8.4. Custom Template Engine</a></li><li><a href="#9-data-flow-and-context" title="9. Data Flow and Context">9. Data Flow and Context</a></li><li><a href="#9-1-request-data-access" title="9.1. Request Data Access">9.1. Request Data Access</a></li><li><a href="#9-2-context-integration" title="9.2. Context Integration">9.2. Context Integration</a></li><li><a href="#10-error-handling-and-fallbacks" title="10. Error Handling and Fallbacks">10. Error Handling and Fallbacks</a></li><li><a href="#10-1-template-error-handling" title="10.1. Template Error Handling">10.1. Template Error Handling</a></li><li><a href="#10-2-development-vs-production-error-handling" title="10.2. Development vs Production Error Handling">10.2. Development vs Production Error Handling</a></li><li><a href="#11-integration-with-actionrouter" title="11. Integration with ActionRouter">11. Integration with ActionRouter</a></li><li><a href="#11-1-initialization" title="11.1. Initialization">11.1. Initialization</a></li><li><a href="#11-2-mixed-routing-approaches" title="11.2. Mixed Routing Approaches">11.2. Mixed Routing Approaches</a></li><li><a href="#12-best-practices" title="12. Best Practices">12. Best Practices</a></li><li><a href="#12-1-template-organization" title="12.1. Template Organization">12.1. Template Organization</a></li><li><a href="#12-2-performance-optimization" title="12.2. Performance Optimization">12.2. Performance Optimization</a></li><li><a href="#12-3-security-considerations" title="12.3. Security Considerations">12.3. Security Considerations</a></li><li><a href="#12-4-seo-and-meta-tags" title="12.4. SEO and Meta Tags">12.4. SEO and Meta Tags</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p>Template-based routing system that routes to view files for server-side rendering, supporting various template engines and rendering strategies. It keeps route lookup and template rendering connected while still allowing rendering to be reused from ordinary handlers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import ViewRouter from '@stackpress/ingest/plugin/ViewRouter';
+
+const router = new ViewRouter(actionRouter, listen);
+
+// Configure reusable renderer
+router.render = async (filePath, props) =&gt; {
+  return await renderTemplate(filePath, props);
+};
+
+// Configure template engine
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  const html = await router.render(filePath, req.data());
+  res.setHTML(html);
+};
+
+// Route to template files
+router.get('/profile', './views/profile.hbs');
+router.get('/dashboard', './views/dashboard.ejs');</code></pre></div>
+<ol><li><a href="#1-properties" title="Properties">Properties</a></li><li><a href="#2-http-method-routing" title="HTTP Method Routing">HTTP Method Routing</a></li><li><a href="#3-event-based-routing" title="Event-Based Routing">Event-Based Routing</a></li><li><a href="#4-template-engine-configuration" title="Template Engine Configuration">Template Engine Configuration</a></li><li><a href="#5-render-function-configuration" title="Render Function Configuration">Render Function Configuration</a></li><li><a href="#6-creating-actions-from-views" title="Creating Actions from Views">Creating Actions from Views</a></li><li><a href="#7-using-other-viewrouters" title="Using Other ViewRouters">Using Other ViewRouters</a></li><li><a href="#8-template-engine-integration" title="Template Engine Integration">Template Engine Integration</a></li><li><a href="#9-data-flow-and-context" title="Data Flow and Context">Data Flow and Context</a></li><li><a href="#10-error-handling-and-fallbacks" title="Error Handling and Fallbacks">Error Handling and Fallbacks</a></li><li><a href="#11-integration-with-actionrouter" title="Integration with ActionRouter">Integration with ActionRouter</a></li><li><a href="#12-best-practices" title="Best Practices">Best Practices</a></li></ol>
+<h2 id="1-properties">1. Properties</h2>
+<p>The following properties are available when instantiating a ViewRouter.</p>
+<div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>views</code></td><td><code>Map&lt;string, Set&lt;ViewRouterTaskItem&gt;&gt;</code></td><td>Map of event names to view file configurations (readonly)</td></tr><tr><td><code>engine</code></td><td><code>ViewEngine&lt;R, S, X&gt;</code></td><td>Template engine function for rendering views</td></tr><tr><td><code>render</code></td><td><code>ViewRender</code></td><td>Render function for processing templates</td></tr></tbody></table></div>
+<h2 id="2-http-method-routing">2. HTTP Method Routing</h2>
+<p>The following examples show how to define view-based routes for different HTTP methods.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// GET routes with template rendering
+router.get('/home', './views/home.hbs');
+router.get('/users/:id', './views/user-profile.ejs');
+
+// POST routes (typically for form submissions)
+router.post('/contact', './views/contact-success.hbs');
+
+// PATCH, OPTIONS, and HEAD routes are also available
+router.patch('/users/:id', './views/user-patch.hbs');
+router.options('/users', './views/options.hbs');
+router.head('/users', './views/head.hbs');
+
+// CONNECT and TRACE are also available
+router.connect('/proxy', './views/proxy.hbs');
+router.trace('/users', './views/trace.hbs');
+
+// Handle any method
+router.all('/error', './views/error.hbs');</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>path</code></td><td><code>string</code></td><td>Route path with optional parameters (:id)</td></tr><tr><td><code>action</code></td><td><code>string</code></td><td>File path to the template file</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The ViewRouter instance to allow method chaining.</p>
+<h2 id="3-event-based-routing">3. Event-Based Routing</h2>
+<p>The following example shows how to route events to template files.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Route custom events to templates
+router.on('user-welcome', './views/welcome.hbs');
+router.on('order-confirmation', './views/order-confirm.ejs');
+
+// Route with regex patterns
+router.on(/^admin-.+$/, './views/admin-layout.hbs');</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>event</code></td><td>`string\</td><td>RegExp`</td><td>Event name or pattern</td></tr><tr><td><code>entry</code></td><td><code>string</code></td><td>File path to the template file</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The ViewRouter instance to allow method chaining.</p>
+<h2 id="4-template-engine-configuration">4. Template Engine Configuration</h2>
+<p>The following example shows how to configure the template engine.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Handlebars engine
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  const template = await fs.readFile(filePath, 'utf8');
+  const compiled = Handlebars.compile(template);
+  const props = res.data();
+  const html = compiled({ ...req.data(), props });
+  res.setHTML(html);
+};
+
+// EJS engine
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  const props = res.data();
+  const html = await ejs.renderFile(filePath, { ...req.data(), props });
+  res.setHTML(html);
+};
+
+// Custom engine with layout support
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  const props = res.data();
+  const data = { ...req.data(), props };
+  const html = await renderWithLayout(filePath, data);
+  res.setHTML(html);
+};</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>filePath</code></td><td><code>string</code></td><td>Path to the template file</td></tr><tr><td><code>req</code></td><td><code>Request&lt;R&gt;</code></td><td>Request object with data</td></tr><tr><td><code>res</code></td><td><code>Response&lt;S&gt;</code></td><td>Response object for output</td></tr><tr><td><code>ctx</code></td><td><code>X</code></td><td>Context object</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p><code>TaskResult</code> - void, boolean, or Promise of these types.</p>
+<h2 id="5-render-function-configuration">5. Render Function Configuration</h2>
+<p>The following example shows how to configure the render function for standalone template processing. This is useful when handlers sometimes need to render manually instead of always relying on a direct <code>view.get()</code> route.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Basic render function
+router.render = async (filePath, props, options) =&gt; {
+  const template = await fs.readFile(filePath, 'utf8');
+  return processTemplate(template, props, options);
+};
+
+// Render with caching
+const templateCache = new Map();
+router.render = async (filePath, props, options) =&gt; {
+  if (!templateCache.has(filePath)) {
+    const template = await fs.readFile(filePath, 'utf8');
+    templateCache.set(filePath, template);
+  }
+  
+  const template = templateCache.get(filePath);
+  return processTemplate(template, props, options);
+};</code></pre></div>
+<p>You can then reuse that renderer inside handlers:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.action.get('/users/:id', async ({ req, res, ctx }) =&gt; {
+  if (req.data.has('id')) {
+    const html = await ctx.view.render('./views/user.hbs', {
+      id: req.data('id')
+    });
+    res.setHTML(html);
+  }
+});</code></pre></div>
+<p>This split keeps template data separate from the real result set. A handler can set extra view-only values on <code>res.data()</code> and still return the actual response payload with <code>setResults()</code>:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.action.get('/users/:id', async ({ res }) =&gt; {
+  const results = { id: 1, name: 'John Doe' };
+
+  if (res.code === 200) {
+    res.data.set('sessionId', 'abc123');
+    res.data.set('sessionUser', 'John Doe');
+  }
+
+  res.setResults(results);
+});</code></pre></div>
+<p>And when a route already set a body, the matching view route does not render on top of it:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/users/:id', './views/user.hbs');
+
+router.action.get('/users/:id', async ({ req, res, ctx }) =&gt; {
+  if (req.data('id') === 'me') {
+    const html = await ctx.view.render('./views/me.hbs', {
+      id: req.data('id')
+    });
+    res.setHTML(html);
+  }
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>filePath</code></td><td><code>string</code></td><td>Path to the template file</td></tr><tr><td><code>props</code></td><td><code>UnknownNest</code></td><td>Template data/props (optional)</td></tr><tr><td><code>options</code></td><td><code>UnknownNest</code></td><td>Rendering options (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p><code>string|null|Promise&lt;string|null&gt;</code> - Rendered template or null if failed.</p>
+<h2 id="6-creating-actions-from-views">6. Creating Actions from Views</h2>
+<p>The following example shows how view files are converted to executable actions.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Internal method - creates action from template path
+const action = router.action('GET /profile', './views/profile.hbs', 0);
+
+// The action calls the configured engine with the template path
+await action(request, response, context);</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string</code></td><td>Event name for tracking</td></tr><tr><td><code>action</code></td><td><code>string</code></td><td>File path to the template</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>An async function that calls the template engine with the file path.</p>
+<h2 id="7-using-other-viewrouters">7. Using Other ViewRouters</h2>
+<p>The following example shows how to merge views from another router.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const adminRouter = new ViewRouter(actionRouter, listen);
+adminRouter.get('/admin/dashboard', './admin/dashboard.hbs');
+
+const mainRouter = new ViewRouter(actionRouter, listen);
+mainRouter.use(adminRouter); // Merges view configurations</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>router</code></td><td><code>ViewRouter&lt;R, S, X&gt;</code></td><td>Another ViewRouter to merge views from</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The ViewRouter instance to allow method chaining.</p>
+<h2 id="8-template-engine-integration">8. Template Engine Integration</h2>
+<p>ViewRouter supports various template engines through the engine configuration. The important split is that <code>render</code> is the reusable primitive while <code>engine</code> is the route-facing adapter that turns rendered output into a response.</p>
+<h3 id="8-1-handlebars-integration">8.1. Handlebars Integration</h3>
+<p>The following example shows how to integrate Handlebars with ViewRouter.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import Handlebars from 'handlebars';
+import fs from 'node:fs/promises';
+
+// Configure Handlebars engine
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  try {
+    const template = await fs.readFile(filePath, 'utf8');
+    const compiled = Handlebars.compile(template);
+    const data = {
+      ...req.data(),
+      user: req.data('user'),
+      url: req.url,
+      method: req.method
+    };
+    const html = compiled(data);
+    res.setHTML(html);
+  } catch (error) {
+    res.setError('Template rendering failed', {}, [], 500);
+  }
+};
+
+// Register Handlebars helpers
+Handlebars.registerHelper('formatDate', (date) =&gt; {
+  return new Date(date).toLocaleDateString();
+});
+
+// Use the router
+router.get('/profile', './views/profile.hbs');</code></pre></div>
+<h3 id="8-2-ejs-integration">8.2. EJS Integration</h3>
+<p>The following example shows how to integrate EJS with ViewRouter.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import ejs from 'ejs';
+
+// Configure EJS engine
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  try {
+    const data = {
+      ...req.data(),
+      user: req.data('user'),
+      helpers: {
+        formatDate: (date) =&gt; new Date(date).toLocaleDateString()
+      }
+    };
+    const html = await ejs.renderFile(filePath, data);
+    res.setHTML(html);
+  } catch (error) {
+    res.setError('Template rendering failed', {}, [], 500);
+  }
+};
+
+router.get('/dashboard', './views/dashboard.ejs');</code></pre></div>
+<h3 id="8-3-mustache-integration">8.3. Mustache Integration</h3>
+<p>The following example shows how to integrate Mustache with ViewRouter.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import Mustache from 'mustache';
+import fs from 'node:fs/promises';
+
+// Configure Mustache engine
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  try {
+    const template = await fs.readFile(filePath, 'utf8');
+    const data = req.data();
+    const html = Mustache.render(template, data);
+    res.setHTML(html);
+  } catch (error) {
+    res.setError('Template rendering failed', {}, [], 500);
+  }
+};
+
+router.get('/simple', './views/simple.mustache');</code></pre></div>
+<h3 id="8-4-custom-template-engine">8.4. Custom Template Engine</h3>
+<p>The following example shows how to create a custom template engine with layout support.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Custom template engine with layout support
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  try {
+    const data = req.data();
+    const layout = data.layout || 'default';
+    
+    // Load template and layout
+    const template = await fs.readFile(filePath, 'utf8');
+    const layoutTemplate = await fs.readFile(`./layouts/${layout}.hbs`, 'utf8');
+    
+    // Render template
+    const content = Handlebars.compile(template)(data);
+    
+    // Render with layout
+    const html = Handlebars.compile(layoutTemplate)({
+      ...data,
+      content
+    });
+    
+    res.setHTML(html);
+  } catch (error) {
+    res.setError('Template rendering failed', {}, [], 500);
+  }
+};</code></pre></div>
+<h2 id="9-data-flow-and-context">9. Data Flow and Context</h2>
+<p>ViewRouter provides rich context to templates through request data.</p>
+<h3 id="9-1-request-data-access">9.1. Request Data Access</h3>
+<p>The following example shows how templates receive request data.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/user/:id', './views/user.hbs');
+
+// Template receives all request data
+// ./views/user.hbs
+/*
+&lt;h1&gt;User Profile&lt;/h1&gt;
+&lt;p&gt;User ID: {{id}}&lt;/p&gt;
+&lt;p&gt;Name: {{name}}&lt;/p&gt;
+&lt;p&gt;Email: {{email}}&lt;/p&gt;
+*/
+
+// Route handler can prepare data
+router.on('GET /user/:id', async ({ req, res, ctx }) =&gt; {
+  const userId = req.data('id');
+  const user = await getUser(userId);
+  
+  // Add user data to request
+  req.data.set('name', user.name);
+  req.data.set('email', user.email);
+  
+  return true; // Continue to view rendering
+}, 10); // Higher priority than view router</code></pre></div>
+<h3 id="9-2-context-integration">9.2. Context Integration</h3>
+<p>The following example shows how to integrate server context into templates.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.engine = async (filePath, req, res, ctx) =&gt; {
+  const data = {
+    // Request data
+    ...req.data(),
+    
+    // Request metadata
+    url: req.url.pathname,
+    method: req.method,
+    headers: Object.fromEntries(req.headers.entries()),
+    
+    // Context data (server instance)
+    config: ctx.config.get(),
+    
+    // Helper functions
+    helpers: {
+      asset: (path) =&gt; `/assets/${path}`,
+      route: (name, params) =&gt; ctx.generateRoute(name, params),
+      csrf: () =&gt; req.session.get('csrf_token')
+    }
+  };
+  
+  const html = await renderTemplate(filePath, data);
+  res.setHTML(html);
+};</code></pre></div>
+<h2 id="10-error-handling-and-fallbacks">10. Error Handling and Fallbacks</h2>
+<p>ViewRouter provides robust error handling for template rendering.</p>
+<h3 id="10-1-template-error-handling">10.1. Template Error Handling</h3>
+<p>The following example shows how to handle template rendering errors.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.engine = async (filePath, req, res, ctx) =&gt; {
+  try {
+    const html = await renderTemplate(filePath, req.data());
+    res.setHTML(html);
+  } catch (error) {
+    console.error('Template error:', error);
+    
+    // Try fallback template
+    try {
+      const fallbackHtml = await renderTemplate('./views/error.hbs', {
+        error: error.message,
+        path: filePath
+      });
+      res.setHTML(fallbackHtml, 500);
+    } catch (fallbackError) {
+      // Ultimate fallback
+      res.setHTML('&lt;h1&gt;Template Error&lt;/h1&gt;&lt;p&gt;Unable to render page&lt;/p&gt;', 500);
+    }
+  }
+};</code></pre></div>
+<h3 id="10-2-development-vs-production-error-handling">10.2. Development vs Production Error Handling</h3>
+<p>The following example shows different error handling strategies for different environments.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const isDev = process.env.NODE_ENV === 'development';
+
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  try {
+    const html = await renderTemplate(filePath, req.data());
+    res.setHTML(html);
+  } catch (error) {
+    if (isDev) {
+      // Detailed error in development
+      res.setHTML(`
+        &lt;h1&gt;Template Error&lt;/h1&gt;
+        &lt;p&gt;&lt;strong&gt;File:&lt;/strong&gt; ${filePath}&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; ${error.message}&lt;/p&gt;
+        &lt;pre&gt;${error.stack}&lt;/pre&gt;
+      `, 500);
+    } else {
+      // Generic error in production
+      const errorHtml = await renderTemplate('./views/500.hbs', {});
+      res.setHTML(errorHtml, 500);
+    }
+  }
+};</code></pre></div>
+<h2 id="11-integration-with-actionrouter">11. Integration with ActionRouter</h2>
+<p>ViewRouter works as an extension of ActionRouter, sharing the same event system and routing capabilities.</p>
+<h3 id="11-1-initialization">11.1. Initialization</h3>
+<p>The following example shows how ViewRouter integrates with ActionRouter.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
+
+const actionRouter = new ActionRouter(context);
+
+// ViewRouter is automatically available
+actionRouter.view.get('/home', './views/home.hbs');
+
+// Or create standalone
+const viewRouter = new ViewRouter(actionRouter, listen);</code></pre></div>
+<h3 id="11-2-mixed-routing-approaches">11.2. Mixed Routing Approaches</h3>
+<p>The following example shows how to combine different routing approaches.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// API routes return JSON
+actionRouter.get('/api/users', async ({ req, res, ctx }) =&gt; {
+  const users = await getUsers();
+  res.setResults(users);
+});
+
+// View routes return HTML
+actionRouter.view.get('/users', './views/users.hbs');
+
+// Combined approach - API + View
+actionRouter.get('/users/:id', async ({ req, res, ctx }) =&gt; {
+  const user = await getUser(req.data('id'));
+  req.data.set('user', user);
+  return true; // Continue to view
+}, 10);
+
+actionRouter.view.get('/users/:id', './views/user.hbs', 0);</code></pre></div>
+<h2 id="12-best-practices">12. Best Practices</h2>
+<p>The following guidelines help ensure effective use of ViewRouter in production applications.</p>
+<h3 id="12-1-template-organization">12.1. Template Organization</h3>
+<p>The following examples show recommended template organization patterns.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Organize templates by feature
+router.get('/auth/login', './views/auth/login.hbs');
+router.get('/auth/register', './views/auth/register.hbs');
+router.get('/users/profile', './views/users/profile.hbs');
+router.get('/users/settings', './views/users/settings.hbs');
+
+// Use layouts for consistency
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  const data = req.data();
+  const layout = data.layout || 'main';
+  
+  const content = await renderTemplate(filePath, data);
+  const html = await renderTemplate(`./layouts/${layout}.hbs`, {
+    ...data,
+    content
+  });
+  
+  res.setHTML(html);
+};</code></pre></div>
+<h3 id="12-2-performance-optimization">12.2. Performance Optimization</h3>
+<p>The following example shows how to implement template caching for better performance.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Template caching
+const templateCache = new Map();
+const layoutCache = new Map();
+
+router.engine = async (filePath, req, res, ctx) =&gt; {
+  // Cache templates in production
+  const useCache = process.env.NODE_ENV === 'production';
+  
+  let template;
+  if (useCache &amp;&amp; templateCache.has(filePath)) {
+    template = templateCache.get(filePath);
+  } else {
+    template = await fs.readFile(filePath, 'utf8');
+    if (useCache) {
+      templateCache.set(filePath, template);
+    }
+  }
+  
+  const html = Handlebars.compile(template)(req.data());
+  res.setHTML(html);
+};</code></pre></div>
+<h3 id="12-3-security-considerations">12.3. Security Considerations</h3>
+<p>The following example shows important security considerations for ViewRouter.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.engine = async (filePath, req, res, ctx) =&gt; {
+  // Sanitize file path to prevent directory traversal
+  const safePath = path.resolve('./views', path.relative('./views', filePath));
+  if (!safePath.startsWith(path.resolve('./views'))) {
+    res.setError('Invalid template path', {}, [], 400);
+    return;
+  }
+  
+  const data = {
+    ...req.data(),
+    // Add CSRF token
+    csrfToken: req.session.get('csrf_token'),
+    // Escape user input
+    helpers: {
+      escape: (str) =&gt; Handlebars.escapeExpression(str)
+    }
+  };
+  
+  const html = await renderTemplate(safePath, data);
+  res.setHTML(html);
+};</code></pre></div>
+<h3 id="12-4-seo-and-meta-tags">12.4. SEO and Meta Tags</h3>
+<p>The following example shows how to handle SEO and meta tags in templates.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.engine = async (filePath, req, res, ctx) =&gt; {
+  const data = {
+    ...req.data(),
+    meta: {
+      title: req.data('title') || 'Default Title',
+      description: req.data('description') || 'Default Description',
+      keywords: req.data('keywords') || 'default, keywords',
+      canonical: `${req.url.origin}${req.url.pathname}`
+    }
+  };
+  
+  const html = await renderTemplate(filePath, data);
+  res.setHTML(html);
+};</code></pre></div></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

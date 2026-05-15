@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ActionRouter | Ingest</title>
+    <meta name="description" content="ActionRouter is the event-driven router behind the higher-level Router API. It accepts props-based handlers and exposes entry, import, and view routing helpers." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="is-active" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>ActionRouter</h1>
+            <p class="hero-summary">ActionRouter is the event-driven router behind the higher-level Router API. It accepts props-based handlers and exposes entry, import, and view routing helpers.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#constructor" title="Constructor">Constructor</a></li><li><a href="#properties" title="Properties">Properties</a></li><li><a href="#route-methods" title="Route methods">Route methods</a></li><li><a href="#parameters" title="Parameters">Parameters</a></li><li><a href="#returns" title="Returns">Returns</a></li><li><a href="#event-methods" title="Event methods">Event methods</a></li><li><a href="#emit-event-req-res" title="`emit(event, req, res)`">`emit(event, req, res)`</a></li><li><a href="#eventname-method-path" title="`eventName(method, path)`">`eventName(method, path)`</a></li><li><a href="#use-otherrouter" title="`use(otherRouter)`">`use(otherRouter)`</a></li><li><a href="#routing-modes" title="Routing modes">Routing modes</a></li><li><a href="#inline-handlers" title="Inline handlers">Inline handlers</a></li><li><a href="#entry-files" title="Entry files">Entry files</a></li><li><a href="#lazy-imports" title="Lazy imports">Lazy imports</a></li><li><a href="#view-routes" title="View routes">View routes</a></li><li><a href="#example" title="Example">Example</a></li><li><a href="#related" title="Related">Related</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>ActionRouter</code> is the event-driven router behind the higher-level <code>Router</code> API. It accepts props-based handlers and exposes entry, import, and view routing helpers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
+
+const router = new ActionRouter({ appName: 'example' });
+
+router.get('/users/:id', ({ req, res, ctx }) =&gt; {
+  res.setJSON({
+    id: req.data('id'),
+    app: ctx.appName
+  });
+});</code></pre></div>
+<h2 id="constructor">Constructor</h2>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const router = new ActionRouter(context);</code></pre></div>
+<p><code>context</code> is stored on the router and passed to handlers as <code>ctx</code>. <code>ActionRouter</code> provides one direct, props-based routing model that can also host entry, import, and view helpers without changing the handler shape.</p>
+<h2 id="properties">Properties</h2>
+<div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>context</code></td><td><code>X</code></td><td>Context passed to route handlers</td></tr><tr><td><code>routes</code></td><td><code>Map&lt;string, Route&gt;</code></td><td>Registered route metadata</td></tr><tr><td><code>entry</code></td><td><code>EntryRouter&lt;R, S, X, C, P&gt;</code></td><td>Entry-file routing helper</td></tr><tr><td><code>import</code></td><td><code>ImportRouter&lt;R, S, X, C, P&gt;</code></td><td>Dynamic import routing helper for lazy loading and tooling</td></tr><tr><td><code>view</code></td><td><code>ViewRouter&lt;R, S, X, C, P&gt;</code></td><td>Template routing helper</td></tr></tbody></table></div>
+<h2 id="route-methods">Route methods</h2>
+<p>Use the HTTP verb helpers or <code>route()</code> to register handlers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/users', ({ res }) =&gt; {
+  res.setJSON({ users: [] });
+});
+
+router.patch('/users/:id', ({ req, res }) =&gt; {
+  res.setJSON({ id: req.data('id'), patched: true });
+});
+
+router.options('/users', ({ res }) =&gt; {
+  res.setJSON({ allow: ['GET', 'POST', 'PATCH', 'OPTIONS'] });
+});
+
+router.head('/users', ({ res }) =&gt; {
+  res.code = 200;
+});
+
+router.post('/users', async ({ req, res }) =&gt; {
+  await req.load();
+  res.setJSON({ created: req.data() }, 201);
+});
+
+router.all('/health', ({ res }) =&gt; {
+  res.setJSON({ ok: true });
+});</code></pre></div>
+<h3 id="parameters">Parameters</h3>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>path</code></td><td><code>string</code></td><td>Route path</td></tr><tr><td><code>action</code></td><td><code>ActionRouterAction&lt;R, S, X, C, P&gt;</code></td><td>Props-based route handler</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Optional listener priority. Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<h3 id="returns">Returns</h3>
+<p>The verb helpers ultimately return the route metadata created by <code>route()</code>: method, path, and listener details.</p>
+<h2 id="event-methods">Event methods</h2>
+<h3 id="emit-event-req-res"><code>emit(event, req, res)</code></h3>
+<p>Runs the matching route tasks for an event string.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const status = await router.emit('GET /users/123', request, response);</code></pre></div>
+<h3 id="eventname-method-path"><code>eventName(method, path)</code></h3>
+<p>Builds the internal event name used for matching.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const event = router.eventName('GET', '/users/:id');</code></pre></div>
+<h3 id="use-otherrouter"><code>use(otherRouter)</code></h3>
+<p>Merges another <code>ActionRouter</code> into the current one.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const api = new ActionRouter(context);
+api.get('/api/health', ({ res }) =&gt; res.setJSON({ ok: true }));
+
+router.use(api);</code></pre></div>
+<h2 id="routing-modes">Routing modes</h2>
+<h3 id="inline-handlers">Inline handlers</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/users', ({ res }) =&gt; {
+  res.setJSON({ users: [] });
+});</code></pre></div>
+<h3 id="entry-files">Entry files</h3>
+<p>Entry routes point to a module path. The default export receives a single props object.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.entry.get('/users/:id', './routes/user.js');</code></pre></div>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./routes/user.js
+export default function UserDetail({ req, res }) {
+  res.setJSON({ id: req.data('id') });
+}</code></pre></div>
+<h3 id="lazy-imports">Lazy imports</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.import.get('/users', () =&gt; import('./routes/users.js'));</code></pre></div>
+<p>This mode is useful for lazy loading, but it is also useful when builders need explicit route import boundaries.</p>
+<h3 id="view-routes">View routes</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.view.render = async (filePath, props) =&gt; {
+  return await renderTemplate(filePath, props);
+};
+
+router.view.engine = async (filePath, req, res) =&gt; {
+  const props = res.data();
+  const html = await router.view.render(filePath, {
+    ...req.data(),
+    props
+  });
+  res.setHTML(html);
+};
+
+router.view.get('/profile', './views/profile.hbs');</code></pre></div>
+<h2 id="example">Example</h2>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
+
+const router = new ActionRouter({ version: '1.0.0' });
+
+router.get('/health', ({ res, ctx }) =&gt; {
+  res.setJSON({ ok: true, version: ctx.version });
+});
+
+router.get('/users/:id', ({ req, res }) =&gt; {
+  res.setJSON({ id: req.data('id') });
+});</code></pre></div>
+<h2 id="related">Related</h2>
+<ul><li><a href="Router.html" title="Router">Router</a></li><li><a href="EntryRouter.html" title="EntryRouter">EntryRouter</a></li><li><a href="ImportRouter.html" title="ImportRouter">ImportRouter</a></li><li><a href="ViewRouter.html" title="ViewRouter">ViewRouter</a></li></ul></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

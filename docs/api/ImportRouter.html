@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ImportRouter | Ingest</title>
+    <meta name="description" content="ImportRouter routes to dynamic import functions. It supports lazy loading, but it is also useful when build or deployment tooling needs explicit route import boundaries." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="is-active" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>ImportRouter</h1>
+            <p class="hero-summary">ImportRouter routes to dynamic import functions. It supports lazy loading, but it is also useful when build or deployment tooling needs explicit route import boundaries.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#1-properties" title="1. Properties">1. Properties</a></li><li><a href="#2-http-method-routing" title="2. HTTP Method Routing">2. HTTP Method Routing</a></li><li><a href="#3-event-based-routing" title="3. Event-Based Routing">3. Event-Based Routing</a></li><li><a href="#4-creating-actions-from-imports" title="4. Creating Actions from Imports">4. Creating Actions from Imports</a></li><li><a href="#5-using-other-importrouters" title="5. Using Other ImportRouters">5. Using Other ImportRouters</a></li><li><a href="#6-dynamic-import-functions" title="6. Dynamic Import Functions">6. Dynamic Import Functions</a></li><li><a href="#6-1-basic-import-function" title="6.1. Basic Import Function">6.1. Basic Import Function</a></li><li><a href="#6-2-conditional-import-function" title="6.2. Conditional Import Function">6.2. Conditional Import Function</a></li><li><a href="#6-3-environment-based-import-function" title="6.3. Environment-Based Import Function">6.3. Environment-Based Import Function</a></li><li><a href="#6-4-feature-flag-import-function" title="6.4. Feature Flag Import Function">6.4. Feature Flag Import Function</a></li><li><a href="#6-5-async-import-function" title="6.5. Async Import Function">6.5. Async Import Function</a></li><li><a href="#7-tooling-and-lazy-loading" title="7. Tooling and Lazy Loading">7. Tooling and Lazy Loading</a></li><li><a href="#7-1-route-import-boundaries" title="7.1. Route Import Boundaries">7.1. Route Import Boundaries</a></li><li><a href="#7-2-why-use-it" title="7.2. Why use it">7.2. Why use it</a></li><li><a href="#7-3-build-time-analysis" title="7.3. Build-Time Analysis">7.3. Build-Time Analysis</a></li><li><a href="#8-error-handling" title="8. Error Handling">8. Error Handling</a></li><li><a href="#8-1-import-failure-handling" title="8.1. Import Failure Handling">8.1. Import Failure Handling</a></li><li><a href="#8-2-module-validation" title="8.2. Module Validation">8.2. Module Validation</a></li><li><a href="#8-3-graceful-degradation" title="8.3. Graceful Degradation">8.3. Graceful Degradation</a></li><li><a href="#9-integration-with-actionrouter" title="9. Integration with ActionRouter">9. Integration with ActionRouter</a></li><li><a href="#9-1-initialization" title="9.1. Initialization">9.1. Initialization</a></li><li><a href="#9-2-mixed-routing-approaches" title="9.2. Mixed Routing Approaches">9.2. Mixed Routing Approaches</a></li><li><a href="#10-best-practices" title="10. Best Practices">10. Best Practices</a></li><li><a href="#10-1-strategic-import-boundaries" title="10.1. Strategic Import Boundaries">10.1. Strategic Import Boundaries</a></li><li><a href="#10-2-performance-optimization" title="10.2. Performance Optimization">10.2. Performance Optimization</a></li><li><a href="#10-3-error-resilience" title="10.3. Error Resilience">10.3. Error Resilience</a></li><li><a href="#10-4-development-vs-production" title="10.4. Development vs Production">10.4. Development vs Production</a></li><li><a href="#10-5-type-safety" title="10.5. Type Safety">10.5. Type Safety</a></li><li><a href="#10-6-bundle-analysis" title="10.6. Bundle Analysis">10.6. Bundle Analysis</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>ImportRouter</code> routes to dynamic import functions. It supports lazy loading, but it is also useful when build or deployment tooling needs explicit route import boundaries. It solves both on-demand loading and tooling visibility for route modules in larger applications.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import ImportRouter from '@stackpress/ingest/plugin/ImportRouter';
+
+const router = new ImportRouter(actionRouter, listen);
+
+// Route to dynamic imports
+router.get('/users/:id', () =&gt; import('./routes/user.js'));
+router.post('/users', () =&gt; import('./routes/create-user.js'));
+
+// Conditional imports
+router.get('/admin/*', () =&gt; {
+  if (isProduction) {
+    return import('./routes/admin-prod.js');
+  }
+  return import('./routes/admin-dev.js');
+});</code></pre></div>
+<ol><li><a href="#1-properties" title="Properties">Properties</a></li><li><a href="#2-http-method-routing" title="HTTP Method Routing">HTTP Method Routing</a></li><li><a href="#3-event-based-routing" title="Event-Based Routing">Event-Based Routing</a></li><li><a href="#4-creating-actions-from-imports" title="Creating Actions from Imports">Creating Actions from Imports</a></li><li><a href="#5-using-other-importrouters" title="Using Other ImportRouters">Using Other ImportRouters</a></li><li><a href="#6-dynamic-import-functions" title="Dynamic Import Functions">Dynamic Import Functions</a></li><li><a href="#7-code-splitting-benefits" title="Code Splitting Benefits">Code Splitting Benefits</a></li><li><a href="#8-error-handling" title="Error Handling">Error Handling</a></li><li><a href="#9-integration-with-actionrouter" title="Integration with ActionRouter">Integration with ActionRouter</a></li><li><a href="#10-best-practices" title="Best Practices">Best Practices</a></li></ol>
+<h2 id="1-properties">1. Properties</h2>
+<p>The following properties are available when instantiating an ImportRouter.</p>
+<div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>imports</code></td><td><code>Map&lt;string, Set&lt;ImportRouterTaskItem&lt;R, S, X&gt;&gt;&gt;</code></td><td>Map of event names to import function configurations (readonly)</td></tr></tbody></table></div>
+<h2 id="2-http-method-routing">2. HTTP Method Routing</h2>
+<p>The following examples show how to define import-based routes for different HTTP methods.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// GET routes with dynamic imports
+router.get('/users', () =&gt; import('./routes/users/list.js'));
+router.get('/users/:id', () =&gt; import('./routes/users/get.js'));
+
+// POST routes
+router.post('/users', () =&gt; import('./routes/users/create.js'));
+
+// PUT routes
+router.put('/users/:id', () =&gt; import('./routes/users/update.js'));
+
+// DELETE routes
+router.delete('/users/:id', () =&gt; import('./routes/users/delete.js'));
+
+// PATCH routes
+router.patch('/users/:id', () =&gt; import('./routes/users/patch.js'));
+
+// OPTIONS routes
+router.options('/users', () =&gt; import('./routes/users/options.js'));
+
+// HEAD routes
+router.head('/users', () =&gt; import('./routes/users/head.js'));
+
+// CONNECT and TRACE are also available
+router.connect('/proxy', () =&gt; import('./routes/proxy/connect.js'));
+router.trace('/users', () =&gt; import('./routes/users/trace.js'));
+
+// Handle any method
+router.all('/health', () =&gt; import('./routes/health.js'));</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>path</code></td><td><code>string</code></td><td>Route path with optional parameters (:id)</td></tr><tr><td><code>action</code></td><td><code>ImportRouterAction&lt;R, S, X&gt;</code></td><td>Function that returns a dynamic import</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The ImportRouter instance to allow method chaining.</p>
+<h2 id="3-event-based-routing">3. Event-Based Routing</h2>
+<p>The following example shows how to route events to dynamic imports.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Route custom events to imports
+router.on('user-login', () =&gt; import('./handlers/user-login.js'));
+router.on('data-updated', () =&gt; import('./handlers/data-updated.js'));
+
+// Route with regex patterns
+router.on(/^email-.+$/, () =&gt; import('./handlers/email-handler.js'));</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>event</code></td><td>`string\</td><td>RegExp`</td><td>Event name or pattern</td></tr><tr><td><code>entry</code></td><td><code>ImportRouterAction&lt;R, S, X&gt;</code></td><td>Function that returns a dynamic import</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The ImportRouter instance to allow method chaining.</p>
+<h2 id="4-creating-actions-from-imports">4. Creating Actions from Imports</h2>
+<p>The following example shows how import functions are converted to executable actions.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Internal method - creates action from import function
+const action = router.action(
+  'GET /users', 
+  () =&gt; import('./routes/users.js'), 
+  0
+);
+
+// The action executes the import and calls the default export
+await action(request, response, context);</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string</code></td><td>Event name for tracking</td></tr><tr><td><code>action</code></td><td><code>ImportRouterAction&lt;R, S, X&gt;</code></td><td>Function that returns a dynamic import</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>An async function that executes the import and calls the default export.</p>
+<h2 id="5-using-other-importrouters">5. Using Other ImportRouters</h2>
+<p>The following example shows how to merge imports from another router.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const apiRouter = new ImportRouter(actionRouter, listen);
+apiRouter.get('/api/users', () =&gt; import('./api/users.js'));
+
+const mainRouter = new ImportRouter(actionRouter, listen);
+mainRouter.use(apiRouter); // Merges import configurations</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>router</code></td><td><code>ImportRouter&lt;R, S, X&gt;</code></td><td>Another ImportRouter to merge imports from</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The ImportRouter instance to allow method chaining.</p>
+<h2 id="6-dynamic-import-functions">6. Dynamic Import Functions</h2>
+<p>Import functions provide flexible module loading with conditional logic.</p>
+<h3 id="6-1-basic-import-function">6.1. Basic Import Function</h3>
+<p>The following example shows a basic dynamic import function.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/users', () =&gt; import('./routes/users.js'));
+
+// The imported module should export a default function
+// ./routes/users.js
+export default async function UsersIndex({ res }) {
+  const users = await getUsers();
+  res.setResults(users);
+}</code></pre></div>
+<h3 id="6-2-conditional-import-function">6.2. Conditional Import Function</h3>
+<p>The following example shows how to implement conditional imports based on runtime conditions.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/dashboard', () =&gt; {
+  const userRole = getCurrentUserRole();
+  
+  if (userRole === 'admin') {
+    return import('./routes/admin-dashboard.js');
+  } else if (userRole === 'user') {
+    return import('./routes/user-dashboard.js');
+  } else {
+    return import('./routes/guest-dashboard.js');
+  }
+});</code></pre></div>
+<h3 id="6-3-environment-based-import-function">6.3. Environment-Based Import Function</h3>
+<p>The following example shows how to use different imports based on environment.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/debug', () =&gt; {
+  if (process.env.NODE_ENV === 'development') {
+    return import('./routes/debug/full.js');
+  } else {
+    return import('./routes/debug/minimal.js');
+  }
+});</code></pre></div>
+<h3 id="6-4-feature-flag-import-function">6.4. Feature Flag Import Function</h3>
+<p>The following example shows how to use feature flags to control imports.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/new-feature', () =&gt; {
+  if (isFeatureEnabled('new-ui')) {
+    return import('./routes/new-feature-v2.js');
+  } else {
+    return import('./routes/new-feature-v1.js');
+  }
+});</code></pre></div>
+<h3 id="6-5-async-import-function">6.5. Async Import Function</h3>
+<p>The following example shows how to perform async operations before importing.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/dynamic', async () =&gt; {
+  // Can perform async operations before importing
+  const config = await loadConfiguration();
+  
+  if (config.useNewHandler) {
+    return import('./routes/new-handler.js');
+  } else {
+    return import('./routes/old-handler.js');
+  }
+});</code></pre></div>
+<h2 id="7-tooling-and-lazy-loading">7. Tooling and Lazy Loading</h2>
+<p><code>ImportRouter</code> enables lazy loading while also exposing import boundaries through <code>router.imports</code>.</p>
+<h3 id="7-1-route-import-boundaries">7.1. Route Import Boundaries</h3>
+<p>The following examples show how <code>ImportRouter</code> makes route imports visible to builders and deployment scripts.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Large admin panel is only loaded when needed
+router.get('/admin/*', () =&gt; import('./routes/admin/index.js'));
+
+// Heavy data processing is split into separate chunks
+router.post('/process-data', () =&gt; import('./routes/data-processor.js'));
+
+// Third-party integrations are loaded on demand
+router.get('/integrations/:service', () =&gt; {
+  const service = getServiceFromPath();
+  return import(`./integrations/${service}.js`);
+});</code></pre></div>
+<h3 id="7-2-why-use-it">7.2. Why use it</h3>
+<p><code>ImportRouter</code> is useful when you want:</p>
+<ul><li>lazy loading</li><li>route-aware build scripts</li><li>deployment packaging based on route modules</li><li>explicit import metadata through <code>router.imports</code></li><li><strong>On-Demand Loading</strong>: Route handlers are loaded only when accessed</li><li><strong>Better Caching</strong>: Individual route chunks can be cached separately</li><li><strong>Progressive Loading</strong>: Users only download code for features they use</li></ul>
+<h3 id="7-3-build-time-analysis">7.3. Build-Time Analysis</h3>
+<p>The following example shows how bundlers can analyze import patterns for optimization.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Bundlers can analyze import patterns for optimization
+console.log(router.imports);
+// Map {
+//   'GET /users' =&gt; Set([{ 
+//     import: () =&gt; import('./routes/users.js'), 
+//     priority: 0 
+//   }]),
+//   'POST /users' =&gt; Set([{ 
+//     import: () =&gt; import('./routes/create.js'), 
+//     priority: 0 
+//   }])
+// }</code></pre></div>
+<h2 id="8-error-handling">8. Error Handling</h2>
+<p>ImportRouter provides robust error handling for dynamic imports.</p>
+<h3 id="8-1-import-failure-handling">8.1. Import Failure Handling</h3>
+<p>The following example shows how to handle import failures with fallback strategies.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/fallback-example', async () =&gt; {
+  try {
+    return await import('./routes/primary.js');
+  } catch (error) {
+    console.warn('Primary route failed, using fallback');
+    return await import('./routes/fallback.js');
+  }
+});</code></pre></div>
+<h3 id="8-2-module-validation">8.2. Module Validation</h3>
+<p>The following example shows how to validate imported modules.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/validated', async () =&gt; {
+  const module = await import('./routes/example.js');
+  
+  if (!module.default || typeof module.default !== 'function') {
+    throw new Error('Invalid route module: missing default export');
+  }
+  
+  return module;
+});</code></pre></div>
+<h3 id="8-3-graceful-degradation">8.3. Graceful Degradation</h3>
+<p>The following example shows how to implement graceful degradation when imports fail.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/optional-feature', () =&gt; {
+  return import('./routes/optional.js').catch(() =&gt; {
+    // Return a minimal handler if the feature module fails
+    return {
+      default: async (req, res, ctx) =&gt; {
+        res.setError('Feature not available', {}, [], 503);
+        return false;
+      }
+    };
+  });
+});</code></pre></div>
+<h2 id="9-integration-with-actionrouter">9. Integration with ActionRouter</h2>
+<p>ImportRouter works as an extension of ActionRouter, sharing the same event system and routing capabilities.</p>
+<h3 id="9-1-initialization">9.1. Initialization</h3>
+<p>The following example shows how ImportRouter integrates with ActionRouter.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
+
+const actionRouter = new ActionRouter(context);
+
+// ImportRouter is automatically available
+actionRouter.import.get('/users', () =&gt; import('./routes/users.js'));
+
+// Or create standalone
+const importRouter = new ImportRouter(actionRouter, listen);</code></pre></div>
+<h3 id="9-2-mixed-routing-approaches">9.2. Mixed Routing Approaches</h3>
+<p>The following example shows how to combine different routing approaches.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Combine different routing approaches
+actionRouter.get('/immediate', immediateHandler);
+actionRouter.entry.get('/file-based', './routes/file.js');
+actionRouter.import.get('/lazy', () =&gt; import('./routes/lazy.js'));
+actionRouter.view.get('/template', './views/template.hbs');
+
+// All routes work together in the same system</code></pre></div>
+<h2 id="10-best-practices">10. Best Practices</h2>
+<p>The following guidelines help ensure effective use of ImportRouter in production applications.</p>
+<h3 id="10-1-strategic-import-boundaries">10.1. Strategic Import Boundaries</h3>
+<p>The following examples show route boundaries that are useful for lazy loading, packaging, and deployment tooling.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Split by feature boundaries
+router.get('/auth/*', () =&gt; import('./features/auth/routes.js'));
+router.get('/billing/*', () =&gt; import('./features/billing/routes.js'));
+router.get('/analytics/*', () =&gt; import('./features/analytics/routes.js'));
+
+// Split heavy dependencies
+router.get('/pdf-export', () =&gt; import('./routes/pdf-export.js')); // Heavy PDF library
+router.get('/image-process', () =&gt; import('./routes/image-process.js')); // Heavy image library</code></pre></div>
+<h3 id="10-2-performance-optimization">10.2. Performance Optimization</h3>
+<p>The following example shows how to preload critical routes for better performance.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Preload critical routes
+const criticalRoutes = [
+  () =&gt; import('./routes/home.js'),
+  () =&gt; import('./routes/login.js'),
+  () =&gt; import('./routes/dashboard.js')
+];
+
+// Preload during idle time
+if ('requestIdleCallback' in window) {
+  requestIdleCallback(() =&gt; {
+    criticalRoutes.forEach(importFn =&gt; importFn());
+  });
+}</code></pre></div>
+<h3 id="10-3-error-resilience">10.3. Error Resilience</h3>
+<p>The following example shows how to implement retry logic for unstable imports.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Implement retry logic
+router.get('/retry-example', async () =&gt; {
+  let attempts = 0;
+  const maxAttempts = 3;
+  
+  while (attempts &lt; maxAttempts) {
+    try {
+      return await import('./routes/unstable.js');
+    } catch (error) {
+      attempts++;
+      if (attempts &gt;= maxAttempts) {
+        throw error;
+      }
+      // Wait before retry
+      await new Promise(resolve =&gt; setTimeout(resolve, 1000 * attempts));
+    }
+  }
+});</code></pre></div>
+<h3 id="10-4-development-vs-production">10.4. Development vs Production</h3>
+<p>The following example shows different strategies for different environments.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Different strategies for different environments
+const isDev = process.env.NODE_ENV === 'development';
+
+router.get('/dev-tools', () =&gt; {
+  if (isDev) {
+    return import('./routes/dev-tools.js');
+  } else {
+    return Promise.resolve({
+      default: (req, res, ctx) =&gt; {
+        res.setError('Not available in production', {}, [], 404);
+        return false;
+      }
+    });
+  }
+});</code></pre></div>
+<h3 id="10-5-type-safety">10.5. Type Safety</h3>
+<p>The following example shows how to implement type safety with ImportRouter.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Type-safe import functions
+interface RouteModule {
+  default: (req: Request, res: Response, ctx: Context) =&gt; Promise&lt;boolean&gt;;
+}
+
+router.get('/typed', (): Promise&lt;RouteModule&gt; =&gt; {
+  return import('./routes/typed.js');
+});</code></pre></div>
+<h3 id="10-6-bundle-analysis">10.6. Bundle Analysis</h3>
+<p>The following example shows how to track import patterns for optimization.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Track import patterns for optimization
+const importStats = new Map();
+
+router.get('/tracked', () =&gt; {
+  const route = './routes/tracked.js';
+  importStats.set(route, (importStats.get(route) || 0) + 1);
+  return import(route);
+});
+
+// Log popular routes for optimization
+setInterval(() =&gt; {
+  console.log('Import statistics:', importStats);
+}, 60000);</code></pre></div></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

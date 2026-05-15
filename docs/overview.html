@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Overview | Ingest</title>
+    <meta name="description" content="Ingest is a server framework built around five ideas:" />
+    <link href="assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="assets/site.css" rel="stylesheet" />
+    <script defer src="assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reading Path</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="Home">Home</a>
+    </li><li>
+      <a class="is-active" href="overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="api/index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="api/Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="api/Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="api/Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="api/Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="api/Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="api/Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="api/ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="api/EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="api/ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="api/ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="api/HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="api/WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="api/Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="api/Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="api/ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Foundation</p>
+            <h1>Overview</h1>
+            <p class="hero-summary">Ingest is a server framework built around five ideas:</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Concept</span><span class="hero-chip">Framework Behavior</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#what-ingest-emphasizes" title="What Ingest emphasizes">What Ingest emphasizes</a></li><li><a href="#the-mental-model" title="The mental model">The mental model</a></li><li><a href="#reading-path" title="Reading path">Reading path</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p>Ingest is a server framework built around five ideas:</p>
+<ul><li>a single server model that works across local and serverless runtimes</li><li>an event-driven request lifecycle</li><li>multiple ways to define routes</li><li>optional composition through plugins and routers</li><li>route metadata that tools can inspect</li></ul>
+<h2 id="what-ingest-emphasizes">What Ingest emphasizes</h2>
+<p>Ingest is strongest when you want to:</p>
+<ul><li>keep application code close to HTTP concerns</li><li>compose behavior through plugins instead of a large application container</li><li>move between Node HTTP and WHATWG-style runtimes without rewriting your app model</li><li>choose the route organization style that fits the project</li><li>expose route structure to build or deployment tooling</li></ul>
+<h2 id="the-mental-model">The mental model</h2>
+<p>At a high level, an Ingest app works like this:</p>
+<ol><li>Create a <code>server()</code>.</li><li>Register routes, hooks, and plugins.</li><li>Let an adapter turn runtime input into Ingest <code>Request</code> and <code>Response</code> objects.</li><li>Run the request through lifecycle events and route resolution.</li><li>Return or dispatch the response in the current runtime.</li></ol>
+<h2 id="reading-path">Reading path</h2>
+<p>If you are new to the project, read in this order:</p>
+<ol><li><a href="concepts/application-model.html" title="Application Model">Application Model</a></li><li><a href="concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a></li><li><a href="concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a></li><li><a href="concepts/composition.html" title="Composition">Composition</a></li><li><a href="concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a></li><li><a href="concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a></li></ol>
+<p>Then move into <a href="guides/index.html" title="Guides">Guides</a> for implementation tasks or <a href="api/index.html" title="API Reference">API Reference</a> for exact signatures.</p></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

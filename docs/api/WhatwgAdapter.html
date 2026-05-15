@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhatwgAdapter | Ingest</title>
+    <meta name="description" content="WhatwgAdapter isolates WHATWG runtime specifics at the boundary so the rest of the application can keep using the same server and handler model." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="is-active" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>WhatwgAdapter</h1>
+            <p class="hero-summary">WhatwgAdapter isolates WHATWG runtime specifics at the boundary so the rest of the application can keep using the same server and handler model.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#1-plugging-whatwg-requests" title="1. Plugging WHATWG Requests">1. Plugging WHATWG Requests</a></li><li><a href="#2-methods" title="2. Methods">2. Methods</a></li><li><a href="#2-1-processing-requests" title="2.1. Processing Requests">2.1. Processing Requests</a></li><li><a href="#2-2-creating-request-objects" title="2.2. Creating Request Objects">2.2. Creating Request Objects</a></li><li><a href="#2-3-creating-response-objects" title="2.3. Creating Response Objects">2.3. Creating Response Objects</a></li><li><a href="#3-request-processing-flow" title="3. Request Processing Flow">3. Request Processing Flow</a></li><li><a href="#3-1-request-initialization" title="3.1. Request Initialization">3.1. Request Initialization</a></li><li><a href="#3-2-response-setup" title="3.2. Response Setup">3.2. Response Setup</a></li><li><a href="#3-3-body-loading" title="3.3. Body Loading">3.3. Body Loading</a></li><li><a href="#3-4-route-processing" title="3.4. Route Processing">3.4. Route Processing</a></li><li><a href="#3-5-response-dispatch" title="3.5. Response Dispatch">3.5. Response Dispatch</a></li><li><a href="#4-body-loading" title="4. Body Loading">4. Body Loading</a></li><li><a href="#4-1-automatic-body-parsing" title="4.1. Automatic Body Parsing">4.1. Automatic Body Parsing</a></li><li><a href="#4-2-content-type-handling" title="4.2. Content Type Handling">4.2. Content Type Handling</a></li><li><a href="#4-3-async-body-loading" title="4.3. Async Body Loading">4.3. Async Body Loading</a></li><li><a href="#5-response-dispatching" title="5. Response Dispatching">5. Response Dispatching</a></li><li><a href="#5-1-response-type-handling" title="5.1. Response Type Handling">5.1. Response Type Handling</a></li><li><a href="#5-2-cookie-management" title="5.2. Cookie Management">5.2. Cookie Management</a></li><li><a href="#5-3-header-management" title="5.3. Header Management">5.3. Header Management</a></li><li><a href="#6-serverless-integration-examples" title="6. Serverless Integration Examples">6. Serverless Integration Examples</a></li><li><a href="#6-1-vercel-functions" title="6.1. Vercel Functions">6.1. Vercel Functions</a></li><li><a href="#6-2-netlify-functions" title="6.2. Netlify Functions">6.2. Netlify Functions</a></li><li><a href="#6-3-cloudflare-workers" title="6.3. Cloudflare Workers">6.3. Cloudflare Workers</a></li><li><a href="#6-4-deno-deploy" title="6.4. Deno Deploy">6.4. Deno Deploy</a></li><li><a href="#6-5-aws-lambda-with-response-streaming" title="6.5. AWS Lambda (with Response Streaming)">6.5. AWS Lambda (with Response Streaming)</a></li><li><a href="#7-static-functions" title="7. Static Functions">7. Static Functions</a></li><li><a href="#7-1-request-body-loader" title="7.1. Request Body Loader">7.1. Request Body Loader</a></li><li><a href="#7-2-response-dispatcher" title="7.2. Response Dispatcher">7.2. Response Dispatcher</a></li><li><a href="#8-advanced-usage" title="8. Advanced Usage">8. Advanced Usage</a></li><li><a href="#8-1-custom-request-processing" title="8.1. Custom Request Processing">8.1. Custom Request Processing</a></li><li><a href="#8-2-stream-processing" title="8.2. Stream Processing">8.2. Stream Processing</a></li><li><a href="#8-3-error-handling" title="8.3. Error Handling">8.3. Error Handling</a></li><li><a href="#9-best-practices" title="9. Best Practices">9. Best Practices</a></li><li><a href="#9-1-environment-detection" title="9.1. Environment Detection">9.1. Environment Detection</a></li><li><a href="#9-2-cors-handling" title="9.2. CORS Handling">9.2. CORS Handling</a></li><li><a href="#9-3-performance-optimization" title="9.3. Performance Optimization">9.3. Performance Optimization</a></li><li><a href="#9-4-security-headers" title="9.4. Security Headers">9.4. Security Headers</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>WhatwgAdapter</code> isolates WHATWG runtime specifics at the boundary so the rest of the application can keep using the same server and handler model.</p>
+<p>WHATWG Fetch API adapter that bridges standard Request and Response objects with the Ingest framework, enabling seamless integration with serverless environments and modern web standards.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import WhatwgAdapter from '@stackpress/ingest/whatwg/Adapter';
+
+// Static usage
+const response = await WhatwgAdapter.plug(context, request);
+
+// Instance usage
+const adapter = new WhatwgAdapter(context, request);
+const response = await adapter.plug();</code></pre></div>
+<ol><li><a href="#1-plugging-whatwg-requests" title="Plugging WHATWG Requests">Plugging WHATWG Requests</a></li><li><a href="#2-methods" title="Methods">Methods</a></li><li><a href="#3-request-processing-flow" title="Request Processing Flow">Request Processing Flow</a></li><li><a href="#4-body-loading" title="Body Loading">Body Loading</a></li><li><a href="#5-response-dispatching" title="Response Dispatching">Response Dispatching</a></li><li><a href="#6-serverless-integration-examples" title="Serverless Integration Examples">Serverless Integration Examples</a></li><li><a href="#7-static-functions" title="Static Functions">Static Functions</a></li><li><a href="#8-advanced-usage" title="Advanced Usage">Advanced Usage</a></li><li><a href="#9-best-practices" title="Best Practices">Best Practices</a></li></ol>
+<h2 id="1-plugging-whatwg-requests">1. Plugging WHATWG Requests</h2>
+<p>The following example shows how to handle WHATWG requests using the static plug method for serverless environments.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/whatwg';
+
+const app = server();
+
+// Basic usage
+export default async function handler(request: Request) {
+  return await WhatwgAdapter.plug(app, request);
+}
+
+// With custom action
+export async function customHandler(request: Request) {
+  return await WhatwgAdapter.plug(app, request, 'custom-handler');
+}
+
+// With action function
+export async function functionHandler(request: Request) {
+  return await WhatwgAdapter.plug(app, request, async ({ res }) =&gt; {
+    res.setJSON({ message: 'Custom handler' });
+  });
+}</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>context</code></td><td><code>WhatwgServer&lt;C&gt;</code></td><td>Server context instance</td></tr><tr><td><code>request</code></td><td><code>Request</code></td><td>WHATWG Request object</td></tr><tr><td><code>action</code></td><td>`string\</td><td>WhatwgAction&lt;C&gt;`</td><td>Custom action name or function (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A promise that resolves to a WHATWG Response object.</p>
+<h2 id="2-methods">2. Methods</h2>
+<p>The following methods are available when instantiating a WhatwgAdapter.</p>
+<h3 id="2-1-processing-requests">2.1. Processing Requests</h3>
+<p>The following example shows how to process WHATWG requests through the adapter with flexible action handling.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const adapter = new WhatwgAdapter(context, request);
+
+// Process with automatic route detection
+const response = await adapter.plug();
+
+// Process with custom action
+const response2 = await adapter.plug('user-login');
+
+// Process with action function
+const response3 = await adapter.plug(async ({ res }) =&gt; {
+  const users = await getUsers();
+  res.setResults(users);
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>action</code></td><td>`string\</td><td>WhatwgAction&lt;C&gt;`</td><td>Custom action name or function (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A promise that resolves to a WHATWG Response object.</p>
+<h3 id="2-2-creating-request-objects">2.2. Creating Request Objects</h3>
+<p>The following example shows how WHATWG requests are converted to Ingest Request objects.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const adapter = new WhatwgAdapter(context, request);
+const ingestRequest = adapter.request();
+
+// Access request properties
+console.log(ingestRequest.method);     // 'GET', 'POST', etc.
+console.log(ingestRequest.url);        // URL object
+console.log(ingestRequest.headers);    // Request headers
+console.log(ingestRequest.query);      // Query parameters
+console.log(ingestRequest.session);    // Session data from cookies</code></pre></div>
+<p><strong>Returns</strong></p>
+<p>An Ingest Request object configured for the WHATWG request.</p>
+<h3 id="2-3-creating-response-objects">2.3. Creating Response Objects</h3>
+<p>The following example shows how WHATWG responses are created for Ingest processing.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const adapter = new WhatwgAdapter(context, request);
+const ingestResponse = adapter.response();
+
+// Set response data
+ingestResponse.setJSON({ message: 'Hello World' });
+ingestResponse.setHTML('&lt;h1&gt;Hello World&lt;/h1&gt;');
+ingestResponse.setError('Not found', {}, [], 404);
+
+// Dispatch to WHATWG response
+const whatwgResponse = await ingestResponse.dispatch();</code></pre></div>
+<p><strong>Returns</strong></p>
+<p>An Ingest Response object configured for WHATWG output.</p>
+<h2 id="3-request-processing-flow">3. Request Processing Flow</h2>
+<p>WhatwgAdapter follows a structured request processing flow for reliable WHATWG request handling.</p>
+<h3 id="3-1-request-initialization">3.1. Request Initialization</h3>
+<p>Convert WHATWG Request to Ingest Request with comprehensive data extraction.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Convert WHATWG Request to Ingest Request
+const request = adapter.request();
+// - Extracts HTTP method, URL, headers
+// - Parses cookies into session data
+// - Converts query parameters to nested object
+// - Sets up body loader for POST data</code></pre></div>
+<h3 id="3-2-response-setup">3.2. Response Setup</h3>
+<p>Create Ingest Response for WHATWG Response with proper configuration.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Create Ingest Response for WHATWG Response
+const response = adapter.response();
+// - Configures response dispatcher
+// - Sets up cookie handling
+// - Prepares header management</code></pre></div>
+<h3 id="3-3-body-loading">3.3. Body Loading</h3>
+<p>Load request body asynchronously with WHATWG-specific handling.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Load request body asynchronously
+await request.load();
+// - Reads POST data from the WHATWG request body
+// - Parses JSON, URL-encoded, and multipart form bodies
+// - Merges parsed data into request.post and request.data</code></pre></div>
+<p>Like the HTTP adapter, <code>plug()</code> calls <code>request.load()</code> before <code>Route.emit(...)</code>, so handlers work against the same loaded request shape regardless of runtime.</p>
+<h3 id="3-4-route-processing">3.4. Route Processing</h3>
+<p>Execute route through Route.emit with complete lifecycle management.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Execute route through Route.emit
+await Route.emit(event, request, response, context);
+// - Runs request lifecycle (prepare, process, shutdown)
+// - Executes route handlers
+// - Handles errors and 404s</code></pre></div>
+<h3 id="3-5-response-dispatch">3.5. Response Dispatch</h3>
+<p>Create WHATWG Response with proper headers and content.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Create WHATWG Response
+const whatwgResponse = await response.dispatch();
+// - Creates new Response object
+// - Sets status code and message
+// - Writes cookies to Set-Cookie headers
+// - Sends response headers and body</code></pre></div>
+<h2 id="4-body-loading">4. Body Loading</h2>
+<p>WhatwgAdapter provides robust body loading for WHATWG requests with native API support.</p>
+<h3 id="4-1-automatic-body-parsing">4.1. Automatic Body Parsing</h3>
+<p>Parse request bodies automatically based on content type using WHATWG APIs.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Body is automatically loaded and parsed
+await request.load();
+
+// Access parsed data
+const formData = request.post.get();     // Form data
+const jsonData = request.data.get();     // Combined data
+const rawBody = request.body;            // Raw body string</code></pre></div>
+<p>The WHATWG loader follows the same content-type rules as the HTTP loader: JSON, URL-encoded, and multipart inputs are parsed into <code>request.post</code>; unsupported types leave <code>request.post</code> empty while still caching the raw body text.</p>
+<h3 id="4-2-content-type-handling">4.2. Content Type Handling</h3>
+<p>Handle different content types with appropriate parsing strategies.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Form data (application/x-www-form-urlencoded)
+// Content-Type: application/x-www-form-urlencoded
+// Body: name=John&amp;email=john@example.com
+// Result: { name: 'John', email: 'john@example.com' }
+
+// JSON data (application/json)
+// Content-Type: application/json
+// Body: {&quot;name&quot;:&quot;John&quot;,&quot;email&quot;:&quot;john@example.com&quot;}
+// Result: { name: 'John', email: 'john@example.com' }
+
+// FormData (multipart/form-data)
+// Handles file uploads and form fields</code></pre></div>
+<h3 id="4-3-async-body-loading">4.3. Async Body Loading</h3>
+<p>Use WHATWG Request body methods for different data types.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// WHATWG Request body loading
+const bodyText = await request.text();
+const bodyJson = await request.json();
+const bodyFormData = await request.formData();
+const bodyArrayBuffer = await request.arrayBuffer();</code></pre></div>
+<p>One runtime detail worth knowing is that the WHATWG loader does not currently enforce a request size limit the way the HTTP loader can. If strict body caps matter, that policy still has to live above or around the adapter today.</p>
+<h2 id="5-response-dispatching">5. Response Dispatching</h2>
+<p>WhatwgAdapter handles various response types and formats with WHATWG Response creation.</p>
+<p>The dispatch path mirrors the HTTP adapter closely, but the final target is a WHATWG <code>Response</code>. Strings, buffers, <code>Uint8Array</code>, and <code>ReadableStream</code> values are written directly, Node <code>Readable</code> streams are converted, and plain objects or arrays become structured JSON payloads.</p>
+<p>If a route or hook already set <code>res.resource</code> to a native WHATWG response, the adapter returns that resource directly instead of rebuilding it. That gives advanced handlers a way to drop down to runtime-native behavior without changing the rest of the application model.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/native-response', ({ res }) =&gt; {
+  res.resource = new Response('already built', {
+    status: 200,
+    headers: { 'Content-Type': 'text/plain' }
+  });
+});</code></pre></div>
+<h3 id="5-1-response-type-handling">5.1. Response Type Handling</h3>
+<p>Handle different response types with appropriate WHATWG Response creation.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// String responses
+response.setHTML('&lt;h1&gt;Hello World&lt;/h1&gt;');
+// Creates Response with text/html content-type
+
+// JSON responses
+response.setJSON({ message: 'Success' });
+// Creates Response with application/json content-type
+
+// Buffer responses
+response.body = Buffer.from('binary data');
+// Creates Response with binary data
+
+// Stream responses
+response.body = new ReadableStream({...});
+// Creates Response with streaming body
+
+// Object responses (automatic JSON)
+response.body = { users: [...] };
+// Automatically serializes to JSON Response</code></pre></div>
+<h3 id="5-2-cookie-management">5.2. Cookie Management</h3>
+<p>Manage session cookies with automatic serialization for serverless environments.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Session cookies are automatically handled
+response.session.set('user_id', '123');
+response.session.set('preferences', JSON.stringify(prefs));
+
+// Cookies are written as Set-Cookie headers
+// Set-Cookie: user_id=123; Path=/
+// Set-Cookie: preferences={&quot;theme&quot;:&quot;dark&quot;}; Path=/</code></pre></div>
+<h3 id="5-3-header-management">5.3. Header Management</h3>
+<p>Set custom headers for security, caching, and API versioning.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Custom headers
+response.headers.set('X-API-Version', '1.0');
+response.headers.set('Cache-Control', 'no-cache');
+
+// Security headers
+response.headers.set('X-Frame-Options', 'DENY');
+response.headers.set('X-Content-Type-Options', 'nosniff');</code></pre></div>
+<h2 id="6-serverless-integration-examples">6. Serverless Integration Examples</h2>
+<p>The following examples demonstrate WhatwgAdapter integration with popular serverless platforms.</p>
+<h3 id="6-1-vercel-functions">6.1. Vercel Functions</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// api/users.ts
+import { server } from '@stackpress/ingest/whatwg';
+import WhatwgAdapter from '@stackpress/ingest/whatwg/Adapter';
+
+const app = server();
+
+app.get('/api/users', async ({ res }) =&gt; {
+  const users = await getUsers();
+  res.setResults(users);
+});
+
+export default async function handler(request: Request) {
+  return await WhatwgAdapter.plug(app, request);
+}
+
+async function getUsers() {
+  return [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }];
+}</code></pre></div>
+<h3 id="6-2-netlify-functions">6.2. Netlify Functions</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// netlify/functions/api.ts
+import { server } from '@stackpress/ingest/whatwg';
+import WhatwgAdapter from '@stackpress/ingest/whatwg/Adapter';
+
+const app = server();
+
+app.all('/*', async ({ req, res }) =&gt; {
+  // Handle all routes
+  const path = req.url.pathname;
+  res.setJSON({ path, method: req.method });
+});
+
+export default async function handler(request: Request) {
+  return await WhatwgAdapter.plug(app, request);
+}</code></pre></div>
+<h3 id="6-3-cloudflare-workers">6.3. Cloudflare Workers</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// worker.ts
+import { server } from '@stackpress/ingest/whatwg';
+import WhatwgAdapter from '@stackpress/ingest/whatwg/Adapter';
+
+const app = server();
+
+app.get('/', async ({ res }) =&gt; {
+  res.setHTML('&lt;h1&gt;Hello from Cloudflare Workers!&lt;/h1&gt;');
+});
+
+export default {
+  async fetch(request: Request): Promise&lt;Response&gt; {
+    return await WhatwgAdapter.plug(app, request);
+  }
+};</code></pre></div>
+<h3 id="6-4-deno-deploy">6.4. Deno Deploy</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// main.ts
+import { server } from '@stackpress/ingest/whatwg';
+import WhatwgAdapter from '@stackpress/ingest/whatwg/Adapter';
+
+const app = server();
+
+app.get('/api/hello', async ({ res }) =&gt; {
+  res.setJSON({ message: 'Hello from Deno!' });
+});
+
+Deno.serve(async (request: Request) =&gt; {
+  return await WhatwgAdapter.plug(app, request);
+});</code></pre></div>
+<h3 id="6-5-aws-lambda-with-response-streaming">6.5. AWS Lambda (with Response Streaming)</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// lambda.ts
+import { server } from '@stackpress/ingest/whatwg';
+import WhatwgAdapter from '@stackpress/ingest/whatwg/Adapter';
+
+const app = server();
+
+app.get('/api/stream', async ({ res }) =&gt; {
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue('chunk 1\n');
+      controller.enqueue('chunk 2\n');
+      controller.close();
+    }
+  });
+  res.body = stream;
+});
+
+export const handler = async (event: any) =&gt; {
+  const request = new Request(event.requestContext.http.sourceIp, {
+    method: event.requestContext.http.method,
+    headers: event.headers,
+    body: event.body
+  });
+  
+  return await WhatwgAdapter.plug(app, request);
+};</code></pre></div>
+<h2 id="7-static-functions">7. Static Functions</h2>
+<p>WhatwgAdapter provides utility functions for request and response handling with WHATWG-specific implementations.</p>
+<h3 id="7-1-request-body-loader">7.1. Request Body Loader</h3>
+<p>The following example shows how to create a custom body loader for WHATWG requests.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { loader } from '@stackpress/ingest/whatwg/Adapter';
+
+// Create loader for WHATWG Request
+const bodyLoader = loader(request);
+
+// Use with Ingest request
+ingestRequest.loader = bodyLoader;
+await ingestRequest.load();</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>resource</code></td><td><code>Request</code></td><td>WHATWG Request object</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A loader function that reads and parses the request body.</p>
+<h3 id="7-2-response-dispatcher">7.2. Response Dispatcher</h3>
+<p>The following example shows how to create a custom response dispatcher for WHATWG responses.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { dispatcher } from '@stackpress/ingest/whatwg/Adapter';
+
+// Create dispatcher with cookie options
+const responseDispatcher = dispatcher({
+  path: '/',
+  httpOnly: true,
+  secure: true,
+  sameSite: 'strict'
+});
+
+// Use with response
+response.dispatcher = responseDispatcher;
+const whatwgResponse = await response.dispatch();</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>options</code></td><td><code>CookieOptions</code></td><td>Cookie configuration options</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A dispatcher function that creates a WHATWG Response object.</p>
+<h2 id="8-advanced-usage">8. Advanced Usage</h2>
+<h3 id="8-1-custom-request-processing">8.1. Custom Request Processing</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const app = server();
+
+// Custom request preprocessing
+app.on('request', async (req, res) =&gt; {
+  // Add request ID
+  req.data.set('requestId', crypto.randomUUID());
+  
+  // Parse custom headers
+  const apiKey = req.headers.get('x-api-key');
+  if (apiKey) {
+    req.data.set('apiKey', apiKey);
+  }
+  
+  return true;
+});
+
+// Route with custom processing
+app.get('/api/data', async ({ req, res }) =&gt; {
+  const requestId = req.data('requestId');
+  const apiKey = req.data('apiKey');
+  
+  res.setJSON({ requestId, authenticated: !!apiKey });
+});</code></pre></div>
+<h3 id="8-2-stream-processing">8.2. Stream Processing</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/api/stream', async ({ res }) =&gt; {
+  const stream = new ReadableStream({
+    async start(controller) {
+      for (let i = 0; i &lt; 10; i++) {
+        controller.enqueue(`data chunk ${i}\n`);
+        await new Promise(resolve =&gt; setTimeout(resolve, 100));
+      }
+      controller.close();
+    }
+  });
+  
+  res.body = stream;
+  res.headers.set('Content-Type', 'text/plain');
+  res.headers.set('Transfer-Encoding', 'chunked');
+});</code></pre></div>
+<h3 id="8-3-error-handling">8.3. Error Handling</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.on('error', async ({ req, res }) =&gt; {
+  // Custom error formatting for APIs
+  if (req.url.pathname.startsWith('/api/')) {
+    res.setJSON({
+      error: res.error,
+      code: res.code,
+      timestamp: new Date().toISOString(),
+      path: req.url.pathname
+    });
+  } else {
+    // HTML error pages for web routes
+    res.setHTML(`
+      &lt;h1&gt;Error ${res.code}&lt;/h1&gt;
+      &lt;p&gt;${res.error}&lt;/p&gt;
+    `);
+  }
+  
+  return true;
+});</code></pre></div>
+<h2 id="9-best-practices">9. Best Practices</h2>
+<p>The following best practices ensure optimal performance and security in serverless environments.</p>
+<h3 id="9-1-environment-detection">9.1. Environment Detection</h3>
+<p>Detect and adapt to different serverless environments for optimal performance.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const app = server();
+
+// Detect serverless environment
+app.on('request', async ({ req, res }) =&gt; {
+  const isVercel = process.env.VERCEL === '1';
+  const isNetlify = process.env.NETLIFY === 'true';
+  const isCloudflare = typeof caches !== 'undefined';
+  
+  req.data.set('environment', {
+    isVercel,
+    isNetlify,
+    isCloudflare,
+    isServerless: isVercel || isNetlify || isCloudflare
+  });
+  
+  return true;
+});</code></pre></div>
+<h3 id="9-2-cors-handling">9.2. CORS Handling</h3>
+<p>Implement proper CORS handling for cross-origin requests.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.on('request', async ({ req, res }) =&gt; {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    res.headers.set('Access-Control-Allow-Origin', '*');
+    res.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.headers.set('Access-Control-Max-Age', '86400');
+    res.code = 204;
+    return false; // Skip further processing
+  }
+  
+  // Set CORS headers for all requests
+  res.headers.set('Access-Control-Allow-Origin', '*');
+  return true;
+});</code></pre></div>
+<h3 id="9-3-performance-optimization">9.3. Performance Optimization</h3>
+<p>Optimize responses for serverless environments with appropriate caching.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.on('response', async ({ req, res }) =&gt; {
+  // Add caching headers
+  if (req.method === 'GET' &amp;&amp; res.code === 200) {
+    res.headers.set('Cache-Control', 'public, max-age=3600');
+    res.headers.set('ETag', `&quot;${Date.now()}&quot;`);
+  }
+  
+  // Compression hint
+  res.headers.set('Vary', 'Accept-Encoding');
+  
+  return true;
+});</code></pre></div>
+<h3 id="9-4-security-headers">9.4. Security Headers</h3>
+<p>Implement security headers appropriate for serverless deployments.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.on('response', async (req, res) =&gt; {
+  // Security headers for web responses
+  if (!req.url.pathname.startsWith('/api/')) {
+    res.headers.set('X-Frame-Options', 'DENY');
+    res.headers.set('X-Content-Type-Options', 'nosniff');
+    res.headers.set('X-XSS-Protection', '1; mode=block');
+    res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  }
+  
+  return true;
+});</code></pre></div></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

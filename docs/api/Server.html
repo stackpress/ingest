@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Server | Ingest</title>
+    <meta name="description" content="Server combines routing, shared config, plugin loading, and runtime handling into one application object." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="is-active" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>Server</h1>
+            <p class="hero-summary">Server combines routing, shared config, plugin loading, and runtime handling into one application object.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#1-properties" title="1. Properties">1. Properties</a></li><li><a href="#2-methods" title="2. Methods">2. Methods</a></li><li><a href="#2-1-bootstrapping-plugins" title="2.1. Bootstrapping Plugins">2.1. Bootstrapping Plugins</a></li><li><a href="#2-2-creating-a-server-instance" title="2.2. Creating a Server Instance">2.2. Creating a Server Instance</a></li><li><a href="#2-3-handling-requests" title="2.3. Handling Requests">2.3. Handling Requests</a></li><li><a href="#2-4-plugin-management" title="2.4. Plugin Management">2.4. Plugin Management</a></li><li><a href="#2-5-setting-gateway" title="2.5. Setting Gateway">2.5. Setting Gateway</a></li><li><a href="#2-6-setting-handler" title="2.6. Setting Handler">2.6. Setting Handler</a></li><li><a href="#3-static-methods" title="3. Static Methods">3. Static Methods</a></li><li><a href="#3-1-creating-server-instances" title="3.1. Creating Server Instances">3.1. Creating Server Instances</a></li><li><a href="#3-2-creating-router-instances" title="3.2. Creating Router Instances">3.2. Creating Router Instances</a></li><li><a href="#3-3-creating-type-safe-actions" title="3.3. Creating Type-Safe Actions">3.3. Creating Type-Safe Actions</a></li><li><a href="#4-configuration-management" title="4. Configuration Management">4. Configuration Management</a></li><li><a href="#4-1-setting-configuration" title="4.1. Setting Configuration">4.1. Setting Configuration</a></li><li><a href="#4-2-reading-configuration" title="4.2. Reading Configuration">4.2. Reading Configuration</a></li><li><a href="#5-plugin-system-integration" title="5. Plugin System Integration">5. Plugin System Integration</a></li><li><a href="#5-1-plugin-loading" title="5.1. Plugin Loading">5.1. Plugin Loading</a></li><li><a href="#5-2-plugin-access" title="5.2. Plugin Access">5.2. Plugin Access</a></li><li><a href="#6-examples" title="6. Examples">6. Examples</a></li><li><a href="#6-1-basic-http-server" title="6.1. Basic HTTP Server">6.1. Basic HTTP Server</a></li><li><a href="#6-2-serverless-function" title="6.2. Serverless Function">6.2. Serverless Function</a></li><li><a href="#6-3-with-plugins" title="6.3. With Plugins">6.3. With Plugins</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>Server</code> combines routing, shared config, plugin loading, and runtime handling into one application object.</p>
+<p>The Server class is the core of the Ingest framework, extending Router with configuration management and plugin support.</p>
+<p>Its <code>config</code> object uses the same nested callable data primitive that also shows up in request and response objects. See <a href="Nest.html" title="Nest">Nest</a> and <a href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a> if you want the shared model behind those objects.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/http';
+// or
+import { server } from '@stackpress/ingest/whatwg';
+
+const app = server();</code></pre></div>
+<ol><li><a href="#1-properties" title="Properties">Properties</a></li><li><a href="#2-methods" title="Methods">Methods</a></li><li><a href="#2-static-methods" title="Static Methods">Static Methods</a></li><li><a href="#4-configuration-management" title="Configuration Management">Configuration Management</a></li><li><a href="#5-plugin-system-integration" title="Plugin System Integration">Plugin System Integration</a></li><li><a href="#6-examples" title="Examples">Examples</a></li></ol>
+<h2 id="1-properties">1. Properties</h2>
+<p>The following properties are available when instantiating a Server.</p>
+<div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>CallableNest&lt;C&gt;</code></td><td>Configuration object for server settings</td></tr><tr><td><code>loader</code></td><td><code>PluginLoader</code></td><td>Plugin loader instance for managing plugins</td></tr><tr><td><code>plugins</code></td><td><code>CallableMap</code></td><td>Map of registered plugin configurations</td></tr></tbody></table></div>
+<h2 id="2-methods">2. Methods</h2>
+<p>The following methods are available when instantiating a Server.</p>
+<h3 id="2-1-bootstrapping-plugins">2.1. Bootstrapping Plugins</h3>
+<p>The following example shows how to load and initialize all registered plugins.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const app = server();
+app.config.set('auth', {
+  secret: process.env.JWT_SECRET
+});
+
+await app.bootstrap();
+
+app.get('/session-check', ({ res, ctx }) =&gt; {
+  res.setJSON({
+    auth: ctx.plugin('auth')
+  });
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<p>None.</p>
+<p><strong>Returns</strong></p>
+<p>The Server instance to allow method chaining.</p>
+<h3 id="2-2-creating-a-server-instance">2.2. Creating a Server Instance</h3>
+<p>The following example shows how to create a native server instance.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const app = server();
+const httpServer = app.create();
+httpServer.listen(3000, () =&gt; {
+  console.log('Server running on port 3000');
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>options</code></td><td><code>NodeServerOptions</code></td><td>Server configuration options (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A native Node.js HTTP server instance.</p>
+<h3 id="2-3-handling-requests">2.3. Handling Requests</h3>
+<p>The following example shows how to handle requests directly.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const app = server();
+app.get('/health', ({ res }) =&gt; {
+  res.setJSON({ ok: true });
+});
+
+const result = await app.handle(request, response);</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>request</code></td><td><code>R</code></td><td>Request object (generic type)</td></tr><tr><td><code>response</code></td><td><code>S</code></td><td>Response object (generic type)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A promise that resolves to the response object.</p>
+<h3 id="2-4-plugin-management">2.4. Plugin Management</h3>
+<p>The following example shows how to register and retrieve plugins.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.register('database', {
+  query(sql: string) {
+    return [{ sql }];
+  }
+});
+
+app.get('/db-check', ({ res, ctx }) =&gt; {
+  const db = ctx.plugin&lt;{ query(sql: string): unknown[] }&gt;('database');
+  res.setResults(db.query('SELECT 1'));
+});</code></pre></div>
+<p><strong>Parameters for register</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>name</code></td><td><code>string</code></td><td>Plugin name</td></tr><tr><td><code>config</code></td><td><code>Record&lt;string, any&gt;</code></td><td>Plugin configuration object</td></tr></tbody></table></div>
+<p><strong>Parameters for plugin</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>name</code></td><td><code>string</code></td><td>Plugin name to retrieve</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>For <code>register</code>: The Server instance to allow method chaining. For <code>plugin</code>: The plugin configuration or undefined if not found.</p>
+<h3 id="2-5-setting-gateway">2.5. Setting Gateway</h3>
+<p>The following example shows how to set a custom gateway function.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { createServer } from 'node:http';
+
+app.gateway = (server) =&gt; {
+  return (options) =&gt; {
+    const httpServer = createServer(async (req, res) =&gt; {
+      await server.handle(req, res);
+    });
+
+    return httpServer;
+  };
+};</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>ServerGateway</code></td><td>Gateway function for creating server instances</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>None.</p>
+<h3 id="2-6-setting-handler">2.6. Setting Handler</h3>
+<p>The following example shows how to set a custom request handler.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.handler = async (server, request, response) =&gt; {
+  console.log('Handling request:', request.url);
+  return server.emit('GET /health', request, response);
+};</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>ServerHandler&lt;C, R, S&gt;</code></td><td>Handler function for processing requests</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>None.</p>
+<h2 id="3-static-methods">3. Static Methods</h2>
+<p>The following methods can be accessed directly from Server itself.</p>
+<h3 id="3-1-creating-server-instances">3.1. Creating Server Instances</h3>
+<p>The following example shows how to create a new Server instance with optional configuration.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/http';
+
+const app = server({
+  gateway: customGateway,
+  handler: customHandler
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>options</code></td><td><code>ServerOptions&lt;C, R, S&gt;</code></td><td>Server configuration options (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A new Server instance.</p>
+<h3 id="3-2-creating-router-instances">3.2. Creating Router Instances</h3>
+<p>The following example shows how to create a new Router instance without server functionality.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { router } from '@stackpress/ingest';
+
+const appRouter = router();</code></pre></div>
+<p><strong>Parameters</strong></p>
+<p>None.</p>
+<p><strong>Returns</strong></p>
+<p>A new Router instance.</p>
+<h3 id="3-3-creating-type-safe-actions">3.3. Creating Type-Safe Actions</h3>
+<p>The following example shows how to create type-safe action handlers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { action } from '@stackpress/ingest';
+
+const userHandler = action&lt;Config, Request, Response&gt;(({ req, res, ctx }) =&gt; {
+  res.setJSON({ message: 'Hello' });
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>action</code></td><td><code>ServerAction&lt;C, R, S&gt;</code></td><td>Action handler function</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The same action function with proper typing.</p>
+<h2 id="4-configuration-management">4. Configuration Management</h2>
+<p>The Server class provides a powerful configuration system through the <code>config</code> property.</p>
+<h3 id="4-1-setting-configuration">4.1. Setting Configuration</h3>
+<p>The following example shows how to set nested configuration values.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Set nested configuration
+app.config.set('database', {
+  host: 'localhost',
+  port: 5432,
+  name: 'myapp'
+});
+
+// Set individual values
+app.config.set('app', 'name', 'My Application');</code></pre></div>
+<h3 id="4-2-reading-configuration">4.2. Reading Configuration</h3>
+<p>The following example demonstrates various ways to read configuration values.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Get entire config section
+const dbConfig = app.config.get('database');
+
+// Get nested values
+const dbHost = app.config.get('database', 'host');
+
+// Use path notation
+const appName = app.config.path('app.name');</code></pre></div>
+<h2 id="5-plugin-system-integration">5. Plugin System Integration</h2>
+<p>The Server class is designed to work seamlessly with the plugin system.</p>
+<h3 id="5-1-plugin-loading">5.1. Plugin Loading</h3>
+<p>The following example shows how plugins are defined and loaded.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Plugins are defined in package.json
+{
+  &quot;plugins&quot;: [
+    &quot;./src/plugins/auth&quot;,
+    &quot;./src/plugins/database&quot;,
+    &quot;@my-org/logging-plugin&quot;
+  ]
+}
+
+// Load all plugins
+await app.bootstrap();</code></pre></div>
+<p>After bootstrap, the plugin routes, hooks, config, and returned state are already attached to the server, which keeps the application entrypoint small even as features grow.</p>
+<h3 id="5-2-plugin-access">5.2. Plugin Access</h3>
+<p>The following example demonstrates accessing plugin functionality.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Access plugin functionality
+const db = app.plugin('database');
+const users = await db.query('SELECT * FROM users');
+
+const auth = app.plugin('auth');
+const token = await auth.generateToken(user);</code></pre></div>
+<h2 id="6-examples">6. Examples</h2>
+<h3 id="6-1-basic-http-server">6.1. Basic HTTP Server</h3>
+<p>The following example shows how to create a basic HTTP server.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/http';
+
+const app = server();
+
+app.get('/', ({ req, res }) =&gt; {
+  res.setHTML('&lt;h1&gt;Hello World!&lt;/h1&gt;');
+});
+
+app.get('/api/users', ({ req, res }) =&gt; {
+  res.setJSON({ users: [] });
+});
+
+app.create().listen(3000, () =&gt; {
+  console.log('Server running on port 3000');
+});</code></pre></div>
+<h3 id="6-2-serverless-function">6.2. Serverless Function</h3>
+<p>The following example demonstrates creating a serverless function.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/whatwg';
+
+const app = server();
+
+app.get('/api/hello', ({ req, res }) =&gt; {
+  res.setJSON({ message: 'Hello from serverless!' });
+});
+
+export default async function handler(request: Request) {
+  return await app.handle(request, undefined);
+}</code></pre></div>
+<h3 id="6-3-with-plugins">6.3. With Plugins</h3>
+<p>The following example shows how to use the server with plugins.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/http';
+
+const app = server();
+
+// Configure plugins
+app.config.set('auth', {
+  secret: process.env.JWT_SECRET,
+  expiresIn: '24h'
+});
+
+app.config.set('database', {
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT || '5432')
+});
+
+// Load plugins
+await app.bootstrap();
+
+// Use plugin functionality
+app.get('/protected', ({ req, res }) =&gt; {
+  const user = req.data('user'); // Set by auth plugin
+  res.setJSON({ user });
+});
+
+app.create().listen(3000);</code></pre></div></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

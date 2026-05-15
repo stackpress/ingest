@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Request Lifecycle | Ingest</title>
+    <meta name="description" content="Ingest treats a request as a sequence of phases rather than as a single callback. Once that sequence is clear, the rest of the framework becomes easier to follow because routes, plugins, adapters, and error handling all plug into the same flow." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reading Path</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="is-active" href="request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../api/index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="../api/Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="../api/Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="../api/Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="../api/Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="../api/Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="../api/Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="../api/ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="../api/EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="../api/ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="../api/ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="../api/HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="../api/WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="../api/Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="../api/Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="../api/ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">System Model</p>
+            <h1>Request Lifecycle</h1>
+            <p class="hero-summary">Ingest treats a request as a sequence of phases rather than as a single callback. Once that sequence is clear, the rest of the framework becomes easier to follow because routes, plugins, adapters, and error handling all plug into the same flow.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Concept</span><span class="hero-chip">Framework Behavior</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#one-request-end-to-end" title="One request, end to end">One request, end to end</a></li><li><a href="#phase-1-adapter-boundary" title="Phase 1: adapter boundary">Phase 1: adapter boundary</a></li><li><a href="#phase-2-request-hooks" title="Phase 2: request hooks">Phase 2: request hooks</a></li><li><a href="#phase-3-route-execution" title="Phase 3: route execution">Phase 3: route execution</a></li><li><a href="#phase-4-response-hooks" title="Phase 4: response hooks">Phase 4: response hooks</a></li><li><a href="#error-flow" title="Error flow">Error flow</a></li><li><a href="#read-next" title="Read next">Read next</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p>Ingest treats a request as a sequence of phases rather than as a single callback. Once that sequence is clear, the rest of the framework becomes easier to follow because routes, plugins, adapters, and error handling all plug into the same flow.</p>
+<h2 id="one-request-end-to-end">One request, end to end</h2>
+<p>This example shows the three most important phases:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.on('request', ({ req }) =&gt; {
+  console.log('incoming', req.method, req.url.pathname);
+});
+
+app.get('/users/:id', ({ req, res }) =&gt; {
+  res.setJSON({ id: req.data('id') });
+});
+
+app.on('response', ({ res }) =&gt; {
+  console.log('outgoing', res.code);
+});</code></pre></div>
+<p>When <code>GET /users/42</code> arrives, the flow is:</p>
+<ol><li>the adapter receives runtime input</li><li>Ingest prepares framework request and response objects</li><li>the adapter loads the request body into the framework request model</li><li><code>request</code> listeners run</li><li>the route matches and executes</li><li><code>response</code> listeners run</li><li>the runtime gets the final response back</li></ol>
+<h2 id="phase-1-adapter-boundary">Phase 1: adapter boundary</h2>
+<p>The adapter is the first thing that sees the native runtime input. Its job is to translate that input into the framework request flow so the rest of the application does not need to care whether the runtime is Node HTTP or WHATWG-style. This boundary keeps runtime-specific branching from leaking across the whole application, including request parsing, cookie reads, and response writing.</p>
+<h2 id="phase-2-request-hooks">Phase 2: request hooks</h2>
+<p><code>request</code> hooks run before the matched route executes.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.on('request', ({ req, res }) =&gt; {
+  if (!req.headers.get('authorization')) {
+    res.setError('Unauthorized', {}, [], 401);
+    return false;
+  }
+
+  return true;
+});</code></pre></div>
+<p>Use this phase for auth, request logging, early validation, or any decision that should happen before the route body runs. It keeps cross-cutting concerns out of every handler and makes the pre-route flow easier to reason about.</p>
+<h2 id="phase-3-route-execution">Phase 3: route execution</h2>
+<p>Once the request phase allows execution to continue, the router matches the method and path and calls the route action.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/users/:id', ({ req, res }) =&gt; {
+  const id = req.data('id');
+  res.setJSON({ id });
+});</code></pre></div>
+<p>At this point the handler can set JSON, HTML, redirects, or errors. Keeping this phase narrow lets the route action stay focused on request-specific behavior instead of also owning setup and teardown concerns.</p>
+<p>This is also where catch-all routes such as <code>/**</code> become useful. They let a project shape its own fallback behavior without needing a separate 404 subsystem.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/**', ({ res }) =&gt; {
+  if (!res.code &amp;&amp; !res.status &amp;&amp; !res.sent) {
+    res.setHTML('Not Found', 404, 'Not Found');
+  }
+});</code></pre></div>
+<h2 id="phase-4-response-hooks">Phase 4: response hooks</h2>
+<p>After the route finishes, <code>response</code> hooks run.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.on('response', ({ req, res }) =&gt; {
+  console.log(req.url.pathname, res.code);
+});</code></pre></div>
+<p>Use this phase for logging, response decoration, or final normalization. It prevents repeated post-processing logic from being copied into multiple handlers.</p>
+<h2 id="error-flow">Error flow</h2>
+<p>If a hook or route throws, Ingest upgrades the failure into its response/error model and sends it through the error path.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/boom', () =&gt; {
+  throw new Error('Something failed');
+});
+
+app.on('error', ({ req, res }) =&gt; {
+  console.error('failed', req.url.pathname, res.error);
+  if (!res.code) {
+    res.setError('Internal Server Error', {}, [], 500);
+  }
+});</code></pre></div>
+<p>The important idea is that failures stay inside the same lifecycle instead of becoming a separate ad hoc system. That keeps error handling consistent and makes failures visible to the same extension points that handle the success path, whether the problem is a thrown exception, a validation failure, or an unmatched route.</p>
+<p>Once that lifecycle is clear, plugins, adapters, and route styles all become easier to reason about because they are all participating in the same execution model.</p>
+<h2 id="read-next">Read next</h2>
+<ul><li><a href="application-model.html" title="Application Model">Application Model</a></li><li><a href="composition.html" title="Composition">Composition</a></li></ul></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lazy Load Routes | Ingest</title>
+    <meta name="description" content="Use import routes when a handler should be loaded on demand. They are not only a loading choice; they also give build and deployment tooling explicit visibility into route module boundaries." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Build Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="is-active" href="lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../api/index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="../api/Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="../api/Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="../api/Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="../api/Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="../api/Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="../api/Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="../api/ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="../api/EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="../api/ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="../api/ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="../api/HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="../api/WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="../api/Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="../api/Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="../api/ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Build Sequence</p>
+            <h1>Lazy Load Routes</h1>
+            <p class="hero-summary">Use import routes when a handler should be loaded on demand. They are not only a loading choice; they also give build and deployment tooling explicit visibility into route module boundaries.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Task Guide</span><span class="hero-chip">Implementation Steps</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#example" title="Example">Example</a></li><li><a href="#why-use-this" title="Why use this">Why use this</a></li><li><a href="#read-next" title="Read next">Read next</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p>Use import routes when a handler should be loaded on demand. They are not only a loading choice; they also give build and deployment tooling explicit visibility into route module boundaries.</p>
+<h2 id="example">Example</h2>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.import.get('/users', () =&gt; import('./routes/users.js'));</code></pre></div>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./routes/users.js
+export default function UsersIndex({ res }) {
+  res.setResults([
+    { id: 1, name: 'Ada' },
+    { id: 2, name: 'Grace' }
+  ]);
+}</code></pre></div>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">console.log(app.imports);
+// [
+//   ['GET /users', [{ priority: 0 }]]
+// ]</code></pre></div>
+<h2 id="why-use-this">Why use this</h2>
+<ul><li>reduce initial load</li><li>expose route import metadata to tooling</li><li>keep route registration central while loading handlers lazily</li></ul>
+<h2 id="read-next">Read next</h2>
+<ul><li><a href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a></li><li><a href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a></li><li><a href="../api/ImportRouter.html" title="ImportRouter">ImportRouter</a></li></ul></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

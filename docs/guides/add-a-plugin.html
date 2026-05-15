@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add a Plugin | Ingest</title>
+    <meta name="description" content="This guide shows the shortest path to a working plugin." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Build Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="is-active" href="add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../api/index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="../api/Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="../api/Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="../api/Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="../api/Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="../api/Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="../api/Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="../api/ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="../api/EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="../api/ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="../api/ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="../api/HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="../api/WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="../api/Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="../api/Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="../api/ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Build Sequence</p>
+            <h1>Add a Plugin</h1>
+            <p class="hero-summary">This guide shows the shortest path to a working plugin.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Task Guide</span><span class="hero-chip">Implementation Steps</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#manual-wiring-without-plugins" title="Manual wiring without plugins">Manual wiring without plugins</a></li><li><a href="#create-the-plugin" title="Create the plugin">Create the plugin</a></li><li><a href="#register-it" title="Register it">Register it</a></li><li><a href="#bootstrap-the-server" title="Bootstrap the server">Bootstrap the server</a></li><li><a href="#verify-it-worked" title="Verify it worked">Verify it worked</a></li><li><a href="#read-next" title="Read next">Read next</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p>This guide shows the shortest path to a working plugin.</p>
+<p>The plugin system is recommended when you want the framework to handle wiring for you, but it is optional. You can still wire everything manually in a main file if you prefer. Plugins matter once the main app file starts collecting hooks, service setup, config, and route registration for unrelated concerns.</p>
+<h2 id="manual-wiring-without-plugins">Manual wiring without plugins</h2>
+<p>This is a valid approach, but it usually becomes noisy as the app grows because one file starts collecting route imports, hook setup, shared services, and configuration.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/http';
+import auditRoutes from './routes/audit';
+import userRoutes from './routes/users';
+import createDatabase from './services/database';
+
+const app = server();
+const database = createDatabase();
+
+app.config.set('users', { enabled: true });
+
+app.on('request', ({ req }) =&gt; {
+  console.log(req.method, req.url.pathname);
+});
+
+app.on('error', ({ req, res }) =&gt; {
+  console.error('failed', req.url.pathname, res.error);
+});
+
+app.register('database', database);
+app.use(auditRoutes);
+app.use(userRoutes);
+
+app.create().listen(3000);</code></pre></div>
+<p>The plugin version moves that wiring into feature-level units so the main file does not have to own unrelated setup. In some applications, that also reduces the need for a large bootstrap file at all.</p>
+<h2 id="create-the-plugin">Create the plugin</h2>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import type { HttpServer } from '@stackpress/ingest';
+import createDatabase from '../services/database';
+
+export default function auditPlugin(server: HttpServer) {
+  const database = createDatabase();
+
+  server.config.set('audit', {
+    enabled: true,
+    channel: 'stdout'
+  });
+
+  server.on('request', ({ req }) =&gt; {
+    console.log(req.method, req.url.pathname);
+  });
+
+  server.on('error', ({ req, res }) =&gt; {
+    console.error('failed', req.url.pathname, res.error);
+  });
+
+  server.get('/health', ({ res }) =&gt; {
+    res.setJSON({ ok: true, audit: server.config.get('audit') });
+  });
+
+  server.register('database', database);
+
+  return { database };
+}</code></pre></div>
+<h2 id="register-it">Register it</h2>
+<p>Add the plugin entry to <code>package.json</code>:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">JSON</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="json"><code class="language-json">{
+  &quot;plugins&quot;: [
+    &quot;./src/plugins/audit&quot;
+  ]
+}</code></pre></div>
+<h2 id="bootstrap-the-server">Bootstrap the server</h2>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/http';
+
+const app = server();
+await app.bootstrap();
+
+app.get('/db-check', ({ res, ctx }) =&gt; {
+  const plugin = ctx.plugin('audit');
+  res.setJSON({ hasDatabase: Boolean(plugin?.database) });
+});
+
+app.create().listen(3000);</code></pre></div>
+<h2 id="verify-it-worked">Verify it worked</h2>
+<ol><li>Start the server.</li><li>Request <code>GET /health</code>.</li><li>Confirm the response and request log.</li></ol>
+<h2 id="read-next">Read next</h2>
+<ul><li><a href="../concepts/composition.html" title="Composition">Composition</a></li><li><a href="../api/Server.html" title="Server">Server</a></li><li><a href="../api/Loader.html" title="Loader">Loader</a></li></ul></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

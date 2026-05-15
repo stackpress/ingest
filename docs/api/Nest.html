@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nest | Ingest</title>
+    <meta name="description" content="Nest is the nested data primitive behind many Ingest data objects such as app.config, req.data, req.query, req.post, res.data, and res.errors." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="is-active" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>Nest</h1>
+            <p class="hero-summary">Nest is the nested data primitive behind many Ingest data objects such as app.config, req.data, req.query, req.post, res.data, and res.errors.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#why-it-matters-in-ingest" title="Why it matters in Ingest">Why it matters in Ingest</a></li><li><a href="#common-operations" title="Common operations">Common operations</a></li><li><a href="#where-you-will-see-it-in-ingest" title="Where you will see it in Ingest">Where you will see it in Ingest</a></li><li><a href="#parsing-helpers" title="Parsing helpers">Parsing helpers</a></li><li><a href="#read-next" title="Read next">Read next</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>Nest</code> is the nested data primitive behind many Ingest data objects such as <code>app.config</code>, <code>req.data</code>, <code>req.query</code>, <code>req.post</code>, <code>res.data</code>, and <code>res.errors</code>.</p>
+<p>This class lives in <code>@stackpress/lib</code>, not in Ingest itself, but Ingest relies on it heavily enough that it is worth understanding.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { Nest, nest } from '@stackpress/lib';
+
+const config = nest({
+  database: {
+    postgres: {
+      host: 'localhost',
+      port: 5432
+    }
+  }
+});</code></pre></div>
+<h2 id="why-it-matters-in-ingest">Why it matters in Ingest</h2>
+<p>Ingest uses the callable form of <code>Nest</code> almost everywhere it needs structured state.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.config.set('app', { name: 'My App' });
+
+app.get('/users/:id', ({ req, res }) =&gt; {
+  res.setJSON({
+    id: req.data('id'),
+    filters: req.query(),
+    body: req.post(),
+    config: app.config('app', 'name')
+  });
+});</code></pre></div>
+<p>That is why these data objects behave similarly even though they belong to different classes.</p>
+<h2 id="common-operations">Common operations</h2>
+<p>The most useful methods are:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">config('database', 'postgres', 'host');      // callable read
+config.get('database', 'postgres', 'port');  // method read
+config.set('database', 'postgres', 'port', 5432);
+config.has('database', 'postgres', 'host');
+config.path('database.postgres.host');
+config.entries();</code></pre></div>
+<p>The callable form is convenient for reads in handlers, while the methods are better when you need more explicit mutation or inspection.</p>
+<h2 id="where-you-will-see-it-in-ingest">Where you will see it in Ingest</h2>
+<ul><li><code>app.config</code></li><li><code>req.query</code></li><li><code>req.post</code></li><li><code>req.data</code></li><li><code>res.data</code></li><li><code>res.errors</code></li></ul>
+<p>For example:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.view.engine = async (filePath, req, res) =&gt; {
+  const props = res.data();
+  const html = await app.view.render(filePath, {
+    ...req.data(),
+    props
+  });
+  res.setHTML(html);
+};</code></pre></div>
+<h2 id="parsing-helpers">Parsing helpers</h2>
+<p>The same module also provides parsing helpers that Ingest adapters use when building request data.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import {
+  objectFromQuery,
+  objectFromFormData,
+  objectFromJson
+} from '@stackpress/lib/Nest';</code></pre></div>
+<p>Those helpers are part of how:</p>
+<ul><li>query strings become <code>req.query</code></li><li>request bodies become <code>req.post</code></li><li>merged request state becomes <code>req.data</code></li></ul>
+<h2 id="read-next">Read next</h2>
+<ul><li><a href="Request.html" title="Request">Request</a></li><li><a href="Response.html" title="Response">Response</a></li><li><a href="Server.html" title="Server">Server</a></li><li><a href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a></li></ul></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

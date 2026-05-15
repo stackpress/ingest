@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HttpAdapter | Ingest</title>
+    <meta name="description" content="HttpAdapter isolates Node HTTP specifics at the runtime boundary so application code does not need to be written directly against IncomingMessage and ServerResponse everywhere." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="is-active" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>HttpAdapter</h1>
+            <p class="hero-summary">HttpAdapter isolates Node HTTP specifics at the runtime boundary so application code does not need to be written directly against IncomingMessage and ServerResponse everywhere.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#1-plugging-http-requests" title="1. Plugging HTTP Requests">1. Plugging HTTP Requests</a></li><li><a href="#2-methods" title="2. Methods">2. Methods</a></li><li><a href="#2-1-processing-requests" title="2.1. Processing Requests">2.1. Processing Requests</a></li><li><a href="#2-2-creating-request-objects" title="2.2. Creating Request Objects">2.2. Creating Request Objects</a></li><li><a href="#2-3-creating-response-objects" title="2.3. Creating Response Objects">2.3. Creating Response Objects</a></li><li><a href="#3-request-processing-flow" title="3. Request Processing Flow">3. Request Processing Flow</a></li><li><a href="#3-1-request-initialization" title="3.1. Request Initialization">3.1. Request Initialization</a></li><li><a href="#3-2-response-setup" title="3.2. Response Setup">3.2. Response Setup</a></li><li><a href="#3-3-body-loading" title="3.3. Body Loading">3.3. Body Loading</a></li><li><a href="#3-4-route-processing" title="3.4. Route Processing">3.4. Route Processing</a></li><li><a href="#3-5-response-dispatch" title="3.5. Response Dispatch">3.5. Response Dispatch</a></li><li><a href="#4-body-loading" title="4. Body Loading">4. Body Loading</a></li><li><a href="#4-1-automatic-body-parsing" title="4.1. Automatic Body Parsing">4.1. Automatic Body Parsing</a></li><li><a href="#4-2-content-type-handling" title="4.2. Content Type Handling">4.2. Content Type Handling</a></li><li><a href="#4-3-size-limits" title="4.3. Size Limits">4.3. Size Limits</a></li><li><a href="#5-response-dispatching" title="5. Response Dispatching">5. Response Dispatching</a></li><li><a href="#5-1-response-type-handling" title="5.1. Response Type Handling">5.1. Response Type Handling</a></li><li><a href="#5-2-cookie-management" title="5.2. Cookie Management">5.2. Cookie Management</a></li><li><a href="#5-3-header-management" title="5.3. Header Management">5.3. Header Management</a></li><li><a href="#6-integration-examples" title="6. Integration Examples">6. Integration Examples</a></li><li><a href="#6-1-express-js-style-server" title="6.1. Express.js Style Server">6.1. Express.js Style Server</a></li><li><a href="#6-2-custom-middleware" title="6.2. Custom Middleware">6.2. Custom Middleware</a></li><li><a href="#6-3-file-upload-handling" title="6.3. File Upload Handling">6.3. File Upload Handling</a></li><li><a href="#7-static-functions" title="7. Static Functions">7. Static Functions</a></li><li><a href="#7-1-request-body-loader" title="7.1. Request Body Loader">7.1. Request Body Loader</a></li><li><a href="#7-2-response-dispatcher" title="7.2. Response Dispatcher">7.2. Response Dispatcher</a></li><li><a href="#8-best-practices" title="8. Best Practices">8. Best Practices</a></li><li><a href="#8-1-error-handling" title="8.1. Error Handling">8.1. Error Handling</a></li><li><a href="#8-2-performance-optimization" title="8.2. Performance Optimization">8.2. Performance Optimization</a></li><li><a href="#8-3-security-headers" title="8.3. Security Headers">8.3. Security Headers</a></li><li><a href="#8-4-graceful-shutdown" title="8.4. Graceful Shutdown">8.4. Graceful Shutdown</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>HttpAdapter</code> isolates Node HTTP specifics at the runtime boundary so application code does not need to be written directly against <code>IncomingMessage</code> and <code>ServerResponse</code> everywhere.</p>
+<p>Node.js HTTP adapter that bridges Node.js IncomingMessage and ServerResponse with the Ingest framework, enabling seamless integration with Node.js HTTP servers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import HttpAdapter from '@stackpress/ingest/http/Adapter';
+import { createServer } from 'node:http';
+
+// Static usage
+const server = createServer(async (req, res) =&gt; {
+  await HttpAdapter.plug(context, req, res);
+});
+
+// Instance usage
+const adapter = new HttpAdapter(context, req, res);
+await adapter.plug();</code></pre></div>
+<ol><li><a href="#1-plugging-http-requests" title="Plugging HTTP Requests">Plugging HTTP Requests</a></li><li><a href="#2-methods" title="Methods">Methods</a></li><li><a href="#3-request-processing-flow" title="Request Processing Flow">Request Processing Flow</a></li><li><a href="#4-body-loading" title="Body Loading">Body Loading</a></li><li><a href="#5-response-dispatching" title="Response Dispatching">Response Dispatching</a></li><li><a href="#6-integration-examples" title="Integration Examples">Integration Examples</a></li><li><a href="#7-static-functions" title="Static Functions">Static Functions</a></li><li><a href="#8-best-practices" title="Best Practices">Best Practices</a></li></ol>
+<h2 id="1-plugging-http-requests">1. Plugging HTTP Requests</h2>
+<p>The following example shows how to handle HTTP requests using the static plug method for seamless integration.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { createServer } from 'node:http';
+import { server } from '@stackpress/ingest/http';
+
+const app = server();
+const httpServer = createServer(async (req, res) =&gt; {
+  await HttpAdapter.plug(app, req, res);
+});
+
+// With custom action
+const httpServer2 = createServer(async (req, res) =&gt; {
+  await HttpAdapter.plug(app, req, res, 'custom-handler');
+});
+
+// With action function
+const httpServer3 = createServer(async (req, res) =&gt; {
+  await HttpAdapter.plug(app, req, res, async ({ res }) =&gt; {
+    res.setJSON({ message: 'Custom handler' });
+  });
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>context</code></td><td><code>HttpServer&lt;C&gt;</code></td><td>Server context instance</td></tr><tr><td><code>request</code></td><td><code>IncomingMessage</code></td><td>Node.js HTTP request object</td></tr><tr><td><code>response</code></td><td><code>ServerResponse</code></td><td>Node.js HTTP response object</td></tr><tr><td><code>action</code></td><td>`string\</td><td>HttpAction&lt;C&gt;`</td><td>Custom action name or function (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A promise that resolves to the ServerResponse object after processing.</p>
+<h2 id="2-methods">2. Methods</h2>
+<p>The following methods are available when instantiating an HttpAdapter.</p>
+<h3 id="2-1-processing-requests">2.1. Processing Requests</h3>
+<p>The following example shows how to process HTTP requests through the adapter with flexible action handling.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const adapter = new HttpAdapter(context, req, res);
+
+// Process with automatic route detection
+await adapter.plug();
+
+// Process with custom action
+await adapter.plug('user-login');
+
+// Process with action function
+await adapter.plug(async ({ res }) =&gt; {
+  const users = await getUsers();
+  res.setResults(users);
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>action</code></td><td>`string\</td><td>HttpAction&lt;C&gt;`</td><td>Custom action name or function (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A promise that resolves to the ServerResponse object after processing.</p>
+<h3 id="2-2-creating-request-objects">2.2. Creating Request Objects</h3>
+<p>The following example shows how HTTP requests are converted to Ingest Request objects.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const adapter = new HttpAdapter(context, req, res);
+const request = adapter.request();
+
+// Access request properties
+console.log(request.method);     // 'GET', 'POST', etc.
+console.log(request.url);        // URL object
+console.log(request.headers);    // Request headers
+console.log(request.query);      // Query parameters
+console.log(request.session);    // Session data from cookies</code></pre></div>
+<p><strong>Returns</strong></p>
+<p>An Ingest Request object configured for the HTTP request.</p>
+<h3 id="2-3-creating-response-objects">2.3. Creating Response Objects</h3>
+<p>The following example shows how HTTP responses are created for Ingest processing.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const adapter = new HttpAdapter(context, req, res);
+const response = adapter.response();
+
+// Set response data
+response.setJSON({ message: 'Hello World' });
+response.setHTML('&lt;h1&gt;Hello World&lt;/h1&gt;');
+response.setError('Not found', {}, [], 404);
+
+// Dispatch to HTTP response
+await response.dispatch();</code></pre></div>
+<p><strong>Returns</strong></p>
+<p>An Ingest Response object configured for HTTP output.</p>
+<h2 id="3-request-processing-flow">3. Request Processing Flow</h2>
+<p>HttpAdapter follows a structured request processing flow for reliable HTTP request handling.</p>
+<h3 id="3-1-request-initialization">3.1. Request Initialization</h3>
+<p>Convert IncomingMessage to Ingest Request with comprehensive data extraction.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Convert IncomingMessage to Ingest Request
+const request = adapter.request();
+// - Extracts HTTP method, URL, headers
+// - Parses cookies into session data
+// - Converts query parameters to nested object
+// - Sets up body loader for POST data</code></pre></div>
+<h3 id="3-2-response-setup">3.2. Response Setup</h3>
+<p>Create Ingest Response for ServerResponse with proper configuration.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Create Ingest Response for ServerResponse
+const response = adapter.response();
+// - Configures response dispatcher
+// - Sets up cookie handling
+// - Prepares header management</code></pre></div>
+<h3 id="3-3-body-loading">3.3. Body Loading</h3>
+<p>Load request body asynchronously with content type detection.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Load request body asynchronously
+await request.load();
+// - Reads POST data from the IncomingMessage stream
+// - Parses JSON, URL-encoded, and multipart form bodies
+// - Merges parsed data into request.post and request.data
+// - Can enforce size limits when a custom loader is used</code></pre></div>
+<p><code>plug()</code> calls <code>request.load()</code> before <code>Route.emit(...)</code>, so route handlers see a populated request model instead of having to manage stream reading themselves.</p>
+<h3 id="3-4-route-processing">3.4. Route Processing</h3>
+<p>Execute route through Route.emit with complete lifecycle management.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Execute route through Route.emit
+await Route.emit(event, request, response, context);
+// - Runs request lifecycle (prepare, process, shutdown)
+// - Executes route handlers
+// - Handles errors and 404s</code></pre></div>
+<h3 id="3-5-response-dispatch">3.5. Response Dispatch</h3>
+<p>Send response to client with proper headers and content.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Send response to client
+await response.dispatch();
+// - Sets HTTP status code and message
+// - Writes cookies to Set-Cookie headers
+// - Sends response headers
+// - Streams response body</code></pre></div>
+<h2 id="4-body-loading">4. Body Loading</h2>
+<p>HttpAdapter provides robust body loading for HTTP requests with automatic parsing and optional size limits.</p>
+<h3 id="4-1-automatic-body-parsing">4.1. Automatic Body Parsing</h3>
+<p>Parse request bodies automatically based on content type.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Body is automatically loaded and parsed
+await request.load();
+
+// Access parsed data
+const formData = request.post.get();     // Form data
+const jsonData = request.data.get();     // Combined data
+const rawBody = request.body;            // Raw body string</code></pre></div>
+<p>If the content type does not match one of the built-in parsers, the raw body is still cached but <code>request.post</code> stays empty.</p>
+<h3 id="4-2-content-type-handling">4.2. Content Type Handling</h3>
+<p>Handle different content types with appropriate parsing strategies.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Form data (application/x-www-form-urlencoded)
+// Content-Type: application/x-www-form-urlencoded
+// Body: name=John&amp;email=john@example.com
+// Result: { name: 'John', email: 'john@example.com' }
+
+// JSON data (application/json)
+// Content-Type: application/json
+// Body: {&quot;name&quot;:&quot;John&quot;,&quot;email&quot;:&quot;john@example.com&quot;}
+// Result: { name: 'John', email: 'john@example.com' }
+
+// Multipart form data (multipart/form-data)
+// Handles file uploads and form fields</code></pre></div>
+<h3 id="4-3-size-limits">4.3. Size Limits</h3>
+<p>Enforce request size limits for security and performance.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Configure body size limits
+const bodyLoader = loader(req, 1024 * 1024); // 1MB limit
+ingestRequest.loader = bodyLoader;</code></pre></div>
+<p>The built-in adapter wiring uses <code>loader(request)</code> with no explicit limit. If a project needs hard caps, it can swap in a sized loader before the request lifecycle runs.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { loader } from '@stackpress/ingest/http/Adapter';
+
+const ingestRequest = adapter.request();
+ingestRequest.loader = loader(req, 1024 * 1024);
+await ingestRequest.load();</code></pre></div>
+<h2 id="5-response-dispatching">5. Response Dispatching</h2>
+<p>HttpAdapter handles various response types and formats with automatic content type detection.</p>
+<h3 id="5-1-response-type-handling">5.1. Response Type Handling</h3>
+<p>Handle different response types with appropriate content type headers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// String responses
+response.setHTML('&lt;h1&gt;Hello World&lt;/h1&gt;');
+// Sets Content-Type: text/html
+
+// JSON responses
+response.setJSON({ message: 'Success' });
+// Sets Content-Type: application/json
+
+// Buffer responses
+response.body = Buffer.from('binary data');
+// Sends raw binary data
+
+// Stream responses
+response.body = fs.createReadStream('file.pdf');
+// Pipes file stream to response
+
+// Object responses (automatic JSON)
+response.body = { users: [...] };
+// Automatically serializes to JSON</code></pre></div>
+<h3 id="5-2-cookie-management">5.2. Cookie Management</h3>
+<p>Manage session cookies with automatic serialization and security options.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Session cookies are automatically handled
+response.session.set('user_id', '123');
+response.session.set('preferences', JSON.stringify(prefs));
+
+// Cookies are written as Set-Cookie headers
+// Set-Cookie: user_id=123; Path=/
+// Set-Cookie: preferences={&quot;theme&quot;:&quot;dark&quot;}; Path=/</code></pre></div>
+<h3 id="5-3-header-management">5.3. Header Management</h3>
+<p>Set custom headers for security, caching, and API versioning.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Custom headers
+response.headers.set('X-API-Version', '1.0');
+response.headers.set('Cache-Control', 'no-cache');
+
+// Security headers
+response.headers.set('X-Frame-Options', 'DENY');
+response.headers.set('X-Content-Type-Options', 'nosniff');</code></pre></div>
+<h2 id="6-integration-examples">6. Integration Examples</h2>
+<p>The following examples demonstrate common HttpAdapter integration patterns for real-world applications.</p>
+<h3 id="6-1-express-js-style-server">6.1. Express.js Style Server</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { createServer } from 'node:http';
+import { server } from '@stackpress/ingest/http';
+
+const app = server();
+
+// Define routes
+app.get('/users', async ({ res }) =&gt; {
+  const users = await getUsers();
+  res.setResults(users);
+});
+
+app.post('/users', async ({ req, res }) =&gt; {
+  const userData = req.data();
+  const user = await createUser(userData);
+  res.setResults(user, 201);
+});
+
+// Create HTTP server
+const httpServer = createServer(async (req, res) =&gt; {
+  await HttpAdapter.plug(app, req, res);
+});
+
+httpServer.listen(3000, () =&gt; {
+  console.log('Server running on port 3000');
+});
+
+async function getUsers() {
+  return [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }];
+}
+
+async function createUser(userData: any) {
+  return { id: Date.now(), ...userData };
+}</code></pre></div>
+<h3 id="6-2-custom-middleware">6.2. Custom Middleware</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const app = server();
+
+// Request middleware
+app.on('request', async ({ req, res }) =&gt; {
+  // CORS headers
+  res.headers.set('Access-Control-Allow-Origin', '*');
+  res.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  
+  // Request logging
+  console.log(`${req.method} ${req.url.pathname}`);
+  
+  return true; // Continue processing
+});
+
+// Error handling
+app.on('error', async ({ req, res }) =&gt; {
+  console.error('Request error:', res.error);
+  
+  if (res.code &gt;= 500) {
+    // Log server errors
+    logger.error(res.error, { url: req.url.href, method: req.method });
+  }
+  
+  return true; // Continue processing
+});
+
+const logger = {
+  error: (message: string, context: any) =&gt; {
+    console.error(message, context);
+  }
+};</code></pre></div>
+<h3 id="6-3-file-upload-handling">6.3. File Upload Handling</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.post('/upload', async ({ req, res }) =&gt; {
+  await req.load(); // Load multipart data
+  
+  const files = req.post.get('files');
+  const metadata = req.post.get('metadata');
+  
+  // Process uploaded files
+  for (const file of files) {
+    await saveFile(file);
+  }
+  
+  res.setJSON({ 
+    message: 'Files uploaded successfully',
+    count: files.length 
+  });
+});
+
+async function saveFile(file: any) {
+  // File saving logic
+  console.log(`Saving file: ${file.name}`);
+}</code></pre></div>
+<h2 id="7-static-functions">7. Static Functions</h2>
+<p>HttpAdapter provides utility functions for request and response handling with customizable options.</p>
+<h3 id="7-1-request-body-loader">7.1. Request Body Loader</h3>
+<p>The following example shows how to create a custom body loader with size limits.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { loader } from '@stackpress/ingest/http/Adapter';
+
+// Create loader with size limit
+const bodyLoader = loader(incomingMessage, 1024 * 1024); // 1MB limit
+
+// Use with request
+request.loader = bodyLoader;
+await request.load();</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>resource</code></td><td><code>IncomingMessage</code></td><td>Node.js HTTP request object</td></tr><tr><td><code>size</code></td><td><code>number</code></td><td>Maximum body size in bytes (default: 0 = no limit)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A loader function that reads and parses the request body.</p>
+<h3 id="7-2-response-dispatcher">7.2. Response Dispatcher</h3>
+<p>The following example shows how to create a custom response dispatcher with cookie options.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { dispatcher } from '@stackpress/ingest/http/Adapter';
+
+// Create dispatcher with cookie options
+const responseDispatcher = dispatcher({
+  path: '/',
+  httpOnly: true,
+  secure: true,
+  sameSite: 'strict'
+});
+
+// Use with response
+response.dispatcher = responseDispatcher;
+await response.dispatch();</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>options</code></td><td><code>CookieOptions</code></td><td>Cookie configuration options</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A dispatcher function that writes the response to ServerResponse.</p>
+<h2 id="8-best-practices">8. Best Practices</h2>
+<p>The following best practices ensure robust and secure HTTP adapter implementations.</p>
+<h3 id="8-1-error-handling">8.1. Error Handling</h3>
+<p>Implement comprehensive error handling for production reliability.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const httpServer = createServer(async (req, res) =&gt; {
+  try {
+    await HttpAdapter.plug(app, req, res);
+  } catch (error) {
+    console.error('Adapter error:', error);
+    
+    // Ensure response is sent
+    if (!res.headersSent) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({
+        code: 500,
+        status: 'Internal Server Error',
+        error: 'Server error occurred'
+      }));
+    }
+  }
+});</code></pre></div>
+<h3 id="8-2-performance-optimization">8.2. Performance Optimization</h3>
+<p>Configure server settings for optimal performance and resource usage.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Enable keep-alive
+httpServer.keepAliveTimeout = 65000;
+httpServer.headersTimeout = 66000;
+
+// Set request size limits
+const app = server();
+app.on('request', async (req, res) =&gt; {
+  const contentLength = parseInt(req.headers.get('content-length') || '0');
+  if (contentLength &gt; 10 * 1024 * 1024) { // 10MB limit
+    res.setError('Request too large', {}, [], 413);
+    return false; // Abort processing
+  }
+  return true;
+});</code></pre></div>
+<h3 id="8-3-security-headers">8.3. Security Headers</h3>
+<p>Implement security headers for protection against common vulnerabilities.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.on('response', async (req, res) =&gt; {
+  // Security headers
+  res.headers.set('X-Frame-Options', 'DENY');
+  res.headers.set('X-Content-Type-Options', 'nosniff');
+  res.headers.set('X-XSS-Protection', '1; mode=block');
+  res.headers.set('Strict-Transport-Security', 'max-age=31536000');
+  
+  return true;
+});</code></pre></div>
+<h3 id="8-4-graceful-shutdown">8.4. Graceful Shutdown</h3>
+<p>Implement graceful shutdown for clean server termination.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const httpServer = createServer(async (req, res) =&gt; {
+  await HttpAdapter.plug(app, req, res);
+});
+
+process.on('SIGTERM', () =&gt; {
+  console.log('Received SIGTERM, shutting down gracefully');
+  httpServer.close(() =&gt; {
+    console.log('HTTP server closed');
+    process.exit(0);
+  });
+});</code></pre></div></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

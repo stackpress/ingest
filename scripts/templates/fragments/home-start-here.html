@@ -1,0 +1,14 @@
+<section class="landing-section">
+  <div class="landing-section-head">
+    <p class="eyebrow">Start Here</p>
+    <h2>Choose the way into the framework</h2>
+  </div>
+  <div class="section-card-grid">
+    {{#@:items}}
+    <a class="section-card" href="{{href}}" title="{{title}}">
+      <strong>{{title}}</strong>
+      <span>{{description}}</span>
+    </a>
+    {{/@:items}}
+  </div>
+</section>

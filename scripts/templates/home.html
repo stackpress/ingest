@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{page.title}} | {{site.title}}</title>
+    <meta name="description" content="{{page.description}}" />
+    <link href="{{page.assetRoot}}/favicon.ico" rel="icon" sizes="any" />
+    <link href="{{page.assetRoot}}/site.css" rel="stylesheet" />
+    <script defer src="{{page.assetRoot}}/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="{{page.homeHref}}"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="{{page.assetRoot}}/ingest.png" />
+        <span class="brand-copy">
+          <strong>{{site.title}}</strong>
+          <span>{{site.tagline}}</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="{{site.repoUrl}}"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <main class="home-shell">
+      <section class="hero home-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">{{page.sectionLabel}}</p>
+          <h1>{{page.title}}</h1>
+          <p class="hero-summary">{{page.description}}</p>
+          {{page.meta}}
+          {{page.heroActions}}
+        </div>
+        {{page.heroVisual}}
+      </section>
+      {{page.mainContent}}
+      <footer class="footer">
+        <p>By the stackpress team</p>
+        <div class="footer-links">
+          <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+          <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>

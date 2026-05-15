@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ExpressEmitter | Ingest</title>
+    <meta name="description" content="ExpressEmitter is the event-pattern primitive underneath Ingest routing. ActionRouter extends it directly, which is why route patterns, wildcards, and named params behave the way they do." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="is-active" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>ExpressEmitter</h1>
+            <p class="hero-summary">ExpressEmitter is the event-pattern primitive underneath Ingest routing. ActionRouter extends it directly, which is why route patterns, wildcards, and named params behave the way they do.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#why-it-matters-in-ingest" title="Why it matters in Ingest">Why it matters in Ingest</a></li><li><a href="#pattern-types" title="Pattern types">Pattern types</a></li><li><a href="#what-it-extracts" title="What it extracts">What it extracts</a></li><li><a href="#matching-example" title="Matching example">Matching example</a></li><li><a href="#expressions-and-listeners" title="Expressions and listeners">Expressions and listeners</a></li><li><a href="#relation-to-actionrouter" title="Relation to ActionRouter">Relation to ActionRouter</a></li><li><a href="#read-next" title="Read next">Read next</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>ExpressEmitter</code> is the event-pattern primitive underneath Ingest routing. <code>ActionRouter</code> extends it directly, which is why route patterns, wildcards, and named params behave the way they do.</p>
+<p>This class lives in <code>@stackpress/lib</code>, not in Ingest itself, but it explains a large part of how route matching works.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import ExpressEmitter from '@stackpress/lib/ExpressEmitter';
+
+const emitter = new ExpressEmitter('/');</code></pre></div>
+<h2 id="why-it-matters-in-ingest">Why it matters in Ingest</h2>
+<p>Ingest routes are event matches.</p>
+<p><code>ActionRouter</code> turns routes like <code>GET /users/:id</code> into event patterns and then lets <code>ExpressEmitter</code> do the matching and extraction work.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/users/:id', ({ req, res }) =&gt; {
+  res.setJSON({ id: req.data('id') });
+});
+
+router.get('/files/*', ({ req, res }) =&gt; {
+  res.setJSON({ args: req.data() });
+});
+
+router.get('/assets/**', ({ req, res }) =&gt; {
+  res.setJSON({ args: req.data() });
+});</code></pre></div>
+<h2 id="pattern-types">Pattern types</h2>
+<p>The important pattern shapes are:</p>
+<ul><li><code>:name</code> for named params</li><li><code>*</code> for one path segment</li><li><code>**</code> for the rest of a path</li></ul>
+<p>Those patterns are converted into regular expressions and stored as event expressions.</p>
+<h2 id="what-it-extracts">What it extracts</h2>
+<p>When an event matches:</p>
+<ul><li>named params become <code>data.params</code></li><li>wildcard matches become <code>data.args</code></li></ul>
+<p>In Ingest, <code>ActionRouter</code> then merges those into <code>req.data()</code>, which is why route handlers usually read params directly from the main request data object instead of from a separate matcher object.</p>
+<h2 id="matching-example">Matching example</h2>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.get('/users/:id', ({ req, res }) =&gt; {
+  res.setJSON({
+    id: req.data('id')
+  });
+});
+
+router.get('/files/*', ({ req, res }) =&gt; {
+  res.setJSON({
+    pathPart: req.data('0')
+  });
+});</code></pre></div>
+<p>That behavior comes from the underlying event match, not from a separate route-param subsystem.</p>
+<h2 id="expressions-and-listeners">Expressions and listeners</h2>
+<p><code>ExpressEmitter</code> also explains two maps that show up in the router API:</p>
+<ul><li><code>expressions</code></li><li><code>listeners</code></li></ul>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">console.log(router.expressions);
+console.log(router.listeners);</code></pre></div>
+<p><code>expressions</code> holds the compiled route patterns. <code>listeners</code> holds the task queues attached to those events. Together, those structures are what make route introspection and tooling possible.</p>
+<h2 id="relation-to-actionrouter">Relation to ActionRouter</h2>
+<p><code>ActionRouter</code> adds three important pieces on top of <code>ExpressEmitter</code>:</p>
+<ul><li>HTTP method route helpers like <code>get()</code> and <code>post()</code></li><li>request/response props creation</li><li>merging matched params and args into <code>req.data()</code></li></ul>
+<p>So if you want to understand route syntax, pattern matching, or event priority behavior, <code>ExpressEmitter</code> is the right primitive to keep in mind. If you want the framework-level handler model, go back up to <a href="ActionRouter.html" title="ActionRouter">ActionRouter</a> and <a href="Router.html" title="Router">Router</a>.</p>
+<h2 id="read-next">Read next</h2>
+<ul><li><a href="ActionRouter.html" title="ActionRouter">ActionRouter</a></li><li><a href="Router.html" title="Router">Router</a></li><li><a href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a></li></ul></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

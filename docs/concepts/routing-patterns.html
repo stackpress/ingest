@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Routing Patterns | Ingest</title>
+    <meta name="description" content="Routing is one of Ingest’s strongest ideas because the framework supports several route-definition styles without changing the handler model. You can change where a route comes from without changing how the route behaves once it runs." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reading Path</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="is-active" href="routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../api/index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="../api/Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="../api/Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="../api/Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="../api/Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="../api/Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="../api/Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="../api/ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="../api/EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="../api/ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="../api/ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="../api/HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="../api/WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="../api/Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="../api/Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="../api/ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">System Model</p>
+            <h1>Routing Patterns</h1>
+            <p class="hero-summary">Routing is one of Ingest’s strongest ideas because the framework supports several route-definition styles without changing the handler model. You can change where a route comes from without changing how the route behaves once it runs.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Concept</span><span class="hero-chip">Framework Behavior</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#the-common-handler-shape" title="The common handler shape">The common handler shape</a></li><li><a href="#inline-action-routes" title="Inline action routes">Inline action routes</a></li><li><a href="#entry-file-routes" title="Entry-file routes">Entry-file routes</a></li><li><a href="#lazy-import-routes" title="Lazy import routes">Lazy import routes</a></li><li><a href="#view-routes" title="View routes">View routes</a></li><li><a href="#route-matching-and-composition" title="Route matching and composition">Route matching and composition</a></li><li><a href="#how-to-choose" title="How to choose">How to choose</a></li><li><a href="#read-next" title="Read next">Read next</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p>Routing is one of Ingest’s strongest ideas because the framework supports several route-definition styles without changing the handler model. You can change where a route comes from without changing how the route behaves once it runs.</p>
+<h2 id="the-common-handler-shape">The common handler shape</h2>
+<p>No matter how a route is declared, the useful target is still the same props-based action:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">({ req, res, ctx }) =&gt; {
+  res.setJSON({ path: req.url.pathname });
+}</code></pre></div>
+<p>That consistency makes the routing modes feel like variations of one system instead of unrelated features. It prevents the framework from drifting into several incompatible route APIs as the project scales.</p>
+<h2 id="inline-action-routes">Inline action routes</h2>
+<p>Use inline routes when the handler is short and local readability matters most.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/users/:id', ({ req, res }) =&gt; {
+  res.setJSON({ id: req.data('id') });
+});</code></pre></div>
+<p>Inline routes solve the straightforward case without requiring a file, import boundary, or plugin when the behavior is small and local.</p>
+<h2 id="entry-file-routes">Entry-file routes</h2>
+<p>Use entry routes when you want route ownership to map directly to files.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.entry.get('/users/:id', './routes/user.js');</code></pre></div>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./routes/user.js
+export default function UserDetail({ req, res }) {
+  res.setJSON({ id: req.data('id') });
+}</code></pre></div>
+<p>This pattern is useful when the filesystem is part of how the app is organized or built. It keeps route ownership explicit, reduces the chance that one registration file turns into a large aggregation point, and gives build tooling a stable route-to-file map.</p>
+<h2 id="lazy-import-routes">Lazy import routes</h2>
+<p>Use import routes when handlers should load on demand or when tooling needs to see import boundaries directly.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.import.get('/users', () =&gt; import('./routes/users.js'));</code></pre></div>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./routes/users.js
+export default function UsersIndex({ res }) {
+  res.setResults([
+    { id: 1, name: 'Ada' },
+    { id: 2, name: 'Grace' }
+  ]);
+}</code></pre></div>
+<p>This pattern matters for:</p>
+<ul><li>lazy loading</li><li>server build scripts</li><li>deployment packaging</li><li>route-aware tooling</li></ul>
+<p>Import routes solve more than load timing. They make route module boundaries visible to tooling so large projects can package, inspect, or deploy them more deliberately.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">console.log(app.imports);
+// [
+//   ['GET /users', [{ priority: 0 }]]
+// ]</code></pre></div>
+<h2 id="view-routes">View routes</h2>
+<p>Attach a template engine and use view routes to automatically render template files.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.view.engine = async (filePath, req, res) =&gt; {
+  const html = await renderTemplate(filePath, req.data());
+  res.setHTML(html);
+};
+
+app.view.get('/profile', './views/profile.hbs');</code></pre></div>
+<p>View routes keep template lookup connected to routing so simple rendered pages do not need to repeat the same rendering boilerplate in every handler.</p>
+<h2 id="route-matching-and-composition">Route matching and composition</h2>
+<p>Underneath these styles, Ingest routes are still regular router entries. That means you keep the same matching features, route parameters, wildcards, and router composition regardless of the route source.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.post('/users/:id', ({ req, res }) =&gt; {
+  res.setJSON({ id: req.data('id') });
+});
+
+app.put('/files/*', ({ req, res }) =&gt; {
+  res.setJSON({ args: req.data() });
+});
+
+app.get('/assets/**', ({ req, res }) =&gt; {
+  res.setJSON({ args: req.data() });
+});</code></pre></div>
+<p>The matching behavior comes from <code>ExpressEmitter</code>, which supports:</p>
+<ul><li><code>:name</code> for named parameters</li><li><code>*</code> for one path segment</li><li><code>**</code> for the rest of a path</li></ul>
+<p>Wildcard matches are pushed into request data as positional args rather than named params.</p>
+<p>For example, <code>GET /files/report.pdf</code> can produce:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">req.data()
+// { '0': 'report.pdf' }</code></pre></div>
+<p>While <code>GET /assets/images/icons/logo.png</code> can produce:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">req.data()
+// { '0': 'images/icons/logo.png' }</code></pre></div>
+<p>Flexible matching and router composition help large apps evolve route structure without forcing everything into one flat route table.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const admin = router();
+admin.get('/admin/users/:id', ({ req, res }) =&gt; {
+  res.setJSON({ id: req.data('id') });
+});
+
+app.use(admin);</code></pre></div>
+<h2 id="how-to-choose">How to choose</h2>
+<ul><li>choose inline routes for directness</li><li>choose entry routes for file-driven structure</li><li>choose import routes for lazy loading and tooling</li><li>choose view routes for template-first pages</li></ul>
+<h2 id="read-next">Read next</h2>
+<ul><li><a href="composition.html" title="Composition">Composition</a></li><li><a href="runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a></li></ul></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exception | Ingest</title>
+    <meta name="description" content="Exception keeps errors in a structured response-oriented form instead of leaving each route or plugin to shape failures differently." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="is-active" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>Exception</h1>
+            <p class="hero-summary">Exception keeps errors in a structured response-oriented form instead of leaving each route or plugin to shape failures differently.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#1-static-methods" title="1. Static Methods">1. Static Methods</a></li><li><a href="#1-1-creating-exceptions-with-templates" title="1.1. Creating Exceptions with Templates">1.1. Creating Exceptions with Templates</a></li><li><a href="#1-2-creating-exceptions-from-response-objects" title="1.2. Creating Exceptions from Response Objects">1.2. Creating Exceptions from Response Objects</a></li><li><a href="#1-3-creating-exceptions-for-validation-errors" title="1.3. Creating Exceptions for Validation Errors">1.3. Creating Exceptions for Validation Errors</a></li><li><a href="#1-4-requiring-conditions" title="1.4. Requiring Conditions">1.4. Requiring Conditions</a></li><li><a href="#1-5-try-catch-wrapper" title="1.5. Try-Catch Wrapper">1.5. Try-Catch Wrapper</a></li><li><a href="#1-6-upgrading-errors" title="1.6. Upgrading Errors">1.6. Upgrading Errors</a></li><li><a href="#2-properties" title="2. Properties">2. Properties</a></li><li><a href="#3-methods" title="3. Methods">3. Methods</a></li><li><a href="#3-1-setting-error-code" title="3.1. Setting Error Code">3.1. Setting Error Code</a></li><li><a href="#3-2-adding-validation-errors" title="3.2. Adding Validation Errors">3.2. Adding Validation Errors</a></li><li><a href="#3-3-setting-position-information" title="3.3. Setting Position Information">3.3. Setting Position Information</a></li><li><a href="#3-4-converting-to-response-object" title="3.4. Converting to Response Object">3.4. Converting to Response Object</a></li><li><a href="#3-5-converting-to-json" title="3.5. Converting to JSON">3.5. Converting to JSON</a></li><li><a href="#3-6-getting-stack-trace" title="3.6. Getting Stack Trace">3.6. Getting Stack Trace</a></li><li><a href="#4-usage-in-route-handlers" title="4. Usage in Route Handlers">4. Usage in Route Handlers</a></li><li><a href="#4-1-basic-error-handling" title="4.1. Basic Error Handling">4.1. Basic Error Handling</a></li><li><a href="#4-2-validation-error-handling" title="4.2. Validation Error Handling">4.2. Validation Error Handling</a></li><li><a href="#4-3-global-error-handler" title="4.3. Global Error Handler">4.3. Global Error Handler</a></li><li><a href="#5-integration-with-response-class" title="5. Integration with Response Class">5. Integration with Response Class</a></li><li><a href="#6-best-practices" title="6. Best Practices">6. Best Practices</a></li><li><a href="#6-1-use-template-messages" title="6.1. Use Template Messages">6.1. Use Template Messages</a></li><li><a href="#6-2-provide-meaningful-error-codes" title="6.2. Provide Meaningful Error Codes">6.2. Provide Meaningful Error Codes</a></li><li><a href="#6-3-include-validation-details" title="6.3. Include Validation Details">6.3. Include Validation Details</a></li><li><a href="#6-4-use-method-chaining" title="6.4. Use Method Chaining">6.4. Use Method Chaining</a></li><li><a href="#7-examples" title="7. Examples">7. Examples</a></li><li><a href="#7-1-conditional-error-handling" title="7.1. Conditional Error Handling">7.1. Conditional Error Handling</a></li><li><a href="#7-2-file-processing-with-position-errors" title="7.2. File Processing with Position Errors">7.2. File Processing with Position Errors</a></li><li><a href="#7-3-integration-with-response-class" title="7.3. Integration with Response Class">7.3. Integration with Response Class</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>Exception</code> keeps errors in a structured response-oriented form instead of leaving each route or plugin to shape failures differently.</p>
+<p>Enhanced error handling with expressive error reporting, stack trace support, and structured error responses for robust application development.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { Exception } from '@stackpress/ingest';
+
+const exception = new Exception('Invalid Parameters: %s', 400)
+  .withErrors({
+    name: 'required',
+    email: 'invalid format'
+  })
+  .withPosition(100, 200);</code></pre></div>
+<ol><li><a href="#1-static-methods" title="Static Methods">Static Methods</a></li><li><a href="#2-properties" title="Properties">Properties</a></li><li><a href="#3-methods" title="Methods">Methods</a></li><li><a href="#4-usage-in-route-handlers" title="Usage in Route Handlers">Usage in Route Handlers</a></li><li><a href="#5-integration-with-response-class" title="Integration with Response Class">Integration with Response Class</a></li><li><a href="#6-best-practices" title="Best Practices">Best Practices</a></li><li><a href="#7-examples" title="Examples">Examples</a></li></ol>
+<h2 id="1-static-methods">1. Static Methods</h2>
+<p>The following methods can be accessed directly from Exception itself.</p>
+<h3 id="1-1-creating-exceptions-with-templates">1.1. Creating Exceptions with Templates</h3>
+<p>The following example shows how to create exceptions with template strings for dynamic error messages.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">throw Exception.for('Something %s is %s', 'good', 'bad');
+// Results in: &quot;Something good is bad&quot;
+
+throw Exception.for('User %s not found', userId);
+// Results in: &quot;User 123 not found&quot;</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>message</code></td><td><code>string</code></td><td>Template message with %s placeholders</td></tr><tr><td><code>...values</code></td><td><code>unknown[]</code></td><td>Values to replace %s placeholders</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A new Exception instance with the formatted message.</p>
+<h3 id="1-2-creating-exceptions-from-response-objects">1.2. Creating Exceptions from Response Objects</h3>
+<p>The following example shows how to create exceptions from response objects for consistent error handling.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const response = { 
+  code: 400, 
+  error: 'Bad Request', 
+  errors: { field: 'required' } 
+};
+throw Exception.forResponse(response);
+
+// With fallback message
+throw Exception.forResponse(response, 'Default error message');</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>response</code></td><td><code>Partial&lt;StatusResponse&gt;</code></td><td>Response object with error details</td></tr><tr><td><code>message</code></td><td><code>string</code></td><td>Fallback message if response.error is not provided</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A new Exception instance configured from the response object.</p>
+<h3 id="1-3-creating-exceptions-for-validation-errors">1.3. Creating Exceptions for Validation Errors</h3>
+<p>The following example shows how to create exceptions for validation errors with detailed field information.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">throw Exception.forErrors({
+  name: 'required',
+  email: 'invalid format',
+  age: ['must be a number', 'must be greater than 0']
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>errors</code></td><td>`NestedObject&lt;string\</td><td>string[]&gt;`</td><td>Object containing validation errors</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A new Exception instance with &quot;Invalid Parameters&quot; message and error details.</p>
+<h3 id="1-4-requiring-conditions">1.4. Requiring Conditions</h3>
+<p>The following example shows how to assert conditions and throw if they fail.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">Exception.require(count &gt; 0, 'Count %s must be positive', count);
+Exception.require(user.isActive, 'User %s is not active', user.id);
+
+// Will throw if condition is false
+Exception.require(false, 'This will always throw');</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>condition</code></td><td><code>boolean</code></td><td>Condition that must be true</td></tr><tr><td><code>message</code></td><td><code>string</code></td><td>Error message with %s placeholders</td></tr><tr><td><code>...values</code></td><td><code>any[]</code></td><td>Values to replace %s placeholders</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>Void if condition is true, throws Exception if false.</p>
+<h3 id="1-5-try-catch-wrapper">1.5. Try-Catch Wrapper</h3>
+<p>The following example shows how to use the synchronous try-catch wrapper for safe operation execution.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const result = Exception
+  .try(() =&gt; riskyOperation())
+  .catch((error, kind) =&gt; {
+    console.log('Error type:', kind); // 'Exception' or 'Error'
+    return defaultValue;
+  });
+
+// With async operations
+const asyncResult = await Exception
+  .try(async () =&gt; await asyncRiskyOperation())
+  .catch((error, kind) =&gt; {
+    if (kind === 'Exception') {
+      console.log('Custom exception:', error.message);
+    } else {
+      console.log('Standard error:', error.message);
+    }
+    return defaultValue;
+  });</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>() =&gt; T</code></td><td>Function to execute safely</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>An object with a <code>catch</code> method for handling errors.</p>
+<h3 id="1-6-upgrading-errors">1.6. Upgrading Errors</h3>
+<p>The following example shows how to upgrade regular errors to exceptions for consistent error handling.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">try {
+  // some operation that might throw a regular Error
+  JSON.parse(invalidJson);
+} catch (error) {
+  throw Exception.upgrade(error, 400);
+}
+
+// Upgrade with custom message
+try {
+  await databaseOperation();
+} catch (error) {
+  const upgraded = Exception.upgrade(error, 500);
+  upgraded.message = 'Database operation failed';
+  throw upgraded;
+}</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>error</code></td><td><code>Error</code></td><td>The error to upgrade</td></tr><tr><td><code>code</code></td><td><code>number</code></td><td>HTTP status code (default: 500)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>An Exception instance (returns original if already an Exception).</p>
+<h2 id="2-properties">2. Properties</h2>
+<p>The following properties are available when instantiating an Exception.</p>
+<div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>code</code></td><td><code>number</code></td><td>HTTP status code</td></tr><tr><td><code>end</code></td><td><code>number</code></td><td>Ending character position of the error</td></tr><tr><td><code>errors</code></td><td><code>object</code></td><td>Validation errors object</td></tr><tr><td><code>start</code></td><td><code>number</code></td><td>Starting character position of the error</td></tr><tr><td><code>type</code></td><td><code>string</code></td><td>Exception type name</td></tr></tbody></table></div>
+<h2 id="3-methods">3. Methods</h2>
+<p>The following methods are available when instantiating an Exception.</p>
+<h3 id="3-1-setting-error-code">3.1. Setting Error Code</h3>
+<p>The following example shows how to set the HTTP status code for proper error classification.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const exception = new Exception('User not found');
+exception.withCode(404);
+
+// Method chaining
+throw new Exception('Validation failed')
+  .withCode(400)
+  .withErrors({ name: 'required' });</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>code</code></td><td><code>number</code></td><td>HTTP status code</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Exception instance to allow method chaining.</p>
+<h3 id="3-2-adding-validation-errors">3.2. Adding Validation Errors</h3>
+<p>The following example shows how to add validation errors for detailed field-level feedback.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const exception = new Exception('Validation failed');
+exception.withErrors({
+  name: 'required',
+  email: ['required', 'invalid format'],
+  age: 'must be a number'
+});
+
+// Method chaining
+throw new Exception('Invalid input')
+  .withErrors({
+    username: 'already exists',
+    password: ['too short', 'must contain numbers']
+  })
+  .withCode(400);</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>errors</code></td><td>`NestedObject&lt;string\</td><td>string[]&gt;`</td><td>Validation errors object</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Exception instance to allow method chaining.</p>
+<h3 id="3-3-setting-position-information">3.3. Setting Position Information</h3>
+<p>The following example shows how to set character position information for parsing errors.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const exception = new Exception('Syntax error');
+exception.withPosition(100, 200);
+
+// For parsing errors
+throw new Exception('Invalid JSON')
+  .withPosition(line * 80 + column, line * 80 + column + tokenLength)
+  .withCode(400);</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>start</code></td><td><code>number</code></td><td>Starting character position</td></tr><tr><td><code>end</code></td><td><code>number</code></td><td>Ending character position</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Exception instance to allow method chaining.</p>
+<h3 id="3-4-converting-to-response-object">3.4. Converting to Response Object</h3>
+<p>The following example shows how to convert the exception to a response object for API responses.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const exception = new Exception('User not found')
+  .withCode(404)
+  .withErrors({ id: 'does not exist' });
+
+const response = exception.toResponse();
+console.log(response);
+// Returns: { 
+//   code: 404, 
+//   status: 'Not Found', 
+//   error: 'User not found',
+//   errors: { id: 'does not exist' },
+//   stack: [...] 
+// }
+
+// With custom stack trace range
+const response = exception.toResponse(1, 5); // Skip first frame, show 4 frames</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>start</code></td><td><code>number</code></td><td>Starting index for stack trace (default: 0)</td></tr><tr><td><code>end</code></td><td><code>number</code></td><td>Ending index for stack trace (default: 0)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>An ErrorResponse object with all exception details.</p>
+<h3 id="3-5-converting-to-json">3.5. Converting to JSON</h3>
+<p>The following example shows how to convert the exception to JSON for serialization.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const exception = new Exception('Database error')
+  .withCode(500)
+  .withErrors({ connection: 'timeout' });
+
+const json = exception.toJSON();
+console.log(json); // Pretty-printed JSON string
+
+// Use in API responses
+res.setHeader('Content-Type', 'application/json');
+res.end(exception.toJSON());</code></pre></div>
+<p><strong>Returns</strong></p>
+<p>A formatted JSON string representation of the exception.</p>
+<h3 id="3-6-getting-stack-trace">3.6. Getting Stack Trace</h3>
+<p>The following example shows how to get the parsed stack trace for debugging.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const exception = new Exception('Something went wrong');
+const trace = exception.trace();
+
+trace.forEach((frame, index) =&gt; {
+  console.log(`${index}: ${frame.method} at ${frame.file}:${frame.line}:${frame.char}`);
+});
+
+// Get limited stack trace
+const limitedTrace = exception.trace(1, 3); // Skip first frame, show 2 frames</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>start</code></td><td><code>number</code></td><td>Starting index for stack trace (default: 0)</td></tr><tr><td><code>end</code></td><td><code>number</code></td><td>Ending index for stack trace (default: 0)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>An array of Trace objects with method, file, line, and char information.</p>
+<h2 id="4-usage-in-route-handlers">4. Usage in Route Handlers</h2>
+<p>The Exception class integrates seamlessly with route handlers for comprehensive error management.</p>
+<h3 id="4-1-basic-error-handling">4.1. Basic Error Handling</h3>
+<p>Handle common error scenarios with proper HTTP status codes and messages.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server, Exception } from '@stackpress/ingest/http';
+
+const app = server();
+
+app.get('/api/users/:id', async (req, res) =&gt; {
+  const userId = req.data('id');
+  
+  // Validate input
+  if (!userId) {
+    throw Exception.for('User ID is required').withCode(400);
+  }
+  
+  if (isNaN(parseInt(userId))) {
+    throw Exception.for('User ID must be a number').withCode(400);
+  }
+  
+  try {
+    const user = await getUserById(userId);
+    
+    if (!user) {
+      throw Exception.for('User %s not found', userId).withCode(404);
+    }
+    
+    res.setJSON({ user });
+  } catch (error) {
+    if (error instanceof Exception) {
+      throw error; // Re-throw custom exceptions
+    }
+    
+    // Upgrade regular errors
+    throw Exception.upgrade(error, 500);
+  }
+});
+
+async function getUserById(id: string) {
+  // User lookup logic
+  return { id, name: 'John Doe', email: 'john@example.com' };
+}</code></pre></div>
+<h3 id="4-2-validation-error-handling">4.2. Validation Error Handling</h3>
+<p>Implement comprehensive validation with detailed error feedback.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.post('/api/users', async (req, res) =&gt; {
+  await req.load();
+  const userData = req.data();
+  
+  // Validate required fields
+  const errors: Record&lt;string, string&gt; = {};
+  
+  if (!userData.name) {
+    errors.name = 'Name is required';
+  }
+  
+  if (!userData.email) {
+    errors.email = 'Email is required';
+  } else if (!isValidEmail(userData.email)) {
+    errors.email = 'Invalid email format';
+  }
+  
+  if (!userData.password) {
+    errors.password = 'Password is required';
+  } else if (userData.password.length &lt; 8) {
+    errors.password = 'Password must be at least 8 characters';
+  }
+  
+  if (Object.keys(errors).length &gt; 0) {
+    throw Exception.forErrors(errors);
+  }
+  
+  try {
+    const user = await createUser(userData);
+    res.setJSON({ user }, 201);
+  } catch (e) {
+    const error = e as Error;
+    if (error.code === 'DUPLICATE_EMAIL') {
+      throw Exception.for('Email %s already exists', userData.email)
+        .withCode(409)
+        .withErrors({ email: 'already exists' });
+    }
+    
+    throw Exception.upgrade(error, 500);
+  }
+});
+
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+async function createUser(userData: any) {
+  // User creation logic
+  return { id: Date.now(), ...userData };
+}</code></pre></div>
+<h3 id="4-3-global-error-handler">4.3. Global Error Handler</h3>
+<p>Implement centralized error handling for consistent error responses.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.on('error', (error, req, res) =&gt; {
+  console.error('Global error:', error);
+  
+  if (!res.sent) {
+    if (error instanceof Exception) {
+      // Use the exception's response format
+      const errorResponse = error.toResponse();
+      res.setError(
+        errorResponse.error,
+        errorResponse.errors || {},
+        errorResponse.stack || [],
+        errorResponse.code,
+        errorResponse.status
+      );
+    } else {
+      // Convert regular errors to exceptions
+      const exception = Exception.upgrade(error, 500);
+      const errorResponse = exception.toResponse();
+      res.setError(
+        'Internal Server Error',
+        {},
+        errorResponse.stack || [],
+        500
+      );
+    }
+  }
+});</code></pre></div>
+<h2 id="5-integration-with-response-class">5. Integration with Response Class</h2>
+<p>The Exception class integrates seamlessly with the Response class for consistent error handling.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/api/users/:id', async (req, res) =&gt; {
+  try {
+    const userId = req.data('id');
+    const user = await getUserById(userId);
+    
+    if (!user) {
+      throw Exception.for('User %s not found', userId).withCode(404);
+    }
+    
+    res.setJSON({ user });
+  } catch (error) {
+    if (error instanceof Exception) {
+      // Convert exception to response
+      const errorResponse = error.toResponse();
+      res.fromStatusResponse(errorResponse);
+    } else {
+      res.setError('Internal Server Error', {}, [], 500);
+    }
+  }
+});</code></pre></div>
+<h2 id="6-best-practices">6. Best Practices</h2>
+<p>The following best practices ensure effective error handling and debugging capabilities.</p>
+<h3 id="6-1-use-template-messages">6.1. Use Template Messages</h3>
+<p>Create dynamic error messages with proper parameter substitution.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Good: Template with parameters
+throw Exception.for('User %s not found in organization %s', userId, orgId);
+
+// Avoid: String concatenation
+throw new Exception('User ' + userId + ' not found in organization ' + orgId);</code></pre></div>
+<h3 id="6-2-provide-meaningful-error-codes">6.2. Provide Meaningful Error Codes</h3>
+<p>Use specific HTTP status codes for proper error classification.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Good: Specific HTTP status codes
+throw Exception.for('User not found').withCode(404);
+throw Exception.for('Access denied').withCode(403);
+throw Exception.for('Invalid input').withCode(400);
+
+// Avoid: Generic error codes
+throw Exception.for('Error occurred').withCode(500);</code></pre></div>
+<h3 id="6-3-include-validation-details">6.3. Include Validation Details</h3>
+<p>Provide detailed validation errors for better user experience.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Good: Detailed validation errors
+throw Exception.forErrors({
+  email: 'Invalid email format',
+  password: ['Too short', 'Must contain numbers'],
+  age: 'Must be a positive number'
+});
+
+// Avoid: Generic validation messages
+throw new Exception('Validation failed');</code></pre></div>
+<h3 id="6-4-use-method-chaining">6.4. Use Method Chaining</h3>
+<p>Leverage the fluent interface for concise exception creation.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Good: Fluent interface
+throw Exception.for('Invalid user data')
+  .withCode(400)
+  .withErrors({ name: 'required', email: 'invalid' })
+  .withPosition(startPos, endPos);
+
+// Avoid: Multiple statements
+const ex = new Exception('Invalid user data');
+ex.withCode(400);
+ex.withErrors({ name: 'required' });
+throw ex;</code></pre></div>
+<h2 id="7-examples">7. Examples</h2>
+<p>The following examples demonstrate advanced Exception usage patterns for real-world applications.</p>
+<h3 id="7-1-conditional-error-handling">7.1. Conditional Error Handling</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/api/admin/users', async (req, res) =&gt; {
+  const user = req.data('user');
+  
+  // Check authentication
+  Exception.require(user, 'Authentication required');
+  
+  // Check authorization
+  Exception.require(
+    user.role === 'admin', 
+    'Admin access required for user %s', 
+    user.username
+  );
+  
+  try {
+    const users = await getAllUsers();
+    res.setJSON({ users });
+  } catch (error) {
+    throw Exception.upgrade(error, 500);
+  }
+});
+
+async function getAllUsers() {
+  // User retrieval logic
+  return [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }];
+}</code></pre></div>
+<h3 id="7-2-file-processing-with-position-errors">7.2. File Processing with Position Errors</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.post('/api/parse-csv', async (req, res) =&gt; {
+  await req.load();
+  const csvData = req.data('csv');
+  
+  if (!csvData) {
+    throw Exception.for('CSV data is required').withCode(400);
+  }
+  
+  try {
+    const lines = csvData.split('\n');
+    const results = [];
+    
+    for (let i = 0; i &lt; lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      
+      try {
+        const parsed = parseCSVLine(line);
+        results.push(parsed);
+      } catch (e) {
+        const error = e as Error;
+        const lineStart = csvData.indexOf(line);
+        const lineEnd = lineStart + line.length;
+        
+        throw Exception.for('Parse error on line %d: %s', i + 1, error.message)
+          .withCode(400)
+          .withPosition(lineStart, lineEnd)
+          .withErrors({ [`line_${i + 1}`]: error.message });
+      }
+    }
+    
+    res.setJSON({ results, count: results.length });
+  } catch (error) {
+    if (error instanceof Exception) {
+      throw error;
+    }
+    throw Exception.upgrade(error, 500);
+  }
+});</code></pre></div>
+<h2 id="7-3-integration-with-response-class">7.3. Integration with Response Class</h2>
+<p>The Exception class integrates seamlessly with the Response class:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/api/users/:id', async (req, res) =&gt; {
+  try {
+    const userId = req.data('id');
+    const user = await getUserById(userId);
+    
+    if (!user) {
+      throw Exception.for('User %s not found', userId).withCode(404);
+    }
+    
+    res.setJSON({ user });
+  } catch (error) {
+    if (error instanceof Exception) {
+      // Convert exception to response
+      const errorResponse = error.toResponse();
+      res.fromStatusResponse(errorResponse);
+    } else {
+      res.setError('Internal Server Error', {}, [], 500);
+    }
+  }
+});</code></pre></div>
+<p>The Exception class provides a powerful and flexible way to handle errors in Ingest applications, offering structured error information that can be easily consumed by both developers and API clients.</p></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

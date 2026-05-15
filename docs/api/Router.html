@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Router | Ingest</title>
+    <meta name="description" content="Router keeps route matching, route composition, and route metadata in one reusable layer that the server can build on." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="is-active" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>Router</h1>
+            <p class="hero-summary">Router keeps route matching, route composition, and route metadata in one reusable layer that the server can build on.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#1-properties" title="1. Properties">1. Properties</a></li><li><a href="#2-methods" title="2. Methods">2. Methods</a></li><li><a href="#2-1-http-method-routing" title="2.1. HTTP Method Routing">2.1. HTTP Method Routing</a></li><li><a href="#2-2-generic-route-definition" title="2.2. Generic Route Definition">2.2. Generic Route Definition</a></li><li><a href="#2-3-event-handling" title="2.3. Event Handling">2.3. Event Handling</a></li><li><a href="#2-4-event-emission" title="2.4. Event Emission">2.4. Event Emission</a></li><li><a href="#2-5-route-resolution" title="2.5. Route Resolution">2.5. Route Resolution</a></li><li><a href="#2-6-request-and-response-creation" title="2.6. Request and Response Creation">2.6. Request and Response Creation</a></li><li><a href="#2-7-router-composition" title="2.7. Router Composition">2.7. Router Composition</a></li><li><a href="#3-automatic-router-detection" title="3. Automatic Router Detection">3. Automatic Router Detection</a></li><li><a href="#4-routing-interfaces" title="4. Routing Interfaces">4. Routing Interfaces</a></li><li><a href="#4-1-action-router-traditional" title="4.1. Action Router (Traditional)">4.1. Action Router (Traditional)</a></li><li><a href="#4-2-entry-router-file-based" title="4.2. Entry Router (File-based)">4.2. Entry Router (File-based)</a></li><li><a href="#4-3-import-router-lazy-loading" title="4.3. Import Router (Lazy Loading)">4.3. Import Router (Lazy Loading)</a></li><li><a href="#4-4-view-router-template-based" title="4.4. View Router (Template-based)">4.4. View Router (Template-based)</a></li><li><a href="#5-route-patterns" title="5. Route Patterns">5. Route Patterns</a></li><li><a href="#5-1-parameter-routes" title="5.1. Parameter Routes">5.1. Parameter Routes</a></li><li><a href="#5-2-wildcard-routes" title="5.2. Wildcard Routes">5.2. Wildcard Routes</a></li><li><a href="#5-3-regular-expression-routes" title="5.3. Regular Expression Routes">5.3. Regular Expression Routes</a></li><li><a href="#6-event-system-integration" title="6. Event System Integration">6. Event System Integration</a></li><li><a href="#6-1-priority-based-execution" title="6.1. Priority-Based Execution">6.1. Priority-Based Execution</a></li><li><a href="#6-2-event-hooks" title="6.2. Event Hooks">6.2. Event Hooks</a></li><li><a href="#7-type-parameters" title="7. Type Parameters">7. Type Parameters</a></li><li><a href="#8-examples" title="8. Examples">8. Examples</a></li><li><a href="#8-1-basic-rest-api" title="8.1. Basic REST API">8.1. Basic REST API</a></li><li><a href="#8-2-middleware-pattern" title="8.2. Middleware Pattern">8.2. Middleware Pattern</a></li><li><a href="#8-3-file-based-routing" title="8.3. File-Based Routing">8.3. File-Based Routing</a></li><li><a href="#9-build-integration" title="9. Build Integration">9. Build Integration</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>Router</code> keeps route matching, route composition, and route metadata in one reusable layer that the server can build on.</p>
+<p>The Router class provides event-driven routing capabilities with pattern matching and parameter extraction for building flexible web applications and APIs.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { Router } from '@stackpress/ingest';
+
+const router = new Router&lt;RequestType, ResponseType&gt;();</code></pre></div>
+<ol><li><a href="#1-properties" title="Properties">Properties</a></li><li><a href="#2-methods" title="Methods">Methods</a></li><li><a href="#3-routing-interfaces" title="Routing Interfaces">Routing Interfaces</a></li><li><a href="#4-automatic-router-detection" title="Automatic Router Detection">Automatic Router Detection</a></li><li><a href="#5-route-patterns" title="Route Patterns">Route Patterns</a></li><li><a href="#6-event-system-integration" title="Event System Integration">Event System Integration</a></li><li><a href="#7-type-parameters" title="Type Parameters">Type Parameters</a></li><li><a href="#8-examples" title="Examples">Examples</a></li><li><a href="#9-build-integration" title="Build Integration">Build Integration</a></li></ol>
+<h2 id="1-properties">1. Properties</h2>
+<p>The following properties are available when instantiating a Router.</p>
+<div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>action</code></td><td><code>ActionRouter&lt;R, S, this&gt;</code></td><td>Traditional Express.js-like routing interface</td></tr><tr><td><code>entry</code></td><td><code>EntryRouter&lt;R, S, this&gt;</code></td><td>File-based routing interface</td></tr><tr><td><code>import</code></td><td><code>ImportRouter&lt;R, S, this&gt;</code></td><td>Dynamic import routing interface</td></tr><tr><td><code>view</code></td><td><code>ViewRouter&lt;R, S, this&gt;</code></td><td>Template-based routing interface</td></tr><tr><td><code>entries</code></td><td><code>Map</code></td><td>Map of entry-based routes</td></tr><tr><td><code>expressions</code></td><td><code>Map</code></td><td>Map of route expressions and patterns</td></tr><tr><td><code>imports</code></td><td><code>Map</code></td><td>Map of import-based routes</td></tr><tr><td><code>listeners</code></td><td><code>object</code></td><td>Event listener map</td></tr><tr><td><code>routes</code></td><td><code>Map</code></td><td>Map of route definitions</td></tr><tr><td><code>views</code></td><td><code>Map</code></td><td>Map of view-based routes</td></tr></tbody></table></div>
+<h2 id="2-methods">2. Methods</h2>
+<p>The following methods are available when instantiating a Router.</p>
+<h3 id="2-1-http-method-routing">2.1. HTTP Method Routing</h3>
+<p>The following examples show how to define routes for different HTTP methods.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// GET route
+router.get('/users', ({ req, res }) =&gt; {
+  res.setJSON({ users: [] });
+});
+
+// POST route
+router.post('/users', ({ req, res }) =&gt; {
+  const userData = req.data();
+  res.setJSON({ user: userData }, 201);
+});
+
+// PUT route
+router.put('/users/:id', ({ req, res }) =&gt; {
+  const userId = req.data('id');
+  res.setJSON({ id: userId, updated: true });
+});
+
+// DELETE route
+router.delete('/users/:id', ({ req, res }) =&gt; {
+  const userId = req.data('id');
+  res.setJSON({ id: userId, deleted: true });
+});
+
+// PATCH route
+router.patch('/users/:id', ({ req, res }) =&gt; {
+  const userId = req.data('id');
+  res.setJSON({ id: userId, patched: true });
+});
+
+// OPTIONS route
+router.options('/users', ({ res }) =&gt; {
+  res.setJSON({ allow: ['GET', 'POST', 'PATCH', 'OPTIONS'] });
+});
+
+// HEAD route
+router.head('/users', ({ res }) =&gt; {
+  res.code = 200;
+});
+
+// CONNECT and TRACE are also available
+router.connect('/proxy', ({ res }) =&gt; {
+  res.code = 200;
+});
+
+router.trace('/users', ({ req, res }) =&gt; {
+  res.setJSON({ trace: req.url.pathname });
+});
+
+// Handle any method
+router.all('/health', ({ req, res }) =&gt; {
+  res.setJSON({ status: 'healthy' });
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>path</code></td><td><code>string</code></td><td>Route path with optional parameters</td></tr><tr><td><code>action</code></td><td><code>AnyRouterAction&lt;R, S, this&gt;</code></td><td>Route handler function</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Router instance to allow method chaining.</p>
+<h3 id="2-2-generic-route-definition">2.2. Generic Route Definition</h3>
+<p>The following example shows how to define routes with specific HTTP methods.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.route('GET', '/users/:id', ({ req, res }) =&gt; {
+  const userId = req.data('id');
+  res.setJSON({ id: userId });
+});
+
+router.route('PATCH', '/users/:id', ({ req, res }) =&gt; {
+  const userId = req.data('id');
+  res.setJSON({ id: userId, patched: true });
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>method</code></td><td><code>Method</code></td><td>HTTP method (GET, POST, PUT, DELETE, etc.)</td></tr><tr><td><code>path</code></td><td><code>string</code></td><td>Route path with optional parameters</td></tr><tr><td><code>action</code></td><td><code>AnyRouterAction&lt;R, S, this&gt;</code></td><td>Route handler function</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Router instance to allow method chaining.</p>
+<h3 id="2-3-event-handling">2.3. Event Handling</h3>
+<p>The following example shows how to add event listeners for reactive programming.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Listen to all requests
+router.on('request', ({ req, res }) =&gt; {
+  console.log(`${req.method} ${req.url.pathname}`);
+});
+
+// Listen to specific route events
+router.on('GET /api/users', ({ req, res }) =&gt; {
+  console.log('Users API accessed');
+});
+
+// Pattern-based event matching
+router.on(/^GET \/api\/.*$/, ({ req, res }) =&gt; {
+  console.log('API endpoint accessed');
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>event</code></td><td>`string\</td><td>RegExp`</td><td>Event name or pattern</td></tr><tr><td><code>action</code></td><td><code>AnyRouterAction&lt;R, S, this&gt;</code></td><td>Event handler function</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Router instance to allow method chaining.</p>
+<h3 id="2-4-event-emission">2.4. Event Emission</h3>
+<p>The following example shows how to emit events manually for custom workflows.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const req = router.request({ url: 'http://localhost/test' });
+const res = router.response();
+
+const status = await router.emit('custom-event', req, res);
+console.log(status.code); // 200, 404, etc.</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string</code></td><td>Event name to emit</td></tr><tr><td><code>req</code></td><td><code>Request&lt;R&gt;</code></td><td>Request object</td></tr><tr><td><code>res</code></td><td><code>Response&lt;S&gt;</code></td><td>Response object</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A promise that resolves to a Status object indicating success or failure.</p>
+<h3 id="2-5-route-resolution">2.5. Route Resolution</h3>
+<p>The following examples show how to resolve routes and get response data.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Resolve by method and path
+const response = await router.resolve('GET', '/users/123');
+
+// Resolve by event name
+const response = await router.resolve('user-created', userData);
+
+// With custom request data
+const response = await router.resolve('POST', '/users', {
+  name: 'John',
+  email: 'john@example.com'
+});</code></pre></div>
+<p><strong>Parameters for route resolution</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>method</code></td><td>`Method\</td><td>'*'`</td><td>HTTP method</td></tr><tr><td><code>path</code></td><td><code>string</code></td><td>Route path</td></tr><tr><td><code>request</code></td><td>`Request&lt;R&gt;\</td><td>Record&lt;string, any&gt;`</td><td>Request data (optional)</td></tr><tr><td><code>response</code></td><td><code>Response&lt;S&gt;</code></td><td>Response object (optional)</td></tr></tbody></table></div>
+<p><strong>Parameters for event resolution</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string</code></td><td>Event name</td></tr><tr><td><code>request</code></td><td>`Request&lt;R&gt;\</td><td>Record&lt;string, any&gt;`</td><td>Request data (optional)</td></tr><tr><td><code>response</code></td><td><code>Response&lt;S&gt;</code></td><td>Response object (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A promise that resolves to a partial StatusResponse object.</p>
+<h3 id="2-6-request-and-response-creation">2.6. Request and Response Creation</h3>
+<p>The following examples show how to create request and response objects.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Create request
+const req = router.request({
+  url: 'http://example.com/api',
+  method: 'POST',
+  data: { name: 'John' },
+  headers: { 'Content-Type': 'application/json' }
+});
+
+// Create response
+const res = router.response({
+  headers: { 'Content-Type': 'application/json' },
+  data: { message: 'Success' }
+});</code></pre></div>
+<p><strong>Parameters for request</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>init</code></td><td><code>Partial&lt;RequestOptions&lt;R&gt;&gt;</code></td><td>Request initialization options</td></tr></tbody></table></div>
+<p><strong>Parameters for response</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>init</code></td><td><code>Partial&lt;ResponseOptions&lt;S&gt;&gt;</code></td><td>Response initialization options</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A new Request or Response instance.</p>
+<h3 id="2-7-router-composition">2.7. Router Composition</h3>
+<p>The following example shows how to merge routes from other routers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const apiRouter = new Router();
+apiRouter.get('/api/users', handler);
+
+const mainRouter = new Router();
+mainRouter.use(apiRouter); // Merges routes and listeners</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>router</code></td><td><code>Router&lt;R, S&gt;</code></td><td>Another router to merge routes from</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Router instance to allow method chaining.</p>
+<h2 id="3-automatic-router-detection">3. Automatic Router Detection</h2>
+<p>The Router class can automatically determine which routing interface to use based on the action type, providing a seamless development experience.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Inline handler
+router.get('/users', ({ req, res }) =&gt; { /* handler */ });
+
+// Entry route
+router.get('/users/:id', './routes/users/get.js');
+
+// Import route
+router.get('/users', () =&gt; import('./routes/users.js'));
+
+// View route
+router.get('/profile', './views/profile.hbs');</code></pre></div>
+<p>The router analyzes the provided action and selects the appropriate interface:</p>
+<ul><li><strong>Function with parameters</strong> → Action Router (traditional routing)</li><li><strong>Parameterless function</strong> → Import Router (lazy loading)</li><li><strong>String path ending in a template file</strong> → View Router</li><li><strong>String path ending in a route module</strong> → Entry Router</li></ul>
+<p>This automatic detection eliminates the need to explicitly specify which routing interface to use, making the API more intuitive and reducing boilerplate code.</p>
+<p>You can still call the explicit interfaces directly when you want the intent to be obvious in code:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.action.get('/users', ({ res }) =&gt; res.setResults([]));
+router.entry.get('/users/:id', './routes/users/get.js');
+router.import.get('/users', () =&gt; import('./routes/users.js'));
+router.view.get('/profile', './views/profile.hbs');</code></pre></div>
+<h2 id="4-routing-interfaces">4. Routing Interfaces</h2>
+<p>The Router class provides four different routing interfaces for maximum flexibility in how you define and organize your routes.</p>
+<h3 id="4-1-action-router-traditional">4.1. Action Router (Traditional)</h3>
+<p>Express.js-like routing with inline handlers for immediate function execution.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.action.get('/users', ({ req, res }) =&gt; {
+  res.setJSON({ users: [] });
+});
+
+router.action.post('/users', ({ req, res }) =&gt; {
+  const userData = req.data();
+  res.setJSON(userData, 201);
+});</code></pre></div>
+<h3 id="4-2-entry-router-file-based">4.2. Entry Router (File-based)</h3>
+<p>File-based routing that loads handlers from external files for better organization.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.entry.get('/users', './routes/users.js');
+router.entry.post('/users', './routes/create-user.js');</code></pre></div>
+<p>The target file should export a default function:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// routes/users.js
+export default function handler({ req, res }) {
+  res.setJSON({ users: [] });
+}</code></pre></div>
+<h3 id="4-3-import-router-lazy-loading">4.3. Import Router (Lazy Loading)</h3>
+<p>Dynamic import routing for on-demand loading, route-aware tooling, and build boundaries.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.import.get('/users', () =&gt; import('./routes/users.js'));
+router.import.post('/users', () =&gt; import('./routes/create-user.js'));</code></pre></div>
+<h3 id="4-4-view-router-template-based">4.4. View Router (Template-based)</h3>
+<p>Template-based routing for rendering views and server-side templates.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">router.view.get('/users', './views/users.hbs');
+router.view.get('/profile', './views/profile.hbs');</code></pre></div>
+<h2 id="5-route-patterns">5. Route Patterns</h2>
+<p>The Router supports various route patterns for flexible URL matching and parameter extraction.</p>
+<h3 id="5-1-parameter-routes">5.1. Parameter Routes</h3>
+<p>Extract dynamic segments from URLs using named parameters.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Single parameter
+router.get('/users/:id', ({ req, res }) =&gt; {
+  const userId = req.data('id');
+  res.setJSON({ id: userId });
+});
+
+// Multiple parameters
+router.get('/users/:userId/posts/:postId', ({ req, res }) =&gt; {
+  const userId = req.data('userId');
+  const postId = req.data('postId');
+  res.setJSON({ userId, postId });
+});</code></pre></div>
+<h3 id="5-2-wildcard-routes">5.2. Wildcard Routes</h3>
+<p>Handle dynamic paths with wildcard matching for flexible routing.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Single wildcard
+router.get('/files/*', ({ req, res }) =&gt; {
+  const filename = req.data('0'); // First wildcard match
+  res.setJSON({ filename });
+});
+
+// Catch-all wildcard
+router.get('/static/**', ({ req, res }) =&gt; {
+  const path = req.data('0'); // Full wildcard match
+  res.setJSON({ path });
+});</code></pre></div>
+<h3 id="5-3-regular-expression-routes">5.3. Regular Expression Routes</h3>
+<p>Use regular expressions for complex pattern matching requirements.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Regex pattern matching
+router.on(/^GET \/api\/v(\d+)\/users$/, ({ req, res }) =&gt; {
+  const version = req.event?.data.args[0]; // Captured group
+  res.setJSON({ version, users: [] });
+});</code></pre></div>
+<h2 id="6-event-system-integration">6. Event System Integration</h2>
+<p>The Router is built on a powerful event system that enables reactive programming and middleware patterns.</p>
+<h3 id="6-1-priority-based-execution">6.1. Priority-Based Execution</h3>
+<p>Control the order of event handler execution using priority levels.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Higher priority executes first. Negative priorities are valid too.
+router.on('request', middleware1, 10);
+router.on('request', middleware2, 5);
+router.on('request', middleware3, 1);
+router.on('request', middleware4, -10);</code></pre></div>
+<h3 id="6-2-event-hooks">6.2. Event Hooks</h3>
+<p>Implement before and after hooks for cross-cutting concerns.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Before hook
+router.action.before = async (event) =&gt; {
+  console.log('Before:', event.event);
+  return true; // Continue execution
+};
+
+// After hook
+router.action.after = async (event) =&gt; {
+  console.log('After:', event.event);
+};</code></pre></div>
+<h2 id="7-type-parameters">7. Type Parameters</h2>
+<p>The Router class accepts two generic type parameters for type safety.</p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>R</code></td><td><code>unknown</code></td><td>Request resource type</td></tr><tr><td><code>S</code></td><td><code>unknown</code></td><td>Response resource type</td></tr></tbody></table></div>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">interface UserRequest {
+  userId: string;
+  permissions: string[];
+}
+
+interface ApiResponse {
+  data: any;
+  meta: { timestamp: number };
+}
+
+const router = new Router&lt;UserRequest, ApiResponse&gt;();</code></pre></div>
+<h2 id="8-examples">8. Examples</h2>
+<p>The following examples demonstrate common Router usage patterns and best practices.</p>
+<h3 id="8-1-basic-rest-api">8.1. Basic REST API</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const router = new Router();
+
+// List users
+router.get('/users', ({ req, res }) =&gt; {
+  const users = [
+    { id: 1, name: 'John' },
+    { id: 2, name: 'Jane' }
+  ];
+  res.setJSON({ users });
+});
+
+// Get user by ID
+router.get('/users/:id', ({ req, res }) =&gt; {
+  const userId = req.data('id');
+  const user = { id: userId, name: 'John' };
+  res.setJSON({ user });
+});
+
+// Create user
+router.post('/users', async ({ req, res }) =&gt; {
+  await req.load();
+  const userData = req.data();
+  const user = { id: Date.now(), ...userData };
+  res.setJSON({ user }, 201);
+});</code></pre></div>
+<h3 id="8-2-middleware-pattern">8.2. Middleware Pattern</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const router = new Router();
+
+// Global middleware
+router.on('request', ({ req, res }) =&gt; {
+  console.log(`${req.method} ${req.url.pathname}`);
+  return true; // Continue processing
+}, 10);
+
+// Authentication middleware
+router.on('request', ({ req, res }) =&gt; {
+  const token = req.headers.get('authorization');
+  if (!token &amp;&amp; req.url.pathname.startsWith('/protected')) {
+    res.setError('Authentication required', {}, [], 401);
+    return false; // Stop processing
+  }
+  return true;
+}, 5);
+
+// Protected route
+router.get('/protected/data', ({ req, res }) =&gt; {
+  res.setJSON({ data: 'secret information' });
+});</code></pre></div>
+<h3 id="8-3-file-based-routing">8.3. File-Based Routing</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const router = new Router();
+
+// Entry-based routes
+router.entry.get('/api/users', './routes/users.js');
+router.entry.post('/api/users', './routes/create-user.js');
+
+// Import-based routes for lazy loading and tooling boundaries
+router.import.get('/api/products', () =&gt; import('./routes/products.js'));
+router.import.get('/api/orders', () =&gt; import('./routes/orders.js'));
+
+// View-based routes for templates
+router.view.get('/users', './views/users.hbs');
+router.view.get('/profile', './views/profile.hbs');</code></pre></div>
+<h2 id="9-build-integration">9. Build Integration</h2>
+<p>The Router exposes routing information that can be used by bundlers and build tools for optimization.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const router = new Router();
+router.import.get('/users', () =&gt; import('./routes/users.js'));
+router.import.get('/posts', () =&gt; import('./routes/posts.js'));
+router.entry.get('/admin/users', './routes/admin/users.js');
+router.view.get('/profile', './views/profile.hbs');
+
+// Access build information
+console.log(router.routes);      // Route definitions
+console.log(router.imports);     // Dynamic imports
+console.log(router.entries);     // File entries
+console.log(router.views);       // View templates
+console.log(router.expressions); // Route patterns</code></pre></div>
+<p>This information can be used to generate static route manifests, pre-bundle route modules, package route-aware deployments, and produce other build artifacts without reverse-engineering the application at runtime.</p></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

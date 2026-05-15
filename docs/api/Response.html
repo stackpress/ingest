@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Response | Ingest</title>
+    <meta name="description" content="Response gives handlers and hooks one consistent output model across runtimes." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="is-active" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>Response</h1>
+            <p class="hero-summary">Response gives handlers and hooks one consistent output model across runtimes.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#1-properties" title="1. Properties">1. Properties</a></li><li><a href="#2-methods" title="2. Methods">2. Methods</a></li><li><a href="#2-1-setting-json-response" title="2.1. Setting JSON Response">2.1. Setting JSON Response</a></li><li><a href="#2-2-setting-html-response" title="2.2. Setting HTML Response">2.2. Setting HTML Response</a></li><li><a href="#2-3-setting-error-response" title="2.3. Setting Error Response">2.3. Setting Error Response</a></li><li><a href="#2-4-setting-results-response" title="2.4. Setting Results Response">2.4. Setting Results Response</a></li><li><a href="#2-5-setting-rows-response" title="2.5. Setting Rows Response">2.5. Setting Rows Response</a></li><li><a href="#2-6-redirecting" title="2.6. Redirecting">2.6. Redirecting</a></li><li><a href="#2-7-dispatching-response" title="2.7. Dispatching Response">2.7. Dispatching Response</a></li><li><a href="#2-8-converting-to-status-response" title="2.8. Converting to Status Response">2.8. Converting to Status Response</a></li><li><a href="#3-header-management" title="3. Header Management">3. Header Management</a></li><li><a href="#3-1-setting-headers" title="3.1. Setting Headers">3.1. Setting Headers</a></li><li><a href="#3-2-getting-headers" title="3.2. Getting Headers">3.2. Getting Headers</a></li><li><a href="#3-3-common-headers" title="3.3. Common Headers">3.3. Common Headers</a></li><li><a href="#4-session-management" title="4. Session Management">4. Session Management</a></li><li><a href="#4-1-setting-session-data" title="4.1. Setting Session Data">4.1. Setting Session Data</a></li><li><a href="#4-2-reading-session-data" title="4.2. Reading Session Data">4.2. Reading Session Data</a></li><li><a href="#4-3-session-cookies" title="4.3. Session Cookies">4.3. Session Cookies</a></li><li><a href="#5-response-creation" title="5. Response Creation">5. Response Creation</a></li><li><a href="#5-1-basic-response-creation" title="5.1. Basic Response Creation">5.1. Basic Response Creation</a></li><li><a href="#5-2-response-with-headers" title="5.2. Response with Headers">5.2. Response with Headers</a></li><li><a href="#5-3-response-with-data" title="5.3. Response with Data">5.3. Response with Data</a></li><li><a href="#5-4-response-with-resource" title="5.4. Response with Resource">5.4. Response with Resource</a></li><li><a href="#6-platform-compatibility" title="6. Platform Compatibility">6. Platform Compatibility</a></li><li><a href="#6-1-node-js-http" title="6.1. Node.js HTTP">6.1. Node.js HTTP</a></li><li><a href="#6-2-whatwg-fetch-serverless" title="6.2. WHATWG Fetch (Serverless)">6.2. WHATWG Fetch (Serverless)</a></li><li><a href="#7-type-parameters" title="7. Type Parameters">7. Type Parameters</a></li><li><a href="#8-examples" title="8. Examples">8. Examples</a></li><li><a href="#8-1-api-route-handler" title="8.1. API Route Handler">8.1. API Route Handler</a></li><li><a href="#8-2-paginated-results" title="8.2. Paginated Results">8.2. Paginated Results</a></li><li><a href="#8-3-file-download" title="8.3. File Download">8.3. File Download</a></li><li><a href="#8-4-authentication-response" title="8.4. Authentication Response">8.4. Authentication Response</a></li><li><a href="#8-5-error-handling-middleware" title="8.5. Error Handling Middleware">8.5. Error Handling Middleware</a></li><li><a href="#9-type-safety" title="9. Type Safety">9. Type Safety</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>Response</code> gives handlers and hooks one consistent output model across runtimes.</p>
+<p>The Response class provides a generic wrapper for handling HTTP responses across different platforms with support for multiple response types, header management, session revisions, and adapter-aware dispatch.</p>
+<p>Like the request object, response-side nested data objects such as <code>data</code> and <code>errors</code> build on the same underlying nested callable primitive. See <a href="Nest.html" title="Nest">Nest</a> and <a href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a> for the shared model.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { Response } from '@stackpress/ingest';
+
+const res = new Response&lt;ResourceType&gt;({
+  headers: { 'Content-Type': 'application/json' }
+});</code></pre></div>
+<ol><li><a href="#1-properties" title="Properties">Properties</a></li><li><a href="#2-methods" title="Methods">Methods</a></li><li><a href="#3-header-management" title="Header Management">Header Management</a></li><li><a href="#4-session-management" title="Session Management">Session Management</a></li><li><a href="#5-response-creation" title="Response Creation">Response Creation</a></li><li><a href="#6-platform-compatibility" title="Platform Compatibility">Platform Compatibility</a></li><li><a href="#7-type-parameters" title="Type Parameters">Type Parameters</a></li><li><a href="#8-examples" title="Examples">Examples</a></li><li><a href="#9-type-safety" title="Type Safety">Type Safety</a></li></ol>
+<h2 id="1-properties">1. Properties</h2>
+<p>The following properties are available when instantiating a Response.</p>
+<div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>headers</code></td><td>`CallableMap&lt;string, string\</td><td>string[]&gt;`</td><td>Response headers</td></tr><tr><td><code>session</code></td><td><code>CallableSession</code></td><td>Session data</td></tr><tr><td><code>errors</code></td><td><code>CallableNest</code></td><td>Validation errors</td></tr><tr><td><code>data</code></td><td><code>CallableNest</code></td><td>Response data that can carry response-side metadata separate from <code>body</code>/results</td></tr><tr><td><code>body</code></td><td>`Body\</td><td>null`</td><td>Response body</td></tr><tr><td><code>code</code></td><td><code>number</code></td><td>HTTP status code</td></tr><tr><td><code>error</code></td><td>`string\</td><td>undefined`</td><td>Error message</td></tr><tr><td><code>redirected</code></td><td><code>boolean</code></td><td>Whether response is a redirect</td></tr><tr><td><code>sent</code></td><td><code>boolean</code></td><td>Whether response has been sent</td></tr><tr><td><code>stack</code></td><td>`Trace[]\</td><td>undefined`</td><td>Stack trace for errors</td></tr><tr><td><code>status</code></td><td><code>string</code></td><td>HTTP status message</td></tr><tr><td><code>total</code></td><td><code>number</code></td><td>Total count of results</td></tr><tr><td><code>mimetype</code></td><td>`string\</td><td>undefined`</td><td>Response MIME type</td></tr><tr><td><code>resource</code></td><td><code>S</code></td><td>Original response resource</td></tr><tr><td><code>type</code></td><td><code>string</code></td><td>Type of body content</td></tr><tr><td><code>dispatcher</code></td><td><code>ResponseDispatcher&lt;S&gt;</code></td><td>Response dispatcher function</td></tr></tbody></table></div>
+<h2 id="2-methods">2. Methods</h2>
+<p>The following methods are available when instantiating a Response.</p>
+<h3 id="2-1-setting-json-response">2.1. Setting JSON Response</h3>
+<p>The following example shows how to set a JSON response for API endpoints.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Simple JSON response
+res.setJSON({ message: 'Success', data: results });
+
+// JSON response with custom status
+res.setJSON({ user: userData }, 201, 'Created');
+
+// JSON string response
+res.setJSON('{&quot;message&quot;: &quot;Success&quot;}', 200, 'OK');</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>body</code></td><td>`string\</td><td>NestedObject`</td><td>JSON data or string</td></tr><tr><td><code>code</code></td><td><code>number</code></td><td>HTTP status code (default: 200)</td></tr><tr><td><code>status</code></td><td><code>string</code></td><td>HTTP status message (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Response instance to allow method chaining.</p>
+<h3 id="2-2-setting-html-response">2.2. Setting HTML Response</h3>
+<p>The following example shows how to set an HTML response for web pages.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Simple HTML response
+res.setHTML('&lt;h1&gt;Welcome&lt;/h1&gt;');
+
+// HTML response with custom status
+res.setHTML('&lt;h1&gt;Page Not Found&lt;/h1&gt;', 404, 'Not Found');
+
+// HTML response with template
+const html = `
+  &lt;html&gt;
+    &lt;head&gt;&lt;title&gt;User Profile&lt;/title&gt;&lt;/head&gt;
+    &lt;body&gt;&lt;h1&gt;Welcome, ${user.name}!&lt;/h1&gt;&lt;/body&gt;
+  &lt;/html&gt;
+`;
+res.setHTML(html, 200, 'OK');</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>string</code></td><td>HTML content</td></tr><tr><td><code>code</code></td><td><code>number</code></td><td>HTTP status code (default: 200)</td></tr><tr><td><code>status</code></td><td><code>string</code></td><td>HTTP status message (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Response instance to allow method chaining.</p>
+<h3 id="2-3-setting-error-response">2.3. Setting Error Response</h3>
+<p>The following example shows how to set an error response with validation details.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Simple error
+res.setError('Invalid input', {}, [], 400, 'Bad Request');
+
+// Error with validation details
+res.setError('Validation failed', {
+  name: 'Name is required',
+  email: 'Invalid email format'
+}, [], 400);
+
+// Error with stack trace
+res.setError('Database error', {}, stackTrace, 500, 'Internal Server Error');
+
+// Error from response object
+res.setError({
+  code: 404,
+  error: 'User not found',
+  errors: { id: 'User ID does not exist' }
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>error</code></td><td>`string\</td><td>ErrorResponse`</td><td>Error message or response object</td></tr><tr><td><code>errors</code></td><td>`NestedObject&lt;string\</td><td>string[]&gt;`</td><td>Validation errors (default: {})</td></tr><tr><td><code>stack</code></td><td><code>Trace[]</code></td><td>Stack trace (default: [])</td></tr><tr><td><code>code</code></td><td><code>number</code></td><td>HTTP status code (default: 400)</td></tr><tr><td><code>status</code></td><td><code>string</code></td><td>HTTP status message (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Response instance to allow method chaining.</p>
+<h3 id="2-4-setting-results-response">2.4. Setting Results Response</h3>
+<p>The following example shows how to set a single result response.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Single result
+res.setResults({ id: 1, name: 'John Doe' });
+
+// Result with custom status
+res.setResults({ user: newUser }, 201, 'Created');
+
+// Complex result object
+res.setResults({
+  user: userData,
+  permissions: userPermissions,
+  settings: userSettings
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>NestedObject</code></td><td>Result object</td></tr><tr><td><code>code</code></td><td><code>number</code></td><td>HTTP status code (default: 200)</td></tr><tr><td><code>status</code></td><td><code>string</code></td><td>HTTP status message (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Response instance to allow method chaining.</p>
+<p>When the body is a plain object or array, the adapters serialize it as a structured JSON payload rather than writing the raw value directly. That is why helpers such as <code>setResults()</code> and <code>setRows()</code> fit naturally with the rest of the response model.</p>
+<p><code>res.data()</code> is useful when a route or hook needs to carry extra response-side state without mixing it into the real result set. Template engines can read from it, for example, while <code>setResults()</code> continues to describe the actual payload:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">if (res.code === 200) {
+  res.data.set('sessionId', 'abc123');
+  res.data.set('sessionUser', 'John Doe');
+}
+
+res.setResults(results);</code></pre></div>
+<h3 id="2-5-setting-rows-response">2.5. Setting Rows Response</h3>
+<p>The following example shows how to set a collection response with total count for pagination.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Collection with total count
+res.setRows([
+  { id: 1, name: 'John' },
+  { id: 2, name: 'Jane' }
+], 100); // 2 items out of 100 total
+
+// Collection without total
+res.setRows(users);
+
+// Empty collection
+res.setRows([], 0);</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>NestedObject[]</code></td><td>Array of result objects</td></tr><tr><td><code>total</code></td><td><code>number</code></td><td>Total count of possible results (default: 0)</td></tr><tr><td><code>code</code></td><td><code>number</code></td><td>HTTP status code (default: 200)</td></tr><tr><td><code>status</code></td><td><code>string</code></td><td>HTTP status message (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Response instance to allow method chaining.</p>
+<h3 id="2-6-redirecting">2.6. Redirecting</h3>
+<p>The following example shows how to redirect the response to another URL.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Simple redirect
+res.redirect('/login');
+
+// Redirect with custom status
+res.redirect('/dashboard', 301, 'Moved Permanently');
+
+// External redirect
+res.redirect('https://example.com', 302, 'Found');
+
+// Conditional redirect
+if (!user.isAuthenticated) {
+  res.redirect('/login', 302, 'Found');
+  return;
+}</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>url</code></td><td><code>string</code></td><td>Redirect URL</td></tr><tr><td><code>code</code></td><td><code>number</code></td><td>HTTP status code (default: 302)</td></tr><tr><td><code>status</code></td><td><code>string</code></td><td>HTTP status message (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Response instance to allow method chaining.</p>
+<h3 id="2-7-dispatching-response">2.7. Dispatching Response</h3>
+<p>The following example shows how to dispatch the response to the native resource.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Dispatch to native response
+const nativeResponse = await res.dispatch();
+
+// Use in route handler
+app.get('/api/users', async ({ res }) =&gt; {
+  res.setJSON({ users: [] });
+  return await res.dispatch(); // Send response
+});</code></pre></div>
+<p>Dispatch is where the runtime adapter turns the response model into a real platform response. In practice that means:</p>
+<ul><li>strings, buffers, and <code>Uint8Array</code> values are written directly</li><li>objects and arrays become structured JSON payloads</li><li>Node <code>Readable</code> streams and web <code>ReadableStream</code> values are streamed</li><li>redirects and headers are applied before the body is written</li><li>session revisions become <code>Set-Cookie</code> headers</li></ul>
+<p>This matters because handlers can stay focused on setting intent while the adapter handles the platform-specific write path.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import fs from 'node:fs';
+
+app.get('/icon.png', ({ res }) =&gt; {
+  res.setBody('image/png', fs.createReadStream('./icon.png'));
+});
+
+app.get('/events', ({ res }) =&gt; {
+  res.headers
+    .set('Cache-Control', 'no-cache')
+    .set('Connection', 'keep-alive');
+
+  res.setBody('text/event-stream', new ReadableStream({
+    start(controller) {
+      controller.enqueue(new TextEncoder().encode('data: hello\\r\\n\\r\\n'));
+    }
+  }));
+});</code></pre></div>
+<p>In WHATWG runtimes a route can also provide an already-built native response resource. The WHATWG adapter will return that resource directly instead of rebuilding it.</p>
+<p><strong>Returns</strong></p>
+<p>The native response resource after dispatching.</p>
+<h3 id="2-8-converting-to-status-response">2.8. Converting to Status Response</h3>
+<p>The following example shows how to convert the response to a status response object.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const statusResponse = res.toStatusResponse();
+console.log(statusResponse);
+// Returns: { code, status, error, errors, stack, results, total }
+
+// Use for API responses
+const apiResponse = res.toStatusResponse();
+return {
+  statusCode: apiResponse.code,
+  body: JSON.stringify(apiResponse)
+};</code></pre></div>
+<p><strong>Returns</strong></p>
+<p>A StatusResponse object with all response details.</p>
+<h2 id="3-header-management">3. Header Management</h2>
+<p>The Response class provides comprehensive header management for HTTP responses including CORS, security, and caching headers.</p>
+<h3 id="3-1-setting-headers">3.1. Setting Headers</h3>
+<p>Control response headers for content negotiation and security.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Set individual headers
+res.headers.set('Content-Type', 'application/json');
+res.headers.set('Cache-Control', 'no-cache');
+res.headers.set('X-API-Version', '1.0');
+
+// Set multiple values for same header
+res.headers.set('Set-Cookie', ['session=abc123', 'csrf=xyz789']);
+
+// Set headers during response creation
+const res = new Response({
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+  }
+});</code></pre></div>
+<h3 id="3-2-getting-headers">3.2. Getting Headers</h3>
+<p>Access and inspect response headers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const contentType = res.headers.get('content-type');
+const cookies = res.headers.get('set-cookie'); // Array if multiple values
+
+// Check if header exists
+if (res.headers.has('authorization')) {
+  // Header is set
+}
+
+// Get all headers
+for (const [name, value] of res.headers.entries()) {
+  console.log(`${name}: ${value}`);
+}</code></pre></div>
+<h3 id="3-3-common-headers">3.3. Common Headers</h3>
+<p>Set frequently used headers for web applications.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// CORS headers
+res.headers.set('Access-Control-Allow-Origin', '*');
+res.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+// Security headers
+res.headers.set('X-Content-Type-Options', 'nosniff');
+res.headers.set('X-Frame-Options', 'DENY');
+res.headers.set('X-XSS-Protection', '1; mode=block');
+
+// Caching headers
+res.headers.set('Cache-Control', 'public, max-age=3600');
+res.headers.set('ETag', '&quot;abc123&quot;');
+res.headers.set('Last-Modified', new Date().toUTCString());</code></pre></div>
+<h2 id="4-session-management">4. Session Management</h2>
+<p>The Response class integrates with session management for user state persistence.</p>
+<h3 id="4-1-setting-session-data">4.1. Setting Session Data</h3>
+<p>Store user data in the session for subsequent requests.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Set session values
+res.session.set('userId', user.id);
+res.session.set('username', user.username);
+res.session.set('lastLogin', new Date().toISOString());
+
+// Set multiple session values
+res.session.set({
+  userId: user.id,
+  role: user.role,
+  permissions: user.permissions
+});</code></pre></div>
+<h3 id="4-2-reading-session-data">4.2. Reading Session Data</h3>
+<p>Access session data for user context.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const userId = res.session.get('userId');
+const username = res.session.get('username');
+
+// Get all session data
+const sessionData = res.session.get();</code></pre></div>
+<h3 id="4-3-session-cookies">4.3. Session Cookies</h3>
+<p>Manage session cookies with security options.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Session cookies are automatically managed
+// but you can customize them
+res.headers.set('Set-Cookie', [
+  'session=abc123; HttpOnly; Secure; SameSite=Strict',
+  'csrf=xyz789; HttpOnly; Secure'
+]);</code></pre></div>
+<h2 id="5-response-creation">5. Response Creation</h2>
+<p>The Response class supports various initialization patterns for different use cases.</p>
+<h3 id="5-1-basic-response-creation">5.1. Basic Response Creation</h3>
+<p>Create a simple response for basic HTTP operations.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { Response } from '@stackpress/ingest';
+
+const res = new Response();</code></pre></div>
+<h3 id="5-2-response-with-headers">5.2. Response with Headers</h3>
+<p>Initialize response with custom headers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const res = new Response({
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Version': '1.0'
+  }
+});</code></pre></div>
+<h3 id="5-3-response-with-data">5.3. Response with Data</h3>
+<p>Initialize response with default data.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const res = new Response({
+  data: {
+    timestamp: Date.now(),
+    version: '1.0.0'
+  }
+});</code></pre></div>
+<h3 id="5-4-response-with-resource">5.4. Response with Resource</h3>
+<p>Initialize response with platform-specific resource.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import type { ServerResponse } from 'node:http';
+
+const res = new Response&lt;ServerResponse&gt;({
+  resource: serverResponse
+});</code></pre></div>
+<h2 id="6-platform-compatibility">6. Platform Compatibility</h2>
+<p>The Response class provides cross-platform compatibility for Node.js HTTP and WHATWG Fetch environments.</p>
+<h3 id="6-1-node-js-http">6.1. Node.js HTTP</h3>
+<p>Integration with Node.js HTTP server for traditional server applications.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { createServer } from 'node:http';
+import { Response } from '@stackpress/ingest';
+
+createServer((req, serverResponse) =&gt; {
+  const res = new Response({ resource: serverResponse });
+  
+  res.setJSON({ message: 'Hello from Node.js' });
+  res.dispatch(); // Sends response
+});</code></pre></div>
+<h3 id="6-2-whatwg-fetch-serverless">6.2. WHATWG Fetch (Serverless)</h3>
+<p>Support for serverless environments like Vercel, Netlify, and Cloudflare Workers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Vercel, Netlify, etc.
+export default async function handler(request: Request) {
+  const res = new Response();
+  
+  res.setJSON({ message: 'Hello from serverless' });
+  
+  return await res.dispatch(); // Returns Response object
+}</code></pre></div>
+<h2 id="7-type-parameters">7. Type Parameters</h2>
+<p>The Response class accepts one generic type parameter for type-safe resource handling.</p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>S</code></td><td><code>any</code></td><td>Response resource type (e.g., ServerResponse, Response)</td></tr></tbody></table></div>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import type { ServerResponse } from 'node:http';
+
+// Node.js HTTP response
+const nodeRes = new Response&lt;ServerResponse&gt;({
+  resource: serverResponse
+});
+
+// WHATWG Fetch response
+const fetchRes = new Response&lt;globalThis.Response&gt;();
+
+// Custom response type
+interface CustomResponse {
+  customProperty: string;
+}
+
+const customRes = new Response&lt;CustomResponse&gt;({
+  resource: { customProperty: 'value' }
+});</code></pre></div>
+<h2 id="8-examples">8. Examples</h2>
+<p>The following examples demonstrate common Response usage patterns and best practices for real-world applications.</p>
+<h3 id="8-1-api-route-handler">8.1. API Route Handler</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/http';
+
+const app = server();
+
+app.get('/api/users/:id', async ({ req, res }) =&gt; {
+  const userId = req.data('id');
+  
+  try {
+    const user = await getUserById(userId);
+    
+    if (!user) {
+      res.setError('User not found', { id: 'User does not exist' }, [], 404);
+      return;
+    }
+    
+    // Set cache headers
+    res.headers.set('Cache-Control', 'public, max-age=300');
+    res.headers.set('ETag', `&quot;user-${user.id}-${user.updatedAt}&quot;`);
+    
+    res.setResults(user);
+  } catch (error) {
+    res.setError('Database error', {}, [], 500);
+  }
+});
+
+async function getUserById(id: string) {
+  // Database lookup logic
+  return { id, name: 'John Doe', updatedAt: Date.now() };
+}</code></pre></div>
+<h3 id="8-2-paginated-results">8.2. Paginated Results</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/api/users', async ({ req, res }) =&gt; {
+  const page = parseInt(req.query.get('page') || '1');
+  const limit = parseInt(req.query.get('limit') || '10');
+  const offset = (page - 1) * limit;
+  
+  try {
+    const { users, total } = await getUsersPaginated(limit, offset);
+    
+    // Set pagination headers
+    res.headers.set('X-Total-Count', total.toString());
+    res.headers.set('X-Page', page.toString());
+    res.headers.set('X-Per-Page', limit.toString());
+    
+    // Add pagination links
+    const baseUrl = `${req.url.origin}${req.url.pathname}`;
+    const links = [];
+    
+    if (page &gt; 1) {
+      links.push(`&lt;${baseUrl}?page=${page - 1}&amp;limit=${limit}&gt;; rel=&quot;prev&quot;`);
+    }
+    
+    if (offset + limit &lt; total) {
+      links.push(`&lt;${baseUrl}?page=${page + 1}&amp;limit=${limit}&gt;; rel=&quot;next&quot;`);
+    }
+    
+    if (links.length &gt; 0) {
+      res.headers.set('Link', links.join(', '));
+    }
+    
+    res.setRows(users, total);
+  } catch (error) {
+    res.setError('Failed to fetch users', {}, [], 500);
+  }
+});</code></pre></div>
+<h3 id="8-3-file-download">8.3. File Download</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/api/files/:id/download', async ({ req, res }) =&gt; {
+  const fileId = req.data('id');
+  
+  try {
+    const file = await getFileById(fileId);
+    
+    if (!file) {
+      res.setError('File not found', {}, [], 404);
+      return;
+    }
+    
+    // Set download headers
+    res.headers.set('Content-Type', file.mimetype);
+    res.headers.set('Content-Length', file.size.toString());
+    res.headers.set('Content-Disposition', `attachment; filename=&quot;${file.name}&quot;`);
+    
+    // Stream file content
+    res.body = file.stream;
+    res.code = 200;
+    res.status = 'OK';
+    
+    await res.dispatch();
+  } catch (error) {
+    res.setError('Failed to download file', {}, [], 500);
+  }
+});</code></pre></div>
+<h3 id="8-4-authentication-response">8.4. Authentication Response</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.post('/api/auth/login', async ({ req, res }) =&gt; {
+  await req.load();
+  
+  const { username, password } = req.data();
+  
+  try {
+    const user = await authenticateUser(username, password);
+    
+    if (!user) {
+      res.setError('Invalid credentials', {
+        username: 'Invalid username or password'
+      }, [], 401);
+      return;
+    }
+    
+    // Generate token
+    const token = await generateToken(user);
+    
+    // Set session
+    res.session.set('userId', user.id);
+    res.session.set('username', user.username);
+    
+    // Set secure cookie
+    res.headers.set('Set-Cookie', [
+      `token=${token}; HttpOnly; Secure; SameSite=Strict; Max-Age=86400`,
+      `user=${user.username}; Secure; SameSite=Strict; Max-Age=86400`
+    ]);
+    
+    res.setResults({
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role
+      },
+      token,
+      expiresIn: 86400
+    });
+  } catch (error) {
+    res.setError('Authentication failed', {}, [], 500);
+  }
+});</code></pre></div>
+<h3 id="8-5-error-handling-middleware">8.5. Error Handling Middleware</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.on('error', (error, req, res) =&gt; {
+  console.error('Global error:', error);
+  
+  if (!res.sent) {
+    if (error instanceof ValidationError) {
+      res.setError('Validation failed', error.errors, [], 400);
+    } else if (error instanceof AuthenticationError) {
+      res.setError('Authentication required', {}, [], 401);
+    } else if (error instanceof AuthorizationError) {
+      res.setError('Access denied', {}, [], 403);
+    } else {
+      // Log detailed error but don't expose to client
+      res.setError('Internal server error', {}, [], 500);
+    }
+  }
+});</code></pre></div>
+<h2 id="9-type-safety">9. Type Safety</h2>
+<p>The Response class supports TypeScript generics for type-safe resource handling:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import type { ServerResponse } from 'node:http';
+
+// Node.js HTTP response
+const nodeRes = new Response&lt;ServerResponse&gt;({
+  resource: serverResponse
+});
+
+// WHATWG Fetch response
+const fetchRes = new Response&lt;globalThis.Response&gt;();
+
+// Custom response type
+interface CustomResponse {
+  customProperty: string;
+}
+
+const customRes = new Response&lt;CustomResponse&gt;({
+  resource: { customProperty: 'value' }
+});</code></pre></div>
+<p>The Response class provides a unified interface for handling HTTP responses across different platforms while maintaining type safety and providing convenient response formatting methods.</p></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loader | Ingest</title>
+    <meta name="description" content="Loader keeps plugin and configuration discovery out of the main application setup flow." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="is-active" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>Loader</h1>
+            <p class="hero-summary">Loader keeps plugin and configuration discovery out of the main application setup flow.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#1-configloader" title="1. ConfigLoader">1. ConfigLoader</a></li><li><a href="#1-1-properties" title="1.1. Properties">1.1. Properties</a></li><li><a href="#1-2-methods" title="1.2. Methods">1.2. Methods</a></li><li><a href="#1-3-configuration-options" title="1.3. Configuration Options">1.3. Configuration Options</a></li><li><a href="#2-pluginloader" title="2. PluginLoader">2. PluginLoader</a></li><li><a href="#2-1-properties" title="2.1. Properties">2.1. Properties</a></li><li><a href="#2-2-methods" title="2.2. Methods">2.2. Methods</a></li><li><a href="#2-3-plugin-configuration" title="2.3. Plugin Configuration">2.3. Plugin Configuration</a></li><li><a href="#3-plugin-resolution" title="3. Plugin Resolution">3. Plugin Resolution</a></li><li><a href="#3-1-local-plugins" title="3.1. Local Plugins">3.1. Local Plugins</a></li><li><a href="#3-2-npm-packages" title="3.2. NPM Packages">3.2. NPM Packages</a></li><li><a href="#3-3-nested-plugin-configurations" title="3.3. Nested Plugin Configurations">3.3. Nested Plugin Configurations</a></li><li><a href="#4-bootstrap-process" title="4. Bootstrap Process">4. Bootstrap Process</a></li><li><a href="#4-1-bootstrap-steps" title="4.1. Bootstrap Steps">4.1. Bootstrap Steps</a></li><li><a href="#4-2-plugin-loading-order" title="4.2. Plugin Loading Order">4.2. Plugin Loading Order</a></li><li><a href="#5-error-handling" title="5. Error Handling">5. Error Handling</a></li><li><a href="#5-1-error-types" title="5.1. Error Types">5.1. Error Types</a></li><li><a href="#5-2-graceful-degradation" title="5.2. Graceful Degradation">5.2. Graceful Degradation</a></li><li><a href="#6-integration-with-server" title="6. Integration with Server">6. Integration with Server</a></li><li><a href="#6-1-automatic-bootstrap" title="6.1. Automatic Bootstrap">6.1. Automatic Bootstrap</a></li><li><a href="#6-2-custom-plugin-loading" title="6.2. Custom Plugin Loading">6.2. Custom Plugin Loading</a></li><li><a href="#7-best-practices" title="7. Best Practices">7. Best Practices</a></li><li><a href="#7-1-plugin-organization" title="7.1. Plugin Organization">7.1. Plugin Organization</a></li><li><a href="#7-2-error-resilience" title="7.2. Error Resilience">7.2. Error Resilience</a></li><li><a href="#7-3-development-vs-production" title="7.3. Development vs Production">7.3. Development vs Production</a></li><li><a href="#7-4-plugin-dependencies" title="7.4. Plugin Dependencies">7.4. Plugin Dependencies</a></li><li><a href="#8-examples" title="8. Examples">8. Examples</a></li><li><a href="#8-1-basic-configuration-loading" title="8.1. Basic Configuration Loading">8.1. Basic Configuration Loading</a></li><li><a href="#8-2-plugin-system-implementation" title="8.2. Plugin System Implementation">8.2. Plugin System Implementation</a></li><li><a href="#8-3-dynamic-plugin-discovery" title="8.3. Dynamic Plugin Discovery">8.3. Dynamic Plugin Discovery</a></li><li><a href="#8-4-conditional-plugin-loading" title="8.4. Conditional Plugin Loading">8.4. Conditional Plugin Loading</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>Loader</code> keeps plugin and configuration discovery out of the main application setup flow.</p>
+<p>Configuration and plugin loading utilities for the Ingest framework, providing file resolution and dynamic import capabilities with support for multiple file formats.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { ConfigLoader, PluginLoader } from '@stackpress/ingest';
+
+const configLoader = new ConfigLoader({
+  key: 'plugins',
+  extnames: ['.js', '.json', '.ts']
+});
+
+const pluginLoader = new PluginLoader({
+  cwd: process.cwd(),
+  plugins: ['./src/plugin.js', '@my/plugin']
+});</code></pre></div>
+<ol><li><a href="#1-configloader" title="ConfigLoader">ConfigLoader</a></li><li><a href="#2-pluginloader" title="PluginLoader">PluginLoader</a></li><li><a href="#3-plugin-resolution" title="Plugin Resolution">Plugin Resolution</a></li><li><a href="#4-bootstrap-process" title="Bootstrap Process">Bootstrap Process</a></li><li><a href="#5-error-handling" title="Error Handling">Error Handling</a></li><li><a href="#6-integration-with-server" title="Integration with Server">Integration with Server</a></li><li><a href="#7-best-practices" title="Best Practices">Best Practices</a></li><li><a href="#8-examples" title="Examples">Examples</a></li></ol>
+<h2 id="1-configloader">1. ConfigLoader</h2>
+<p>File loader specialized for configuration files with support for multiple file extensions and key extraction.</p>
+<h3 id="1-1-properties">1.1. Properties</h3>
+<p>The following properties are available when instantiating a ConfigLoader.</p>
+<div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>cwd</code></td><td><code>string</code></td><td>Current working directory (inherited)</td></tr><tr><td><code>fs</code></td><td><code>FileSystem</code></td><td>Filesystem interface being used (inherited)</td></tr></tbody></table></div>
+<h3 id="1-2-methods">1.2. Methods</h3>
+<p>The following methods are available when instantiating a ConfigLoader.</p>
+<h4 id="1-2-1-loading-configuration-files">1.2.1. Loading Configuration Files</h4>
+<p>The following example shows how to load configuration files with fallback defaults.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const config = await loader.load('./config.json', { 
+  default: 'value' 
+});
+
+// Load with automatic key extraction
+const plugins = await loader.load('./package.json'); 
+// Extracts the 'plugins' key from package.json</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>filepath</code></td><td><code>string</code></td><td>Path to the configuration file</td></tr><tr><td><code>defaults</code></td><td><code>T</code></td><td>Default value if file cannot be loaded (optional)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A promise that resolves to the loaded configuration data or defaults.</p>
+<h4 id="1-2-2-resolving-configuration-files">1.2.2. Resolving Configuration Files</h4>
+<p>The following example shows how to resolve configuration files with multiple extension support.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const resolved = await loader.resolveFile('./config');
+// Tries: ./config/plugins.js, ./config/plugins.json, 
+//        ./config/package.json, ./config/plugins.ts, 
+//        ./config.js, ./config.json, ./config.ts</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>filepath</code></td><td><code>string</code></td><td>Path to resolve (default: current working directory)</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A promise that resolves to the resolved file path or null if not found.</p>
+<h3 id="1-3-configuration-options">1.3. Configuration Options</h3>
+<p>ConfigLoader accepts the following options during instantiation for customized file loading behavior.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const loader = new ConfigLoader({
+  cwd: '/custom/working/directory',
+  fs: customFileSystem,
+  key: 'myPlugins',
+  extnames: ['/custom.js', '.custom.json']
+});</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>cwd</code></td><td><code>string</code></td><td><code>process.cwd()</code></td><td>Working directory for file resolution</td></tr><tr><td><code>fs</code></td><td><code>FileSystem</code></td><td><code>NodeFS</code></td><td>Filesystem implementation</td></tr><tr><td><code>key</code></td><td><code>string</code></td><td><code>'plugins'</code></td><td>Key to extract from loaded objects</td></tr><tr><td><code>extnames</code></td><td><code>string[]</code></td><td>See below</td><td>File extensions to try</td></tr></tbody></table></div>
+<p><strong>Default Extensions</strong></p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">[
+  '/plugins.js',    // Directory-specific plugins file
+  '/plugins.json',  // Directory-specific plugins config
+  '/package.json',  // Package configuration
+  '/plugins.ts',    // TypeScript plugins file
+  '.js',           // JavaScript file
+  '.json',         // JSON file
+  '.ts'            // TypeScript file
+]</code></pre></div>
+<h2 id="2-pluginloader">2. PluginLoader</h2>
+<p>Extended configuration loader specialized for plugin management and bootstrapping with automatic dependency resolution.</p>
+<h3 id="2-1-properties">2.1. Properties</h3>
+<p>The following properties are available when instantiating a PluginLoader.</p>
+<div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>cwd</code></td><td><code>string</code></td><td>Current working directory (inherited)</td></tr><tr><td><code>fs</code></td><td><code>FileSystem</code></td><td>Filesystem interface being used (inherited)</td></tr></tbody></table></div>
+<h3 id="2-2-methods">2.2. Methods</h3>
+<p>The following methods are available when instantiating a PluginLoader.</p>
+<h4 id="2-2-1-bootstrapping-plugins">2.2.1. Bootstrapping Plugins</h4>
+<p>The following example shows how to bootstrap all configured plugins with custom loading logic.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">await pluginLoader.bootstrap(async (name, plugin) =&gt; {
+  console.log(`Loading plugin: ${name}`);
+  
+  if (typeof plugin === 'function') {
+    // Plugin is a function, call it with context
+    await plugin(server);
+  } else {
+    // Plugin is a configuration object
+    server.configure(plugin);
+  }
+});</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>loader</code></td><td><code>(name: string, plugin: unknown) =&gt; Promise&lt;void&gt;</code></td><td>Function to handle each loaded plugin</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The PluginLoader instance to allow method chaining.</p>
+<h4 id="2-2-2-getting-plugin-list">2.2.2. Getting Plugin List</h4>
+<p>The following example shows how to get the list of configured plugins for inspection.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const plugins = await pluginLoader.plugins();
+// Returns: ['./src/plugin.js', '@my/plugin', 'local-plugin']</code></pre></div>
+<p><strong>Returns</strong></p>
+<p>A promise that resolves to an array of plugin paths.</p>
+<h3 id="2-3-plugin-configuration">2.3. Plugin Configuration</h3>
+<p>PluginLoader accepts the following options during instantiation for flexible plugin management.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const loader = new PluginLoader({
+  cwd: process.cwd(),
+  plugins: ['./plugin1.js', '@scope/plugin2'],
+  modules: '/path/to/node_modules'
+});</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>cwd</code></td><td><code>string</code></td><td>Working directory for file resolution</td></tr><tr><td><code>fs</code></td><td><code>FileSystem</code></td><td>Filesystem implementation</td></tr><tr><td><code>plugins</code></td><td><code>string[]</code></td><td>Array of plugin paths (optional)</td></tr><tr><td><code>modules</code></td><td><code>string</code></td><td>Path to node_modules directory (optional)</td></tr><tr><td><code>key</code></td><td><code>string</code></td><td>Key to extract from configuration files</td></tr><tr><td><code>extnames</code></td><td><code>string[]</code></td><td>File extensions to try</td></tr></tbody></table></div>
+<h2 id="3-plugin-resolution">3. Plugin Resolution</h2>
+<p>PluginLoader supports various plugin path formats for maximum flexibility in plugin organization.</p>
+<h3 id="3-1-local-plugins">3.1. Local Plugins</h3>
+<p>Load plugins from local files and directories within your project.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const plugins = [
+  './src/plugins/auth.js',      // Relative path
+  '/absolute/path/plugin.js',   // Absolute path
+  './plugins'                   // Directory with plugins config
+];</code></pre></div>
+<h3 id="3-2-npm-packages">3.2. NPM Packages</h3>
+<p>Load plugins from installed NPM packages with automatic resolution.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const plugins = [
+  '@my-org/auth-plugin',        // Scoped package
+  'express-session',            // Regular package
+  'local-plugin/dist/index.js'  // Package with specific entry
+];</code></pre></div>
+<h3 id="3-3-nested-plugin-configurations">3.3. Nested Plugin Configurations</h3>
+<p>Support for nested plugin configurations allows for modular plugin organization.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// plugins.json
+{
+  &quot;plugins&quot;: [
+    &quot;./auth-plugin&quot;,
+    {
+      &quot;plugins&quot;: [&quot;./nested-plugin1&quot;, &quot;./nested-plugin2&quot;]
+    }
+  ]
+}</code></pre></div>
+<h2 id="4-bootstrap-process">4. Bootstrap Process</h2>
+<p>The bootstrap process follows a systematic approach to ensure reliable plugin loading and initialization.</p>
+<h3 id="4-1-bootstrap-steps">4.1. Bootstrap Steps</h3>
+<p>The bootstrap process executes the following steps in order:</p>
+<ol><li><strong>Load Plugin List</strong>: Resolves the plugins array from configuration</li><li><strong>Process Each Plugin</strong>: Iterates through each plugin path</li><li><strong>Handle Nested Configs</strong>: Recursively processes nested plugin arrays</li><li><strong>Resolve Plugin Path</strong>: Converts relative paths to absolute paths</li><li><strong>Extract Plugin Name</strong>: Generates a clean name for the plugin</li><li><strong>Call Loader Function</strong>: Invokes the provided loader with name and plugin</li></ol>
+<h3 id="4-2-plugin-loading-order">4.2. Plugin Loading Order</h3>
+<p>Plugins are loaded in the order they appear in the configuration, allowing for dependency management.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const plugins = [
+  './plugins/database',  // Load database connection first
+  './plugins/auth',      // Then authentication (depends on database)
+  './plugins/api'        // Finally API routes (depends on auth)
+];</code></pre></div>
+<h2 id="5-error-handling">5. Error Handling</h2>
+<p>PluginLoader provides comprehensive error handling for robust plugin management.</p>
+<h3 id="5-1-error-types">5.1. Error Types</h3>
+<p>Common error scenarios include missing files, invalid configurations, and plugin initialization failures.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">try {
+  await pluginLoader.bootstrap(loader);
+} catch (error) {
+  // Handles missing files, invalid configurations, etc.
+  console.error('Plugin loading failed:', error.message);
+}</code></pre></div>
+<h3 id="5-2-graceful-degradation">5.2. Graceful Degradation</h3>
+<p>Implement error handling that allows the application to continue running even if some plugins fail.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">await pluginLoader.bootstrap(async (name, plugin) =&gt; {
+  try {
+    await loadPlugin(name, plugin);
+    console.log(`✓ Loaded plugin: ${name}`);
+  } catch (error) {
+    console.error(`✗ Failed to load plugin ${name}:`, error.message);
+    // Continue loading other plugins
+  }
+});</code></pre></div>
+<h2 id="6-integration-with-server">6. Integration with Server</h2>
+<p>PluginLoader integrates seamlessly with the Server class for automatic plugin loading and configuration.</p>
+<h3 id="6-1-automatic-bootstrap">6.1. Automatic Bootstrap</h3>
+<p>Use the server's built-in bootstrap method for standard plugin loading.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/http';
+
+const app = server();
+
+// Bootstrap plugins from package.json
+await app.bootstrap();</code></pre></div>
+<h3 id="6-2-custom-plugin-loading">6.2. Custom Plugin Loading</h3>
+<p>Use a custom PluginLoader for advanced plugin management scenarios.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Or use custom plugin loader
+const pluginLoader = new PluginLoader({
+  plugins: ['./custom-plugin.js']
+});
+
+await pluginLoader.bootstrap(async (name, plugin) =&gt; {
+  if (typeof plugin === 'function') {
+    plugin(app);
+  }
+});</code></pre></div>
+<h2 id="7-best-practices">7. Best Practices</h2>
+<p>The following best practices ensure reliable and maintainable plugin management.</p>
+<h3 id="7-1-plugin-organization">7.1. Plugin Organization</h3>
+<p>Organize plugins by functionality for better maintainability and understanding.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Organize plugins by functionality
+const plugins = [
+  './plugins/auth',      // Authentication
+  './plugins/database',  // Database connection
+  './plugins/logging',   // Logging setup
+  '@company/shared'      // Shared company plugins
+];</code></pre></div>
+<h3 id="7-2-error-resilience">7.2. Error Resilience</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">await pluginLoader.bootstrap(async (name, plugin) =&gt; {
+  try {
+    await loadPlugin(name, plugin);
+    console.log(`✓ Loaded plugin: ${name}`);
+  } catch (error) {
+    console.error(`✗ Failed to load plugin ${name}:`, error.message);
+    // Continue loading other plugins
+  }
+});</code></pre></div>
+<h3 id="7-3-development-vs-production">7.3. Development vs Production</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const isDev = process.env.NODE_ENV === 'development';
+
+const plugins = [
+  './plugins/core',
+  ...(isDev ? ['./plugins/dev-tools'] : []),
+  ...(process.env.ENABLE_ANALYTICS ? ['./plugins/analytics'] : [])
+];</code></pre></div>
+<h3 id="7-4-plugin-dependencies">7.4. Plugin Dependencies</h3>
+<p>Ensure plugins are loaded in the correct order to handle dependencies properly.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const plugins = [
+  './plugins/config',     // Load configuration first
+  './plugins/database',   // Database depends on config
+  './plugins/auth',       // Auth depends on database
+  './plugins/routes'      // Routes depend on auth
+];</code></pre></div>
+<h2 id="8-examples">8. Examples</h2>
+<p>The following examples demonstrate common Loader usage patterns for real-world applications.</p>
+<h3 id="8-1-basic-configuration-loading">8.1. Basic Configuration Loading</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { ConfigLoader } from '@stackpress/ingest';
+
+const configLoader = new ConfigLoader({
+  key: 'database',
+  extnames: ['.json', '.js', '.env.js']
+});
+
+// Load database configuration
+const dbConfig = await configLoader.load('./config/database', {
+  host: 'localhost',
+  port: 5432,
+  database: 'myapp'
+});
+
+console.log('Database config:', dbConfig);</code></pre></div>
+<h3 id="8-2-plugin-system-implementation">8.2. Plugin System Implementation</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { PluginLoader } from '@stackpress/ingest';
+import { server } from '@stackpress/ingest/http';
+
+const app = server();
+
+const pluginLoader = new PluginLoader({
+  cwd: process.cwd(),
+  plugins: [
+    './plugins/cors',
+    './plugins/auth',
+    './plugins/api',
+    '@company/monitoring'
+  ]
+});
+
+await pluginLoader.bootstrap(async (name, plugin) =&gt; {
+  console.log(`Loading plugin: ${name}`);
+  
+  if (typeof plugin === 'function') {
+    // Function plugin - call with server instance
+    await plugin(app);
+  } else if (plugin &amp;&amp; typeof plugin === 'object') {
+    // Configuration plugin - apply settings
+    if (plugin.routes) {
+      app.use(plugin.routes);
+    }
+    if (plugin.middleware) {
+      plugin.middleware.forEach((mw: any) =&gt; app.use(mw));
+    }
+  }
+  
+  console.log(`✓ Plugin ${name} loaded successfully`);
+});
+
+console.log('All plugins loaded, starting server...');
+app.listen(3000);</code></pre></div>
+<h3 id="8-3-dynamic-plugin-discovery">8.3. Dynamic Plugin Discovery</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { PluginLoader } from '@stackpress/ingest';
+import { readdir } from 'fs/promises';
+import { join } from 'path';
+
+async function discoverPlugins(pluginsDir: string) {
+  const entries = await readdir(pluginsDir, { withFileTypes: true });
+  const plugins = [];
+  
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      const pluginPath = join(pluginsDir, entry.name);
+      plugins.push(pluginPath);
+    }
+  }
+  
+  return plugins;
+}
+
+// Discover and load plugins dynamically
+const discoveredPlugins = await discoverPlugins('./src/plugins');
+
+const pluginLoader = new PluginLoader({
+  plugins: [
+    './plugins/core',  // Always load core plugins first
+    ...discoveredPlugins
+  ]
+});
+
+await pluginLoader.bootstrap(async (name, plugin) =&gt; {
+  try {
+    if (typeof plugin === 'function') {
+      await plugin(app);
+    }
+    console.log(`✓ Loaded plugin: ${name}`);
+  } catch (error) {
+    console.error(`✗ Failed to load plugin ${name}:`, error);
+  }
+});</code></pre></div>
+<h3 id="8-4-conditional-plugin-loading">8.4. Conditional Plugin Loading</h3>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { PluginLoader } from '@stackpress/ingest';
+
+const environment = process.env.NODE_ENV || 'development';
+const features = process.env.FEATURES?.split(',') || [];
+
+// Build plugin list based on environment and features
+const plugins = [
+  './plugins/core',
+  './plugins/database'
+];
+
+// Environment-specific plugins
+if (environment === 'development') {
+  plugins.push('./plugins/dev-tools', './plugins/hot-reload');
+} else if (environment === 'production') {
+  plugins.push('./plugins/monitoring', './plugins/performance');
+}
+
+// Feature-specific plugins
+if (features.includes('auth')) {
+  plugins.push('./plugins/auth');
+}
+
+if (features.includes('analytics')) {
+  plugins.push('./plugins/analytics');
+}
+
+const pluginLoader = new PluginLoader({ plugins });
+
+await pluginLoader.bootstrap(async (name, plugin) =&gt; {
+  console.log(`Loading ${name} for ${environment} environment`);
+  
+  if (typeof plugin === 'function') {
+    await plugin(app, { environment, features });
+  }
+});</code></pre></div></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deploy an App | Ingest</title>
+    <meta name="description" content="Deployment in Ingest is mostly about choosing the right adapter and runtime entrypoint shape. The goal is to keep deployment concerns close to the runtime boundary instead of leaking them across handler code." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Build Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="is-active" href="deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../api/index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="../api/Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="../api/Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="../api/Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="../api/Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="../api/Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="../api/Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="../api/ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="../api/EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="../api/ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="../api/ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="../api/HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="../api/WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="../api/Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="../api/Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="../api/ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Build Sequence</p>
+            <h1>Deploy an App</h1>
+            <p class="hero-summary">Deployment in Ingest is mostly about choosing the right adapter and runtime entrypoint shape. The goal is to keep deployment concerns close to the runtime boundary instead of leaking them across handler code.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Task Guide</span><span class="hero-chip">Implementation Steps</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#local-or-long-lived-node-server" title="Local or long-lived Node server">Local or long-lived Node server</a></li><li><a href="#whatwg-or-serverless-style-runtime" title="WHATWG or serverless-style runtime">WHATWG or serverless-style runtime</a></li><li><a href="#verify-platform-wiring-against-examples" title="Verify platform wiring against examples">Verify platform wiring against examples</a></li><li><a href="#read-next" title="Read next">Read next</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p>Deployment in Ingest is mostly about choosing the right adapter and runtime entrypoint shape. The goal is to keep deployment concerns close to the runtime boundary instead of leaking them across handler code.</p>
+<h2 id="local-or-long-lived-node-server">Local or long-lived Node server</h2>
+<p>Use the HTTP entrypoint:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/http';</code></pre></div>
+<h2 id="whatwg-or-serverless-style-runtime">WHATWG or serverless-style runtime</h2>
+<p>Use the WHATWG entrypoint:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/whatwg';</code></pre></div>
+<p>Some platforms hand you a WHATWG <code>Request</code> directly, while others give you an event object that you translate into one. The application model stays the same either way, but the entrypoint glue changes:</p>
+<ul><li>Vercel-style handlers can often pass the request through directly</li><li>Netlify-style handlers often build a <code>Request</code>, call <code>app.handle(...)</code>, then translate the response back into the platform result shape</li><li>event-driven runtimes may need a small boundary layer even when the app itself still uses the WHATWG server</li></ul>
+<p>On platforms that already give you a WHATWG request, the boundary is small:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/whatwg';
+
+const app = server({ cwd: process.cwd() });
+
+export default async function handle(request: Request) {
+  await app.bootstrap();
+  return app.handle(request, undefined);
+}</code></pre></div>
+<p>On platforms that give you an event object, the boundary usually converts in and out:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/whatwg';
+
+export async function handler(event: any) {
+  const app = server();
+  await app.bootstrap();
+
+  const request = new Request(event.rawUrl, {
+    method: event.httpMethod,
+    headers: event.headers
+  });
+
+  const response = await app.handle(request, undefined);
+
+  return {
+    statusCode: response.status,
+    headers: Object.fromEntries(response.headers.entries()),
+    body: await response.text()
+  };
+}</code></pre></div>
+<p>Some runtimes need an even thinner bridge because the host callback shape is not WHATWG-native:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server } from '@stackpress/ingest/whatwg';
+
+const app = server();
+
+export async function lambdaHandler(event: any) {
+  const request = new Request(event.url, {
+    method: event.method,
+    headers: event.headers
+  });
+
+  const response = await app.handle(request, undefined);
+  return {
+    statusCode: response.status,
+    headers: Object.fromEntries(response.headers.entries()),
+    body: await response.text()
+  };
+}</code></pre></div>
+<h2 id="verify-platform-wiring-against-examples">Verify platform wiring against examples</h2>
+<p>Once the concepts are clear, use the example workspaces to confirm the correct runtime entrypoint shape:</p>
+<ul><li><a href="https://github.com/stackpress/ingest/tree/main/examples/with-vercel" title="with-vercel"><code>with-vercel</code></a></li><li><a href="https://github.com/stackpress/ingest/tree/main/examples/with-netlify" title="with-netlify"><code>with-netlify</code></a></li><li><a href="https://github.com/stackpress/ingest/tree/main/examples/with-lambda" title="with-lambda"><code>with-lambda</code></a></li><li><a href="https://github.com/stackpress/ingest/tree/main/examples/with-google" title="with-google"><code>with-google</code></a></li></ul>
+<h2 id="read-next">Read next</h2>
+<ul><li><a href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a></li><li><a href="../examples.html" title="Examples">Examples</a></li></ul></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

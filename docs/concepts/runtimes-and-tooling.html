@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Runtimes and Tooling | Ingest</title>
+    <meta name="description" content="Ingest keeps the application model stable by moving runtime-specific behavior into adapters and by exposing route metadata to tools. That lets the app stay recognizable even when the hosting environment or build process changes." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reading Path</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="is-active" href="runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../api/index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="../api/Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="../api/Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="../api/Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="../api/Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="../api/Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="../api/Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="../api/ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="../api/EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="../api/ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="../api/ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="../api/HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="../api/WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="../api/Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="../api/Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="../api/ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">System Model</p>
+            <h1>Runtimes and Tooling</h1>
+            <p class="hero-summary">Ingest keeps the application model stable by moving runtime-specific behavior into adapters and by exposing route metadata to tools. That lets the app stay recognizable even when the hosting environment or build process changes.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Concept</span><span class="hero-chip">Framework Behavior</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#two-main-runtime-shapes" title="Two main runtime shapes">Two main runtime shapes</a></li><li><a href="#what-adapters-are-doing" title="What adapters are doing">What adapters are doing</a></li><li><a href="#error-handling-belongs-here-too" title="Error handling belongs here too">Error handling belongs here too</a></li><li><a href="#tooling-is-a-first-class-concern" title="Tooling is a first-class concern">Tooling is a first-class concern</a></li><li><a href="#read-next" title="Read next">Read next</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p>Ingest keeps the application model stable by moving runtime-specific behavior into adapters and by exposing route metadata to tools. That lets the app stay recognizable even when the hosting environment or build process changes.</p>
+<h2 id="two-main-runtime-shapes">Two main runtime shapes</h2>
+<p>The repo ships two main entrypoints:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { server as httpServer } from '@stackpress/ingest/http';
+import { server as whatwgServer } from '@stackpress/ingest/whatwg';</code></pre></div>
+<p>Use the HTTP entrypoint when you want a long-lived Node server:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const app = httpServer();
+app.create().listen(3000);</code></pre></div>
+<p>Use the WHATWG entrypoint when your platform already thinks in terms of <code>Request</code> and <code>Response</code>:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const app = whatwgServer();
+
+export default function handle(request: Request) {
+  return app.handle(request, undefined);
+}</code></pre></div>
+<p>These runtime shapes exist so application code can stay mostly stable while deployment targets change.</p>
+<h2 id="what-adapters-are-doing">What adapters are doing</h2>
+<p>Adapters handle the runtime boundary:</p>
+<ul><li>converting runtime input into the framework request flow</li><li>creating or dispatching the correct response shape</li><li>keeping route handlers portable</li></ul>
+<p>The application still thinks in terms of <code>server</code>, <code>router</code>, plugins, and <code>{ req, res, ctx }</code>.</p>
+<p>Adapters keep environment-specific branching near the runtime boundary instead of spreading it through handlers and services. They also own request-body loading, cookie/session translation, and the final dispatch rules for strings, JSON payloads, redirects, and streams.</p>
+<h2 id="error-handling-belongs-here-too">Error handling belongs here too</h2>
+<p>Error handling is part of the runtime story because a thrown error still has to become a coherent response. Ingest routes failures through its response/error model so plugins and handlers can stay inside one lifecycle.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">app.get('/boom', () =&gt; {
+  throw new Error('Something failed');
+});
+
+app.on('error', ({ req, res }) =&gt; {
+  console.error('failed', req.url.pathname);
+  res.status = 500;
+});</code></pre></div>
+<p>The important point is that the runtime adapter still gets a coherent response object back instead of an unshaped thrown value. That keeps runtime dispatch predictable even when route code or hooks fail.</p>
+<p>There are still a few runtime differences worth knowing. The HTTP adapter can enforce request body size limits through its loader, while the WHATWG adapter does not yet do that internally. The WHATWG adapter can also return an already-built native <code>Response</code> directly when a route sets one on <code>res.resource</code>.</p>
+<h2 id="tooling-is-a-first-class-concern">Tooling is a first-class concern</h2>
+<p>Ingest also exposes routing metadata:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const app = httpServer();
+app.import.get('/users', () =&gt; import('./routes/users.js'));
+
+console.log(app.routes);
+console.log(app.imports);
+console.log(app.entries);
+console.log(app.views);
+console.log(app.listeners);</code></pre></div>
+<p>For example:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { Router } from '@stackpress/ingest';
+
+const app = new Router();
+app.get('/users/:id', ({ res }) =&gt; res.setJSON({ ok: true }));
+app.import.get('/lazy', () =&gt; import('./routes/users.js'));
+app.entry.get('/entry/:id', './routes/user.js');
+app.view.get('/profile', './views/profile.hbs');
+app.on('request', ({ req }) =&gt; console.log(req.url.pathname));</code></pre></div>
+<p>The metadata shape looks like this:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">JSON</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="json"><code class="language-json">{
+  &quot;routes&quot;: [
+    [&quot;/^GET \\/users\\/([^/]+)\\/*$/g&quot;, { &quot;method&quot;: &quot;GET&quot;, &quot;path&quot;: &quot;/users/:id&quot; }],
+    [&quot;GET /lazy&quot;, { &quot;method&quot;: &quot;GET&quot;, &quot;path&quot;: &quot;/lazy&quot; }],
+    [&quot;/^GET \\/entry\\/([^/]+)\\/*$/g&quot;, { &quot;method&quot;: &quot;GET&quot;, &quot;path&quot;: &quot;/entry/:id&quot; }],
+    [&quot;GET /profile&quot;, { &quot;method&quot;: &quot;GET&quot;, &quot;path&quot;: &quot;/profile&quot; }]
+  ],
+  &quot;imports&quot;: [
+    [&quot;GET /lazy&quot;, [{ &quot;priority&quot;: 0 }]]
+  ],
+  &quot;entries&quot;: [
+    [&quot;/^GET \\/entry\\/([^/]+)\\/*$/g&quot;, [{ &quot;entry&quot;: &quot;./routes/user.js&quot;, &quot;priority&quot;: 0 }]]
+  ],
+  &quot;views&quot;: [
+    [&quot;GET /profile&quot;, [{ &quot;entry&quot;: &quot;./views/profile.hbs&quot;, &quot;priority&quot;: 0 }]]
+  ],
+  &quot;listeners&quot;: [
+    [
+      &quot;/^GET \\/users\\/([^/]+)\\/*$/g&quot;,
+      [{ &quot;item&quot;: [Handler], &quot;priority&quot;: 0 }]
+    ],
+    [
+      &quot;GET /lazy&quot;,
+      [{ &quot;item&quot;: [Handler], &quot;priority&quot;: 0 }]
+    ],
+    [
+      &quot;/^GET \\/entry\\/([^/]+)\\/*$/g&quot;,
+      [{ &quot;item&quot;: [Handler], &quot;priority&quot;: 0 }]
+    ],
+    [
+      &quot;GET /profile&quot;,
+      [{ &quot;item&quot;: [Handler], &quot;priority&quot;: 0 }]
+    ],
+    [
+      &quot;request&quot;,
+      [{ &quot;item&quot;: [Handler], &quot;priority&quot;: 0 }]
+    ]
+  ]
+}</code></pre></div>
+<p>That metadata is useful for:</p>
+<ul><li>route-aware bundling</li><li>deployment artifact generation</li><li>static manifests</li><li>inspecting lazy-loaded route boundaries</li></ul>
+<p>Large projects often need their builders and deployment scripts to understand application structure. Exposed route metadata makes that possible without reverse-engineering the codebase.</p>
+<h2 id="read-next">Read next</h2>
+<ul><li><a href="../api/index.html" title="API Reference">API Reference</a></li><li><a href="../examples.html" title="Examples">Examples</a></li></ul></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

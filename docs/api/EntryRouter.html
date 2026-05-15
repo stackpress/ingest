@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EntryRouter | Ingest</title>
+    <meta name="description" content="EntryRouter is for file-based route ownership when projects want explicit route-to-file mapping without changing the handler shape." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="is-active" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>EntryRouter</h1>
+            <p class="hero-summary">EntryRouter is for file-based route ownership when projects want explicit route-to-file mapping without changing the handler shape.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#table-of-contents" title="Table of Contents">Table of Contents</a></li><li><a href="#1-properties" title="1. Properties">1. Properties</a></li><li><a href="#2-http-method-routing" title="2. HTTP Method Routing">2. HTTP Method Routing</a></li><li><a href="#3-event-based-routing" title="3. Event-Based Routing">3. Event-Based Routing</a></li><li><a href="#4-creating-actions-from-entries" title="4. Creating Actions from Entries">4. Creating Actions from Entries</a></li><li><a href="#5-using-other-entryrouters" title="5. Using Other EntryRouters">5. Using Other EntryRouters</a></li><li><a href="#6-file-structure-requirements" title="6. File Structure Requirements">6. File Structure Requirements</a></li><li><a href="#6-1-basic-route-handler" title="6.1. Basic Route Handler">6.1. Basic Route Handler</a></li><li><a href="#6-2-route-handler-with-parameters" title="6.2. Route Handler with Parameters">6.2. Route Handler with Parameters</a></li><li><a href="#6-3-event-handler" title="6.3. Event Handler">6.3. Event Handler</a></li><li><a href="#6-4-complex-route-handler" title="6.4. Complex Route Handler">6.4. Complex Route Handler</a></li><li><a href="#7-dynamic-import-process" title="7. Dynamic Import Process">7. Dynamic Import Process</a></li><li><a href="#7-1-import-flow" title="7.1. Import Flow">7.1. Import Flow</a></li><li><a href="#7-2-import-example" title="7.2. Import Example">7.2. Import Example</a></li><li><a href="#8-build-integration" title="8. Build Integration">8. Build Integration</a></li><li><a href="#8-1-entry-tracking" title="8.1. Entry Tracking">8.1. Entry Tracking</a></li><li><a href="#8-2-bundle-optimization" title="8.2. Bundle Optimization">8.2. Bundle Optimization</a></li><li><a href="#9-integration-with-actionrouter" title="9. Integration with ActionRouter">9. Integration with ActionRouter</a></li><li><a href="#9-1-initialization" title="9.1. Initialization">9.1. Initialization</a></li><li><a href="#9-2-shared-event-system" title="9.2. Shared Event System">9.2. Shared Event System</a></li><li><a href="#10-best-practices" title="10. Best Practices">10. Best Practices</a></li><li><a href="#10-1-file-organization" title="10.1. File Organization">10.1. File Organization</a></li><li><a href="#10-2-error-handling" title="10.2. Error Handling">10.2. Error Handling</a></li><li><a href="#10-3-shared-utilities" title="10.3. Shared Utilities">10.3. Shared Utilities</a></li><li><a href="#10-4-development-vs-production" title="10.4. Development vs Production">10.4. Development vs Production</a></li><li><a href="#10-5-type-safety" title="10.5. Type Safety">10.5. Type Safety</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p><code>EntryRouter</code> is for file-based route ownership when projects want explicit route-to-file mapping without changing the handler shape.</p>
+<p>File-based routing routes events to files with exported handlers, which keeps route ownership visible in the filesystem and gives tooling a stable map of route-to-file boundaries.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import EntryRouter from '@stackpress/ingest/plugin/EntryRouter';
+
+const router = new EntryRouter(actionRouter, listen);
+
+// Route to file exports
+router.get('/users/:id', './routes/user.js');
+router.post('/users', './routes/create-user.js');
+
+// Event-based routing
+router.on('user-created', './handlers/user-created.js');</code></pre></div>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol><li>Properties</li><li>HTTP Method Routing</li><li>Event-Based Routing</li><li>Creating Actions from Entries</li><li>Using Other EntryRouters</li><li>File Structure Requirements</li><li>Dynamic Import Process</li><li>Build Integration</li><li>Integration with ActionRouter</li><li>Best Practices</li></ol>
+<h2 id="1-properties">1. Properties</h2>
+<p>The following properties are available when instantiating an EntryRouter.</p>
+<div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>entries</code></td><td><code>Map&lt;string, Set&lt;EntryRouterTaskItem&gt;&gt;</code></td><td>Map of event names to entry file configurations (readonly)</td></tr></tbody></table></div>
+<h2 id="2-http-method-routing">2. HTTP Method Routing</h2>
+<p>The following examples show how to define file-based routes for different HTTP methods.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// GET routes
+router.get('/users', './routes/users/list.js');
+router.get('/users/:id', './routes/users/get.js');
+
+// POST routes
+router.post('/users', './routes/users/create.js');
+
+// PUT routes
+router.put('/users/:id', './routes/users/update.js');
+
+// DELETE routes
+router.delete('/users/:id', './routes/users/delete.js');
+
+// PATCH routes
+router.patch('/users/:id', './routes/users/patch.js');
+
+// OPTIONS routes
+router.options('/users', './routes/users/options.js');
+
+// HEAD routes
+router.head('/users', './routes/users/head.js');
+
+// CONNECT and TRACE are also available
+router.connect('/proxy', './routes/proxy/connect.js');
+router.trace('/users', './routes/users/trace.js');
+
+// Handle any method
+router.all('/health', './routes/health.js');</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>path</code></td><td><code>string</code></td><td>Route path with optional parameters (:id)</td></tr><tr><td><code>action</code></td><td><code>string</code></td><td>File path to the route handler</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The EntryRouter instance to allow method chaining.</p>
+<h2 id="3-event-based-routing">3. Event-Based Routing</h2>
+<p>The following example shows how to route events to file handlers.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Route custom events to files
+router.on('user-login', './handlers/user-login.js');
+router.on('data-updated', './handlers/data-updated.js');
+
+// Route with regex patterns
+router.on(/^email-.+$/, './handlers/email-handler.js');</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>event</code></td><td>`string\</td><td>RegExp`</td><td>Event name or pattern</td></tr><tr><td><code>entry</code></td><td><code>string</code></td><td>File path to the event handler</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The EntryRouter instance to allow method chaining.</p>
+<h2 id="4-creating-actions-from-entries">4. Creating Actions from Entries</h2>
+<p>The following example shows how entry files are converted to executable actions.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Internal method - creates action from file path
+const action = router.action('GET /users', './routes/users.js', 0);
+
+// The action dynamically imports and executes the file
+await action(request, response, context);</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string</code></td><td>Event name for tracking</td></tr><tr><td><code>action</code></td><td><code>string</code></td><td>File path to import</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Priority level (default: 0). Can be negative. Higher numbers run first, then ties follow definition order.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>An async function that imports and executes the file's default export.</p>
+<h2 id="5-using-other-entryrouters">5. Using Other EntryRouters</h2>
+<p>The following example shows how to merge entries from another router.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">const apiRouter = new EntryRouter(actionRouter, listen);
+apiRouter.get('/api/users', './api/users.js');
+
+const mainRouter = new EntryRouter(actionRouter, listen);
+mainRouter.use(apiRouter); // Merges entry configurations</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>router</code></td><td><code>EntryRouter&lt;R, S, X&gt;</code></td><td>Another EntryRouter to merge entries from</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The EntryRouter instance to allow method chaining.</p>
+<h2 id="6-file-structure-requirements">6. File Structure Requirements</h2>
+<p>Entry files must export a default function that matches the route handler signature.</p>
+<h3 id="6-1-basic-route-handler">6.1. Basic Route Handler</h3>
+<p>The following example shows a basic route handler file structure.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./routes/users/list.js
+export default async function UserList({ req, res, ctx }) {
+  const users = await getUsers();
+  res.setResults(users);
+}</code></pre></div>
+<p>Many projects wrap the handler with <code>action(...)</code> so the entry file still reads like a route action while keeping the same props-based handler shape:</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { action } from '@stackpress/ingest';
+
+export default action(async function UserList({ req, res }) {
+  res.setResults(await getUsers());
+});</code></pre></div>
+<h3 id="6-2-route-handler-with-parameters">6.2. Route Handler with Parameters</h3>
+<p>The following example shows how to handle route parameters in entry files.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./routes/users/get.js
+export default async function UserDetail({ req, res, ctx }) {
+  const id = req.data('id'); // Route parameter
+  const user = await getUser(id);
+  
+  if (!user) {
+    res.setError('User not found', {}, [], 404);
+    return false;
+  }
+  
+  res.setResults(user);
+  return true;
+}</code></pre></div>
+<h3 id="6-3-event-handler">6.3. Event Handler</h3>
+<p>The following example shows how to structure event handler files.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./handlers/user-login.js
+export default async function UserLogin({ req, res, ctx }) {
+  const user = req.data('user');
+  
+  // Log the login
+  await logUserLogin(user.id);
+  
+  // Send welcome email
+  await sendWelcomeEmail(user.email);
+  
+  return true; // Continue processing
+}</code></pre></div>
+<h3 id="6-4-complex-route-handler">6.4. Complex Route Handler</h3>
+<p>The following example shows a complex route handler with validation and error handling.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./routes/users/create.js
+import { validateUser } from '../validators/user.js';
+import { createUser } from '../services/user.js';
+
+export default async function CreateUser({ req, res, ctx }) {
+  try {
+    const userData = req.data();
+    
+    // Validate input
+    const validation = await validateUser(userData);
+    if (!validation.valid) {
+      res.setError('Validation failed', validation.errors, [], 400);
+      return false;
+    }
+    
+    // Create user
+    const user = await createUser(userData);
+    
+    // Emit user created event
+    await ctx.emit('user-created', req, res);
+    
+    res.setResults(user, 201);
+    return true;
+  } catch (error) {
+    res.setError('Failed to create user', {}, [], 500);
+    return false;
+  }
+}</code></pre></div>
+<h2 id="7-dynamic-import-process">7. Dynamic Import Process</h2>
+<p>EntryRouter uses dynamic imports to load route handlers at runtime.</p>
+<h3 id="7-1-import-flow">7.1. Import Flow</h3>
+<p>The following steps describe how EntryRouter processes file imports:</p>
+<ol><li><strong>Route Registration</strong>: File path is registered with the route</li><li><strong>Request Handling</strong>: When route is matched, dynamic import is triggered</li><li><strong>Module Loading</strong>: File is imported using <code>import()</code> statement</li><li><strong>Default Export</strong>: The default export is extracted and executed</li><li><strong>Execution</strong>: Handler is called with <code>{ req, res, ctx }</code></li></ol>
+<p>Because the file path stays attached to the route definition, builders and deployment tooling can inspect <code>router.entries</code> without reverse-engineering the module graph.</p>
+<h3 id="7-2-import-example">7.2. Import Example</h3>
+<p>The following example shows the internal implementation of dynamic imports.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Internal implementation
+async function EntryFileAction(req, res, ctx) {
+  // Dynamic import of the route file
+  const imports = await import('./routes/user.js');
+  
+  // Extract default export
+  const callback = imports.default;
+  
+  // Execute the handler
+  return await callback({ req, res, ctx });
+}</code></pre></div>
+<h2 id="8-build-integration">8. Build Integration</h2>
+<p>EntryRouter provides build-time information for bundlers and static analysis.</p>
+<h3 id="8-1-entry-tracking">8.1. Entry Tracking</h3>
+<p>The following example shows how to access entry configurations for build tools.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Access entry configurations
+console.log(router.entries);
+// Map {
+//   'GET /users' =&gt; Set([{ entry: './routes/users.js', priority: 0 }]),
+//   'POST /users' =&gt; Set([{ entry: './routes/create.js', priority: 0 }])
+// }</code></pre></div>
+<p>That is usually enough for a build script to answer questions like “which files own HTTP routes?” without having to execute the application.</p>
+<h3 id="8-2-bundle-optimization">8.2. Bundle Optimization</h3>
+<p>The following example shows how bundlers can optimize EntryRouter configurations.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Bundlers can analyze entry configurations to:
+// 1. Pre-compile route files
+// 2. Generate static route tables
+// 3. Build route-aware deployment artifacts
+// 4. Create dependency graphs
+
+const entries = Array.from(router.entries.values())
+  .flatMap(set =&gt; Array.from(set))
+  .map(item =&gt; item.entry);
+
+console.log('Route files to bundle:', entries);</code></pre></div>
+<h2 id="9-integration-with-actionrouter">9. Integration with ActionRouter</h2>
+<p>EntryRouter works as an extension of ActionRouter, sharing the same event system and routing capabilities.</p>
+<h3 id="9-1-initialization">9.1. Initialization</h3>
+<p>The following example shows how EntryRouter integrates with ActionRouter.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
+
+const actionRouter = new ActionRouter(context);
+
+// EntryRouter is automatically available
+actionRouter.entry.get('/users', './routes/users.js');
+
+// Or create standalone
+const entryRouter = new EntryRouter(actionRouter, listen);</code></pre></div>
+<h3 id="9-2-shared-event-system">9.2. Shared Event System</h3>
+<p>The following example shows how both routers share the same event system.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Both routers share the same event system
+actionRouter.get('/api', handlerFunction);
+actionRouter.entry.get('/files', './routes/files.js');
+
+// Both routes are available in the same router
+await actionRouter.emit('GET /api', req, res);
+await actionRouter.emit('GET /files', req, res);</code></pre></div>
+<h2 id="10-best-practices">10. Best Practices</h2>
+<p>The following guidelines help ensure effective use of EntryRouter in production applications.</p>
+<h3 id="10-1-file-organization">10.1. File Organization</h3>
+<p>The following examples show recommended file organization patterns.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Organize by feature
+router.get('/users', './routes/users/index.js');
+router.get('/users/:id', './routes/users/get.js');
+router.post('/users', './routes/users/create.js');
+router.put('/users/:id', './routes/users/update.js');
+router.delete('/users/:id', './routes/users/delete.js');
+
+// Organize by HTTP method
+router.get('/posts', './routes/get/posts.js');
+router.post('/posts', './routes/post/posts.js');
+router.put('/posts/:id', './routes/put/posts.js');</code></pre></div>
+<h3 id="10-2-error-handling">10.2. Error Handling</h3>
+<p>The following example shows proper error handling in entry files.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./routes/error-example.js
+export default async function ErrorExample({ req, res, ctx }) {
+  try {
+    const result = await riskyOperation();
+    res.setResults(result);
+    return true;
+  } catch (error) {
+    // Log error
+    console.error('Route error:', error);
+    
+    // Set appropriate error response
+    if (error.code === 'VALIDATION_ERROR') {
+      res.setError('Invalid input', error.details, [], 400);
+    } else {
+      res.setError('Internal server error', {}, [], 500);
+    }
+    
+    return false; // Abort processing
+  }
+}</code></pre></div>
+<h3 id="10-3-shared-utilities">10.3. Shared Utilities</h3>
+<p>The following example shows how to share utilities across entry files.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./routes/shared/auth.js
+export async function requireAuth(req, res) {
+  const token = req.headers.get('authorization');
+  if (!token) {
+    res.setError('Unauthorized', {}, [], 401);
+    return null;
+  }
+  
+  return await validateToken(token);
+}
+
+// ./routes/users/protected.js
+import { requireAuth } from '../shared/auth.js';
+
+export default async function ProtectedUser({ req, res, ctx }) {
+  const user = await requireAuth(req, res);
+  if (!user) return false; // Auth failed
+  
+  // Continue with protected logic
+  res.setResults({ user });
+  return true;
+}</code></pre></div>
+<h3 id="10-4-development-vs-production">10.4. Development vs Production</h3>
+<p>The following example shows how to handle different environments with EntryRouter.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// Use different files for different environments
+const isDev = process.env.NODE_ENV === 'development';
+
+router.get('/debug', isDev 
+  ? './routes/debug/full.js' 
+  : './routes/debug/minimal.js'
+);
+
+// Conditional route registration
+if (isDev) {
+  router.get('/dev-tools', './routes/dev/tools.js');
+}</code></pre></div>
+<h3 id="10-5-type-safety">10.5. Type Safety</h3>
+<p>The following example shows how to implement type safety in entry files.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">// ./routes/typed-example.ts
+import type { Request, Response, Server } from '@stackpress/ingest';
+
+interface UserData {
+  name: string;
+  email: string;
+}
+
+export default async function(
+  req: Request&lt;any&gt;, 
+  res: Response&lt;any&gt;, 
+  ctx: Server&lt;any, any, any&gt;
+) {
+  const userData = req.data() as UserData;
+  
+  // Type-safe operations
+  const user = await createUser(userData);
+  res.setResults(user);
+  
+  return true;
+}</code></pre></div></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>
