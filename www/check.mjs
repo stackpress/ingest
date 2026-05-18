@@ -6,14 +6,32 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const docsDir = path.join(root, 'docs');
+const expectedPages = [
+  'index.html',
+  'overview.html',
+  'concepts/index.html',
+  'guides/create-a-server.html',
+  'api/index.html'
+];
+const expectedAssets = [
+  'favicon.ico',
+  'icon.png',
+  'ingest.png',
+  'site.css',
+  'site.js'
+];
 
 async function main() {
   const htmlFiles = await listFiles(docsDir, '.html');
   const issues = [];
 
+  validateExpectedOutputs(issues);
+
   for (const filePath of htmlFiles) {
     const html = await fs.readFile(filePath, 'utf8');
     const relativePath = path.relative(root, filePath);
+
+    validateMetadata(relativePath, html, issues);
 
     if (/%%(?:TOKEN|LINK|CODE)_\d+%%/.test(html)) {
       issues.push(`${relativePath}: unresolved template token found`);
@@ -37,7 +55,42 @@ async function main() {
     return;
   }
 
-  console.log(`Validated ${htmlFiles.length} HTML files in docs/.`);
+  console.log(`Validated ${htmlFiles.length} HTML files and ${expectedAssets.length} assets in docs/.`);
+}
+
+function validateExpectedOutputs(issues) {
+  for (const page of expectedPages) {
+    const outputPath = path.join(docsDir, page);
+    if (!existsSync(outputPath)) {
+      issues.push(`missing expected page (${path.relative(root, outputPath)})`);
+    }
+  }
+
+  for (const asset of expectedAssets) {
+    const outputPath = path.join(docsDir, 'assets', asset);
+    if (!existsSync(outputPath)) {
+      issues.push(`missing expected asset (${path.relative(root, outputPath)})`);
+    }
+  }
+}
+
+function validateMetadata(relativePath, html, issues) {
+  const requiredPatterns = [
+    [/<title>\s*[^<].*<\/title>/i, 'missing populated <title>'],
+    [/<meta name="description" content="[^"]+"/i, 'missing meta description'],
+    [/<meta property="og:title" content="[^"]+"/i, 'missing og:title'],
+    [/<meta property="og:description" content="[^"]+"/i, 'missing og:description'],
+    [/<meta property="og:type" content="[^"]+"/i, 'missing og:type'],
+    [/<meta name="twitter:card" content="[^"]+"/i, 'missing twitter:card'],
+    [/<meta name="twitter:title" content="[^"]+"/i, 'missing twitter:title'],
+    [/<meta name="twitter:description" content="[^"]+"/i, 'missing twitter:description']
+  ];
+
+  for (const [pattern, message] of requiredPatterns) {
+    if (!pattern.test(html)) {
+      issues.push(`${relativePath}: ${message}`);
+    }
+  }
 }
 
 function validateReference(relativePath, filePath, value, kind, issues) {

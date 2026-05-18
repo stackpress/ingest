@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const docsDir = path.join(root, 'docs');
+const host = process.env.HOST || '127.0.0.1';
 const port = Number(process.env.PORT || 4173);
 
 const contentTypes = new Map([
@@ -51,6 +52,6 @@ const server = http.createServer(async (request, response) => {
   }
 });
 
-server.listen(port, () => {
-  console.log(`Docs available at http://127.0.0.1:${port}`);
+server.listen(port, host, () => {
+  console.log(`Docs available at http://${host}:${port}`);
 });

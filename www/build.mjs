@@ -7,16 +7,21 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const specsDir = path.join(root, 'specs');
 const docsDir = path.join(root, 'docs');
+const assetsDir = path.join(__dirname, 'assets');
+const fragmentsDir = path.join(__dirname, 'fragments');
+const scriptsDir = path.join(__dirname, 'scripts');
+const stylesDir = path.join(__dirname, 'styles');
 const templatesDir = path.join(__dirname, 'templates');
-const fragmentsDir = path.join(templatesDir, 'fragments');
 const repoUrl = 'https://github.com/stackpress/ingest';
 
 const site = {
   title: 'Ingest',
   tagline: 'Composable Server/less IO Framework',
-  repoUrl
+  description: 'A server framework built around event-driven routing, composability, and runtime portability.',
+  repoUrl,
+  siteUrl: 'https://www.stackpress.io/ingest',
+  socialImage: ''
 };
-let templates = {};
 
 const sectionOrder = [
   ['root', 'Overview'],
@@ -67,8 +72,12 @@ const pageMap = new Map(
   pageDefinitions.map(definition => [definition.source, definition.output])
 );
 
+let templates = {};
+
 async function main() {
   templates = await loadTemplates();
+  await resetDocsOutput();
+  await copyStaticAssets();
 
   for (const definition of pageDefinitions) {
     const sourcePath = path.join(specsDir, definition.source);
@@ -76,6 +85,7 @@ async function main() {
     const markdown = await fs.readFile(sourcePath, 'utf8');
     const page = await buildPage(definition, markdown);
     const html = renderPage(definition, page);
+
     await fs.mkdir(path.dirname(outputPath), { recursive: true });
     await fs.writeFile(outputPath, html);
   }
@@ -83,13 +93,14 @@ async function main() {
 
 async function loadTemplates() {
   const names = [
-    'nav-group',
-    'toc',
     'chip-row',
     'hero-actions',
     'home-hero-visual',
     'home-reading-path',
-    'home-start-here'
+    'home-start-here',
+    'home-why-use',
+    'nav-group',
+    'toc'
   ];
 
   const entries = await Promise.all(
@@ -106,6 +117,32 @@ async function loadTemplates() {
   };
 }
 
+async function resetDocsOutput() {
+  await fs.rm(docsDir, { recursive: true, force: true });
+  await fs.mkdir(path.join(docsDir, 'assets'), { recursive: true });
+}
+
+async function copyStaticAssets() {
+  await copyDirectoryFiles(assetsDir, path.join(docsDir, 'assets'));
+  await copyDirectoryFiles(stylesDir, path.join(docsDir, 'assets'));
+  await copyDirectoryFiles(scriptsDir, path.join(docsDir, 'assets'));
+}
+
+async function copyDirectoryFiles(sourceDir, targetDir) {
+  const entries = await fs.readdir(sourceDir, { withFileTypes: true });
+  await fs.mkdir(targetDir, { recursive: true });
+
+  for (const entry of entries) {
+    if (!entry.isFile() || entry.name === '.DS_Store') {
+      continue;
+    }
+
+    const sourcePath = path.join(sourceDir, entry.name);
+    const targetPath = path.join(targetDir, entry.name);
+    await fs.copyFile(sourcePath, targetPath);
+  }
+}
+
 function renderPage(definition, page) {
   if (definition.source === 'README.md') {
     return render(templates.home, { site, page });
@@ -115,23 +152,19 @@ function renderPage(definition, page) {
     site,
     page,
     navigation: renderNavigation(definition.output),
-    toc: renderToc(page.toc),
-    content: page.content
+    toc: renderToc(page.toc)
   });
 }
 
 async function buildPage(definition, markdown) {
-  if (definition.source === 'README.md') {
-    return buildHomePage(definition, markdown);
-  }
+  return definition.source === 'README.md'
+    ? buildHomePage(definition, markdown)
+    : buildDocPage(definition, markdown);
+}
 
+async function buildDocPage(definition, markdown) {
   const { title, description, body } = parseMarkdownSource(markdown);
-  const pageTitle = title;
-  const outputPath = definition.output;
-  const outputDir = path.posix.dirname(outputPath);
-  const depth = outputDir === '.' ? 0 : outputDir.split('/').length;
-  const assetRoot = `${'../'.repeat(depth)}assets`.replace(/\/$/, '');
-  const homeHref = `${'../'.repeat(depth)}index.html`.replace(/^\.\//, '');
+  const pageContext = createPageContext(definition.output);
   const html = renderMarkdown(body, definition.source);
   const meta = definition.section === 'api'
     ? renderChipRow(['Class Reference', 'Methods, Properties, Examples'])
@@ -140,8 +173,9 @@ async function buildPage(definition, markdown) {
       : renderChipRow(['Concept', 'Framework Behavior']);
 
   return {
-    title: pageTitle,
-    description: description || `Documentation page for ${pageTitle}.`,
+    ...pageContext,
+    title,
+    description: description || `Documentation page for ${title}.`,
     navLabel: definition.section === 'api' ? 'Reference Map' : definition.section === 'guides' ? 'Build Map' : 'Reading Path',
     sectionLabel: definition.section === 'root'
       ? 'Foundation'
@@ -152,27 +186,22 @@ async function buildPage(definition, markdown) {
           : 'System Model',
     meta,
     heroActions: '',
-    assetRoot,
-    homeHref,
     toc: html.toc,
-    mainContent: wrapDocContent(html.content)
+    mainContent: wrapDocContent(html.content),
+    seoMeta: renderSeoMeta({
+      title,
+      description: description || `Documentation page for ${title}.`,
+      outputPath: definition.output
+    })
   };
 }
 
 async function buildHomePage(definition, markdown) {
-  const outputPath = definition.output;
-  const outputDir = path.posix.dirname(outputPath);
-  const depth = outputDir === '.' ? 0 : outputDir.split('/').length;
-  const assetRoot = `${'../'.repeat(depth)}assets`.replace(/\/$/, '');
-  const homeHref = `${'../'.repeat(depth)}index.html`.replace(/^\.\//, '');
+  const pageContext = createPageContext(definition.output);
   const overviewMarkdown = await fs.readFile(path.join(specsDir, 'overview.md'), 'utf8');
-  const overview = parseMarkdownSource(overviewMarkdown);
   const emphasis = extractListSection(overviewMarkdown, '## What Ingest emphasizes');
   const readmePath = extractOrderedList(markdown, '## Start here');
-  const starterCode = {
-    language: 'typescript',
-    code: await fs.readFile(path.join(fragmentsDir, 'home-example.js'), 'utf8')
-  };
+  const starterCode = await fs.readFile(path.join(fragmentsDir, 'home-example.js'), 'utf8');
 
   const sectionCards = [
     {
@@ -192,9 +221,15 @@ async function buildHomePage(definition, markdown) {
     }
   ];
 
+  const title = 'One server model for Node HTTP and WHATWG runtimes';
+  const description = site.description;
+
   return {
-    description: 'A server/less framework built around event-driven routing, composability, and runtime portability.',
+    ...pageContext,
+    title,
+    description,
     navLabel: 'Explore Docs',
+    sectionLabel: 'Documentation Hub',
     meta: renderChipRow([
       '# plugin pattern for composability',
       '# native http & whatwg',
@@ -209,30 +244,67 @@ async function buildHomePage(definition, markdown) {
       secondaryLabel: 'Learn the Model',
       secondaryTitle: 'Read the application model concept page'
     }),
-    assetRoot,
-    homeHref,
     heroVisual: render(templates.homeHeroVisual, {
-      codeBlock: renderCodeBlock(starterCode.code, starterCode.language)
+      codeBlock: renderCodeBlock(starterCode, 'typescript')
     }),
     toc: [],
     mainContent: [
       render(templates.homeStartHere, {
-        items: sectionCards
-          .map(card => ({
-            href: escapeAttribute(card.href),
-            title: escapeHtml(card.title),
-            description: escapeHtml(card.description)
-          }))
+        items: sectionCards.map(card => ({
+          href: escapeAttribute(card.href),
+          title: escapeHtml(card.title),
+          description: escapeHtml(card.description)
+        }))
+      }),
+      render(templates.homeWhyUse, {
+        items: emphasis.map(item => ({
+          content: renderInline(item, 'overview.md')
+        }))
       }),
       render(templates.homeReadingPath, {
-        items: readmePath
-          .map(item => ({
-            content: renderInline(item, 'README.md')
-          }))
+        items: readmePath.map(item => ({
+          content: renderInline(item, 'README.md')
+        }))
       })
     ].join('\n'),
-    footer: 'The homepage is assembled from the repository specs so the landing copy stays aligned with the actual documentation.'
+    footer: 'The homepage is assembled from the repository specs so the landing copy stays aligned with the actual documentation.',
+    seoMeta: renderSeoMeta({ title, description, type: 'website', outputPath: definition.output })
   };
+}
+
+function createPageContext(outputPath) {
+  const outputDir = path.posix.dirname(outputPath);
+  const depth = outputDir === '.' ? 0 : outputDir.split('/').length;
+
+  return {
+    assetRoot: `${'../'.repeat(depth)}assets`.replace(/\/$/, ''),
+    homeHref: `${'../'.repeat(depth)}index.html`.replace(/^\.\//, '')
+  };
+}
+
+function renderSeoMeta({ title, description, type = 'article', outputPath = '' }) {
+  const canonicalPath = outputPath === 'index.html' ? '' : outputPath;
+  const canonicalUrl = site.siteUrl ? joinUrl(site.siteUrl, canonicalPath) : '';
+  const tags = [
+    `<meta property="og:title" content="${escapeAttribute(`${title} | ${site.title}`)}" />`,
+    `<meta property="og:description" content="${escapeAttribute(description)}" />`,
+    `<meta property="og:type" content="${escapeAttribute(type)}" />`,
+    '<meta name="twitter:card" content="summary" />',
+    `<meta name="twitter:title" content="${escapeAttribute(`${title} | ${site.title}`)}" />`,
+    `<meta name="twitter:description" content="${escapeAttribute(description)}" />`
+  ];
+
+  if (canonicalUrl) {
+    tags.push(`<link rel="canonical" href="${escapeAttribute(canonicalUrl)}" />`);
+    tags.push(`<meta property="og:url" content="${escapeAttribute(canonicalUrl)}" />`);
+  }
+
+  if (site.siteUrl && site.socialImage) {
+    tags.push(`<meta property="og:image" content="${escapeAttribute(joinUrl(site.siteUrl, site.socialImage))}" />`);
+    tags.push(`<meta name="twitter:image" content="${escapeAttribute(joinUrl(site.siteUrl, site.socialImage))}" />`);
+  }
+
+  return tags.join('\n    ');
 }
 
 function parseMarkdownSource(markdown) {
@@ -254,11 +326,7 @@ function parseMarkdownSource(markdown) {
     break;
   }
 
-  return {
-    title,
-    description,
-    body: markdown
-  };
+  return { title, description, body: markdown };
 }
 
 function renderNavigation(currentOutput) {
@@ -280,6 +348,7 @@ function renderToc(items) {
   if (!items.length) {
     return '';
   }
+
   return render(templates.toc, { items });
 }
 
@@ -288,6 +357,7 @@ function renderMarkdown(markdown, sourcePath) {
   if (lines[0]?.startsWith('# ')) {
     lines.shift();
   }
+
   const html = [];
   const toc = [];
   let index = 0;
@@ -304,10 +374,12 @@ function renderMarkdown(markdown, sourcePath) {
       const language = line.slice(3).trim();
       const block = [];
       index += 1;
+
       while (index < lines.length && !lines[index].startsWith('```')) {
         block.push(lines[index]);
         index += 1;
       }
+
       index += 1;
       html.push(renderCodeBlock(block.join('\n'), language || 'text'));
       continue;
@@ -317,9 +389,11 @@ function renderMarkdown(markdown, sourcePath) {
       const level = line.match(/^#+/)[0].length;
       const text = line.replace(/^#{1,6}\s/, '').trim();
       const id = slugify(text);
+
       if (level >= 2 && level <= 3) {
         toc.push({ id, text });
       }
+
       html.push(`<h${level} id="${id}">${renderInline(text, sourcePath)}</h${level}>`);
       index += 1;
       continue;
@@ -369,6 +443,7 @@ function renderMarkdown(markdown, sourcePath) {
       paragraph.push(lines[index].trim());
       index += 1;
     }
+
     html.push(`<p>${renderInline(paragraph.join(' '), sourcePath)}</p>`);
   }
 
@@ -381,6 +456,7 @@ function renderMarkdown(markdown, sourcePath) {
 function renderCodeBlock(code, language) {
   const normalizedLanguage = escapeAttribute(language || 'text');
   const label = escapeHtml(formatLanguageLabel(normalizedLanguage));
+
   return [
     '<div class="code-shell">',
     `<div class="code-toolbar"><span class="code-language">${label}</span><button class="copy-button" type="button">copy</button></div>`,
@@ -461,9 +537,11 @@ function resolveLink(href, sourcePath) {
 
   const fromDir = path.posix.dirname(sourcePath);
   const target = path.posix.normalize(path.posix.join(fromDir, href));
+
   if (target === 'examples' || target.startsWith('../examples/') || target.startsWith('examples/')) {
     return `${repoUrl}/tree/main/${target.replace(/^\.\.\//, '')}`;
   }
+
   if (pageMap.has(target)) {
     return relativeHref(pageMap.get(sourcePath), pageMap.get(target));
   }
@@ -488,6 +566,7 @@ function extractListSection(markdown, heading) {
       items.push(line.replace(/^\s*-\s/, '').trim());
     }
   }
+
   return items;
 }
 
@@ -508,6 +587,7 @@ function extractOrderedList(markdown, heading) {
       items.push(line.replace(/^\s*\d+\.\s/, '').trim());
     }
   }
+
   return items;
 }
 
@@ -530,9 +610,13 @@ function relativeHref(fromOutput, toOutput) {
 function slugify(value) {
   return value
     .toLowerCase()
-    .replace(/[`'"“”]/g, '')
+    .replace(/[`'\"“”]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+}
+
+function joinUrl(base, pathname) {
+  return new URL(pathname, base.endsWith('/') ? base : `${base}/`).toString();
 }
 
 function escapeHtml(value) {

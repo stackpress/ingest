@@ -6,9 +6,6 @@
   ],
   "scripts": {
     "build": "yarn --cwd ingest build",
-    "build:docs": "node ./scripts/build-docs.mjs",
-    "check:docs": "node ./scripts/check-docs.mjs",
-    "dev:docs": "yarn build:docs && yarn check:docs && yarn serve:docs",
     "entries": "yarn --cwd examples/with-entries",
     "gcp": "yarn --cwd examples/with-gcp",
     "hbs": "yarn --cwd examples/with-handlebars",
@@ -16,11 +13,13 @@
     "imports": "yarn --cwd examples/with-imports",
     "lambda": "yarn --cwd examples/with-lambda",
     "plugins": "yarn --cwd examples/with-plugins",
-    "serve:docs": "node ./scripts/serve-docs.mjs",
     "whatwg": "yarn --cwd examples/with-whatwg",
     "report": "yarn report:env nyc yarn test && nyc report -r lcov",
     "report:env": "NODE_OPTIONS=\"--disable-warning=ExperimentalWarning --experimental-loader @istanbuljs/esm-loader-hook\"",
-    "test": "yarn --cwd ingest test"
+    "test": "yarn --cwd ingest test",
+    "www:build": "node ./www/build.mjs",
+    "www:check": "node ./www/check.mjs",
+    "www:serve": "node ./www/serve.mjs"
   },
   "devDependencies": {
     "@istanbuljs/esm-loader-hook": "0.3.0",
