@@ -1,6 +1,7 @@
 {
   "extends": "@stackpress/lib/tsconfig/esm",
   "compilerOptions": {
+    "experimentalDecorators": true,
     "moduleResolution": "node",
     "outDir": "esm/"
   },

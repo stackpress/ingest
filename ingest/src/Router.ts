@@ -15,10 +15,12 @@ import ActionRouter from './plugin/ActionRouter.js';
 import type { 
   AnyRouterAction, 
   ActionRouterAction, 
-  ImportRouterAction 
+  ImportRouterAction,
+  ControllerMountable
 } from './types.js';
 import Request from './Request.js';
 import Response from './Response.js';
+import { mount } from './decorators.js';
 export default class Router<
   //request resource
   R = unknown, 
@@ -150,6 +152,14 @@ export default class Router<
     priority?: number
   ) {
     return this.route('HEAD', path, action, priority);
+  }
+
+  /**
+   * Mounts decorated controllers onto this router
+   */
+  public mount(...controllers: ControllerMountable[]) {
+    mount(this, ...controllers);
+    return this;
   }
   
   /**

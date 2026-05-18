@@ -295,6 +295,44 @@ mainRouter.use(apiRouter); // Merges routes and listeners
 
 The Router instance to allow method chaining.
 
+### 2.8. Controller Mounting
+
+The following example shows how to mount decorated controllers onto a router.
+
+```typescript
+import {
+  Controller,
+  Get,
+  Router,
+  type HttpAction
+} from '@stackpress/ingest/http';
+
+type HttpProps = Parameters<HttpAction>[0];
+
+@Controller('/api')
+class UserController {
+  @Get('/users')
+  public list({ res }: HttpProps) {
+    res.setBody('text/plain', 'list');
+  }
+}
+
+const router = new Router();
+router.mount(UserController);
+```
+
+`mount()` accepts controller classes or controller instances and registers both route decorators and `@On(...)` listeners through the existing router APIs.
+
+**Parameters**
+
+| Parameter | Type | Description |
+|----------|------|-------------|
+| `controllers` | `ControllerMountable[]` | Controller classes or controller instances to register on this router. |
+
+**Returns**
+
+The Router instance to allow method chaining.
+
 ## 3. Automatic Router Detection
 
 The Router class can automatically determine which routing interface to use based on the action type, providing a seamless development experience.

@@ -8,6 +8,7 @@ import type {
 //stackpress
 import type { 
   CallableNest,
+  Method,
   TaskAction,
   TaskResult,
   UnknownNest,
@@ -265,3 +266,41 @@ export type WhatwgAction<
   C extends UnknownNest = UnknownNest,
   P extends Record<string, unknown> = Record<string, unknown>
 > = ServerAction<NodeRequest, NodeOptResponse, C, P>;
+
+//--------------------------------------------------------------------//
+// Decorator Types
+
+export type ControllerProperty = string|symbol;
+
+export type ControllerHandler<
+  R = unknown,
+  S = unknown,
+  C = unknown,
+  P = unknown,
+  X extends Router<R, S, C, P> = Router<R, S, C, P>
+> = ActionRouterAction<R, S, X, C, P>;
+
+export type ControllerRouteDefinition = {
+  method: Method|'ALL',
+  path: string,
+  property: ControllerProperty,
+  priority: number
+};
+
+export type ControllerEventDefinition = {
+  event: string|RegExp,
+  property: ControllerProperty,
+  priority: number
+};
+
+export type ControllerMetadata = {
+  basePath: string,
+  routes: ControllerRouteDefinition[],
+  events: ControllerEventDefinition[]
+};
+
+export type ControllerInstance = object;
+
+export type ControllerClass = new () => ControllerInstance;
+
+export type ControllerMountable = ControllerClass|ControllerInstance;

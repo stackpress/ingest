@@ -88,6 +88,8 @@
     </li><li>
       <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
     </li><li>
+      <a class="" href="../guides/use-decorators.html" title="Use Decorators">Use Decorators</a>
+    </li><li>
       <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
     </li><li>
       <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
@@ -104,6 +106,8 @@
   <ul class="nav-list">
     <li>
       <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Decorators.html" title="Decorators">Decorators</a>
     </li><li>
       <a class="is-active" href="Server.html" title="Server">Server</a>
     </li><li>
@@ -159,7 +163,7 @@
     <h2>Structural Map</h2>
   </div>
   <ol class="toc-list">
-    <li><a href="#1-properties" title="1. Properties">1. Properties</a></li><li><a href="#2-methods" title="2. Methods">2. Methods</a></li><li><a href="#2-1-bootstrapping-plugins" title="2.1. Bootstrapping Plugins">2.1. Bootstrapping Plugins</a></li><li><a href="#2-2-creating-a-server-instance" title="2.2. Creating a Server Instance">2.2. Creating a Server Instance</a></li><li><a href="#2-3-handling-requests" title="2.3. Handling Requests">2.3. Handling Requests</a></li><li><a href="#2-4-plugin-management" title="2.4. Plugin Management">2.4. Plugin Management</a></li><li><a href="#2-5-setting-gateway" title="2.5. Setting Gateway">2.5. Setting Gateway</a></li><li><a href="#2-6-setting-handler" title="2.6. Setting Handler">2.6. Setting Handler</a></li><li><a href="#3-static-methods" title="3. Static Methods">3. Static Methods</a></li><li><a href="#3-1-creating-server-instances" title="3.1. Creating Server Instances">3.1. Creating Server Instances</a></li><li><a href="#3-2-creating-router-instances" title="3.2. Creating Router Instances">3.2. Creating Router Instances</a></li><li><a href="#3-3-creating-type-safe-actions" title="3.3. Creating Type-Safe Actions">3.3. Creating Type-Safe Actions</a></li><li><a href="#4-configuration-management" title="4. Configuration Management">4. Configuration Management</a></li><li><a href="#4-1-setting-configuration" title="4.1. Setting Configuration">4.1. Setting Configuration</a></li><li><a href="#4-2-reading-configuration" title="4.2. Reading Configuration">4.2. Reading Configuration</a></li><li><a href="#5-plugin-system-integration" title="5. Plugin System Integration">5. Plugin System Integration</a></li><li><a href="#5-1-plugin-loading" title="5.1. Plugin Loading">5.1. Plugin Loading</a></li><li><a href="#5-2-plugin-access" title="5.2. Plugin Access">5.2. Plugin Access</a></li><li><a href="#6-examples" title="6. Examples">6. Examples</a></li><li><a href="#6-1-basic-http-server" title="6.1. Basic HTTP Server">6.1. Basic HTTP Server</a></li><li><a href="#6-2-serverless-function" title="6.2. Serverless Function">6.2. Serverless Function</a></li><li><a href="#6-3-with-plugins" title="6.3. With Plugins">6.3. With Plugins</a></li>
+    <li><a href="#1-properties" title="1. Properties">1. Properties</a></li><li><a href="#2-methods" title="2. Methods">2. Methods</a></li><li><a href="#2-1-bootstrapping-plugins" title="2.1. Bootstrapping Plugins">2.1. Bootstrapping Plugins</a></li><li><a href="#2-2-creating-a-server-instance" title="2.2. Creating a Server Instance">2.2. Creating a Server Instance</a></li><li><a href="#2-3-handling-requests" title="2.3. Handling Requests">2.3. Handling Requests</a></li><li><a href="#2-4-plugin-management" title="2.4. Plugin Management">2.4. Plugin Management</a></li><li><a href="#2-5-setting-gateway" title="2.5. Setting Gateway">2.5. Setting Gateway</a></li><li><a href="#2-6-setting-handler" title="2.6. Setting Handler">2.6. Setting Handler</a></li><li><a href="#2-7-controller-mounting" title="2.7. Controller Mounting">2.7. Controller Mounting</a></li><li><a href="#3-static-methods" title="3. Static Methods">3. Static Methods</a></li><li><a href="#3-1-creating-server-instances" title="3.1. Creating Server Instances">3.1. Creating Server Instances</a></li><li><a href="#3-2-creating-router-instances" title="3.2. Creating Router Instances">3.2. Creating Router Instances</a></li><li><a href="#3-3-creating-type-safe-actions" title="3.3. Creating Type-Safe Actions">3.3. Creating Type-Safe Actions</a></li><li><a href="#4-configuration-management" title="4. Configuration Management">4. Configuration Management</a></li><li><a href="#4-1-setting-configuration" title="4.1. Setting Configuration">4.1. Setting Configuration</a></li><li><a href="#4-2-reading-configuration" title="4.2. Reading Configuration">4.2. Reading Configuration</a></li><li><a href="#5-plugin-system-integration" title="5. Plugin System Integration">5. Plugin System Integration</a></li><li><a href="#5-1-plugin-loading" title="5.1. Plugin Loading">5.1. Plugin Loading</a></li><li><a href="#5-2-plugin-access" title="5.2. Plugin Access">5.2. Plugin Access</a></li><li><a href="#6-examples" title="6. Examples">6. Examples</a></li><li><a href="#6-1-basic-http-server" title="6.1. Basic HTTP Server">6.1. Basic HTTP Server</a></li><li><a href="#6-2-serverless-function" title="6.2. Serverless Function">6.2. Serverless Function</a></li><li><a href="#6-3-with-plugins" title="6.3. With Plugins">6.3. With Plugins</a></li>
   </ol>
 </section>
 
@@ -263,6 +267,32 @@ app.gateway = (server) =&gt; {
 <div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>ServerHandler&lt;C, R, S&gt;</code></td><td>Handler function for processing requests</td></tr></tbody></table></div>
 <p><strong>Returns</strong></p>
 <p>None.</p>
+<h3 id="2-7-controller-mounting">2.7. Controller Mounting</h3>
+<p>The following example shows how to mount decorated controllers directly on a server.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import {
+  Controller,
+  Get,
+  server,
+  type HttpAction
+} from '@stackpress/ingest/http';
+
+type HttpProps = Parameters&lt;HttpAction&gt;[0];
+
+@Controller('/api')
+class UserController {
+  @Get('/users')
+  public list({ res }: HttpProps) {
+    res.setBody('text/plain', 'list');
+  }
+}
+
+const app = server();
+app.mount(UserController);</code></pre></div>
+<p>Because <code>Server</code> extends <a href="Router.html" title="Router">Router</a>, <code>mount()</code> behaves the same way here. It registers decorated routes and event listeners without adding bootstrap discovery or a separate controller runtime.</p>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>controllers</code></td><td><code>ControllerMountable[]</code></td><td>Controller classes or controller instances to register on this server.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Server instance to allow method chaining.</p>
 <h2 id="3-static-methods">3. Static Methods</h2>
 <p>The following methods can be accessed directly from Server itself.</p>
 <h3 id="3-1-creating-server-instances">3.1. Creating Server Instances</h3>

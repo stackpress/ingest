@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decorators | Ingest</title>
+    <meta name="description" content="The decorators module adds optional controller-style registration on top of Ingest's existing router APIs. It does not introduce automatic discovery, dependency injection, or a separate execution model." />
+    <link href="../assets/favicon.ico" rel="icon" sizes="any" />
+    <link href="../assets/site.css" rel="stylesheet" />
+    <script defer src="../assets/site.js"></script>
+  </head>
+  <body class="site-shell">
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="../index.html"
+        title="Go to the Ingest homepage">
+        <img alt="Ingest" class="brand-mark" src="../assets/ingest.png" />
+        <span class="brand-copy">
+          <strong>Ingest</strong>
+          <span>Composable Server/less IO Framework</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button
+          aria-label="Toggle color theme"
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button">
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+      </div>
+      <div class="topbar-meta">
+        <a
+          class="repo-link"
+          href="https://github.com/stackpress/ingest"
+          title="Open the Ingest GitHub repository">
+          GitHub
+        </a>
+      </div>
+    </header>
+    <div class="page-grid ">
+      <aside class="sidebar">
+        <div class="sidebar-panel">
+          <p class="sidebar-label">Reference Map</p>
+          <nav class="sidebar-nav"><section class="nav-group">
+  <p class="nav-group-title">Overview</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../index.html" title="Home">Home</a>
+    </li><li>
+      <a class="" href="../overview.html" title="Overview">Overview</a>
+    </li><li>
+      <a class="" href="../examples.html" title="Examples">Examples</a>
+    </li><li>
+      <a class="" href="../plugin-development.html" title="Plugin Development">Plugin Development</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Concepts</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../concepts/index.html" title="Concepts">Concepts</a>
+    </li><li>
+      <a class="" href="../concepts/application-model.html" title="Application Model">Application Model</a>
+    </li><li>
+      <a class="" href="../concepts/data-surfaces.html" title="Data Surfaces">Data Surfaces</a>
+    </li><li>
+      <a class="" href="../concepts/request-lifecycle.html" title="Request Lifecycle">Request Lifecycle</a>
+    </li><li>
+      <a class="" href="../concepts/composition.html" title="Composition">Composition</a>
+    </li><li>
+      <a class="" href="../concepts/routing-patterns.html" title="Routing Patterns">Routing Patterns</a>
+    </li><li>
+      <a class="" href="../concepts/runtimes-and-tooling.html" title="Runtimes and Tooling">Runtimes and Tooling</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">Guides</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="../guides/index.html" title="Guides">Guides</a>
+    </li><li>
+      <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
+    </li><li>
+      <a class="" href="../guides/use-decorators.html" title="Use Decorators">Use Decorators</a>
+    </li><li>
+      <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
+    </li><li>
+      <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
+    </li><li>
+      <a class="" href="../guides/render-views.html" title="Render Views">Render Views</a>
+    </li><li>
+      <a class="" href="../guides/deploy.html" title="Deploy an App">Deploy an App</a>
+    </li>
+  </ul>
+</section>
+
+<section class="nav-group">
+  <p class="nav-group-title">API Reference</p>
+  <ul class="nav-list">
+    <li>
+      <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="is-active" href="Decorators.html" title="Decorators">Decorators</a>
+    </li><li>
+      <a class="" href="Server.html" title="Server">Server</a>
+    </li><li>
+      <a class="" href="Router.html" title="Router">Router</a>
+    </li><li>
+      <a class="" href="Route.html" title="Route">Route</a>
+    </li><li>
+      <a class="" href="Request.html" title="Request">Request</a>
+    </li><li>
+      <a class="" href="Response.html" title="Response">Response</a>
+    </li><li>
+      <a class="" href="Exception.html" title="Exception">Exception</a>
+    </li><li>
+      <a class="" href="ActionRouter.html" title="ActionRouter">ActionRouter</a>
+    </li><li>
+      <a class="" href="EntryRouter.html" title="EntryRouter">EntryRouter</a>
+    </li><li>
+      <a class="" href="ImportRouter.html" title="ImportRouter">ImportRouter</a>
+    </li><li>
+      <a class="" href="ViewRouter.html" title="ViewRouter">ViewRouter</a>
+    </li><li>
+      <a class="" href="HttpAdapter.html" title="HttpAdapter">HttpAdapter</a>
+    </li><li>
+      <a class="" href="WhatwgAdapter.html" title="WhatwgAdapter">WhatwgAdapter</a>
+    </li><li>
+      <a class="" href="Loader.html" title="Loader">Loader</a>
+    </li><li>
+      <a class="" href="Nest.html" title="Nest">Nest</a>
+    </li><li>
+      <a class="" href="ExpressEmitter.html" title="ExpressEmitter">ExpressEmitter</a>
+    </li>
+  </ul>
+</section>
+</nav>
+        </div>
+      </aside>
+      <main class="content ">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Reference Layer</p>
+            <h1>Decorators</h1>
+            <p class="hero-summary">The decorators module adds optional controller-style registration on top of Ingest's existing router APIs. It does not introduce automatic discovery, dependency injection, or a separate execution model.</p>
+            <div class="hero-chip-row">
+  <span class="hero-chip">Class Reference</span><span class="hero-chip">Methods, Properties, Examples</span>
+</div>
+
+            
+          </div>
+        </section>
+        <section class="toc">
+  <div class="toc-header">
+    <p class="eyebrow">On This Page</p>
+    <h2>Structural Map</h2>
+  </div>
+  <ol class="toc-list">
+    <li><a href="#1-exports" title="1. Exports">1. Exports</a></li><li><a href="#2-controller" title="2. Controller">2. Controller</a></li><li><a href="#3-route-decorators" title="3. Route Decorators">3. Route Decorators</a></li><li><a href="#4-event-decorator" title="4. Event Decorator">4. Event Decorator</a></li><li><a href="#5-mount-helper" title="5. Mount Helper">5. Mount Helper</a></li><li><a href="#6-integration-notes" title="6. Integration Notes">6. Integration Notes</a></li><li><a href="#related-links" title="Related links">Related links</a></li>
+  </ol>
+</section>
+
+        <article class="doc-frame"><div class="doc-ruler" aria-hidden="true"></div><div class="doc-body markdown"><p>The decorators module adds optional controller-style registration on top of Ingest's existing router APIs. It does not introduce automatic discovery, dependency injection, or a separate execution model.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import {
+  Controller,
+  Get,
+  On,
+  mount
+} from '@stackpress/ingest/http';</code></pre></div>
+<p>You can import the same decorators from:</p>
+<ul><li><code>@stackpress/ingest</code></li><li><code>@stackpress/ingest/http</code></li><li><code>@stackpress/ingest/whatwg</code></li></ul>
+<ol><li><a href="#1-exports" title="Exports">Exports</a></li><li><a href="#2-controller" title="Controller">Controller</a></li><li><a href="#3-route-decorators" title="Route Decorators">Route Decorators</a></li><li><a href="#4-event-decorator" title="Event Decorator">Event Decorator</a></li><li><a href="#5-mount-helper" title="Mount Helper">Mount Helper</a></li><li><a href="#6-integration-notes" title="Integration Notes">Integration Notes</a></li></ol>
+<h2 id="1-exports">1. Exports</h2>
+<p>The decorators module exports:</p>
+<ul><li><code>Controller</code></li><li><code>All</code>, <code>Connect</code>, <code>Delete</code>, <code>Get</code>, <code>Head</code>, <code>Options</code>, <code>Patch</code>, <code>Post</code>, <code>Put</code>, <code>Trace</code></li><li><code>On</code></li><li><code>mount</code></li></ul>
+<h2 id="2-controller">2. Controller</h2>
+<p><code>Controller(basePath?)</code> records a base path on a controller class. Route decorators mounted from that class use the base path as a prefix.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">@Controller('/api')
+class UserController {}</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>basePath</code></td><td><code>string</code></td><td>Optional path prefix applied to route decorators on the class. Defaults to <code>''</code>.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A class decorator.</p>
+<h2 id="3-route-decorators">3. Route Decorators</h2>
+<p>The route decorators register instance methods as router actions for a specific HTTP method.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import {
+  Controller,
+  Get,
+  Post,
+  type HttpAction
+} from '@stackpress/ingest/http';
+
+type HttpProps = Parameters&lt;HttpAction&gt;[0];
+
+@Controller('/api')
+class UserController {
+  @Get('/users')
+  public list({ res }: HttpProps) {
+    res.setJSON([{ id: 1 }]);
+  }
+
+  @Post('/users', 10)
+  public create({ res }: HttpProps) {
+    res.code = 201;
+  }
+}</code></pre></div>
+<p>Supported route decorators:</p>
+<ul><li><code>All(path, priority?)</code></li><li><code>Connect(path, priority?)</code></li><li><code>Delete(path, priority?)</code></li><li><code>Get(path, priority?)</code></li><li><code>Head(path, priority?)</code></li><li><code>Options(path, priority?)</code></li><li><code>Patch(path, priority?)</code></li><li><code>Post(path, priority?)</code></li><li><code>Put(path, priority?)</code></li><li><code>Trace(path, priority?)</code></li></ul>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>path</code></td><td><code>string</code></td><td>Route path segment for the decorated method.</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Optional route priority. Higher numbers run first. Defaults to <code>0</code>.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A method decorator.</p>
+<h2 id="4-event-decorator">4. Event Decorator</h2>
+<p><code>On(event, priority?)</code> registers an instance method as a listener on the router event system.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import { On, type HttpAction } from '@stackpress/ingest/http';
+
+type HttpProps = Parameters&lt;HttpAction&gt;[0];
+
+class AuditController {
+  @On('GET /api/users', 10)
+  public log({ req, res }: HttpProps) {
+    res.headers.set('x-path', req.url.pathname);
+  }
+}</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>event</code></td><td>`string \</td><td>RegExp`</td><td>Event name or event pattern to listen for.</td></tr><tr><td><code>priority</code></td><td><code>number</code></td><td>Optional listener priority. Higher numbers run first. Defaults to <code>0</code>.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>A method decorator.</p>
+<h2 id="5-mount-helper">5. Mount Helper</h2>
+<p><code>mount(router, ...controllers)</code> turns controller metadata into active routes and listeners on a <a href="Router.html" title="Router">Router</a> or <a href="Server.html" title="Server">Server</a>.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import {
+  Controller,
+  Get,
+  Router,
+  mount,
+  type HttpAction
+} from '@stackpress/ingest/http';
+
+type HttpProps = Parameters&lt;HttpAction&gt;[0];
+
+@Controller('/api')
+class UserController {
+  @Get('/users')
+  public list({ res }: HttpProps) {
+    res.setBody('text/plain', 'list');
+  }
+}
+
+const router = new Router();
+mount(router, UserController);</code></pre></div>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>router</code></td><td><code>Router&lt;any, any, any, any&gt;</code></td><td>Router or Server instance that should receive the registrations.</td></tr><tr><td><code>controllers</code></td><td><code>ControllerMountable[]</code></td><td>Controller classes or controller instances to mount.</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The same router instance for chaining.</p>
+<h2 id="6-integration-notes">6. Integration Notes</h2>
+<ul><li>Decorators are optional. They only register existing <code>route()</code> and <code>on()</code> calls for you.</li><li>Mounting is explicit. Ingest does not scan files or bootstrap controllers automatically.</li><li><code>ControllerMountable</code> accepts either a controller class or a controller instance.</li><li>Decorated methods should use explicit parameter types when destructuring props because decorators do not provide the same contextual typing as inline callbacks.</li><li>Parameter decorators such as <code>@Body()</code> or <code>@Param()</code> are not part of this feature.</li><li><code>reflect-metadata</code> is not required.</li></ul>
+<h2 id="related-links">Related links</h2>
+<ul><li><a href="../guides/use-decorators.html" title="Use Decorators">Use Decorators</a></li><li><a href="Router.html" title="Router">Router</a></li><li><a href="Server.html" title="Server">Server</a></li></ul></div></article>
+        <footer class="footer">
+          <p>By the stackpress team</p>
+          <div class="footer-links">
+            <a href="https://stackpress.io" target="_blank" rel="noreferrer">stackpress.io</a>
+            <a href="https://github.com/stackpress/ingest" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

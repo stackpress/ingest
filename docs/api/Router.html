@@ -88,6 +88,8 @@
     </li><li>
       <a class="" href="../guides/create-a-server.html" title="Create a Server">Create a Server</a>
     </li><li>
+      <a class="" href="../guides/use-decorators.html" title="Use Decorators">Use Decorators</a>
+    </li><li>
       <a class="" href="../guides/add-a-plugin.html" title="Add a Plugin">Add a Plugin</a>
     </li><li>
       <a class="" href="../guides/lazy-load-routes.html" title="Lazy Load Routes">Lazy Load Routes</a>
@@ -104,6 +106,8 @@
   <ul class="nav-list">
     <li>
       <a class="" href="index.html" title="API Reference">API Reference</a>
+    </li><li>
+      <a class="" href="Decorators.html" title="Decorators">Decorators</a>
     </li><li>
       <a class="" href="Server.html" title="Server">Server</a>
     </li><li>
@@ -159,7 +163,7 @@
     <h2>Structural Map</h2>
   </div>
   <ol class="toc-list">
-    <li><a href="#1-properties" title="1. Properties">1. Properties</a></li><li><a href="#2-methods" title="2. Methods">2. Methods</a></li><li><a href="#2-1-http-method-routing" title="2.1. HTTP Method Routing">2.1. HTTP Method Routing</a></li><li><a href="#2-2-generic-route-definition" title="2.2. Generic Route Definition">2.2. Generic Route Definition</a></li><li><a href="#2-3-event-handling" title="2.3. Event Handling">2.3. Event Handling</a></li><li><a href="#2-4-event-emission" title="2.4. Event Emission">2.4. Event Emission</a></li><li><a href="#2-5-route-resolution" title="2.5. Route Resolution">2.5. Route Resolution</a></li><li><a href="#2-6-request-and-response-creation" title="2.6. Request and Response Creation">2.6. Request and Response Creation</a></li><li><a href="#2-7-router-composition" title="2.7. Router Composition">2.7. Router Composition</a></li><li><a href="#3-automatic-router-detection" title="3. Automatic Router Detection">3. Automatic Router Detection</a></li><li><a href="#4-routing-interfaces" title="4. Routing Interfaces">4. Routing Interfaces</a></li><li><a href="#4-1-action-router-traditional" title="4.1. Action Router (Traditional)">4.1. Action Router (Traditional)</a></li><li><a href="#4-2-entry-router-file-based" title="4.2. Entry Router (File-based)">4.2. Entry Router (File-based)</a></li><li><a href="#4-3-import-router-lazy-loading" title="4.3. Import Router (Lazy Loading)">4.3. Import Router (Lazy Loading)</a></li><li><a href="#4-4-view-router-template-based" title="4.4. View Router (Template-based)">4.4. View Router (Template-based)</a></li><li><a href="#5-route-patterns" title="5. Route Patterns">5. Route Patterns</a></li><li><a href="#5-1-parameter-routes" title="5.1. Parameter Routes">5.1. Parameter Routes</a></li><li><a href="#5-2-wildcard-routes" title="5.2. Wildcard Routes">5.2. Wildcard Routes</a></li><li><a href="#5-3-regular-expression-routes" title="5.3. Regular Expression Routes">5.3. Regular Expression Routes</a></li><li><a href="#6-event-system-integration" title="6. Event System Integration">6. Event System Integration</a></li><li><a href="#6-1-priority-based-execution" title="6.1. Priority-Based Execution">6.1. Priority-Based Execution</a></li><li><a href="#6-2-event-hooks" title="6.2. Event Hooks">6.2. Event Hooks</a></li><li><a href="#7-type-parameters" title="7. Type Parameters">7. Type Parameters</a></li><li><a href="#8-examples" title="8. Examples">8. Examples</a></li><li><a href="#8-1-basic-rest-api" title="8.1. Basic REST API">8.1. Basic REST API</a></li><li><a href="#8-2-middleware-pattern" title="8.2. Middleware Pattern">8.2. Middleware Pattern</a></li><li><a href="#8-3-file-based-routing" title="8.3. File-Based Routing">8.3. File-Based Routing</a></li><li><a href="#9-build-integration" title="9. Build Integration">9. Build Integration</a></li>
+    <li><a href="#1-properties" title="1. Properties">1. Properties</a></li><li><a href="#2-methods" title="2. Methods">2. Methods</a></li><li><a href="#2-1-http-method-routing" title="2.1. HTTP Method Routing">2.1. HTTP Method Routing</a></li><li><a href="#2-2-generic-route-definition" title="2.2. Generic Route Definition">2.2. Generic Route Definition</a></li><li><a href="#2-3-event-handling" title="2.3. Event Handling">2.3. Event Handling</a></li><li><a href="#2-4-event-emission" title="2.4. Event Emission">2.4. Event Emission</a></li><li><a href="#2-5-route-resolution" title="2.5. Route Resolution">2.5. Route Resolution</a></li><li><a href="#2-6-request-and-response-creation" title="2.6. Request and Response Creation">2.6. Request and Response Creation</a></li><li><a href="#2-7-router-composition" title="2.7. Router Composition">2.7. Router Composition</a></li><li><a href="#2-8-controller-mounting" title="2.8. Controller Mounting">2.8. Controller Mounting</a></li><li><a href="#3-automatic-router-detection" title="3. Automatic Router Detection">3. Automatic Router Detection</a></li><li><a href="#4-routing-interfaces" title="4. Routing Interfaces">4. Routing Interfaces</a></li><li><a href="#4-1-action-router-traditional" title="4.1. Action Router (Traditional)">4.1. Action Router (Traditional)</a></li><li><a href="#4-2-entry-router-file-based" title="4.2. Entry Router (File-based)">4.2. Entry Router (File-based)</a></li><li><a href="#4-3-import-router-lazy-loading" title="4.3. Import Router (Lazy Loading)">4.3. Import Router (Lazy Loading)</a></li><li><a href="#4-4-view-router-template-based" title="4.4. View Router (Template-based)">4.4. View Router (Template-based)</a></li><li><a href="#5-route-patterns" title="5. Route Patterns">5. Route Patterns</a></li><li><a href="#5-1-parameter-routes" title="5.1. Parameter Routes">5.1. Parameter Routes</a></li><li><a href="#5-2-wildcard-routes" title="5.2. Wildcard Routes">5.2. Wildcard Routes</a></li><li><a href="#5-3-regular-expression-routes" title="5.3. Regular Expression Routes">5.3. Regular Expression Routes</a></li><li><a href="#6-event-system-integration" title="6. Event System Integration">6. Event System Integration</a></li><li><a href="#6-1-priority-based-execution" title="6.1. Priority-Based Execution">6.1. Priority-Based Execution</a></li><li><a href="#6-2-event-hooks" title="6.2. Event Hooks">6.2. Event Hooks</a></li><li><a href="#7-type-parameters" title="7. Type Parameters">7. Type Parameters</a></li><li><a href="#8-examples" title="8. Examples">8. Examples</a></li><li><a href="#8-1-basic-rest-api" title="8.1. Basic REST API">8.1. Basic REST API</a></li><li><a href="#8-2-middleware-pattern" title="8.2. Middleware Pattern">8.2. Middleware Pattern</a></li><li><a href="#8-3-file-based-routing" title="8.3. File-Based Routing">8.3. File-Based Routing</a></li><li><a href="#9-build-integration" title="9. Build Integration">9. Build Integration</a></li>
   </ol>
 </section>
 
@@ -327,6 +331,32 @@ const mainRouter = new Router();
 mainRouter.use(apiRouter); // Merges routes and listeners</code></pre></div>
 <p><strong>Parameters</strong></p>
 <div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>router</code></td><td><code>Router&lt;R, S&gt;</code></td><td>Another router to merge routes from</td></tr></tbody></table></div>
+<p><strong>Returns</strong></p>
+<p>The Router instance to allow method chaining.</p>
+<h3 id="2-8-controller-mounting">2.8. Controller Mounting</h3>
+<p>The following example shows how to mount decorated controllers onto a router.</p>
+<div class="code-shell"><div class="code-toolbar"><span class="code-language">TypeScript</span><button class="copy-button" type="button">copy</button></div><pre class="code-block" data-language="typescript"><code class="language-typescript">import {
+  Controller,
+  Get,
+  Router,
+  type HttpAction
+} from '@stackpress/ingest/http';
+
+type HttpProps = Parameters&lt;HttpAction&gt;[0];
+
+@Controller('/api')
+class UserController {
+  @Get('/users')
+  public list({ res }: HttpProps) {
+    res.setBody('text/plain', 'list');
+  }
+}
+
+const router = new Router();
+router.mount(UserController);</code></pre></div>
+<p><code>mount()</code> accepts controller classes or controller instances and registers both route decorators and <code>@On(...)</code> listeners through the existing router APIs.</p>
+<p><strong>Parameters</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>controllers</code></td><td><code>ControllerMountable[]</code></td><td>Controller classes or controller instances to register on this router.</td></tr></tbody></table></div>
 <p><strong>Returns</strong></p>
 <p>The Router instance to allow method chaining.</p>
 <h2 id="3-automatic-router-detection">3. Automatic Router Detection</h2>

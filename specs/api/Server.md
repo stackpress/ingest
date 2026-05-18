@@ -192,6 +192,44 @@ app.handler = async (server, request, response) => {
 
 None.
 
+### 2.7. Controller Mounting
+
+The following example shows how to mount decorated controllers directly on a server.
+
+```typescript
+import {
+  Controller,
+  Get,
+  server,
+  type HttpAction
+} from '@stackpress/ingest/http';
+
+type HttpProps = Parameters<HttpAction>[0];
+
+@Controller('/api')
+class UserController {
+  @Get('/users')
+  public list({ res }: HttpProps) {
+    res.setBody('text/plain', 'list');
+  }
+}
+
+const app = server();
+app.mount(UserController);
+```
+
+Because `Server` extends [Router](./Router.md), `mount()` behaves the same way here. It registers decorated routes and event listeners without adding bootstrap discovery or a separate controller runtime.
+
+**Parameters**
+
+| Parameter | Type | Description |
+|----------|------|-------------|
+| `controllers` | `ControllerMountable[]` | Controller classes or controller instances to register on this server. |
+
+**Returns**
+
+The Server instance to allow method chaining.
+
 ## 3. Static Methods
 
 The following methods can be accessed directly from Server itself.

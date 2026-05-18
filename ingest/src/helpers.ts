@@ -1,4 +1,4 @@
-//stackpress
+//modules
 import {
   isObject,
   objectFromQuery,

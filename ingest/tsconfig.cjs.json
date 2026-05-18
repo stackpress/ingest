@@ -1,6 +1,7 @@
 {
   "extends": "@stackpress/lib/tsconfig/cjs",
   "compilerOptions": {
+    "experimentalDecorators": true,
     "outDir": "cjs/"
   },
   "include": [ "src/**/*.ts" ],

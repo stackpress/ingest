@@ -1,3 +1,9 @@
 {
-  "extends": "./tsconfig.esm"
+  "extends": "./tsconfig.esm",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": [ "mocha", "node" ]
+  },
+  "include": [ "src/**/*.ts", "tests/**/*.ts" ],
+  "exclude": [ "esm", "cjs", "node_modules" ]
 }

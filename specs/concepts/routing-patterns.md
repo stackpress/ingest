@@ -92,6 +92,40 @@ app.view.get('/profile', './views/profile.hbs');
 
 View routes keep template lookup connected to routing so simple rendered pages do not need to repeat the same rendering boilerplate in every handler.
 
+## Decorated controllers
+
+Use decorated controllers when you want class-based organization without changing the underlying router behavior.
+
+```typescript
+import {
+  Controller,
+  Get,
+  server,
+  type HttpAction
+} from '@stackpress/ingest/http';
+
+type HttpProps = Parameters<HttpAction>[0];
+
+@Controller('/api')
+class UserController {
+  @Get('/users')
+  public list({ res }: HttpProps) {
+    res.setJSON([{ id: 1, name: 'Ada' }]);
+  }
+}
+
+const app = server();
+app.mount(UserController);
+```
+
+This pattern is useful when:
+
+- you want related routes grouped on a class
+- you want route registration sugar without a dependency injection container
+- you still want explicit control over which controllers become active
+
+Decorators are optional in Ingest. They only write route and event metadata that `mount()` later registers through the same `route()` and `on()` APIs used by manual routing.
+
 ## Route matching and composition
 
 Underneath these styles, Ingest routes are still regular router entries. That means you keep the same matching features, route parameters, wildcards, and router composition regardless of the route source.
@@ -146,6 +180,7 @@ app.use(admin);
 ## How to choose
 
 - choose inline routes for directness
+- choose decorated controllers for class-based grouping with explicit mounting
 - choose entry routes for file-driven structure
 - choose import routes for lazy loading and tooling
 - choose view routes for template-first pages

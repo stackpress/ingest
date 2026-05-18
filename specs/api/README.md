@@ -25,6 +25,7 @@ Use this section when you already know what you are looking for and need exact c
 
 ## Utilities
 
+- [Decorators](./Decorators.md)
 - [Loader](./Loader.md)
 
 ## Underlying primitives

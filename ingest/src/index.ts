@@ -11,7 +11,7 @@ export type {
   CallableMap,
   CallableNest,
   ResponseStatus,
-  Trace,
+  Trace as StackTrace,
   ErrorResponse,
   SuccessResponse,
   StatusResponse,
@@ -33,7 +33,7 @@ export type {
   Data,
   Query,
   Session,
-  Post,
+  Post as PostData,
   LoaderResults,
   RequestLoader,
   CallableSession,
@@ -66,6 +66,14 @@ export type {
   ViewRouterEngine,
   ViewRouterRender,
   AnyRouterAction,
+  ControllerProperty,
+  ControllerHandler,
+  ControllerRouteDefinition,
+  ControllerEventDefinition,
+  ControllerMetadata,
+  ControllerInstance,
+  ControllerClass,
+  ControllerMountable,
   ServerAction,
   ServerHandler,
   ServerGateway,
@@ -116,6 +124,22 @@ import Server, {
   router, 
   server 
 } from './Server.js';
+
+export {
+  Controller,
+  All,
+  Connect,
+  Delete,
+  Get,
+  Head,
+  mount,
+  On,
+  Options,
+  Patch,
+  Post,
+  Put,
+  Trace
+} from './decorators.js';
 
 export {
   isObject,
