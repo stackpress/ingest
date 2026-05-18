@@ -146,6 +146,14 @@ th {
   gap: 0.18rem;
 }
 
+.brand-copy h1 {
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+}
+
 .brand-copy strong {
   font-size: 1.15rem;
   letter-spacing: 0.08em;
@@ -466,6 +474,10 @@ th {
 
 .section-card strong {
   font-size: 1.05rem;
+}
+
+a.section-card strong {
+  text-decoration: underline;
 }
 
 .section-card span {

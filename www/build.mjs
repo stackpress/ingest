@@ -17,7 +17,7 @@ const repoUrl = 'https://github.com/stackpress/ingest';
 const site = {
   title: 'Ingest',
   tagline: 'Composable Server/less IO Framework',
-  description: 'A server framework built around event-driven routing, composability, and runtime portability.',
+  description: 'A server/less framework built around event-driven routing, composability, and runtime portability.',
   repoUrl,
   siteUrl: 'https://www.stackpress.io/ingest',
   socialImage: ''
@@ -221,7 +221,7 @@ async function buildHomePage(definition, markdown) {
     }
   ];
 
-  const title = 'One server model for Node HTTP and WHATWG runtimes';
+  const title = 'Home';
   const description = site.description;
 
   return {
@@ -229,7 +229,6 @@ async function buildHomePage(definition, markdown) {
     title,
     description,
     navLabel: 'Explore Docs',
-    sectionLabel: 'Documentation Hub',
     meta: renderChipRow([
       '# plugin pattern for composability',
       '# native http & whatwg',
