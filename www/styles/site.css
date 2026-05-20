@@ -328,6 +328,18 @@ th {
   padding: 2rem;
 }
 
+.home-hero .badges {
+  padding-top: 20px;
+}
+
+.home-hero .badges a {
+  text-decoration: none;
+}
+
+.home-hero .badges a img {
+  display: inline-block;
+}
+
 .hero h1 {
   font-size: clamp(2rem, 4vw, 3.6rem);
   letter-spacing: -0.04em;

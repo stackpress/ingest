@@ -45,7 +45,23 @@
       <section class="hero home-hero">
         <div class="hero-copy">
           <p class="hero-summary">{{page.description}}</p>
-          {{page.meta}}
+          <div class="badges">
+            <a href="https://www.npmjs.com/package/@stackpress/ingest" target="_blank">
+              <img src="https://img.shields.io/npm/v/@stackpress/ingest.svg?style=flat" />
+            </a>
+            <a href="https://github.com/stackpress/ingest/actions" target="_blank">
+              <img src="https://img.shields.io/github/actions/workflow/status/stackpress/ingest/test.yml" />
+            </a>
+            <a href="https://coveralls.io/github/stackpress/ingest?branch=main" target="_blank">
+              <img src="https://coveralls.io/repos/github/stackpress/ingest/badge.svg?branch=main" />
+            </a>
+            <a href="https://github.com/stackpress/ingest/commits/main/" target="_blank">
+              <img src="https://img.shields.io/github/last-commit/stackpress/ingest" />
+            </a>
+            <a href="https://github.com/stackpress/ingest/blob/main/LICENSE" target="_blank">
+              <img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat" />
+            </a>
+          </div>
           {{page.heroActions}}
         </div>
         {{page.heroVisual}}
