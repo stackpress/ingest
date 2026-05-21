@@ -1,37 +1,24 @@
 //node
-import type { 
-  Method, 
-  UnknownNest,
-  TaskResult 
-} from '@stackpress/lib/types';
+import type { Method } from '@stackpress/lib/types';
 //common
 import type { 
   ActionRouterArgs,
+  ViewRouterEngine,
+  ViewRouterRender,
   ViewRouterTaskItem,
   ActionRouterListener
 } from '../types.js';
 //local
 import type ActionRouter from './ActionRouter.js';
 
-export type ViewEngine<R, S, X> = (
-  filePath: string, 
-  ...args: ActionRouterArgs<R, S, X>
-) => TaskResult;
-
-export type ViewRender = (
-  filePath: string, 
-  props?: UnknownNest, 
-  options?: UnknownNest
-) => string|null|Promise<string|null>;
-
 export default class ViewRouter<R, S, X> {
   //A route map to task queues
   //event -> [ ...{ entry, priority } ]
   public readonly views = new Map<string, Set<ViewRouterTaskItem>>();
   //engine
-  protected _engine: ViewEngine<R, S, X> = () => void 0;
+  protected _engine: ViewRouterEngine<R, S, X> = () => void 0;
   //render
-  protected _render: ViewRender = () => null;
+  protected _render: ViewRouterRender = () => null;
   //parent router
   protected _router: ActionRouter<R, S, X>;
   //listener straight to the end
@@ -47,7 +34,7 @@ export default class ViewRouter<R, S, X> {
   /**
    * Set the view engine method
    */
-  public set engine(engine: ViewEngine<R, S, X>) {
+  public set engine(engine: ViewRouterEngine<R, S, X>) {
     this._engine = engine;
   }
 
@@ -61,7 +48,7 @@ export default class ViewRouter<R, S, X> {
   /**
    * Set the render method
    */
-  public set render(render: ViewRender) {
+  public set render(render: ViewRouterRender) {
     this._render = render;
   }
 

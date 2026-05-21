@@ -31,12 +31,12 @@ describe('Decorator Tests', () => {
     class UserController {
       @Get('/users')
       public list({ res }: TestRouterProps) {
-        res.setBody('text/plain', 'list');
+        res.set('text/plain', 'list');
       }
 
       @Post('/users/:id')
       public create({ req, res }: TestRouterProps) {
-        res.setBody('text/plain', `${req.data('id')}:create`);
+        res.set('text/plain', `${req.data('id')}:create`);
       }
 
       @On('GET /api/users', 10)
@@ -80,7 +80,7 @@ describe('Decorator Tests', () => {
 
       @Get('/dashboard')
       public dashboard({ res }: TestRouterProps) {
-        res.setBody('text/plain', this.prefix);
+        res.set('text/plain', this.prefix);
       }
     }
 
@@ -102,7 +102,7 @@ describe('Decorator Tests', () => {
     class UserController {
       @Get('/users')
       public list({ res }: TestServerProps) {
-        res.setBody('text/plain', 'users');
+        res.set('text/plain', 'users');
       }
     }
 

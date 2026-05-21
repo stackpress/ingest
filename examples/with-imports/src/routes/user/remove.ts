@@ -15,5 +15,5 @@ export default function UserRemove(req: Request, res: Response) {
     created: new Date().toISOString() 
   };
   //send the response
-  res.setResults(results);
+  res.results(results);
 };

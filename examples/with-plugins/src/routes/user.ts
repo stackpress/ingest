@@ -26,7 +26,7 @@ route.get('/user', function UserSearch({ req, res }) {
     }
   ];
   //send the response
-  res.setRows(results, 100);
+  res.rows(results, 100);
 });
 
 /**
@@ -39,7 +39,7 @@ route.post('/user', function UserCreate({ req, res }) {
   //maybe insert into database?
   const results = { ...form, id: ++id, created: new Date().toISOString() };
   //send the response
-  res.setResults(results);
+  res.results(results);
 });
 
 /**
@@ -60,7 +60,7 @@ route.get('/user/:id', function UserDetail({ req, res }) {
     created: new Date().toISOString() 
   };
   //send the response
-  res.setResults(results);
+  res.results(results);
 });
 route.put('/user/:id', function UserUpdate({ req, res }) {
   //get params
@@ -74,7 +74,7 @@ route.put('/user/:id', function UserUpdate({ req, res }) {
   //maybe insert into database?
   const results = { ...form, id, created: new Date().toISOString() };
   //send the response
-  res.setResults(results);
+  res.results(results);
 });
 
 /**
@@ -96,7 +96,7 @@ route.delete('/user/:id', function UserRemove({ req, res }) {
     created: new Date().toISOString() 
   };
   //send the response
-  res.setResults(results);
+  res.results(results);
 });
 
 export default route;

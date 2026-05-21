@@ -4,5 +4,5 @@ import type Response from '../../src/Response';
 export default function(
   { req, res }: { req: Request, res: Response }
 ) {
-  res.setBody('text/plain', req.url.pathname);
+  res.set('text/plain', req.url.pathname);
 }

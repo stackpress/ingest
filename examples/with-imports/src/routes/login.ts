@@ -21,5 +21,5 @@ const template = `
 
 export default function Login(req: Request, res: Response) {
   //send the response
-  res.setHTML(template.trim());
+  res.html(template.trim());
 };

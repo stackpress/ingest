@@ -95,9 +95,6 @@ export type PluginLoaderOptions = ConfigLoaderOptions & {
 //--------------------------------------------------------------------//
 // Router Types
 
-export type ConfigMap = UnknownNest;
-export type PluginMap = Record<string, unknown>;
-
 //action router
 export type ActionRouteProps<R, S, X> = {
   request: Request<R>,
@@ -134,21 +131,18 @@ export type ImportRouterTaskItem<R, S, X> = {
 };
 //view router
 export type ViewRouterTaskItem = { entry: string, priority: number };
-export type ViewRouterEngine<
-  R = unknown, 
-  S = unknown,
-  X = undefined
-> = (
+
+export type ViewRouterEngine<R, S, X> = (
   filePath: string, 
-  req: Request<R>, 
-  res: Response<S>,
-  ctx: X
+  ...args: ActionRouterArgs<R, S, X>
 ) => TaskResult;
+
 export type ViewRouterRender = (
   filePath: string, 
   props?: UnknownNest, 
   options?: UnknownNest
 ) => string|null|Promise<string|null>;
+
 //main router
 //export type RouterContext<R, S, X = undefined> = X extends undefined ? Router<R, S>: X;
 export type AnyRouterAction<
@@ -162,13 +156,11 @@ export type AnyRouterAction<
 //--------------------------------------------------------------------//
 // Server Types
 
+export type ConfigMap = UnknownNest;
+export type PluginMap = Record<string, unknown>;
+
 export type Infer = { readonly __infer: unique symbol };
 export type KnownPlugin<P, K extends string> = K extends keyof P ? P[K] : unknown;
-export type ServerPlugin<
-  P extends PluginMap = PluginMap
-> = <V = Infer, K extends string = string>(
-  name: K
-) => V extends Infer ? KnownPlugin<P, K> : V;
 export type ServerProps<
   R = unknown,
   S = unknown,

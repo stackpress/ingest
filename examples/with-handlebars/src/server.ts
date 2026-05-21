@@ -15,7 +15,7 @@ app.view.render = (filePath, props) => {
 app.view.engine = (filePath, req, res, ctx) => {
   const html = ctx.view.render(filePath, { name: req.data.get('name') });
   if (typeof html === 'string') {
-    res.setHTML(html);
+    res.html(html);
   }
 };
 app.view.get('/', path.join(__dirname, 'home.hbs'));

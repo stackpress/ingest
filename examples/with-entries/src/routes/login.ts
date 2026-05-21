@@ -21,5 +21,5 @@ const template = `
 
 export default action(function Login({ req, res }) {
   //send the response
-  res.setHTML(template.trim());
+  res.html(template.trim());
 });

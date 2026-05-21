@@ -39,7 +39,7 @@ router.get('/icon.png', function Icon({ req, res }) {
   if (res.code || res.status || res.body) return; 
   const file = path.resolve(process.cwd(), 'public', 'icon.png'); 
   if (fs.existsSync(file)) {
-    res.setBody('image/png', fs.createReadStream(file));
+    res.set('image/png', fs.createReadStream(file));
   }
 });
 
@@ -48,7 +48,7 @@ router.get('/icon.png', function Icon({ req, res }) {
  */
 router.get('/stream', function Stream({ req, res }) {
   //send the response
-  res.setHTML(template.trim());
+  res.html(template.trim());
 });
 
 /**
@@ -63,7 +63,7 @@ router.get('/__sse__', function SSE({ req, res }) {
 
   let timerId: any;
   const msg = new TextEncoder().encode("data: hello\r\n\r\n");
-  res.setBody('text/event-stream', new ReadableStream({
+  res.set('text/event-stream', new ReadableStream({
     start(controller) {
       timerId = setInterval(() => {
         controller.enqueue(msg);

@@ -31,7 +31,7 @@ route.get('/error', function ErrorResponse({ req, res }) {
 route.on('response', function NotFound({ req, res }) {
   if (!res.code && !res.status && !res.sent) {
     //send the response
-    res.setHTML('Not Found');
+    res.html('Not Found');
   }
 });
 

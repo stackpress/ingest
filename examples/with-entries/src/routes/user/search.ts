@@ -19,5 +19,5 @@ export default action(function UserSearch({ req, res }) {
     }
   ];
   //send the response
-  res.setRows(results, 100);
+  res.rows(results, 100);
 });

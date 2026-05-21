@@ -27,7 +27,7 @@ const router = server<Config>();
  */
 router.get('/', function HomePage({ req, res, ctx }) { 
   const project = ctx.plugin<{ welcome: string }>('project');
-  res.setHTML(project.welcome);
+  res.html(project.welcome);
 });
 
 /**
@@ -35,7 +35,7 @@ router.get('/', function HomePage({ req, res, ctx }) {
  */
 router.get('/login', function Login({ req, res }) {
   //send the response
-  res.setHTML(template.trim());
+  res.html(template.trim());
 });
 
 export default router;

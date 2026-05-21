@@ -5,7 +5,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 const app = server();
 
 app.get('/', ({ req, res }) => {
-  res.setHTML('<h1>Hello, World from Lambda!</h1>');
+  res.html('<h1>Hello, World from Lambda!</h1>');
 });
 
 // AWS Lambda handler

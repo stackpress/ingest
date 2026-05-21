@@ -19,7 +19,7 @@ describe('Server Tests', () => {
   it('Should route to', async () => {
     const server = new Server();
     server.get('/some/route/path', ({ req, res }) => {
-      res.setBody('text/plain', `- ${req.data('foo')}`);
+      res.set('text/plain', `- ${req.data('foo')}`);
     });
 
     const req = new Request<unknown>({ 
@@ -46,7 +46,7 @@ describe('Server Tests', () => {
   it('Should call', async () => {
     const server = new Server();
     server.on('foo', ({ req, res }) => {
-      res.setBody('text/plain', `- ${req.data('foo')}`);
+      res.set('text/plain', `- ${req.data('foo')}`);
     });
 
     const req = new Request<unknown>({ 
@@ -129,15 +129,11 @@ describe('Server Tests', () => {
   it('Should handle custom gateway and handler', async () => {
     type CustomResponse = { custom: boolean };
     
-    const customGateway = (server: Server<any, CustomResponse, any>) => {
+    const customGateway = () => {
       return (options: any) => createServer(options);
     };
 
-    const customHandler = async (
-      ctx: Server<any, CustomResponse, any>, 
-      req: unknown, 
-      res: unknown
-    ): Promise<CustomResponse> => {
+    const customHandler = async (): Promise<CustomResponse> => {
       return { custom: true };
     };
 
@@ -169,7 +165,7 @@ describe('Server Tests', () => {
     const res = server.response({
       headers: { 'content-type': 'application/json' }
     });
-    res.setStatus(201);
+    res.statusCode(201);
 
     expect(req.method).to.equal('POST');
     expect(req.data('test')).to.be.true;
@@ -204,16 +200,16 @@ describe('Server Tests', () => {
     const server = new Server();
     
     server.get('/test', ({ res }) => {
-      res.setBody('text/plain', 'GET');
+      res.set('text/plain', 'GET');
     });
     server.post('/test', ({ res }) => {
-      res.setBody('text/plain', 'POST');
+      res.set('text/plain', 'POST');
     });
     server.put('/test', ({ res }) => {
-      res.setBody('text/plain', 'PUT');
+      res.set('text/plain', 'PUT');
     });
     server.delete('/test', ({ res }) => {
-      res.setBody('text/plain', 'DELETE');
+      res.set('text/plain', 'DELETE');
     });
 
     const getRes = await server.resolve('GET', '/test');
@@ -300,7 +296,7 @@ describe('Server Tests', () => {
     const server = new Server();
     
     const emptyRes = server.response();
-    emptyRes.setStatus(200); // Set explicit OK status
+    emptyRes.statusCode(200); // Set explicit OK status
     expect(emptyRes.status).to.equal('OK');
     
     const headerRes = server.response({
@@ -347,20 +343,14 @@ describe('Server Tests', () => {
     server.on('aliases', ({
       request,
       response,
-      server: context,
-      config,
-      plugin,
+      context,
       req,
       res,
-      ctx,
-      cfg,
-      plg
+      ctx
     }) => {
       expect(request).to.equal(req);
       expect(response).to.equal(res);
       expect(context).to.equal(ctx);
-      expect(config).to.equal(cfg);
-      expect(plugin).to.equal(plg);
       verified = true;
     });
 

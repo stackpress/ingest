@@ -143,7 +143,7 @@ export function loader(
     }
     //TODO: limit the size of the body
     const body = await resource.text();
-    const post = formDataToObject(req.type, body)
+    const post = formDataToObject(req.mimetype, body)
 
     return { body, post } as LoaderResults;
   } 

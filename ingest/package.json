@@ -189,13 +189,16 @@
     "build:tsc": "yarn build:tsc:cjs && yarn build:tsc:esm",
     "build:tsc:cjs": "tsc -p ./tsconfig.cjs.json",
     "build:tsc:esm": "tsc -p ./tsconfig.esm.json",
-    "test": "ts-mocha -r tsx tests/*.test.ts"
+    "test": "yarn test:env nyc ts-mocha -r tsx tests/*.test.ts",
+    "test:env": "NODE_OPTIONS=\"--disable-warning=ExperimentalWarning --experimental-loader @istanbuljs/esm-loader-hook\"",
+    "report": "nyc report -r lcov"
   },
   "dependencies": {
-    "@stackpress/lib": "0.10.1",
+    "@stackpress/lib": "0.10.3",
     "@whatwg-node/server": "0.10.17"
   },
   "devDependencies": {
+    "@istanbuljs/esm-loader-hook": "0.3.0",
     "@types/chai": "4.3.20",
     "@types/mocha": "10.0.10",
     "@types/node": "25.3.5",

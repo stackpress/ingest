@@ -23,5 +23,5 @@ const template = `
 
 export default function Stream(req: Request, res: Response) {
   //send the response
-  res.setHTML(template.trim());
+  res.html(template.trim());
 };

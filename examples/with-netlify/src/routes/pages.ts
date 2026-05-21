@@ -25,7 +25,7 @@ const route = router();
  * Home page
  */
 route.get('/', function HomePage({ req, res }) {
-  res.setHTML('<h1>Hello, World!</h1><p>from Netlify</p>');
+  res.html('<h1>Hello, World!</h1><p>from Netlify</p>');
 });
 
 /**
@@ -33,7 +33,7 @@ route.get('/', function HomePage({ req, res }) {
  */
 route.get('/login', function Login({ req, res }) {
   //send the response
-  res.setHTML(template.trim());
+  res.html(template.trim());
 });
 
 export default route;

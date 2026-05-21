@@ -139,10 +139,9 @@ export default class Route<
       //make a not found exception
       const exception = Exception
         .for(Status.NOT_FOUND.status)
-        .withCode(Status.NOT_FOUND.code)
-        .toResponse();
+        .withCode(Status.NOT_FOUND.code);
       //set the exception as the error
-      this.response.setError(exception);
+      this.response.fromException(exception);
       //allow plugins to handle the not found
       status = await this.context.emit(
         'error', 
@@ -184,9 +183,9 @@ export default class Route<
    */
   protected async _catch(error: Error) {
     //upgrade the error to an exception
-    const exception = Exception.upgrade(error as Error).toResponse();
+    const exception = Exception.upgrade(error as Error);
     //set the exception as the error
-    this.response.setError(exception);
+    this.response.fromException(exception);
     //allow plugins to handle the error
     return await this.context.emit(
       'error', 

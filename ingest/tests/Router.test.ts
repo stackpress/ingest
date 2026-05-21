@@ -24,7 +24,7 @@ describe('Router Tests', () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
     router.get('/some/route/path', ({ req, res }) => {
-      res.setBody('text/plain', req.url.pathname);
+      res.set('text/plain', req.url.pathname);
     });
 
     const req = new Request({ 
@@ -42,7 +42,7 @@ describe('Router Tests', () => {
     let tests = 0;
     for (const method of methods) {
       router[method]('/some/route/path', ({ req, res }) => {
-        res.setBody('text/plain', `${method} ${req.url.pathname}`);
+        res.set('text/plain', `${method} ${req.url.pathname}`);
       });
       const req = new Request({ 
         method: method.toUpperCase() as Method,
@@ -62,7 +62,7 @@ describe('Router Tests', () => {
     let tests = 0;
     for (const method of methods) {
       router.action[method]('/some/route/path', ({ req, res }) => {
-        res.setBody('text/plain', `${method} ${req.url.pathname}`);
+        res.set('text/plain', `${method} ${req.url.pathname}`);
       });
       const req = new Request({ 
         method: method.toUpperCase() as Method,
@@ -80,7 +80,7 @@ describe('Router Tests', () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
     router.all('/some/route/path', ({ req, res }) => {
-      res.setBody('text/plain', req.url.pathname);
+      res.set('text/plain', req.url.pathname);
     });
 
     const req = new Request({ 
@@ -112,7 +112,7 @@ describe('Router Tests', () => {
   it('Should handle route parameters correctly', async () => {
     const router = new Router();
     router.get('/users/:id/posts/:postId', ({ req, res }) => {
-      res.setBody('application/json', {
+      res.set('application/json', {
         params: req.data.get(),
         path: req.url.pathname
       });
@@ -136,7 +136,7 @@ describe('Router Tests', () => {
   it('Should handle wildcard routes correctly', async () => {
     const router = new Router();
     router.get('/files/**', ({ req, res }) => {
-      res.setBody('application/json', {
+      res.set('application/json', {
         params: req.data.get(),
         path: req.url.pathname
       });
@@ -185,7 +185,7 @@ describe('Router Tests', () => {
     const router2 = new Router();
 
     router1.get('/api/v1/test', ({ res }) => {
-      res.setBody('text/plain', 'router1');
+      res.set('text/plain', 'router1');
     });
 
     router2.use(router1);
@@ -204,13 +204,13 @@ describe('Router Tests', () => {
     const router = new Router();
     expect(router).to.be.instanceOf(Router);
     router.view.engine = function (filePath, { res }) {
-      res.setBody('text/plain', filePath);
+      res.set('text/plain', filePath);
     }
     // Set up routes with different action types
     router.get('/view/path', './templates/view.html');
     router.get('/import/path', () => import('./fixtures/get'));
     router.get('/standard/path', ({ res }) => {
-      res.setBody('text/plain', 'standard response');
+      res.set('text/plain', 'standard response');
     });
   
     // Test view routing

@@ -38,7 +38,7 @@ route.get('/error', function ErrorResponse({ req, res }) {
 route.get('/**', function NotFound({ req, res }) {
   if (!res.code && !res.status && !res.sent) {
     //send the response
-    res.setHTML('Not Found');
+    res.html('Not Found');
   }
 });
 
@@ -52,7 +52,7 @@ route.on('error', function Error({ req, res }) {
   }) || [];
   html.push(`<pre>${stack.join('<br><br>')}</pre>`);
 
-  res.setHTML(html.join('<br>'));
+  res.html(html.join('<br>'));
 });
 
 export default route;

@@ -10,5 +10,5 @@ export default action(function Error({ req, res }) {
   }) || [];
   html.push(`<pre>${stack.join('<br><br>')}</pre>`);
 
-  res.setHTML(html.join('<br>'));
+  res.html(html.join('<br>'));
 });

@@ -9,7 +9,7 @@ export default action(async function SSE({ req, res }) {
 
   let timerId: any;
   const msg = new TextEncoder().encode("data: hello\r\n\r\n");
-  res.setBody('text/event-stream', new ReadableStream({
+  res.set('text/event-stream', new ReadableStream({
     start(controller) {
       timerId = setInterval(() => {
         controller.enqueue(msg);
