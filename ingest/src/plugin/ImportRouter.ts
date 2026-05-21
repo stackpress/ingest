@@ -11,24 +11,24 @@ import type {
 //local
 import type ActionRouter from './ActionRouter.js';
 
-export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
+export default class ImportRouter<R, S, X>  {
   //A route map to task queues
   //event -> [ ...{ import, priority } ]
   public readonly imports = new Map<
     string,
-    Set<ImportRouterTaskItem<R, S, X, C, P>>
+    Set<ImportRouterTaskItem<R, S, X>>
   >();
   //parent router
-  protected _router: ActionRouter<R, S, X, C, P>;
+  protected _router: ActionRouter<R, S, X>;
   //listener straight to the end
-  protected _listen: ActionRouterListener<R, S, X, C, P>;
+  protected _listen: ActionRouterListener<R, S, X>;
 
   /**
    * Sets the router
    */
   public constructor(
-    router: ActionRouter<R, S, X, C, P>,
-    listen: ActionRouterListener<R, S, X, C, P>
+    router: ActionRouter<R, S, X>,
+    listen: ActionRouterListener<R, S, X>
   ) {
     this._router = router;
     this._listen = listen;
@@ -40,7 +40,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public action(
     event: string, 
-    action: ImportRouterAction<R, S, X, C, P>, 
+    action: ImportRouterAction<R, S, X>, 
     priority = 0
   ) {
     //if the listener group does not exist, create it
@@ -50,11 +50,11 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
     //add the listener to the group
     this.imports.get(event)?.add({ import: action, priority });
     return async function ImportFileAction(
-      ...[ props ]: ActionRouterArgs<R, S, X, C, P>
+      ...[ props ]: ActionRouterArgs<R, S, X>
     ) {
       //import the action
       const imports = await action() as { 
-        default: ActionRouterAction<R, S, X, C, P> 
+        default: ActionRouterAction<R, S, X> 
       };
       //get the default export
       const callback = imports.default;
@@ -68,7 +68,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public all(
     path: string, 
-    action: ImportRouterAction<R, S, X, C, P>, 
+    action: ImportRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('ALL', path, action, priority);
@@ -79,7 +79,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public connect(
     path: string, 
-    action: ImportRouterAction<R, S, X, C, P>, 
+    action: ImportRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('CONNECT', path, action, priority);
@@ -90,7 +90,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public delete(
     path: string, 
-    action: ImportRouterAction<R, S, X, C, P>, 
+    action: ImportRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('DELETE', path, action, priority);
@@ -101,7 +101,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public get(
     path: string, 
-    action: ImportRouterAction<R, S, X, C, P>, 
+    action: ImportRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('GET', path, action, priority);
@@ -112,7 +112,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public head(
     path: string, 
-    action: ImportRouterAction<R, S, X, C, P>, 
+    action: ImportRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('HEAD', path, action, priority);
@@ -123,7 +123,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public on(
     event: string|RegExp, 
-    entry: ImportRouterAction<R, S, X, C, P>,
+    entry: ImportRouterAction<R, S, X>,
     priority = 0
   ) {
     const key = this._router.eventName(event);
@@ -137,7 +137,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public options(
     path: string, 
-    action: ImportRouterAction<R, S, X, C, P>, 
+    action: ImportRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('OPTIONS', path, action, priority);
@@ -148,7 +148,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public patch(
     path: string, 
-    action: ImportRouterAction<R, S, X, C, P>, 
+    action: ImportRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('PATCH', path, action, priority);
@@ -159,7 +159,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public post(
     path: string, 
-    action: ImportRouterAction<R, S, X, C, P>, 
+    action: ImportRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('POST', path, action, priority);
@@ -182,7 +182,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
   public route(
     method: Method, 
     path: string, 
-    entry: ImportRouterAction<R, S, X, C, P>,
+    entry: ImportRouterAction<R, S, X>,
     priority = 0
   ) {
     const event = this._router.eventName(method, path);
@@ -196,7 +196,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
    */
   public trace(
     path: string, 
-    action: ImportRouterAction<R, S, X, C, P>, 
+    action: ImportRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('TRACE', path, action, priority);
@@ -205,7 +205,7 @@ export default class ImportRouter<R, S, X, C = unknown, P = unknown>  {
   /**
    * Allows imports from other routers to apply here
    */
-  public use(router: ImportRouter<R, S, X, C, P>) {
+  public use(router: ImportRouter<R, S, X>) {
     //first concat their routes with this one
     //event -> [ ...{ import, priority } ]
     router.imports.forEach((tasks, event) => {

@@ -1,11 +1,7 @@
 //modules
 import { createServer } from 'node:http';
 //stackpress
-import type { 
-  CallableMap, 
-  CallableNest, 
-  UnknownNest 
-} from '@stackpress/lib';
+import type { CallableMap, CallableNest } from '@stackpress/lib';
 import { map } from '@stackpress/lib/Map';
 import { nest } from '@stackpress/lib/Nest';
 //local
@@ -13,12 +9,13 @@ import type {
   Infer,
   KnownPlugin,
   ServerAction,
-  ServerPlugin,
   ServerProps,
   ServerGateway,
   ServerHandler,
   ServerOptions,
-  NodeServerOptions
+  NodeServerOptions,
+  ConfigMap,
+  PluginMap
 } from './types.js';
 import type Request from './Request.js';
 import type Response from './Response.js';
@@ -38,10 +35,10 @@ import { PluginLoader } from './Loader.js';
 export default class Server<
   R = unknown, 
   S = unknown,
-  C extends UnknownNest = UnknownNest,
-  P extends Record<string, unknown> = Record<string, unknown>
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
 > 
-  extends Router<R, S, CallableNest<C>, ServerPlugin<P>>
+  extends Router<R, S>
 {
   //arbitrary config map
   public readonly config: CallableNest<C>;
@@ -123,18 +120,13 @@ export default class Server<
    * event dispatch, and direct action execution aligned.
    */
   public props(req: Request<R>, res: Response<S>): ServerProps<R, S, C, P> {
-    const plugin = this._plugin();
     return {
       request: req,
       response: res,
-      server: this,
-      config: this.config,
-      plugin,
+      context: this,
       req,
       res,
-      ctx: this,
-      cfg: this.config,
-      plg: plugin
+      ctx: this
     };
   }
 
@@ -157,16 +149,6 @@ export default class Server<
     this.plugins.set(name, config);
     return this as unknown as Server<R, S, C, P & { [key in K]: V }>;
   }
-
-  /**
-   * Creates the plugin lookup used by handler props
-   *
-   * The bound function preserves the familiar `plugin(name)`
-   * call shape while still sourcing data from the server.
-   */
-  protected _plugin(): ServerPlugin<P> {
-    return this.plugin.bind(this) as ServerPlugin<P>;
-  }
 };
 
 /**
@@ -175,8 +157,8 @@ export default class Server<
 export function gateway<
   R = unknown, 
   S = unknown,
-  C extends UnknownNest = UnknownNest,
-  P extends Record<string, unknown> = Record<string, unknown>
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
 >(server: Server<R, S, C, P>) {
   return (options: NodeServerOptions) => createServer(
     options, 
@@ -190,8 +172,8 @@ export function gateway<
 export async function handler<
   R = unknown, 
   S = unknown,
-  C extends UnknownNest = UnknownNest,
-  P extends Record<string, unknown> = Record<string, unknown>
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
 >(_ctx: Server<R, S, C, P>, _req: R, res: S) {
   return res;
 };
@@ -202,8 +184,8 @@ export async function handler<
 export function server<
   R = unknown,
   S = unknown,
-  C extends UnknownNest = UnknownNest,
-  P extends Record<string, unknown> = Record<string, unknown>
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
 >(options: ServerOptions<R, S, C, P> = {}) {
   options.gateway = options.gateway || gateway;
   options.handler = options.handler || handler;
@@ -214,7 +196,9 @@ export function server<
  * Default router factory
  */
 export function router() {
-  return new Router<unknown, unknown, unknown, unknown>();
+  //Any: Type unknown is not assignable to type IncomingMessage
+  //Any: Type unknown is not assignable to type ServerResponse
+  return new Router<any, any>();
 }
 
 /**
@@ -223,8 +207,8 @@ export function router() {
 export function action<
   R = unknown,
   S = unknown,
-  C extends UnknownNest = UnknownNest,
-  P extends Record<string, unknown> = Record<string, unknown>
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
 >(action: ServerAction<R, S, C, P>) {
   return action;
 };

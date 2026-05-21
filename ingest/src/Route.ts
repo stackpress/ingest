@@ -1,8 +1,11 @@
 //stackpress
-import type { UnknownNest } from '@stackpress/lib/types';
 import Status from '@stackpress/lib/Status';
 //local
-import type { ServerAction } from './types.js';
+import type { 
+  ServerAction,
+  ConfigMap,
+  PluginMap
+} from './types.js';
 import type Server from './Server.js';
 import type Request from './Request.js';
 import type Response from './Response.js';
@@ -18,8 +21,8 @@ import Exception from './Exception.js';
 export default class Route<
   R = unknown, 
   S = unknown,
-  C extends UnknownNest = UnknownNest,
-  P extends Record<string, unknown> = Record<string, unknown>
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
 > {
   /**
    * Hooks in plugins to the request lifecycle
@@ -27,8 +30,8 @@ export default class Route<
   public static async emit<
     R = unknown, 
     S = unknown,
-    C extends UnknownNest = UnknownNest,
-    P extends Record<string, unknown> = Record<string, unknown>
+    C extends ConfigMap = ConfigMap,
+    P extends PluginMap = PluginMap
   >(
     event: ServerAction<R, S, C, P>|string,
     request: Request<R>,

@@ -9,21 +9,21 @@ import type {
 } from '../types.js';
 //local
 import type ActionRouter from './ActionRouter.js';
-export default class EntryRouter<R, S, X, C = unknown, P = unknown>  {
+export default class EntryRouter<R, S, X>  {
   //A route map to task queues
   //event -> [ ...{ entry, priority } ]
   public readonly entries = new Map<string, Set<EntryRouterTaskItem>>();
   //parent router
-  protected _router: ActionRouter<R, S, X, C, P>;
+  protected _router: ActionRouter<R, S, X>;
   //listener straight to the end
-  protected _listen: ActionRouterListener<R, S, X, C, P>;
+  protected _listen: ActionRouterListener<R, S, X>;
 
   /**
    * Sets the router
    */
   public constructor(
-    router: ActionRouter<R, S, X, C, P>,
-    listen: ActionRouterListener<R, S, X, C, P>
+    router: ActionRouter<R, S, X>,
+    listen: ActionRouterListener<R, S, X>
   ) {
     this._router = router;
     this._listen = listen;
@@ -42,11 +42,11 @@ export default class EntryRouter<R, S, X, C = unknown, P = unknown>  {
     this.entries.get(event)?.add({ entry: action, priority });
     //return the new action
     return async function EntryFileAction(
-      ...[ props ]: ActionRouterArgs<R, S, X, C, P>
+      ...[ props ]: ActionRouterArgs<R, S, X>
     ) {
       //import the action
       const imports = await import(action) as { 
-        default: ActionRouterAction<R, S, X, C, P> 
+        default: ActionRouterAction<R, S, X> 
       };
       //get the default export
       const callback = imports.default;
@@ -197,7 +197,7 @@ export default class EntryRouter<R, S, X, C = unknown, P = unknown>  {
   /**
    * Allows entries from other routers to apply here
    */
-  public use(router: EntryRouter<R, S, X, C, P>) {
+  public use(router: EntryRouter<R, S, X>) {
     //first concat their routes with this one
     //event -> [ ...{ entry, priority } ]
     router.entries.forEach((tasks, event) => {

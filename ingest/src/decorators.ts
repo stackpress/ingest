@@ -187,7 +187,7 @@ export function controllerOf(mountable: ControllerMountable) {
  * surface instead of introducing a parallel execution path.
  */
 export function registerRoute<
-  X extends Router<any, any, any, any> = Router<any, any, any, any>
+  X extends Router<any, any> = Router<any, any>
 >(
   router: X,
   controller: object,
@@ -208,7 +208,7 @@ export function registerRoute<
  * event API that manual listeners already use today.
  */
 export function registerEvent<
-  X extends Router<any, any, any, any> = Router<any, any, any, any>
+  X extends Router<any, any> = Router<any, any>
 >(
   router: X,
   controller: object,
@@ -356,7 +356,7 @@ export function Trace(path: string, priority = 0) {
  * Mounts one or more decorated controllers onto a router or server
  */
 export function mount<
-  X extends Router<any, any, any, any> = Router<any, any, any, any>
+  X extends Router<any, any> = Router<any, any>
 >(
   router: X,
   ...controllers: ControllerMountable[]

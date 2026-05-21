@@ -27,8 +27,8 @@ import ViewRouter from './ViewRouter.js';
  * Event driven routing system. Bring 
  * your own request and response types.
  */
-export default class ActionRouter<R, S, X, C = unknown, P = unknown>
-  extends ExpressEmitter<ActionRouterMap<R, S, X, C, P>> 
+export default class ActionRouter<R, S, X>
+  extends ExpressEmitter<ActionRouterMap<R, S, X>> 
 {
   //context to pass to the actions
   public readonly context: X;
@@ -36,11 +36,11 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
   //event -> { method, path }
   public readonly routes = new Map<string, Route>();
   //entry router extension
-  public readonly entry: EntryRouter<R, S, X, C, P>;
+  public readonly entry: EntryRouter<R, S, X>;
   //import router extension
-  public readonly import: ImportRouter<R, S, X, C, P>;
+  public readonly import: ImportRouter<R, S, X>;
   //view router extension
-  public readonly view: ViewRouter<R, S, X, C, P>;
+  public readonly view: ViewRouter<R, S, X>;
 
   /**
    * Sets the pattern separator
@@ -49,9 +49,9 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
     super('/');
     this.context = context;
     const listen = this._listen.bind(this);
-    this.entry = new EntryRouter<R, S, X, C, P>(this, listen);
-    this.import = new ImportRouter<R, S, X, C, P>(this, listen);
-    this.view = new ViewRouter<R, S, X, C, P>(this, listen);
+    this.entry = new EntryRouter<R, S, X>(this, listen);
+    this.import = new ImportRouter<R, S, X>(this, listen);
+    this.view = new ViewRouter<R, S, X>(this, listen);
   }
 
   /**
@@ -59,7 +59,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public all(
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('ALL', path, action, priority);
@@ -70,7 +70,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public connect(
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('CONNECT', path, action, priority);
@@ -81,7 +81,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public delete(
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('DELETE', path, action, priority);
@@ -92,7 +92,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public async emit(
     event: string, 
-    props: ActionRouteProps<R, S, X, C, P>
+    props: ActionRouteProps<R, S, X>
   ): Promise<ResponseStatus>;
   public async emit(
     event: string, 
@@ -101,7 +101,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
   ): Promise<ResponseStatus>;
   public async emit(
     event: string, 
-    propsRequest: ActionRouteProps<R, S, X, C, P> | Request<R>,
+    propsRequest: ActionRouteProps<R, S, X> | Request<R>,
     response?: Response<S>
   ) {
     const queue = this.tasks(event);
@@ -114,7 +114,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
 
     const props = response
       ? this.createProps(propsRequest as Request<R>, response, this.context)
-      : propsRequest as ActionRouteProps<R, S, X, C, P>;
+      : propsRequest as ActionRouteProps<R, S, X>;
 
     return await queue.run(props);
   }
@@ -140,7 +140,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public get(
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('GET', path, action, priority);
@@ -151,7 +151,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public head(
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('HEAD', path, action, priority);
@@ -162,7 +162,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public options(
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('OPTIONS', path, action, priority);
@@ -173,7 +173,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public patch(
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('PATCH', path, action, priority);
@@ -184,7 +184,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public post(
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('POST', path, action, priority);
@@ -195,7 +195,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public put(
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('PUT', path, action, priority);
@@ -207,7 +207,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
   public route(
     method: Method, 
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority = 0
   ) {
     const event = this._eventNameFromRoute(method, path);
@@ -220,7 +220,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   public trace(
     path: string, 
-    action: ActionRouterAction<R, S, X, C, P>, 
+    action: ActionRouterAction<R, S, X>, 
     priority?: number
   ) {
     return this.route('TRACE', path, action, priority);
@@ -229,7 +229,7 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
   /**
    * Allows events from other emitters to apply here
    */
-  public use(emitter: EventEmitter<ActionRouterMap<R, S, X, C, P>>) {
+  public use(emitter: EventEmitter<ActionRouterMap<R, S, X>>) {
     //check if the emitter is a router
     if (emitter instanceof ActionRouter) {
       //first concat their routes with this one
@@ -286,9 +286,9 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    */
   protected _task(
     match: EventMatch, 
-    task: TaskItem<ActionRouterArgs<R, S, X, C, P>>
+    task: TaskItem<ActionRouterArgs<R, S, X>>
   ) {
-    return async (...[ props ]: ActionRouterArgs<R, S, X, C, P>) => {
+    return async (...[ props ]: ActionRouterArgs<R, S, X>) => {
       const { req } = props;
       //set the current
       this._event = { 
@@ -331,24 +331,13 @@ export default class ActionRouter<R, S, X, C = unknown, P = unknown>
    * plain routers stay lightweight while servers expose richer props.
    */
   public createProps(req: Request<R>, res: Response<S>, ctx = this.context) {
-    const server = ctx as Record<string, unknown>;
-    const config = ('config' in server ? server.config : undefined) as C;
-    const plugin = (
-      typeof server.plugin === 'function'
-        ? server.plugin.bind(ctx)
-        : undefined
-    ) as P;
     return {
       request: req,
       response: res,
-      server: ctx,
-      config,
-      plugin,
+      context: ctx,
       req,
       res,
-      ctx,
-      cfg: config,
-      plg: plugin
-    } as ActionRouteProps<R, S, X, C, P>;
+      ctx
+    } as ActionRouteProps<R, S, X>;
   }
 };

@@ -13,9 +13,9 @@ import type {
 //local
 import type ActionRouter from './ActionRouter.js';
 
-export type ViewEngine<R, S, X, C = unknown, P = unknown> = (
+export type ViewEngine<R, S, X> = (
   filePath: string, 
-  ...args: ActionRouterArgs<R, S, X, C, P>
+  ...args: ActionRouterArgs<R, S, X>
 ) => TaskResult;
 
 export type ViewRender = (
@@ -24,18 +24,18 @@ export type ViewRender = (
   options?: UnknownNest
 ) => string|null|Promise<string|null>;
 
-export default class ViewRouter<R, S, X, C = unknown, P = unknown> {
+export default class ViewRouter<R, S, X> {
   //A route map to task queues
   //event -> [ ...{ entry, priority } ]
   public readonly views = new Map<string, Set<ViewRouterTaskItem>>();
   //engine
-  protected _engine: ViewEngine<R, S, X, C, P> = () => void 0;
+  protected _engine: ViewEngine<R, S, X> = () => void 0;
   //render
   protected _render: ViewRender = () => null;
   //parent router
-  protected _router: ActionRouter<R, S, X, C, P>;
+  protected _router: ActionRouter<R, S, X>;
   //listener straight to the end
-  protected _listen: ActionRouterListener<R, S, X, C, P>;
+  protected _listen: ActionRouterListener<R, S, X>;
 
   /**
    * Get the view engine method
@@ -47,7 +47,7 @@ export default class ViewRouter<R, S, X, C = unknown, P = unknown> {
   /**
    * Set the view engine method
    */
-  public set engine(engine: ViewEngine<R, S, X, C, P>) {
+  public set engine(engine: ViewEngine<R, S, X>) {
     this._engine = engine;
   }
 
@@ -69,8 +69,8 @@ export default class ViewRouter<R, S, X, C = unknown, P = unknown> {
    * Sets the router
    */
   public constructor(
-    router: ActionRouter<R, S, X, C, P>,
-    listen: ActionRouterListener<R, S, X, C, P>
+    router: ActionRouter<R, S, X>,
+    listen: ActionRouterListener<R, S, X>
   ) {
     this._router = router;
     this._listen = listen;
@@ -89,7 +89,7 @@ export default class ViewRouter<R, S, X, C = unknown, P = unknown> {
     this.views.get(event)?.add({ entry: action, priority });
     const router = this;
     return async function TemplateFileAction(
-      ...[ props ]: ActionRouterArgs<R, S, X, C, P>
+      ...[ props ]: ActionRouterArgs<R, S, X>
     ) {
       if (!router._engine) return;
       await router._engine(action, props);
@@ -238,7 +238,7 @@ export default class ViewRouter<R, S, X, C = unknown, P = unknown> {
   /**
    * Allows views from other routers to apply here
    */
-  public use(router: ViewRouter<R, S, X, C, P>) {
+  public use(router: ViewRouter<R, S, X>) {
     //first concat their routes with this one
     //event -> [ ...{ entry, priority } ]
     router.views.forEach((tasks, event) => {

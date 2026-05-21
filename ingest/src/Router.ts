@@ -3,7 +3,7 @@ import type {
   Method,
   RequestOptions,
   ResponseOptions,
-  StatusResponse
+  StatusResponse,
 } from '@stackpress/lib/types';
 import { isObject } from '@stackpress/lib/Nest';
 //router
@@ -25,20 +25,16 @@ export default class Router<
   //request resource
   R = unknown, 
   //response resource
-  S = unknown,
-  //config props
-  C = unknown,
-  //plugin props
-  P = unknown
+  S = unknown
 > {
   //action router main
-  public readonly action: ActionRouter<R, S, this, C, P>;
+  public readonly action: ActionRouter<R, S, this>;
   //entry router extension
-  public readonly entry: EntryRouter<R, S, this, C, P>;
+  public readonly entry: EntryRouter<R, S, this>;
   //import router extension
-  public readonly import: ImportRouter<R, S, this, C, P>;
+  public readonly import: ImportRouter<R, S, this>;
   //view router extension
-  public readonly view: ViewRouter<R, S, this, C, P>;
+  public readonly view: ViewRouter<R, S, this>;
 
   /**
    * Returns the router entry map
@@ -86,7 +82,7 @@ export default class Router<
    * Sets the main router and its extensions
    */
   public constructor() {
-    this.action = new ActionRouter<R, S, this, C, P>(this);
+    this.action = new ActionRouter<R, S, this>(this);
     this.entry = this.action.entry;
     this.import = this.action.import;
     this.view = this.action.view;
@@ -97,7 +93,7 @@ export default class Router<
    */
   public all(
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('ALL', path, action, priority);
@@ -108,7 +104,7 @@ export default class Router<
    */
   public connect(
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('CONNECT', path, action, priority);
@@ -119,7 +115,7 @@ export default class Router<
    */
   public delete(
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('DELETE', path, action, priority);
@@ -137,7 +133,7 @@ export default class Router<
    */
   public get(
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('GET', path, action, priority);
@@ -148,7 +144,7 @@ export default class Router<
    */
   public head(
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('HEAD', path, action, priority);
@@ -167,7 +163,7 @@ export default class Router<
    */
   public on(
     event: string|RegExp, 
-    action: AnyRouterAction<R, S, this, C, P>,
+    action: AnyRouterAction<R, S, this>,
     priority = 0
   ) {
     //delegate to appropriate router based on action type
@@ -188,7 +184,7 @@ export default class Router<
       //import router for parameterless functions
       this.import.on(
         event, 
-        action as ImportRouterAction<R, S, this, C, P>,
+        action as ImportRouterAction<R, S, this>,
         priority
       );
     //if action is a function with more than 0 
@@ -196,7 +192,7 @@ export default class Router<
     } else {
       this.action.on(
         event, 
-        action as ActionRouterAction<R, S, this, C, P>,
+        action as ActionRouterAction<R, S, this>,
         priority
       );
     }
@@ -208,7 +204,7 @@ export default class Router<
    */
   public options(
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('OPTIONS', path, action, priority);
@@ -219,7 +215,7 @@ export default class Router<
    */
   public patch(
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('PATCH', path, action, priority);
@@ -230,7 +226,7 @@ export default class Router<
    */
   public post(
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('POST', path, action, priority);
@@ -241,7 +237,7 @@ export default class Router<
    */
   public put(
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('PUT', path, action, priority);
@@ -314,7 +310,7 @@ export default class Router<
   public route(
     method: Method, 
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority = 0
   ) {
     //delegate to appropriate router based on action type
@@ -337,7 +333,7 @@ export default class Router<
       this.import.route(
         method,
         path, 
-        action as ImportRouterAction<R, S, this, C, P>,
+        action as ImportRouterAction<R, S, this>,
         priority
       );
     //if action is a function with more than 0 
@@ -346,7 +342,7 @@ export default class Router<
       this.action.route(
         method,
         path, 
-        action as ActionRouterAction<R, S, this, C, P>,
+        action as ActionRouterAction<R, S, this>,
         priority
       );
     }
@@ -358,7 +354,7 @@ export default class Router<
    */
   public trace(
     path: string, 
-    action: AnyRouterAction<R, S, this, C, P>, 
+    action: AnyRouterAction<R, S, this>, 
     priority?: number
   ) {
     return this.route('TRACE', path, action, priority);
@@ -367,7 +363,7 @@ export default class Router<
   /**
    * Allows routes from other routers to apply here
    */
-  public use<T extends Router<R, S, C, P>>(router: T) {
+  public use<T extends Router<R, S>>(router: T) {
     //Patch: Router<R, S> is assignable to the constraint of type  
     //this, but this could be instantiated with a different subtype  
     //of constraint Router<R, S>
