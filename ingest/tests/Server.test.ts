@@ -7,6 +7,13 @@ import Server from '../src/Server';
 import Request from '../src/Request';
 import Response from '../src/Response';
 import { ServerGateway } from '../src/types';
+import {
+  action as serverAction,
+  gateway as serverGatewayFactory,
+  handler as defaultHandler,
+  router as serverRouterFactory,
+  server as serverFactory
+} from '../src/Server';
 
 describe('Server Tests', () => {
   /**
@@ -356,5 +363,57 @@ describe('Server Tests', () => {
 
     await server.resolve('aliases');
     expect(verified).to.be.true;
+  });
+
+  /**
+   * Tests bootstrap registration for plain object plugins:
+   * - Object plugins bypass invocation
+   * - Plugin registration still occurs
+   */
+  it('Should register plain object plugins during bootstrap', async () => {
+    const server = new Server();
+    const config = { direct: true };
+
+    server.loader.bootstrap = async (callback) => {
+      await callback('object-plugin', config);
+      return server.loader;
+    };
+
+    await server.bootstrap();
+    expect(server.plugin('object-plugin')).to.deep.equal(config);
+  });
+
+  /**
+   * Tests the default helper exports:
+   * - server() returns a Server instance
+   * - router() returns a Router-like instance
+   * - gateway() creates an HTTP server
+   * - handler() returns the response unchanged
+   * - action() passes handlers through untouched
+   */
+  it('Should expose the default helper factories', async () => {
+    const helperServer = serverFactory();
+    const helperRouter = serverRouterFactory();
+    const request = new Request({
+      method: 'GET',
+      url: new URL('http://localhost/helpers')
+    });
+    const response = new Response();
+
+    const passthrough = serverAction(({ res }) => {
+      res.set('text/plain', 'helpers');
+    });
+    passthrough(helperServer.props(request, response));
+
+    const gateway = serverGatewayFactory(helperServer);
+    const httpServer = gateway({});
+    const handled = await defaultHandler(helperServer, request, response);
+
+    expect(helperServer).to.be.instanceOf(Server);
+    expect(helperRouter).to.have.property('route');
+    expect(response.body).to.equal('helpers');
+    expect(handled).to.equal(response);
+    expect(typeof httpServer.listen).to.equal('function');
+    httpServer.close();
   });
 });
