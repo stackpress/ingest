@@ -1,4 +1,4 @@
-import { Request, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
 const template = `
 <!DOCTYPE html>
@@ -19,7 +19,7 @@ const template = `
 </html>
 `;
 
-export default function Login(req: Request, res: Response) {
+export default action(function Login({ res }) {
   //send the response
   res.html(template.trim());
-};
+});

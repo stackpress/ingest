@@ -205,10 +205,10 @@ export function router() {
  * Passes through a handler while preserving contextual props typing
  */
 export function action<
-  R = unknown,
-  S = unknown,
-  C extends ConfigMap = ConfigMap,
-  P extends PluginMap = PluginMap
+  R = any,
+  S = any,
+  C extends ConfigMap = any,
+  P extends PluginMap = any
 >(action: ServerAction<R, S, C, P>) {
   return action;
 };

@@ -1,6 +1,6 @@
-import { Request, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
-export default function UserUpdate(req: Request, res: Response) {
+export default action(function UserUpdate({ req, res }) {
   //get params
   const id = parseInt(req.data('id') || '');
   if (!id) {
@@ -13,4 +13,4 @@ export default function UserUpdate(req: Request, res: Response) {
   const results = { ...form, id, created: new Date().toISOString() };
   //send the response
   res.results(results);
-};
+});

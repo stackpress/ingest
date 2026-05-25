@@ -1,6 +1,6 @@
-import { Request, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
-export default function UserRemove(req: Request, res: Response) {
+export default action(function UserRemove({ req, res }) {
   //get params
   const id = parseInt(req.data('id') || '');
   if (!id) {
@@ -16,4 +16,4 @@ export default function UserRemove(req: Request, res: Response) {
   };
   //send the response
   res.results(results);
-};
+});

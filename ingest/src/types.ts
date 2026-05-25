@@ -153,6 +153,21 @@ export type AnyRouterAction<
   | ActionRouterAction<R, S, X>
   | ImportRouterAction<R, S, X>;
 
+//can be used in all event and route handlers
+export type ActionProps<
+  R = unknown, 
+  S = unknown, 
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
+> = ActionRouteProps<R, S, Server<R, S, C, P>>;
+
+export type AnyActionProps<
+  R = any, 
+  S = any, 
+  C extends ConfigMap = any,
+  P extends PluginMap = any
+> = ActionRouteProps<R, S, Server<R, S, C, P>>;
+
 //--------------------------------------------------------------------//
 // Server Types
 

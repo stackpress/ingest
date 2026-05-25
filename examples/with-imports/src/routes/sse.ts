@@ -1,6 +1,6 @@
-import { Request, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
-export default async function SSE(req: Request, res: Response) {
+export default action(async function SSE({ res }) {
   res.headers
     .set('Cache-Control', 'no-cache')
     .set('Content-Encoding', 'none')
@@ -21,4 +21,4 @@ export default async function SSE(req: Request, res: Response) {
       }
     },
   }));
-};
+});

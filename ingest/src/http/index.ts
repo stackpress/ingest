@@ -1,7 +1,6 @@
 //node
 import { createServer } from 'node:http';
 //stackpress
-import type { UnknownNest } from '@stackpress/lib/types';
 import { 
   ReadSession, 
   WriteSession, 
@@ -12,10 +11,12 @@ import cookie from '@stackpress/lib/cookie';
 //common
 import type { 
   IM, SR, 
+  ConfigMap,
   HttpServer, 
   HttpAction,
+  PluginMap,
   ServerOptions,
-  NodeServerOptions
+  NodeServerOptions,
 } from '../types.js';
 import Router from '../Router.js';
 import Request from '../Request.js';
@@ -86,8 +87,11 @@ export {
 /**
  * Default server gateway
  */
-export function gateway<C extends UnknownNest = UnknownNest>(
-  server: HttpServer<C>
+export function gateway<
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
+>(
+  server: HttpServer<C, P>
 ) {
   return (options: NodeServerOptions) => createServer(
     options, 
@@ -98,8 +102,11 @@ export function gateway<C extends UnknownNest = UnknownNest>(
 /**
  * Server request handler
  */
-export async function handler<C extends UnknownNest = UnknownNest>(
-  context: HttpServer<C>, 
+export async function handler<
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
+>(
+  context: HttpServer<C, P>, 
   request: IM,
   response: SR,
   action?: string|HttpAction<C>
@@ -110,12 +117,15 @@ export async function handler<C extends UnknownNest = UnknownNest>(
 /**
  * Default server factory
  */
-export function server<C extends UnknownNest = UnknownNest>(
-  options: ServerOptions<IM, SR, C> = {}
+export function server<
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
+>(
+  options: ServerOptions<IM, SR, C, P> = {}
 ) {
   options.gateway = options.gateway || gateway;
   options.handler = options.handler || handler;
-  return new Server<IM, SR, C>(options);
+  return new Server<IM, SR, C, P>(options);
 };
 
 /**
@@ -129,8 +139,11 @@ export function router() {
  * Just a pass along to imply the types 
  * needed for the action arguments
  */
-export function action<C extends UnknownNest = UnknownNest>(
-  action: HttpAction<C>
+export function action<
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
+>(
+  action: HttpAction<C, P>
 ) {
   return action;
 };

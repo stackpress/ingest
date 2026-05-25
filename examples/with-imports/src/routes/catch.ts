@@ -1,7 +1,7 @@
-import { Status } from '@stackpress/lib'
-import { Request, Response, Exception } from '@stackpress/ingest';
+import { Status } from '@stackpress/lib';
+import { action, Exception } from '@stackpress/ingest';
 
-export default function ErrorResponse(req: Request, res: Response) {
+export default action(function ErrorResponse({ res }) {
   try {
     throw Exception.for('Not implemented');
   } catch (e) {
@@ -13,4 +13,4 @@ export default function ErrorResponse(req: Request, res: Response) {
       stack: error.trace()
     });
   }
-};
+});

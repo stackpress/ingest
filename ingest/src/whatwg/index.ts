@@ -2,7 +2,6 @@
 import { createServer } from 'node:http';
 import { createServerAdapter } from '@whatwg-node/server';
 //stackpress
-import type { UnknownNest } from '@stackpress/lib/types';
 import { 
   ReadSession, 
   WriteSession, 
@@ -17,6 +16,8 @@ import type {
   NodeResponse,
   NodeOptResponse,
   WhatwgAction,
+  ConfigMap,
+  PluginMap,
   ServerOptions,
   NodeServerOptions
 } from '../types.js';
@@ -89,8 +90,11 @@ export {
 /**
  * Default server gateway
  */
-export function gateway<C extends UnknownNest = UnknownNest>(
-  server: WhatwgServer<C>
+export function gateway<
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
+>(
+  server: WhatwgServer<C, P>
 ) {
   return (options: NodeServerOptions) => {
     const adapter = createServerAdapter((request: NodeRequest) => {
@@ -103,11 +107,14 @@ export function gateway<C extends UnknownNest = UnknownNest>(
 /**
  * Server request handler
  */
-export async function handler<C extends UnknownNest = UnknownNest>(
-  context: WhatwgServer<C>, 
+export async function handler<
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
+>(
+  context: WhatwgServer<C, P>, 
   request: NodeRequest,
   _response: NodeOptResponse,
-  action?: string|WhatwgAction<C>
+  action?: string|WhatwgAction<C, P>
 ) {
   return await Adapter.plug(context, request, action);
 };
@@ -115,12 +122,15 @@ export async function handler<C extends UnknownNest = UnknownNest>(
 /**
  * Default server factory
  */
-export function server<C extends UnknownNest = UnknownNest>(
-  options: ServerOptions<NodeRequest, NodeOptResponse, C> = {}
+export function server<
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
+>(
+  options: ServerOptions<NodeRequest, NodeOptResponse, C, P> = {}
 ) {
   options.gateway = options.gateway || gateway;
   options.handler = options.handler || handler;
-  return new Server<NodeRequest, NodeOptResponse, C>(
+  return new Server<NodeRequest, NodeOptResponse, C, P>(
     options
   );
 };
@@ -136,8 +146,11 @@ export function router() {
  * Just a pass along to imply the types 
  * needed for the action arguments
  */
-export function action<C extends UnknownNest = UnknownNest>(
-  action: WhatwgAction<C>
+export function action<
+  C extends ConfigMap = ConfigMap,
+  P extends PluginMap = PluginMap
+>(
+  action: WhatwgAction<C, P>
 ) {
   return action;
 };

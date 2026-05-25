@@ -1,4 +1,4 @@
-import { Request, Response } from '@stackpress/ingest';
+import { action } from '@stackpress/ingest';
 
 const template = `
 <!DOCTYPE html>
@@ -21,7 +21,7 @@ const template = `
 </html>
 `;
 
-export default function Stream(req: Request, res: Response) {
+export default action(function Stream({ res }) {
   //send the response
   res.html(template.trim());
-};
+});
