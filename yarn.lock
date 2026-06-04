@@ -1930,10 +1930,10 @@
     "@smithy/types" "^4.1.0"
     tslib "^2.6.2"
 
-"@stackpress/lib@0.10.4":
-  version "0.10.4"
-  resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.10.4.tgz#5332e15e098eb8b0392c52c7461bf4aae80a422b"
-  integrity sha512-+2384yEhXMe6OQ2G4VjiayjQTS6086Zf+BStZMS0kDGg8FeLrTGCyE6F0Y5YdxNIlBiN2nGfha2Zn/EUVidiAA==
+"@stackpress/lib@0.10.5":
+  version "0.10.5"
+  resolved "https://registry.yarnpkg.com/@stackpress/lib/-/lib-0.10.5.tgz#ea6ef3cb5c4a6e474653f339462d1f626e5b1da7"
+  integrity sha512-zVUwppiCmLnEfcDPhl/ehDUbsQ0s1kC9PmLx4LZA/8QZphj6zTY4qsKZUG7Tb9lzmtDJ0o7Hejj1y5zuK7PVNw==
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.11"
