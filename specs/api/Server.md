@@ -48,7 +48,7 @@ app.config.set('auth', {
 await app.bootstrap();
 
 app.get('/session-check', ({ res, ctx }) => {
-  res.setJSON({
+  res.json({
     auth: ctx.plugin('auth')
   });
 });
@@ -91,7 +91,7 @@ The following example shows how to handle requests directly.
 ```typescript
 const app = server();
 app.get('/health', ({ res }) => {
-  res.setJSON({ ok: true });
+  res.json({ ok: true });
 });
 
 const result = await app.handle(request, response);
@@ -121,7 +121,7 @@ app.register('database', {
 
 app.get('/db-check', ({ res, ctx }) => {
   const db = ctx.plugin<{ query(sql: string): unknown[] }>('database');
-  res.setResults(db.query('SELECT 1'));
+  res.results(db.query('SELECT 1'));
 });
 ```
 
@@ -210,7 +210,7 @@ type HttpProps = Parameters<HttpAction>[0];
 class UserController {
   @Get('/users')
   public list({ res }: HttpProps) {
-    res.setBody('text/plain', 'list');
+    res.set('text/plain', 'list');
   }
 }
 
@@ -283,7 +283,7 @@ The following example shows how to create type-safe action handlers.
 import { action } from '@stackpress/ingest';
 
 const userHandler = action<Config, Request, Response>(({ req, res, ctx }) => {
-  res.setJSON({ message: 'Hello' });
+  res.json({ message: 'Hello' });
 });
 ```
 
@@ -381,11 +381,11 @@ import { server } from '@stackpress/ingest/http';
 const app = server();
 
 app.get('/', ({ req, res }) => {
-  res.setHTML('<h1>Hello World!</h1>');
+  res.html('<h1>Hello World!</h1>');
 });
 
 app.get('/api/users', ({ req, res }) => {
-  res.setJSON({ users: [] });
+  res.json({ users: [] });
 });
 
 app.create().listen(3000, () => {
@@ -403,7 +403,7 @@ import { server } from '@stackpress/ingest/whatwg';
 const app = server();
 
 app.get('/api/hello', ({ req, res }) => {
-  res.setJSON({ message: 'Hello from serverless!' });
+  res.json({ message: 'Hello from serverless!' });
 });
 
 export default async function handler(request: Request) {
@@ -437,7 +437,7 @@ await app.bootstrap();
 // Use plugin functionality
 app.get('/protected', ({ req, res }) => {
   const user = req.data('user'); // Set by auth plugin
-  res.setJSON({ user });
+  res.json({ user });
 });
 
 app.create().listen(3000);

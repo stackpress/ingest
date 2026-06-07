@@ -53,7 +53,7 @@ app.get('/boom', () => {
 
 app.on('error', ({ req, res }) => {
   console.error('failed', req.url.pathname);
-  res.status = 500;
+  res.statusCode(500);
 });
 ```
 
@@ -82,7 +82,7 @@ For example:
 import { Router } from '@stackpress/ingest';
 
 const app = new Router();
-app.get('/users/:id', ({ res }) => res.setJSON({ ok: true }));
+app.get('/users/:id', ({ res }) => res.json({ ok: true }));
 app.import.get('/lazy', () => import('./routes/users.js'));
 app.entry.get('/entry/:id', './routes/user.js');
 app.view.get('/profile', './views/profile.hbs');

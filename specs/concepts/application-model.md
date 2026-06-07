@@ -12,7 +12,7 @@ import { server } from '@stackpress/ingest/http';
 const app = server();
 
 app.get('/users/:id', ({ req, res, ctx }) => {
-  res.setJSON({
+  res.json({
     id: req.data('id'),
     hasPlugins: Boolean(ctx.plugins.size)
   });
@@ -48,7 +48,7 @@ import { router, server } from '@stackpress/ingest/http';
 
 const users = router();
 users.get('/users/:id', ({ req, res }) => {
-  res.setJSON({ id: req.data('id') });
+  res.json({ id: req.data('id') });
 });
 
 const app = server();
@@ -66,7 +66,7 @@ That is why the same handler can move between runtime entrypoints without changi
 
 ```typescript
 const userDetail = ({ req, res }) => {
-  res.setJSON({
+  res.json({
     id: req.data('id'),
     method: req.method
   });
@@ -83,7 +83,7 @@ Handlers receive one props object instead of positional arguments:
 
 ```typescript
 app.get('/health', ({ req, res, ctx }) => {
-  res.setJSON({
+  res.json({
     method: req.method,
     path: req.url.pathname,
     app: ctx.constructor.name
@@ -115,7 +115,7 @@ export default function auditPlugin(server: HttpServer) {
   server.config.set('audit', { enabled: true });
 
   server.get('/health', ({ res }) => {
-    res.setJSON({ ok: true });
+    res.json({ ok: true });
   });
 
   return { enabled: true };
@@ -138,7 +138,7 @@ const app = server();
 await app.bootstrap();
 
 app.get('/audit', ({ res, ctx }) => {
-  res.setJSON({
+  res.json({
     audit: ctx.config.get('audit'),
     plugin: ctx.plugin('audit')
   });

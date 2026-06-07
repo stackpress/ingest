@@ -9,9 +9,9 @@ app.view.render = async (filePath, props) => {
   return await renderTemplate(filePath, props);
 };
 
-app.view.engine = async (filePath, req, res) => {
+app.view.engine = async (filePath, { req, res, ctx }) => {
   const html = await app.view.render(filePath, req.data());
-  res.setHTML(html);
+  res.html(html);
 };
 
 app.view.get('/profile', './views/profile.hbs');
@@ -24,17 +24,17 @@ This split is useful because `render` becomes the reusable primitive while `engi
 `res.data()` is useful when a handler needs to pass view-only values into the template without mixing them into the real result set.
 
 ```typescript
-app.view.engine = async (filePath, req, res) => {
+app.view.engine = async (filePath, { req, res, ctx }) => {
   const props = res.data();
   const html = await app.view.render(filePath, {
     ...req.data(),
     props
   });
-  res.setHTML(html);
+  res.html(html);
 };
 ```
 
-This keeps template data separate from the real result set. A handler can attach view-only values to `res.data()` while still returning the actual payload with `setResults()`:
+This keeps template data separate from the real result set. A handler can attach view-only values to `res.data()` while still returning the actual payload with `results()`:
 
 ```typescript
 if (res.code === 200) {
@@ -42,7 +42,7 @@ if (res.code === 200) {
   res.data.set('sessionUser', 'John Doe');
 }
 
-res.setResults(results);
+res.results(results);
 ```
 
 ## Conditional rendering in handlers
@@ -55,7 +55,7 @@ export default async function UserDetail({ req, res, ctx }) {
     const html = await ctx.view.render('./views/me.hbs', {
       id: req.data('id')
     });
-    res.setHTML(html);
+    res.html(html);
   }
 }
 ```
@@ -70,7 +70,7 @@ app.get('/user/:id', async ({ req, res, ctx }) => {
     const html = await ctx.view.render('./views/me.hbs', {
       id: req.data('id')
     });
-    res.setHTML(html);
+    res.html(html);
   }
 });
 ```

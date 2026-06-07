@@ -36,12 +36,12 @@ type HttpProps = Parameters<HttpAction>[0];
 class UserController {
   @Get('/users')
   public list({ res }: HttpProps) {
-    res.setBody('text/plain', 'list');
+    res.set('text/plain', 'list');
   }
 
   @Post('/users/:id')
   public create({ req, res }: HttpProps) {
-    res.setBody('text/plain', `${req.data('id')}:create`);
+    res.set('text/plain', `${req.data('id')}:create`);
   }
 
   @On('GET /api/users', 10)
@@ -73,7 +73,7 @@ type HttpProps = Parameters<HttpAction>[0];
 class AdminController {
   @Get('/dashboard')
   public dashboard({ res }: HttpProps) {
-    res.setBody('text/plain', 'ok');
+    res.set('text/plain', 'ok');
   }
 }
 
@@ -114,7 +114,7 @@ type HttpProps = Parameters<HttpAction>[0];
 class ExampleController {
   @Get('/health')
   public status({ res }: HttpProps) {
-    res.setJSON({ ok: true });
+    res.json({ ok: true });
   }
 }
 ```

@@ -18,15 +18,15 @@ Ingest routes are event matches.
 
 ```typescript
 router.get('/users/:id', ({ req, res }) => {
-  res.setJSON({ id: req.data('id') });
+  res.json({ id: req.data('id') });
 });
 
 router.get('/files/*', ({ req, res }) => {
-  res.setJSON({ args: req.data() });
+  res.json({ args: req.data() });
 });
 
 router.get('/assets/**', ({ req, res }) => {
-  res.setJSON({ args: req.data() });
+  res.json({ args: req.data() });
 });
 ```
 
@@ -53,13 +53,13 @@ In Ingest, `ActionRouter` then merges those into `req.data()`, which is why rout
 
 ```typescript
 router.get('/users/:id', ({ req, res }) => {
-  res.setJSON({
+  res.json({
     id: req.data('id')
   });
 });
 
 router.get('/files/*', ({ req, res }) => {
-  res.setJSON({
+  res.json({
     pathPart: req.data('0')
   });
 });

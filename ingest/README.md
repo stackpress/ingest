@@ -40,12 +40,12 @@ const app = server();
 
 // Traditional Express-like routing
 app.get('/', ({ req, res }) => {
-  res.setHTML('<h1>Hello World!</h1>');
+  res.html('<h1>Hello World!</h1>');
 });
 
 app.get('/api/users/:id', ({ req, res }) => {
   const userId = req.data.get('id');
-  res.setJSON({ id: userId, name: 'John Doe' });
+  res.json({ id: userId, name: 'John Doe' });
 });
 
 // Start the server
@@ -62,11 +62,11 @@ import { server } from '@stackpress/ingest/whatwg';
 const app = server();
 
 app.get('/api/hello', ({ req, res }) => {
-  res.setJSON({ message: 'Hello from Vercel!' });
+  res.json({ message: 'Hello from Vercel!' });
 });
 
 export default async function handler(request: Request) {
-  return await app.handle(request, new Response());
+  return await app.handle(request, undefined);
 }
 ```
 
@@ -79,7 +79,7 @@ Express.js-like inline route handlers:
 
 ```typescript
 app.action.get('/users', ({ req, res }) => {
-  res.setJSON({ users: [] });
+  res.json({ users: [] });
 });
 ```
 
@@ -194,13 +194,12 @@ import { server } from '@stackpress/ingest/whatwg';
 
 const app = server();
 app.get('/api/hello', ({ req, res }) => {
-  res.setJSON({ message: 'Hello from Lambda!' });
+  res.json({ message: 'Hello from Lambda!' });
 });
 
 export const handler = async (event, context) => {
   const request = new Request(event.requestContext.http.sourceIp);
-  const response = new Response();
-  return await app.handle(request, response);
+  return await app.handle(request, undefined);
 };
 ```
 
@@ -211,11 +210,11 @@ import { server } from '@stackpress/ingest/whatwg';
 
 const app = server();
 app.get('/api/users', ({ req, res }) => {
-  res.setJSON({ users: [] });
+  res.json({ users: [] });
 });
 
 export default async function handler(req: Request) {
-  return await app.handle(req, new Response());
+  return await app.handle(req, undefined);
 }
 ```
 
@@ -226,13 +225,12 @@ import { server } from '@stackpress/ingest/whatwg';
 
 const app = server();
 app.get('/.netlify/functions/api', ({ req, res }) => {
-  res.setJSON({ message: 'Hello from Netlify!' });
+  res.json({ message: 'Hello from Netlify!' });
 });
 
 export const handler = async (event, context) => {
   const request = new Request(event.rawUrl);
-  const response = new Response();
-  return await app.handle(request, response);
+  return await app.handle(request, undefined);
 };
 ```
 

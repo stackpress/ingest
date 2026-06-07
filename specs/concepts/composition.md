@@ -23,7 +23,7 @@ export default function usersPlugin(server: HttpServer) {
   server.config.set('users', { enabled: true });
 
   server.get('/users', ({ res }) => {
-    res.setJSON({ users: [] });
+    res.json({ users: [] });
   });
 
   return {
@@ -47,7 +47,7 @@ server.config.set('app', {
 });
 
 server.get('/feature-flags', ({ res, ctx }) => {
-  res.setJSON({
+  res.json({
     features: ctx.config.get('app', 'features')
   });
 });
@@ -69,7 +69,7 @@ const users = server.plugin<{ findAll(): unknown[] }>('src/plugins/users');
 
 server.get('/users', ({ res }) => {
   const results = users.findAll();
-  res.setResults(results);
+  res.results(results);
 });
 ```
 
@@ -83,10 +83,10 @@ Composition is not limited to plugins. Routers can also be built separately and 
 import { router } from '@stackpress/ingest/http';
 
 const pages = router();
-pages.get('/', ({ res }) => res.setHTML('<h1>Home</h1>'));
+pages.get('/', ({ res }) => res.html('<h1>Home</h1>'));
 
 const api = router();
-api.get('/users', ({ res }) => res.setJSON({ users: [] }));
+api.get('/users', ({ res }) => res.json({ users: [] }));
 
 app.use(pages).use(api);
 ```

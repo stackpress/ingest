@@ -48,36 +48,36 @@ The following examples show how to define routes for different HTTP methods.
 ```typescript
 // GET route
 router.get('/users', ({ req, res }) => {
-  res.setJSON({ users: [] });
+  res.json({ users: [] });
 });
 
 // POST route
 router.post('/users', ({ req, res }) => {
   const userData = req.data();
-  res.setJSON({ user: userData }, 201);
+  res.json({ user: userData }, 201);
 });
 
 // PUT route
 router.put('/users/:id', ({ req, res }) => {
   const userId = req.data('id');
-  res.setJSON({ id: userId, updated: true });
+  res.json({ id: userId, updated: true });
 });
 
 // DELETE route
 router.delete('/users/:id', ({ req, res }) => {
   const userId = req.data('id');
-  res.setJSON({ id: userId, deleted: true });
+  res.json({ id: userId, deleted: true });
 });
 
 // PATCH route
 router.patch('/users/:id', ({ req, res }) => {
   const userId = req.data('id');
-  res.setJSON({ id: userId, patched: true });
+  res.json({ id: userId, patched: true });
 });
 
 // OPTIONS route
 router.options('/users', ({ res }) => {
-  res.setJSON({ allow: ['GET', 'POST', 'PATCH', 'OPTIONS'] });
+  res.json({ allow: ['GET', 'POST', 'PATCH', 'OPTIONS'] });
 });
 
 // HEAD route
@@ -91,12 +91,12 @@ router.connect('/proxy', ({ res }) => {
 });
 
 router.trace('/users', ({ req, res }) => {
-  res.setJSON({ trace: req.url.pathname });
+  res.json({ trace: req.url.pathname });
 });
 
 // Handle any method
 router.all('/health', ({ req, res }) => {
-  res.setJSON({ status: 'healthy' });
+  res.json({ status: 'healthy' });
 });
 ```
 
@@ -119,12 +119,12 @@ The following example shows how to define routes with specific HTTP methods.
 ```typescript
 router.route('GET', '/users/:id', ({ req, res }) => {
   const userId = req.data('id');
-  res.setJSON({ id: userId });
+  res.json({ id: userId });
 });
 
 router.route('PATCH', '/users/:id', ({ req, res }) => {
   const userId = req.data('id');
-  res.setJSON({ id: userId, patched: true });
+  res.json({ id: userId, patched: true });
 });
 ```
 
@@ -313,7 +313,7 @@ type HttpProps = Parameters<HttpAction>[0];
 class UserController {
   @Get('/users')
   public list({ res }: HttpProps) {
-    res.setBody('text/plain', 'list');
+    res.set('text/plain', 'list');
   }
 }
 
@@ -363,7 +363,7 @@ This automatic detection eliminates the need to explicitly specify which routing
 You can still call the explicit interfaces directly when you want the intent to be obvious in code:
 
 ```typescript
-router.action.get('/users', ({ res }) => res.setResults([]));
+router.action.get('/users', ({ res }) => res.results([]));
 router.entry.get('/users/:id', './routes/users/get.js');
 router.import.get('/users', () => import('./routes/users.js'));
 router.view.get('/profile', './views/profile.hbs');
@@ -379,12 +379,12 @@ Express.js-like routing with inline handlers for immediate function execution.
 
 ```typescript
 router.action.get('/users', ({ req, res }) => {
-  res.setJSON({ users: [] });
+  res.json({ users: [] });
 });
 
 router.action.post('/users', ({ req, res }) => {
   const userData = req.data();
-  res.setJSON(userData, 201);
+  res.json(userData, 201);
 });
 ```
 
@@ -402,7 +402,7 @@ The target file should export a default function:
 ```typescript
 // routes/users.js
 export default function handler({ req, res }) {
-  res.setJSON({ users: [] });
+  res.json({ users: [] });
 }
 ```
 
@@ -436,14 +436,14 @@ Extract dynamic segments from URLs using named parameters.
 // Single parameter
 router.get('/users/:id', ({ req, res }) => {
   const userId = req.data('id');
-  res.setJSON({ id: userId });
+  res.json({ id: userId });
 });
 
 // Multiple parameters
 router.get('/users/:userId/posts/:postId', ({ req, res }) => {
   const userId = req.data('userId');
   const postId = req.data('postId');
-  res.setJSON({ userId, postId });
+  res.json({ userId, postId });
 });
 ```
 
@@ -455,13 +455,13 @@ Handle dynamic paths with wildcard matching for flexible routing.
 // Single wildcard
 router.get('/files/*', ({ req, res }) => {
   const filename = req.data('0'); // First wildcard match
-  res.setJSON({ filename });
+  res.json({ filename });
 });
 
 // Catch-all wildcard
 router.get('/static/**', ({ req, res }) => {
   const path = req.data('0'); // Full wildcard match
-  res.setJSON({ path });
+  res.json({ path });
 });
 ```
 
@@ -473,7 +473,7 @@ Use regular expressions for complex pattern matching requirements.
 // Regex pattern matching
 router.on(/^GET \/api\/v(\d+)\/users$/, ({ req, res }) => {
   const version = req.event?.data.args[0]; // Captured group
-  res.setJSON({ version, users: [] });
+  res.json({ version, users: [] });
 });
 ```
 
@@ -548,14 +548,14 @@ router.get('/users', ({ req, res }) => {
     { id: 1, name: 'John' },
     { id: 2, name: 'Jane' }
   ];
-  res.setJSON({ users });
+  res.json({ users });
 });
 
 // Get user by ID
 router.get('/users/:id', ({ req, res }) => {
   const userId = req.data('id');
   const user = { id: userId, name: 'John' };
-  res.setJSON({ user });
+  res.json({ user });
 });
 
 // Create user
@@ -563,7 +563,7 @@ router.post('/users', async ({ req, res }) => {
   await req.load();
   const userData = req.data();
   const user = { id: Date.now(), ...userData };
-  res.setJSON({ user }, 201);
+  res.json({ user }, 201);
 });
 ```
 
@@ -590,7 +590,7 @@ router.on('request', ({ req, res }) => {
 
 // Protected route
 router.get('/protected/data', ({ req, res }) => {
-  res.setJSON({ data: 'secret information' });
+  res.json({ data: 'secret information' });
 });
 ```
 

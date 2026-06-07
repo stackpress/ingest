@@ -25,7 +25,7 @@ Ingest uses the callable form of `Nest` almost everywhere it needs structured st
 app.config.set('app', { name: 'My App' });
 
 app.get('/users/:id', ({ req, res }) => {
-  res.setJSON({
+  res.json({
     id: req.data('id'),
     filters: req.query(),
     body: req.post(),
@@ -63,13 +63,13 @@ The callable form is convenient for reads in handlers, while the methods are bet
 For example:
 
 ```typescript
-app.view.engine = async (filePath, req, res) => {
+app.view.engine = async (filePath, { req, res, ctx }) => {
   const props = res.data();
   const html = await app.view.render(filePath, {
     ...req.data(),
     props
   });
-  res.setHTML(html);
+  res.html(html);
 };
 ```
 

@@ -51,19 +51,19 @@ The following properties are available when instantiating a Response.
 
 The following methods are available when instantiating a Response.
 
-### 2.1. Setting JSON Response
+### 2.1. `json(body, code?, status?)`
 
 The following example shows how to set a JSON response for API endpoints.
 
 ```typescript
 // Simple JSON response
-res.setJSON({ message: 'Success', data: results });
+res.json({ message: 'Success', data: results });
 
 // JSON response with custom status
-res.setJSON({ user: userData }, 201, 'Created');
+res.json({ user: userData }, 201, 'Created');
 
 // JSON string response
-res.setJSON('{"message": "Success"}', 200, 'OK');
+res.json('{"message": "Success"}', 200, 'OK');
 ```
 
 **Parameters**
@@ -78,16 +78,16 @@ res.setJSON('{"message": "Success"}', 200, 'OK');
 
 The Response instance to allow method chaining.
 
-### 2.2. Setting HTML Response
+### 2.2. `html(body, code?, status?)`
 
 The following example shows how to set an HTML response for web pages.
 
 ```typescript
 // Simple HTML response
-res.setHTML('<h1>Welcome</h1>');
+res.html('<h1>Welcome</h1>');
 
 // HTML response with custom status
-res.setHTML('<h1>Page Not Found</h1>', 404, 'Not Found');
+res.html('<h1>Page Not Found</h1>', 404, 'Not Found');
 
 // HTML response with template
 const html = `
@@ -96,7 +96,7 @@ const html = `
     <body><h1>Welcome, ${user.name}!</h1></body>
   </html>
 `;
-res.setHTML(html, 200, 'OK');
+res.html(html, 200, 'OK');
 ```
 
 **Parameters**
@@ -150,19 +150,19 @@ res.setError({
 
 The Response instance to allow method chaining.
 
-### 2.4. Setting Results Response
+### 2.4. `results(body, code?, status?)`
 
 The following example shows how to set a single result response.
 
 ```typescript
 // Single result
-res.setResults({ id: 1, name: 'John Doe' });
+res.results({ id: 1, name: 'John Doe' });
 
 // Result with custom status
-res.setResults({ user: newUser }, 201, 'Created');
+res.results({ user: newUser }, 201, 'Created');
 
 // Complex result object
-res.setResults({
+res.results({
   user: userData,
   permissions: userPermissions,
   settings: userSettings
@@ -181,9 +181,9 @@ res.setResults({
 
 The Response instance to allow method chaining.
 
-When the body is a plain object or array, the adapters serialize it as a structured JSON payload rather than writing the raw value directly. That is why helpers such as `setResults()` and `setRows()` fit naturally with the rest of the response model.
+When the body is a plain object or array, the adapters serialize it as a structured JSON payload rather than writing the raw value directly. That is why helpers such as `results()` and `rows()` fit naturally with the rest of the response model.
 
-`res.data()` is useful when a route or hook needs to carry extra response-side state without mixing it into the real result set. Template engines can read from it, for example, while `setResults()` continues to describe the actual payload:
+`res.data()` is useful when a route or hook needs to carry extra response-side state without mixing it into the real result set. Template engines can read from it, for example, while `results()` continues to describe the actual payload:
 
 ```typescript
 if (res.code === 200) {
@@ -191,25 +191,25 @@ if (res.code === 200) {
   res.data.set('sessionUser', 'John Doe');
 }
 
-res.setResults(results);
+res.results(results);
 ```
 
-### 2.5. Setting Rows Response
+### 2.5. `rows(body, total?, code?, status?)`
 
 The following example shows how to set a collection response with total count for pagination.
 
 ```typescript
 // Collection with total count
-res.setRows([
+res.rows([
   { id: 1, name: 'John' },
   { id: 2, name: 'Jane' }
 ], 100); // 2 items out of 100 total
 
 // Collection without total
-res.setRows(users);
+res.rows(users);
 
 // Empty collection
-res.setRows([], 0);
+res.rows([], 0);
 ```
 
 **Parameters**
@@ -258,7 +258,30 @@ if (!user.isAuthenticated) {
 
 The Response instance to allow method chaining.
 
-### 2.7. Dispatching Response
+### 2.7. `set(type, body, code?, status?)`
+
+Use `set()` when you need to write a body with an explicit MIME type.
+
+```typescript
+res.set('text/plain', 'hello');
+res.set('image/png', pngBuffer);
+res.set('application/octet-stream', fileStream, 200, 'OK');
+```
+
+**Parameters**
+
+| Parameter | Type | Description |
+|----------|------|-------------|
+| `type` | `string` | Response MIME type |
+| `body` | `Body` | Response body |
+| `code` | `number` | HTTP status code (default: 200) |
+| `status` | `string` | HTTP status message (optional) |
+
+**Returns**
+
+The Response instance to allow method chaining.
+
+### 2.8. Dispatching Response
 
 The following example shows how to dispatch the response to the native resource.
 
@@ -268,7 +291,7 @@ const nativeResponse = await res.dispatch();
 
 // Use in route handler
 app.get('/api/users', async ({ res }) => {
-  res.setJSON({ users: [] });
+  res.json({ users: [] });
   return await res.dispatch(); // Send response
 });
 ```
@@ -287,7 +310,7 @@ This matters because handlers can stay focused on setting intent while the adapt
 import fs from 'node:fs';
 
 app.get('/icon.png', ({ res }) => {
-  res.setBody('image/png', fs.createReadStream('./icon.png'));
+  res.set('image/png', fs.createReadStream('./icon.png'));
 });
 
 app.get('/events', ({ res }) => {
@@ -295,7 +318,7 @@ app.get('/events', ({ res }) => {
     .set('Cache-Control', 'no-cache')
     .set('Connection', 'keep-alive');
 
-  res.setBody('text/event-stream', new ReadableStream({
+  res.set('text/event-stream', new ReadableStream({
     start(controller) {
       controller.enqueue(new TextEncoder().encode('data: hello\\r\\n\\r\\n'));
     }
@@ -309,7 +332,7 @@ In WHATWG runtimes a route can also provide an already-built native response res
 
 The native response resource after dispatching.
 
-### 2.8. Converting to Status Response
+### 2.9. Converting to Status Response
 
 The following example shows how to convert the response to a status response object.
 
@@ -410,12 +433,9 @@ res.session.set('userId', user.id);
 res.session.set('username', user.username);
 res.session.set('lastLogin', new Date().toISOString());
 
-// Set multiple session values
-res.session.set({
-  userId: user.id,
-  role: user.role,
-  permissions: user.permissions
-});
+// Set multiple session values one key at a time
+res.session.set('role', user.role);
+res.session.set('permissions', JSON.stringify(user.permissions));
 ```
 
 ### 4.2. Reading Session Data
@@ -427,7 +447,7 @@ const userId = res.session.get('userId');
 const username = res.session.get('username');
 
 // Get all session data
-const sessionData = res.session.get();
+const sessionData = res.session.data;
 ```
 
 ### 4.3. Session Cookies
@@ -509,8 +529,14 @@ import { Response } from '@stackpress/ingest';
 
 createServer((req, serverResponse) => {
   const res = new Response({ resource: serverResponse });
+  res.dispatcher = async response => {
+    serverResponse.statusCode = response.code;
+    serverResponse.statusMessage = response.status;
+    serverResponse.end(response.body as string);
+    return serverResponse;
+  };
   
-  res.setJSON({ message: 'Hello from Node.js' });
+  res.json({ message: 'Hello from Node.js' });
   res.dispatch(); // Sends response
 });
 ```
@@ -523,8 +549,15 @@ Support for serverless environments like Vercel, Netlify, and Cloudflare Workers
 // Vercel, Netlify, etc.
 export default async function handler(request: Request) {
   const res = new Response();
+  res.dispatcher = async response => new globalThis.Response(
+    response.body as BodyInit,
+    {
+      status: response.code,
+      statusText: response.status
+    }
+  );
   
-  res.setJSON({ message: 'Hello from serverless' });
+  res.json({ message: 'Hello from serverless' });
   
   return await res.dispatch(); // Returns Response object
 }
@@ -585,7 +618,7 @@ app.get('/api/users/:id', async ({ req, res }) => {
     res.headers.set('Cache-Control', 'public, max-age=300');
     res.headers.set('ETag', `"user-${user.id}-${user.updatedAt}"`);
     
-    res.setResults(user);
+    res.results(user);
   } catch (error) {
     res.setError('Database error', {}, [], 500);
   }
@@ -629,7 +662,7 @@ app.get('/api/users', async ({ req, res }) => {
       res.headers.set('Link', links.join(', '));
     }
     
-    res.setRows(users, total);
+    res.rows(users, total);
   } catch (error) {
     res.setError('Failed to fetch users', {}, [], 500);
   }
@@ -656,9 +689,7 @@ app.get('/api/files/:id/download', async ({ req, res }) => {
     res.headers.set('Content-Disposition', `attachment; filename="${file.name}"`);
     
     // Stream file content
-    res.body = file.stream;
-    res.code = 200;
-    res.status = 'OK';
+    res.set(file.mimetype, file.stream, 200, 'OK');
     
     await res.dispatch();
   } catch (error) {
@@ -698,7 +729,7 @@ app.post('/api/auth/login', async ({ req, res }) => {
       `user=${user.username}; Secure; SameSite=Strict; Max-Age=86400`
     ]);
     
-    res.setResults({
+    res.results({
       user: {
         id: user.id,
         username: user.username,
@@ -716,17 +747,17 @@ app.post('/api/auth/login', async ({ req, res }) => {
 ### 8.5. Error Handling Middleware
 
 ```typescript
-app.on('error', (error, req, res) => {
-  console.error('Global error:', error);
+app.on('error', ({ res }) => {
+  console.error('Global error:', res.error);
   
   if (!res.sent) {
-    if (error instanceof ValidationError) {
-      res.setError('Validation failed', error.errors, [], 400);
-    } else if (error instanceof AuthenticationError) {
+    if (res.code === 400) {
+      res.setError('Validation failed', res.errors(), [], 400);
+    } else if (res.code === 401) {
       res.setError('Authentication required', {}, [], 401);
-    } else if (error instanceof AuthorizationError) {
+    } else if (res.code === 403) {
       res.setError('Access denied', {}, [], 403);
-    } else {
+    } else if (!res.error) {
       // Log detailed error but don't expose to client
       res.setError('Internal server error', {}, [], 500);
     }

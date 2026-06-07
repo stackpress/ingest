@@ -382,7 +382,7 @@ import { server, Exception } from '@stackpress/ingest/http';
 
 const app = server();
 
-app.get('/api/users/:id', async (req, res) => {
+app.get('/api/users/:id', async ({ req, res }) => {
   const userId = req.data('id');
   
   // Validate input
@@ -401,7 +401,7 @@ app.get('/api/users/:id', async (req, res) => {
       throw Exception.for('User %s not found', userId).withCode(404);
     }
     
-    res.setJSON({ user });
+    res.json({ user });
   } catch (error) {
     if (error instanceof Exception) {
       throw error; // Re-throw custom exceptions
@@ -423,7 +423,7 @@ async function getUserById(id: string) {
 Implement comprehensive validation with detailed error feedback.
 
 ```typescript
-app.post('/api/users', async (req, res) => {
+app.post('/api/users', async ({ req, res }) => {
   await req.load();
   const userData = req.data();
   
@@ -452,7 +452,7 @@ app.post('/api/users', async (req, res) => {
   
   try {
     const user = await createUser(userData);
-    res.setJSON({ user }, 201);
+    res.json({ user }, 201);
   } catch (e) {
     const error = e as Error;
     if (error.code === 'DUPLICATE_EMAIL') {
@@ -480,31 +480,19 @@ async function createUser(userData: any) {
 Implement centralized error handling for consistent error responses.
 
 ```typescript
-app.on('error', (error, req, res) => {
-  console.error('Global error:', error);
+app.on('error', ({ res }) => {
+  console.error('Global error:', res.error);
   
   if (!res.sent) {
-    if (error instanceof Exception) {
-      // Use the exception's response format
-      const errorResponse = error.toResponse();
-      res.setError(
-        errorResponse.error,
-        errorResponse.errors || {},
-        errorResponse.stack || [],
-        errorResponse.code,
-        errorResponse.status
-      );
-    } else {
-      // Convert regular errors to exceptions
-      const exception = Exception.upgrade(error, 500);
-      const errorResponse = exception.toResponse();
-      res.setError(
-        'Internal Server Error',
-        {},
-        errorResponse.stack || [],
-        500
-      );
-    }
+    const exception = res.toException('Internal Server Error');
+    const errorResponse = exception.toResponse();
+    res.setError(
+      errorResponse.error,
+      errorResponse.errors || {},
+      errorResponse.stack || [],
+      errorResponse.code,
+      errorResponse.status
+    );
   }
 });
 ```
@@ -514,7 +502,7 @@ app.on('error', (error, req, res) => {
 The Exception class integrates seamlessly with the Response class for consistent error handling.
 
 ```typescript
-app.get('/api/users/:id', async (req, res) => {
+app.get('/api/users/:id', async ({ req, res }) => {
   try {
     const userId = req.data('id');
     const user = await getUserById(userId);
@@ -523,7 +511,7 @@ app.get('/api/users/:id', async (req, res) => {
       throw Exception.for('User %s not found', userId).withCode(404);
     }
     
-    res.setJSON({ user });
+    res.json({ user });
   } catch (error) {
     if (error instanceof Exception) {
       // Convert exception to response
@@ -607,7 +595,7 @@ The following examples demonstrate advanced Exception usage patterns for real-wo
 ### 7.1. Conditional Error Handling
 
 ```typescript
-app.get('/api/admin/users', async (req, res) => {
+app.get('/api/admin/users', async ({ req, res }) => {
   const user = req.data('user');
   
   // Check authentication
@@ -622,7 +610,7 @@ app.get('/api/admin/users', async (req, res) => {
   
   try {
     const users = await getAllUsers();
-    res.setJSON({ users });
+    res.json({ users });
   } catch (error) {
     throw Exception.upgrade(error, 500);
   }
@@ -637,7 +625,7 @@ async function getAllUsers() {
 ### 7.2. File Processing with Position Errors
 
 ```typescript
-app.post('/api/parse-csv', async (req, res) => {
+app.post('/api/parse-csv', async ({ req, res }) => {
   await req.load();
   const csvData = req.data('csv');
   
@@ -668,7 +656,7 @@ app.post('/api/parse-csv', async (req, res) => {
       }
     }
     
-    res.setJSON({ results, count: results.length });
+    res.json({ results, count: results.length });
   } catch (error) {
     if (error instanceof Exception) {
       throw error;
@@ -683,7 +671,7 @@ app.post('/api/parse-csv', async (req, res) => {
 The Exception class integrates seamlessly with the Response class:
 
 ```typescript
-app.get('/api/users/:id', async (req, res) => {
+app.get('/api/users/:id', async ({ req, res }) => {
   try {
     const userId = req.data('id');
     const user = await getUserById(userId);
@@ -692,7 +680,7 @@ app.get('/api/users/:id', async (req, res) => {
       throw Exception.for('User %s not found', userId).withCode(404);
     }
     
-    res.setJSON({ user });
+    res.json({ user });
   } catch (error) {
     if (error instanceof Exception) {
       // Convert exception to response

@@ -60,7 +60,7 @@ export default function auditPlugin(server: HttpServer) {
   });
 
   server.get('/health', ({ res }) => {
-    res.setJSON({ ok: true, audit: server.config.get('audit') });
+    res.json({ ok: true, audit: server.config.get('audit') });
   });
 
   server.register('database', database);
@@ -91,7 +91,7 @@ await app.bootstrap();
 
 app.get('/db-check', ({ res, ctx }) => {
   const plugin = ctx.plugin('audit');
-  res.setJSON({ hasDatabase: Boolean(plugin?.database) });
+  res.json({ hasDatabase: Boolean(plugin?.database) });
 });
 
 app.create().listen(3000);

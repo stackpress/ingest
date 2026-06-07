@@ -12,7 +12,7 @@ app.on('request', ({ req }) => {
 });
 
 app.get('/users/:id', ({ req, res }) => {
-  res.setJSON({ id: req.data('id') });
+  res.json({ id: req.data('id') });
 });
 
 app.on('response', ({ res }) => {
@@ -58,7 +58,7 @@ Once the request phase allows execution to continue, the router matches the meth
 ```typescript
 app.get('/users/:id', ({ req, res }) => {
   const id = req.data('id');
-  res.setJSON({ id });
+  res.json({ id });
 });
 ```
 
@@ -69,7 +69,7 @@ This is also where catch-all routes such as `/**` become useful. They let a proj
 ```typescript
 app.get('/**', ({ res }) => {
   if (!res.code && !res.status && !res.sent) {
-    res.setHTML('Not Found', 404, 'Not Found');
+    res.html('Not Found', 404, 'Not Found');
   }
 });
 ```

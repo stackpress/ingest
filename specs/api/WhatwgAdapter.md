@@ -47,7 +47,7 @@ export async function customHandler(request: Request) {
 // With action function
 export async function functionHandler(request: Request) {
   return await WhatwgAdapter.plug(app, request, async ({ res }) => {
-    res.setJSON({ message: 'Custom handler' });
+    res.json({ message: 'Custom handler' });
   });
 }
 ```
@@ -84,7 +84,7 @@ const response2 = await adapter.plug('user-login');
 // Process with action function
 const response3 = await adapter.plug(async ({ res }) => {
   const users = await getUsers();
-  res.setResults(users);
+  res.results(users);
 });
 ```
 
@@ -127,8 +127,8 @@ const adapter = new WhatwgAdapter(context, request);
 const ingestResponse = adapter.response();
 
 // Set response data
-ingestResponse.setJSON({ message: 'Hello World' });
-ingestResponse.setHTML('<h1>Hello World</h1>');
+ingestResponse.json({ message: 'Hello World' });
+ingestResponse.html('<h1>Hello World</h1>');
 ingestResponse.setError('Not found', {}, [], 404);
 
 // Dispatch to WHATWG response
@@ -283,11 +283,11 @@ Handle different response types with appropriate WHATWG Response creation.
 
 ```typescript
 // String responses
-response.setHTML('<h1>Hello World</h1>');
+response.html('<h1>Hello World</h1>');
 // Creates Response with text/html content-type
 
 // JSON responses
-response.setJSON({ message: 'Success' });
+response.json({ message: 'Success' });
 // Creates Response with application/json content-type
 
 // Buffer responses
@@ -346,7 +346,7 @@ const app = server();
 
 app.get('/api/users', async ({ res }) => {
   const users = await getUsers();
-  res.setResults(users);
+  res.results(users);
 });
 
 export default async function handler(request: Request) {
@@ -370,7 +370,7 @@ const app = server();
 app.all('/*', async ({ req, res }) => {
   // Handle all routes
   const path = req.url.pathname;
-  res.setJSON({ path, method: req.method });
+  res.json({ path, method: req.method });
 });
 
 export default async function handler(request: Request) {
@@ -388,7 +388,7 @@ import WhatwgAdapter from '@stackpress/ingest/whatwg/Adapter';
 const app = server();
 
 app.get('/', async ({ res }) => {
-  res.setHTML('<h1>Hello from Cloudflare Workers!</h1>');
+  res.html('<h1>Hello from Cloudflare Workers!</h1>');
 });
 
 export default {
@@ -408,7 +408,7 @@ import WhatwgAdapter from '@stackpress/ingest/whatwg/Adapter';
 const app = server();
 
 app.get('/api/hello', async ({ res }) => {
-  res.setJSON({ message: 'Hello from Deno!' });
+  res.json({ message: 'Hello from Deno!' });
 });
 
 Deno.serve(async (request: Request) => {
@@ -514,7 +514,7 @@ A dispatcher function that creates a WHATWG Response object.
 const app = server();
 
 // Custom request preprocessing
-app.on('request', async (req, res) => {
+app.on('request', async ({ req, res }) => {
   // Add request ID
   req.data.set('requestId', crypto.randomUUID());
   
@@ -532,7 +532,7 @@ app.get('/api/data', async ({ req, res }) => {
   const requestId = req.data('requestId');
   const apiKey = req.data('apiKey');
   
-  res.setJSON({ requestId, authenticated: !!apiKey });
+  res.json({ requestId, authenticated: !!apiKey });
 });
 ```
 
@@ -562,7 +562,7 @@ app.get('/api/stream', async ({ res }) => {
 app.on('error', async ({ req, res }) => {
   // Custom error formatting for APIs
   if (req.url.pathname.startsWith('/api/')) {
-    res.setJSON({
+    res.json({
       error: res.error,
       code: res.code,
       timestamp: new Date().toISOString(),
@@ -570,7 +570,7 @@ app.on('error', async ({ req, res }) => {
     });
   } else {
     // HTML error pages for web routes
-    res.setHTML(`
+    res.html(`
       <h1>Error ${res.code}</h1>
       <p>${res.error}</p>
     `);
@@ -654,7 +654,7 @@ app.on('response', async ({ req, res }) => {
 Implement security headers appropriate for serverless deployments.
 
 ```typescript
-app.on('response', async (req, res) => {
+app.on('response', async ({ req, res }) => {
   // Security headers for web responses
   if (!req.url.pathname.startsWith('/api/')) {
     res.headers.set('X-Frame-Options', 'DENY');

@@ -48,7 +48,7 @@ const httpServer2 = createServer(async (req, res) => {
 // With action function
 const httpServer3 = createServer(async (req, res) => {
   await HttpAdapter.plug(app, req, res, async ({ res }) => {
-    res.setJSON({ message: 'Custom handler' });
+    res.json({ message: 'Custom handler' });
   });
 });
 ```
@@ -86,7 +86,7 @@ await adapter.plug('user-login');
 // Process with action function
 await adapter.plug(async ({ res }) => {
   const users = await getUsers();
-  res.setResults(users);
+  res.results(users);
 });
 ```
 
@@ -129,8 +129,8 @@ const adapter = new HttpAdapter(context, req, res);
 const response = adapter.response();
 
 // Set response data
-response.setJSON({ message: 'Hello World' });
-response.setHTML('<h1>Hello World</h1>');
+response.json({ message: 'Hello World' });
+response.html('<h1>Hello World</h1>');
 response.setError('Not found', {}, [], 404);
 
 // Dispatch to HTTP response
@@ -279,11 +279,11 @@ Handle different response types with appropriate content type headers.
 
 ```typescript
 // String responses
-response.setHTML('<h1>Hello World</h1>');
+response.html('<h1>Hello World</h1>');
 // Sets Content-Type: text/html
 
 // JSON responses
-response.setJSON({ message: 'Success' });
+response.json({ message: 'Success' });
 // Sets Content-Type: application/json
 
 // Buffer responses
@@ -342,13 +342,13 @@ const app = server();
 // Define routes
 app.get('/users', async ({ res }) => {
   const users = await getUsers();
-  res.setResults(users);
+  res.results(users);
 });
 
 app.post('/users', async ({ req, res }) => {
   const userData = req.data();
   const user = await createUser(userData);
-  res.setResults(user, 201);
+  res.results(user, 201);
 });
 
 // Create HTTP server
@@ -419,7 +419,7 @@ app.post('/upload', async ({ req, res }) => {
     await saveFile(file);
   }
   
-  res.setJSON({ 
+  res.json({ 
     message: 'Files uploaded successfully',
     count: files.length 
   });
@@ -531,7 +531,7 @@ httpServer.headersTimeout = 66000;
 
 // Set request size limits
 const app = server();
-app.on('request', async (req, res) => {
+app.on('request', async ({ req, res }) => {
   const contentLength = parseInt(req.headers.get('content-length') || '0');
   if (contentLength > 10 * 1024 * 1024) { // 10MB limit
     res.setError('Request too large', {}, [], 413);
@@ -546,7 +546,7 @@ app.on('request', async (req, res) => {
 Implement security headers for protection against common vulnerabilities.
 
 ```typescript
-app.on('response', async (req, res) => {
+app.on('response', async ({ req, res }) => {
   // Security headers
   res.headers.set('X-Frame-Options', 'DENY');
   res.headers.set('X-Content-Type-Options', 'nosniff');

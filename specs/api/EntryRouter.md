@@ -5,7 +5,7 @@
 File-based routing routes events to files with exported handlers, which keeps route ownership visible in the filesystem and gives tooling a stable map of route-to-file boundaries.
 
 ```typescript
-import EntryRouter from '@stackpress/ingest/plugin/EntryRouter';
+import EntryRouter from '@stackpress/ingest/EntryRouter';
 
 const router = new EntryRouter(actionRouter, listen);
 
@@ -117,9 +117,17 @@ The following example shows how entry files are converted to executable actions.
 ```typescript
 // Internal method - creates action from file path
 const action = router.action('GET /users', './routes/users.js', 0);
+const props = {
+  request,
+  response,
+  context,
+  req: request,
+  res: response,
+  ctx: context
+};
 
 // The action dynamically imports and executes the file
-await action(request, response, context);
+await action(props);
 ```
 
 **Parameters**
@@ -168,7 +176,7 @@ The following example shows a basic route handler file structure.
 // ./routes/users/list.js
 export default async function UserList({ req, res, ctx }) {
   const users = await getUsers();
-  res.setResults(users);
+  res.results(users);
 }
 ```
 
@@ -178,7 +186,7 @@ Many projects wrap the handler with `action(...)` so the entry file still reads 
 import { action } from '@stackpress/ingest';
 
 export default action(async function UserList({ req, res }) {
-  res.setResults(await getUsers());
+  res.results(await getUsers());
 });
 ```
 
@@ -197,7 +205,7 @@ export default async function UserDetail({ req, res, ctx }) {
     return false;
   }
   
-  res.setResults(user);
+  res.results(user);
   return true;
 }
 ```
@@ -247,7 +255,7 @@ export default async function CreateUser({ req, res, ctx }) {
     // Emit user created event
     await ctx.emit('user-created', req, res);
     
-    res.setResults(user, 201);
+    res.results(user, 201);
     return true;
   } catch (error) {
     res.setError('Failed to create user', {}, [], 500);
@@ -278,7 +286,7 @@ The following example shows the internal implementation of dynamic imports.
 
 ```typescript
 // Internal implementation
-async function EntryFileAction(req, res, ctx) {
+async function EntryFileAction(props) {
   // Dynamic import of the route file
   const imports = await import('./routes/user.js');
   
@@ -286,7 +294,7 @@ async function EntryFileAction(req, res, ctx) {
   const callback = imports.default;
   
   // Execute the handler
-  return await callback({ req, res, ctx });
+  return await callback(props);
 }
 ```
 
@@ -336,7 +344,7 @@ EntryRouter works as an extension of ActionRouter, sharing the same event system
 The following example shows how EntryRouter integrates with ActionRouter.
 
 ```typescript
-import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
+import { ActionRouter } from '@stackpress/ingest';
 
 const actionRouter = new ActionRouter(context);
 
@@ -392,7 +400,7 @@ The following example shows proper error handling in entry files.
 export default async function ErrorExample({ req, res, ctx }) {
   try {
     const result = await riskyOperation();
-    res.setResults(result);
+    res.results(result);
     return true;
   } catch (error) {
     // Log error
@@ -434,7 +442,7 @@ export default async function ProtectedUser({ req, res, ctx }) {
   if (!user) return false; // Auth failed
   
   // Continue with protected logic
-  res.setResults({ user });
+  res.results({ user });
   return true;
 }
 ```
@@ -480,7 +488,7 @@ export default async function(
   
   // Type-safe operations
   const user = await createUser(userData);
-  res.setResults(user);
+  res.results(user);
   
   return true;
 }

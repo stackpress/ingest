@@ -11,7 +11,7 @@ app.import.get('/users', () => import('./routes/users.js'));
 ```typescript
 // ./routes/users.js
 export default function UsersIndex({ res }) {
-  res.setResults([
+  res.results([
     { id: 1, name: 'Ada' },
     { id: 2, name: 'Grace' }
   ]);

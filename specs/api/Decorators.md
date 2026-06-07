@@ -70,7 +70,7 @@ type HttpProps = Parameters<HttpAction>[0];
 class UserController {
   @Get('/users')
   public list({ res }: HttpProps) {
-    res.setJSON([{ id: 1 }]);
+    res.json([{ id: 1 }]);
   }
 
   @Post('/users', 10)
@@ -151,7 +151,7 @@ type HttpProps = Parameters<HttpAction>[0];
 class UserController {
   @Get('/users')
   public list({ res }: HttpProps) {
-    res.setBody('text/plain', 'list');
+    res.set('text/plain', 'list');
   }
 }
 

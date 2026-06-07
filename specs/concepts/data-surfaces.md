@@ -20,7 +20,7 @@ The request has a few different data objects depending on what you are trying to
 
 ```typescript
 app.post('/users/:id', async ({ req, res }) => {
-  res.setJSON({
+  res.json({
     query: req.query(),
     post: req.post(),
     data: req.data()
@@ -50,7 +50,7 @@ That is why a handler can often stay simple:
 
 ```typescript
 app.post('/users/:id', ({ req, res }) => {
-  res.setJSON({
+  res.json({
     id: req.data('id'),
     form: req.data()
   });
@@ -74,7 +74,7 @@ if (res.code === 200) {
   res.data.set('sessionUser', 'John Doe');
 }
 
-res.setResults(results);
+res.results(results);
 ```
 
 That pattern becomes especially useful in view rendering, where the template may need extra display data that should not be treated as the main payload.

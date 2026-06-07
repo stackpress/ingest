@@ -41,7 +41,7 @@ The following example shows how to emit route events with complete lifecycle man
 const success = await Route.emit(
   async ({ req, res, ctx }) => {
     const user = await ctx.resolve('get-user', req);
-    res.setResults(user);
+    res.results(user);
   },
   request,
   response,
@@ -92,7 +92,7 @@ The following example shows how to execute the complete route lifecycle.
 ```typescript
 const route = new Route(
   async ({ req, res, ctx }) => {
-    res.setJSON({ message: 'Hello World' });
+    res.json({ message: 'Hello World' });
   },
   request,
   response,
@@ -186,7 +186,7 @@ The processing phase executes the main route logic and handles 404 errors for un
 if (typeof event === 'string') {
   await server.emit(event, request, response);
 } else {
-  await event(request, response, server);
+  await event(server.props(request, response));
 }
 
 // Handles 404 if no response body or status code
@@ -227,7 +227,7 @@ The Route class automatically converts thrown errors into proper exception respo
 
 ```typescript
 try {
-  await routeAction(request, response, server);
+  await routeAction(server.props(request, response));
 } catch (error) {
   // Automatically converts errors to exceptions
   const exception = Exception.upgrade(error).toResponse();
@@ -246,11 +246,11 @@ Custom error handling can be implemented through error event listeners.
 server.on('error', async ({ req, res }) => {
   // Custom error handling
   if (res.code === 404) {
-    res.setHTML('<h1>Page Not Found</h1>');
+    res.html('<h1>Page Not Found</h1>');
   } else if (res.code >= 500) {
     // Log server errors
     console.error('Server error:', res.error);
-    res.setHTML('<h1>Internal Server Error</h1>');
+    res.html('<h1>Internal Server Error</h1>');
   }
   
   return true; // Continue processing
@@ -294,9 +294,9 @@ const res = app.response();
 
 // Direct route execution
 const success = await Route.emit(
-  async (request, response, context) => {
+  async ({ res }) => {
     const users = await getUsers();
-    response.setResults(users);
+    res.results(users);
   },
   req,
   res,
@@ -318,15 +318,15 @@ The Server class automatically uses Route for request handling with simplified s
 app.get('/users', async ({ req, res, ctx }) => {
   // This action is wrapped in Route.emit() automatically
   const users = await getUsers();
-  res.setResults(users);
+  res.results(users);
 });
 
 // Equivalent to:
 app.on('GET /users', async ({ req, res }) => {
   await Route.emit(
-    async (request, response, context) => {
+    async ({ res }) => {
       const users = await getUsers();
-      response.setResults(users);
+      res.results(users);
     },
     req,
     res,
@@ -420,9 +420,9 @@ server.on('error', async ({ req, res }) => {
   
   // Provide user-friendly error responses
   if (res.code === 404) {
-    res.setHTML(await renderErrorPage('404'));
+    res.html(await renderErrorPage('404'));
   } else if (res.code >= 500) {
-    res.setHTML(await renderErrorPage('500'));
+    res.html(await renderErrorPage('500'));
   }
   
   return true;
@@ -518,7 +518,7 @@ async function handleUserProfile(req: any, res: any, ctx: any) {
     const user = await getUserById(userId);
     const profile = await getUserProfile(userId);
     
-    res.setResults({
+    res.results({
       user,
       profile,
       timestamp: Date.now()
@@ -623,11 +623,11 @@ server.on('error', async ({ req, res }) => {
   
   // Customize error response based on type
   if (res.code === 404) {
-    res.setHTML(await render404Page(req));
+    res.html(await render404Page(req));
   } else if (res.code === 500) {
-    res.setHTML(await render500Page());
+    res.html(await render500Page());
   } else if (res.code === 401) {
-    res.setJSON({
+    res.json({
       error: 'Authentication required',
       loginUrl: '/auth/login'
     });

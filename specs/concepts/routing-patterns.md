@@ -8,7 +8,7 @@ No matter how a route is declared, the useful target is still the same props-bas
 
 ```typescript
 ({ req, res, ctx }) => {
-  res.setJSON({ path: req.url.pathname });
+  res.json({ path: req.url.pathname });
 }
 ```
 
@@ -20,7 +20,7 @@ Use inline routes when the handler is short and local readability matters most.
 
 ```typescript
 app.get('/users/:id', ({ req, res }) => {
-  res.setJSON({ id: req.data('id') });
+  res.json({ id: req.data('id') });
 });
 ```
 
@@ -37,7 +37,7 @@ app.entry.get('/users/:id', './routes/user.js');
 ```typescript
 // ./routes/user.js
 export default function UserDetail({ req, res }) {
-  res.setJSON({ id: req.data('id') });
+  res.json({ id: req.data('id') });
 }
 ```
 
@@ -54,7 +54,7 @@ app.import.get('/users', () => import('./routes/users.js'));
 ```typescript
 // ./routes/users.js
 export default function UsersIndex({ res }) {
-  res.setResults([
+  res.results([
     { id: 1, name: 'Ada' },
     { id: 2, name: 'Grace' }
   ]);
@@ -82,9 +82,9 @@ console.log(app.imports);
 Attach a template engine and use view routes to automatically render template files.
 
 ```typescript
-app.view.engine = async (filePath, req, res) => {
+app.view.engine = async (filePath, { req, res, ctx }) => {
   const html = await renderTemplate(filePath, req.data());
-  res.setHTML(html);
+  res.html(html);
 };
 
 app.view.get('/profile', './views/profile.hbs');
@@ -110,7 +110,7 @@ type HttpProps = Parameters<HttpAction>[0];
 class UserController {
   @Get('/users')
   public list({ res }: HttpProps) {
-    res.setJSON([{ id: 1, name: 'Ada' }]);
+    res.json([{ id: 1, name: 'Ada' }]);
   }
 }
 
@@ -132,15 +132,15 @@ Underneath these styles, Ingest routes are still regular router entries. That me
 
 ```typescript
 app.post('/users/:id', ({ req, res }) => {
-  res.setJSON({ id: req.data('id') });
+  res.json({ id: req.data('id') });
 });
 
 app.put('/files/*', ({ req, res }) => {
-  res.setJSON({ args: req.data() });
+  res.json({ args: req.data() });
 });
 
 app.get('/assets/**', ({ req, res }) => {
-  res.setJSON({ args: req.data() });
+  res.json({ args: req.data() });
 });
 ```
 
@@ -171,7 +171,7 @@ Flexible matching and router composition help large apps evolve route structure 
 ```typescript
 const admin = router();
 admin.get('/admin/users/:id', ({ req, res }) => {
-  res.setJSON({ id: req.data('id') });
+  res.json({ id: req.data('id') });
 });
 
 app.use(admin);

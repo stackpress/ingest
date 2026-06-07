@@ -4,7 +4,7 @@
 It solves both on-demand loading and tooling visibility for route modules in larger applications.
 
 ```typescript
-import ImportRouter from '@stackpress/ingest/plugin/ImportRouter';
+import ImportRouter from '@stackpress/ingest/ImportRouter';
 
 const router = new ImportRouter(actionRouter, listen);
 
@@ -123,9 +123,17 @@ const action = router.action(
   () => import('./routes/users.js'), 
   0
 );
+const props = {
+  request,
+  response,
+  context,
+  req: request,
+  res: response,
+  ctx: context
+};
 
 // The action executes the import and calls the default export
-await action(request, response, context);
+await action(props);
 ```
 
 **Parameters**
@@ -177,7 +185,7 @@ router.get('/users', () => import('./routes/users.js'));
 // ./routes/users.js
 export default async function UsersIndex({ res }) {
   const users = await getUsers();
-  res.setResults(users);
+  res.results(users);
 }
 ```
 
@@ -341,7 +349,7 @@ router.get('/optional-feature', () => {
   return import('./routes/optional.js').catch(() => {
     // Return a minimal handler if the feature module fails
     return {
-      default: async (req, res, ctx) => {
+      default: async ({ res }) => {
         res.setError('Feature not available', {}, [], 503);
         return false;
       }
@@ -359,7 +367,7 @@ ImportRouter works as an extension of ActionRouter, sharing the same event syste
 The following example shows how ImportRouter integrates with ActionRouter.
 
 ```typescript
-import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
+import { ActionRouter } from '@stackpress/ingest';
 
 const actionRouter = new ActionRouter(context);
 
@@ -461,7 +469,7 @@ router.get('/dev-tools', () => {
     return import('./routes/dev-tools.js');
   } else {
     return Promise.resolve({
-      default: (req, res, ctx) => {
+      default: ({ res }) => {
         res.setError('Not available in production', {}, [], 404);
         return false;
       }

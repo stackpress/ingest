@@ -147,15 +147,12 @@ for (const [name, value] of allHeaders) {
 
 ### 3.5. Session Data
 
-Access and modify session data for user state management.
+Access session data for user state management.
 
 ```typescript
 // Get session data
 const userId = req.session.get('userId');
 const username = req.session.get('username');
-
-// Set session data
-req.session.set('lastVisit', new Date().toISOString());
 
 // Check if session has data
 if (req.session.has('isAuthenticated')) {
@@ -163,10 +160,12 @@ if (req.session.has('isAuthenticated')) {
 }
 
 // Get all session data
-const sessionData = req.session.get();
+const sessionData = req.session.data;
 ```
 
-On the request side, session data is usually derived from incoming cookies. That keeps route code focused on reading state while the response side owns cookie revisions and persistence.
+On the request side, session data is usually derived from incoming cookies. Keep
+route code focused on reading request state and use `res.session.set(...)` when
+you need cookie revisions to be written back to the client.
 
 ## 4. Request Creation
 
@@ -251,6 +250,10 @@ const req = new Request({
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ name: 'John', email: 'john@example.com' })
 });
+req.loader = async request => ({
+  body: request.body,
+  post: JSON.parse(request.body as string)
+});
 
 await req.load();
 console.log(req.mimetype); // 'application/json'
@@ -266,7 +269,11 @@ const req = new Request({
   url: 'http://example.com/api/upload',
   method: 'POST',
   headers: { 'Content-Type': 'multipart/form-data' },
-  // body would be set by the platform (browser FormData, etc.)
+  body: multipartBody
+});
+req.loader = async request => ({
+  body: request.body,
+  post: parseMultipartBody(request.mimetype, request.body)
 });
 
 await req.load();
@@ -285,6 +292,10 @@ const req = new Request({
   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   body: 'username=john&password=secret'
 });
+req.loader = async request => ({
+  body: request.body,
+  post: Object.fromEntries(new URLSearchParams(request.body as string))
+});
 
 await req.load();
 console.log(req.post.get('username')); // 'john'
@@ -301,10 +312,14 @@ Integration with Node.js HTTP server for traditional server applications.
 
 ```typescript
 import { createServer } from 'node:http';
-import { Request } from '@stackpress/ingest';
+import HttpAdapter from '@stackpress/ingest/http/Adapter';
+import { server } from '@stackpress/ingest/http';
+
+const app = server();
 
 createServer((incomingMessage, serverResponse) => {
-  const req = new Request({ resource: incomingMessage });
+  const adapter = new HttpAdapter(app, incomingMessage, serverResponse);
+  const req = adapter.request();
   
   console.log(req.method); // GET, POST, etc.
   console.log(req.url.pathname); // /api/users
@@ -318,14 +333,20 @@ Support for serverless environments like Vercel, Netlify, and Cloudflare Workers
 
 ```typescript
 // Vercel, Netlify, etc.
-export default async function handler(request: Request) {
-  const req = new Request({ resource: request });
+import WhatwgAdapter from '@stackpress/ingest/whatwg/Adapter';
+import { server } from '@stackpress/ingest/whatwg';
+
+const app = server();
+
+export default async function handler(request: globalThis.Request) {
+  const adapter = new WhatwgAdapter(app, request);
+  const req = adapter.request();
   
   console.log(req.method);
   console.log(req.url.pathname);
   console.log(req.headers.get('authorization'));
   
-  return new Response('OK');
+  return new globalThis.Response('OK');
 }
 ```
 
@@ -396,7 +417,7 @@ app.post('/api/users', async ({ req, res }) => {
     createdBy: currentUser
   };
   
-  res.setJSON({ user: newUser }, 201);
+  res.json({ user: newUser }, 201);
 });
 ```
 
@@ -423,7 +444,6 @@ app.on('request', async ({ req, res }) => {
     
     // Store user in request data for later use
     req.data.set('user', user);
-    req.session.set('userId', user.id);
     
     return true; // Continue processing
   } catch (error) {
@@ -466,7 +486,7 @@ app.post('/api/upload', async ({ req, res }) => {
     uploadedFiles.push(savedFile);
   }
   
-  res.setJSON({
+  res.json({
     message: 'Files uploaded successfully',
     files: uploadedFiles,
     description

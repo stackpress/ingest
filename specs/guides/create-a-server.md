@@ -10,7 +10,7 @@ import { server } from '@stackpress/ingest/http';
 const app = server();
 
 app.get('/', ({ res }) => {
-  res.setHTML('<h1>Hello World</h1>');
+  res.html('<h1>Hello World</h1>');
 });
 
 app.create().listen(3000);
@@ -24,7 +24,7 @@ import { server } from '@stackpress/ingest/whatwg';
 const app = server();
 
 app.get('/health', ({ res }) => {
-  res.setJSON({ ok: true });
+  res.json({ ok: true });
 });
 
 export default function handle(request: Request) {

@@ -3,12 +3,12 @@
 `ActionRouter` is the event-driven router behind the higher-level `Router` API. It accepts props-based handlers and exposes entry, import, and view routing helpers.
 
 ```typescript
-import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
+import { ActionRouter } from '@stackpress/ingest';
 
 const router = new ActionRouter({ appName: 'example' });
 
 router.get('/users/:id', ({ req, res, ctx }) => {
-  res.setJSON({
+  res.json({
     id: req.data('id'),
     app: ctx.appName
   });
@@ -29,9 +29,9 @@ const router = new ActionRouter(context);
 | --- | --- | --- |
 | `context` | `X` | Context passed to route handlers |
 | `routes` | `Map<string, Route>` | Registered route metadata |
-| `entry` | `EntryRouter<R, S, X, C, P>` | Entry-file routing helper |
-| `import` | `ImportRouter<R, S, X, C, P>` | Dynamic import routing helper for lazy loading and tooling |
-| `view` | `ViewRouter<R, S, X, C, P>` | Template routing helper |
+| `entry` | `EntryRouter<R, S, X>` | Entry-file routing helper |
+| `import` | `ImportRouter<R, S, X>` | Dynamic import routing helper for lazy loading and tooling |
+| `view` | `ViewRouter<R, S, X>` | Template routing helper |
 
 ## Route methods
 
@@ -39,15 +39,15 @@ Use the HTTP verb helpers or `route()` to register handlers.
 
 ```typescript
 router.get('/users', ({ res }) => {
-  res.setJSON({ users: [] });
+  res.json({ users: [] });
 });
 
 router.patch('/users/:id', ({ req, res }) => {
-  res.setJSON({ id: req.data('id'), patched: true });
+  res.json({ id: req.data('id'), patched: true });
 });
 
 router.options('/users', ({ res }) => {
-  res.setJSON({ allow: ['GET', 'POST', 'PATCH', 'OPTIONS'] });
+  res.json({ allow: ['GET', 'POST', 'PATCH', 'OPTIONS'] });
 });
 
 router.head('/users', ({ res }) => {
@@ -56,11 +56,11 @@ router.head('/users', ({ res }) => {
 
 router.post('/users', async ({ req, res }) => {
   await req.load();
-  res.setJSON({ created: req.data() }, 201);
+  res.json({ created: req.data() }, 201);
 });
 
 router.all('/health', ({ res }) => {
-  res.setJSON({ ok: true });
+  res.json({ ok: true });
 });
 ```
 
@@ -69,7 +69,7 @@ router.all('/health', ({ res }) => {
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `path` | `string` | Route path |
-| `action` | `ActionRouterAction<R, S, X, C, P>` | Props-based route handler |
+| `action` | `ActionRouterAction<R, S, X>` | Props-based route handler |
 | `priority` | `number` | Optional listener priority. Can be negative. Higher numbers run first, then ties follow definition order. |
 
 ### Returns
@@ -100,7 +100,7 @@ Merges another `ActionRouter` into the current one.
 
 ```typescript
 const api = new ActionRouter(context);
-api.get('/api/health', ({ res }) => res.setJSON({ ok: true }));
+api.get('/api/health', ({ res }) => res.json({ ok: true }));
 
 router.use(api);
 ```
@@ -111,7 +111,7 @@ router.use(api);
 
 ```typescript
 router.get('/users', ({ res }) => {
-  res.setJSON({ users: [] });
+  res.json({ users: [] });
 });
 ```
 
@@ -126,7 +126,7 @@ router.entry.get('/users/:id', './routes/user.js');
 ```typescript
 // ./routes/user.js
 export default function UserDetail({ req, res }) {
-  res.setJSON({ id: req.data('id') });
+  res.json({ id: req.data('id') });
 }
 ```
 
@@ -145,13 +145,13 @@ router.view.render = async (filePath, props) => {
   return await renderTemplate(filePath, props);
 };
 
-router.view.engine = async (filePath, req, res) => {
+router.view.engine = async (filePath, { req, res, ctx }) => {
   const props = res.data();
   const html = await router.view.render(filePath, {
     ...req.data(),
     props
   });
-  res.setHTML(html);
+  res.html(html);
 };
 
 router.view.get('/profile', './views/profile.hbs');
@@ -160,16 +160,16 @@ router.view.get('/profile', './views/profile.hbs');
 ## Example
 
 ```typescript
-import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
+import { ActionRouter } from '@stackpress/ingest';
 
 const router = new ActionRouter({ version: '1.0.0' });
 
 router.get('/health', ({ res, ctx }) => {
-  res.setJSON({ ok: true, version: ctx.version });
+  res.json({ ok: true, version: ctx.version });
 });
 
 router.get('/users/:id', ({ req, res }) => {
-  res.setJSON({ id: req.data('id') });
+  res.json({ id: req.data('id') });
 });
 ```
 

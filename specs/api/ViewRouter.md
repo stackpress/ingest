@@ -4,7 +4,7 @@ Template-based routing system that routes to view files for server-side renderin
 It keeps route lookup and template rendering connected while still allowing rendering to be reused from ordinary handlers.
 
 ```typescript
-import ViewRouter from '@stackpress/ingest/plugin/ViewRouter';
+import ViewRouter from '@stackpress/ingest/ViewRouter';
 
 const router = new ViewRouter(actionRouter, listen);
 
@@ -14,9 +14,9 @@ router.render = async (filePath, props) => {
 };
 
 // Configure template engine
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   const html = await router.render(filePath, req.data());
-  res.setHTML(html);
+  res.html(html);
 };
 
 // Route to template files
@@ -44,8 +44,8 @@ The following properties are available when instantiating a ViewRouter.
 | Property | Type | Description |
 |----------|------|-------------|
 | `views` | `Map<string, Set<ViewRouterTaskItem>>` | Map of event names to view file configurations (readonly) |
-| `engine` | `ViewEngine<R, S, X>` | Template engine function for rendering views |
-| `render` | `ViewRender` | Render function for processing templates |
+| `engine` | `ViewRouterEngine<R, S, X>` | Template engine function for rendering views |
+| `render` | `ViewRouterRender` | Render function for processing templates |
 
 ## 2. HTTP Method Routing
 
@@ -115,27 +115,27 @@ The following example shows how to configure the template engine.
 
 ```typescript
 // Handlebars engine
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   const template = await fs.readFile(filePath, 'utf8');
   const compiled = Handlebars.compile(template);
   const props = res.data();
   const html = compiled({ ...req.data(), props });
-  res.setHTML(html);
+  res.html(html);
 };
 
 // EJS engine
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   const props = res.data();
   const html = await ejs.renderFile(filePath, { ...req.data(), props });
-  res.setHTML(html);
+  res.html(html);
 };
 
 // Custom engine with layout support
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   const props = res.data();
   const data = { ...req.data(), props };
   const html = await renderWithLayout(filePath, data);
-  res.setHTML(html);
+  res.html(html);
 };
 ```
 
@@ -184,12 +184,12 @@ router.action.get('/users/:id', async ({ req, res, ctx }) => {
     const html = await ctx.view.render('./views/user.hbs', {
       id: req.data('id')
     });
-    res.setHTML(html);
+    res.html(html);
   }
 });
 ```
 
-This split keeps template data separate from the real result set. A handler can set extra view-only values on `res.data()` and still return the actual response payload with `setResults()`:
+This split keeps template data separate from the real result set. A handler can set extra view-only values on `res.data()` and still return the actual response payload with `results()`:
 
 ```typescript
 router.action.get('/users/:id', async ({ res }) => {
@@ -200,7 +200,7 @@ router.action.get('/users/:id', async ({ res }) => {
     res.data.set('sessionUser', 'John Doe');
   }
 
-  res.setResults(results);
+  res.results(results);
 });
 ```
 
@@ -214,7 +214,7 @@ router.action.get('/users/:id', async ({ req, res, ctx }) => {
     const html = await ctx.view.render('./views/me.hbs', {
       id: req.data('id')
     });
-    res.setHTML(html);
+    res.html(html);
   }
 });
 ```
@@ -238,9 +238,17 @@ The following example shows how view files are converted to executable actions.
 ```typescript
 // Internal method - creates action from template path
 const action = router.action('GET /profile', './views/profile.hbs', 0);
+const props = {
+  request,
+  response,
+  context,
+  req: request,
+  res: response,
+  ctx: context
+};
 
 // The action calls the configured engine with the template path
-await action(request, response, context);
+await action(props);
 ```
 
 **Parameters**
@@ -290,7 +298,7 @@ import Handlebars from 'handlebars';
 import fs from 'node:fs/promises';
 
 // Configure Handlebars engine
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   try {
     const template = await fs.readFile(filePath, 'utf8');
     const compiled = Handlebars.compile(template);
@@ -301,7 +309,7 @@ router.engine = async (filePath, req, res, ctx) => {
       method: req.method
     };
     const html = compiled(data);
-    res.setHTML(html);
+    res.html(html);
   } catch (error) {
     res.setError('Template rendering failed', {}, [], 500);
   }
@@ -324,7 +332,7 @@ The following example shows how to integrate EJS with ViewRouter.
 import ejs from 'ejs';
 
 // Configure EJS engine
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   try {
     const data = {
       ...req.data(),
@@ -334,7 +342,7 @@ router.engine = async (filePath, req, res, ctx) => {
       }
     };
     const html = await ejs.renderFile(filePath, data);
-    res.setHTML(html);
+    res.html(html);
   } catch (error) {
     res.setError('Template rendering failed', {}, [], 500);
   }
@@ -352,12 +360,12 @@ import Mustache from 'mustache';
 import fs from 'node:fs/promises';
 
 // Configure Mustache engine
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   try {
     const template = await fs.readFile(filePath, 'utf8');
     const data = req.data();
     const html = Mustache.render(template, data);
-    res.setHTML(html);
+    res.html(html);
   } catch (error) {
     res.setError('Template rendering failed', {}, [], 500);
   }
@@ -372,7 +380,7 @@ The following example shows how to create a custom template engine with layout s
 
 ```typescript
 // Custom template engine with layout support
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   try {
     const data = req.data();
     const layout = data.layout || 'default';
@@ -390,7 +398,7 @@ router.engine = async (filePath, req, res, ctx) => {
       content
     });
     
-    res.setHTML(html);
+    res.html(html);
   } catch (error) {
     res.setError('Template rendering failed', {}, [], 500);
   }
@@ -435,7 +443,7 @@ router.on('GET /user/:id', async ({ req, res, ctx }) => {
 The following example shows how to integrate server context into templates.
 
 ```typescript
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   const data = {
     // Request data
     ...req.data(),
@@ -457,7 +465,7 @@ router.engine = async (filePath, req, res, ctx) => {
   };
   
   const html = await renderTemplate(filePath, data);
-  res.setHTML(html);
+  res.html(html);
 };
 ```
 
@@ -470,10 +478,10 @@ ViewRouter provides robust error handling for template rendering.
 The following example shows how to handle template rendering errors.
 
 ```typescript
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   try {
     const html = await renderTemplate(filePath, req.data());
-    res.setHTML(html);
+    res.html(html);
   } catch (error) {
     console.error('Template error:', error);
     
@@ -483,10 +491,10 @@ router.engine = async (filePath, req, res, ctx) => {
         error: error.message,
         path: filePath
       });
-      res.setHTML(fallbackHtml, 500);
+      res.html(fallbackHtml, 500);
     } catch (fallbackError) {
       // Ultimate fallback
-      res.setHTML('<h1>Template Error</h1><p>Unable to render page</p>', 500);
+      res.html('<h1>Template Error</h1><p>Unable to render page</p>', 500);
     }
   }
 };
@@ -499,14 +507,14 @@ The following example shows different error handling strategies for different en
 ```typescript
 const isDev = process.env.NODE_ENV === 'development';
 
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   try {
     const html = await renderTemplate(filePath, req.data());
-    res.setHTML(html);
+    res.html(html);
   } catch (error) {
     if (isDev) {
       // Detailed error in development
-      res.setHTML(`
+      res.html(`
         <h1>Template Error</h1>
         <p><strong>File:</strong> ${filePath}</p>
         <p><strong>Error:</strong> ${error.message}</p>
@@ -515,7 +523,7 @@ router.engine = async (filePath, req, res, ctx) => {
     } else {
       // Generic error in production
       const errorHtml = await renderTemplate('./views/500.hbs', {});
-      res.setHTML(errorHtml, 500);
+      res.html(errorHtml, 500);
     }
   }
 };
@@ -530,7 +538,7 @@ ViewRouter works as an extension of ActionRouter, sharing the same event system 
 The following example shows how ViewRouter integrates with ActionRouter.
 
 ```typescript
-import ActionRouter from '@stackpress/ingest/plugin/ActionRouter';
+import { ActionRouter } from '@stackpress/ingest';
 
 const actionRouter = new ActionRouter(context);
 
@@ -549,7 +557,7 @@ The following example shows how to combine different routing approaches.
 // API routes return JSON
 actionRouter.get('/api/users', async ({ req, res, ctx }) => {
   const users = await getUsers();
-  res.setResults(users);
+  res.results(users);
 });
 
 // View routes return HTML
@@ -581,7 +589,7 @@ router.get('/users/profile', './views/users/profile.hbs');
 router.get('/users/settings', './views/users/settings.hbs');
 
 // Use layouts for consistency
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   const data = req.data();
   const layout = data.layout || 'main';
   
@@ -591,7 +599,7 @@ router.engine = async (filePath, req, res, ctx) => {
     content
   });
   
-  res.setHTML(html);
+  res.html(html);
 };
 ```
 
@@ -604,7 +612,7 @@ The following example shows how to implement template caching for better perform
 const templateCache = new Map();
 const layoutCache = new Map();
 
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   // Cache templates in production
   const useCache = process.env.NODE_ENV === 'production';
   
@@ -619,7 +627,7 @@ router.engine = async (filePath, req, res, ctx) => {
   }
   
   const html = Handlebars.compile(template)(req.data());
-  res.setHTML(html);
+  res.html(html);
 };
 ```
 
@@ -628,7 +636,7 @@ router.engine = async (filePath, req, res, ctx) => {
 The following example shows important security considerations for ViewRouter.
 
 ```typescript
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   // Sanitize file path to prevent directory traversal
   const safePath = path.resolve('./views', path.relative('./views', filePath));
   if (!safePath.startsWith(path.resolve('./views'))) {
@@ -647,7 +655,7 @@ router.engine = async (filePath, req, res, ctx) => {
   };
   
   const html = await renderTemplate(safePath, data);
-  res.setHTML(html);
+  res.html(html);
 };
 ```
 
@@ -656,7 +664,7 @@ router.engine = async (filePath, req, res, ctx) => {
 The following example shows how to handle SEO and meta tags in templates.
 
 ```typescript
-router.engine = async (filePath, req, res, ctx) => {
+router.engine = async (filePath, { req, res, ctx }) => {
   const data = {
     ...req.data(),
     meta: {
@@ -668,6 +676,6 @@ router.engine = async (filePath, req, res, ctx) => {
   };
   
   const html = await renderTemplate(filePath, data);
-  res.setHTML(html);
+  res.html(html);
 };
 ```
